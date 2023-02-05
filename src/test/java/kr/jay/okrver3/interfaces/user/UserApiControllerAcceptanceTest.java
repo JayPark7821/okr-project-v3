@@ -1,4 +1,4 @@
-package kr.jay.okrver3;
+package kr.jay.okrver3.interfaces.user;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
