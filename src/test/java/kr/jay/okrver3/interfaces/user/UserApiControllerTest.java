@@ -60,7 +60,7 @@ class UserApiControllerTest {
 
 	@Test
 	@DisplayName("가입한 유저 정보가 있지만 가입한 소셜 정보와 다른 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Exception)을 반환한다.")
-	void login_With_IdToken_when_after_join() throws Exception {
+	void login_With_different_social_IdToken() throws Exception {
 
 		OAuth2UserInfo info = new OAuth2UserInfo("googleId", "userName", "email", "pictureUrl", ProviderType.GOOGLE);
 

@@ -66,6 +66,20 @@ class UserFacadeTest {
 		assertThat(guestInfo.name()).isEqualTo("userName");
 		assertThat(guestInfo.profileImageUrl()).isEqualTo("pictureUrl");
 		assertThat(guestInfo.providerType()).isEqualTo(ProviderType.GOOGLE);
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보가 있지만 가입한 소셜 정보와 다른 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Exception)을 반환한다.")
+	void login_With_different_social_IdToken() throws Exception {
+		OAuth2UserInfo info = new OAuth2UserInfo("googleId", "userName", "email", "pictureUrl",
+			ProviderType.GOOGLE);
+
+		given(userService.getUserInfoFrom(info))
+			.willThrow(new IllegalArgumentException(ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다."));
+
+		assertThatThrownBy(() -> sut.getLoginInfoFrom(info))
+			.isExactlyInstanceOf(IllegalArgumentException.class)
+			.hasMessage(ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
 
 	}
 }
