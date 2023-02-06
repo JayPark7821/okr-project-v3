@@ -37,11 +37,13 @@ class UserFacadeTest {
 	@DisplayName("가입한 유저 정보가 없는 OAuth2UserInfo가 넘어왔을 때 기대하는 응답(Optional.empty())을 반환한다.")
 	void not_joined_user_will_return_optional_empty() throws Exception {
 
-		given(userService.getUserInfoFrom("email"))
+		OAuth2UserInfo info = new OAuth2UserInfo("googleId", "userName", "email", "pictureUrl",
+			ProviderType.GOOGLE);
+
+		given(userService.getUserInfoFrom(info))
 			.willReturn(Optional.empty());
 
-		Optional<LoginInfo> loginInfo = sut.getLoginInfoFrom(
-			new OAuth2UserInfo("googleId", "userName", "email", "pictureUrl", ProviderType.GOOGLE));
+		Optional<LoginInfo> loginInfo = sut.getLoginInfoFrom(info);
 
 		assertThat(loginInfo).isEmpty();
 	}

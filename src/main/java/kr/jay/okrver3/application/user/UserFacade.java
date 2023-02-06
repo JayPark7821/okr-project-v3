@@ -19,7 +19,7 @@ public class UserFacade {
 	private final GuestService guestService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(OAuth2UserInfo oAuth2UserInfo) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.user.UserFacade.getLoginInfoFrom()");
+		return userService.getUserInfoFrom(oAuth2UserInfo).map(LoginInfo::new);
 	}
 
 	public LoginInfo createGuestInfoFrom(OAuth2UserInfo oAuth2UserInfo) {
