@@ -23,7 +23,7 @@ public class UserFacade {
 	}
 
 	public LoginInfo createGuestInfoFrom(OAuth2UserInfo oAuth2UserInfo) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.user.UserFacade.createGuestInfoFrom())");
+		return new LoginInfo(guestService.createNewGuestFrom(oAuth2UserInfo));
 	}
 }
 

@@ -68,7 +68,4 @@ class UserFacadeTest {
 		assertThat(guestInfo.providerType()).isEqualTo(ProviderType.GOOGLE);
 
 	}
-
-
-
 }
