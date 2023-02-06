@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +35,7 @@ class UserApiControllerTest {
 		given(userFacade.getLoginInfoFrom(new OAuth2UserInfo("googleId", "userName", "email","pictureUrl",ProviderType.GOOGLE)))
 			.willReturn(Optional.empty());
 		given(userFacade.createGuestInfoFrom(new OAuth2UserInfo("googleId", "userName", "email","pictureUrl",ProviderType.GOOGLE)))
-			.willReturn(new LoginInfo("guest-12301", "name", "email", ProviderType.GOOGLE, null, null));
+			.willReturn(new LoginInfo("guest-12301", "name", "email", ProviderType.GOOGLE, "pic",null, null));
 
 	}
 //
