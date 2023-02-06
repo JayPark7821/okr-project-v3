@@ -1,5 +1,7 @@
 package kr.jay.okrver3.interfaces.user;
 
+import java.util.Optional;
+
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.user.LoginInfo;
 import kr.jay.okrver3.application.user.UserFacade;
+import kr.jay.okrver3.domain.user.ProviderType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,9 +33,15 @@ public class UserApiController {
 	) {
 
 		OAuth2UserInfo oAuth2UserInfo = tokenVerifier.verifyIdToken(idToken);
-		LoginInfo loginInfo = userFacade.getLoginInfoFrom(oAuth2UserInfo);
+		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(oAuth2UserInfo);
 
+		return loginInfo.map(this::getLoginResponseFrom)
+			.orElseGet(() -> getLoginResponseFrom(userFacade.createGuestInfoFrom(oAuth2UserInfo)));
+	}
+
+	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(new LoginResponse(loginInfo));
 	}
+
 }
