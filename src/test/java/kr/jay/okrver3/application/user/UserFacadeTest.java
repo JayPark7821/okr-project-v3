@@ -1,6 +1,7 @@
 package kr.jay.okrver3.application.user;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
@@ -35,6 +36,9 @@ class UserFacadeTest {
 	@Test
 	@DisplayName("가입한 유저 정보가 없는 OAuth2UserInfo가 넘어왔을 때 기대하는 응답(Optional.empty())을 반환한다.")
 	void not_joined_user_will_return_optional_empty() throws Exception {
+
+		given(userService.getUserInfoFrom("email"))
+			.willReturn(Optional.empty());
 
 		Optional<LoginInfo> loginInfo = sut.getLoginInfoFrom(
 			new OAuth2UserInfo("googleId", "userName", "email", "pictureUrl", ProviderType.GOOGLE));
