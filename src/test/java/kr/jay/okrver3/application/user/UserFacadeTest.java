@@ -54,6 +54,31 @@ class UserFacadeTest {
 	}
 
 	@Test
+	@Sql("classpath:insert-user.sql")
+	@DisplayName("가입한 유저 정보가 있는 OAuth2UserInfo가 넘어왔을 때 기대하는 응답(Optional.of(LoginInfo)을 반환한다.")
+	void joined_user_will_return_optional_loginInfo() throws Exception {
+
+		String id = "appleId";
+		String userName = "appleUser";
+		String email = "apple@apple.com";
+		String profileImage = "appleProfileImage";
+		ProviderType providerType = ProviderType.APPLE;
+
+		OAuth2UserInfo info = new OAuth2UserInfo(id, userName, email, profileImage, providerType);
+
+		Optional<LoginInfo> loginInfo = sut.getLoginInfoFrom(info);
+
+		assertThat(loginInfo.get().name()).isEqualTo(userName);
+		assertThat(loginInfo.get().email()).isEqualTo(email);
+		assertThat(loginInfo.get().guestUuid()).isNull();
+		assertThat(loginInfo.get().profileImageUrl()).isEqualTo(profileImage);
+		assertThat(loginInfo.get().providerType()).isEqualTo(ProviderType.APPLE);
+		assertThat(loginInfo.get().accessToken()).isEqualTo("accessToken");
+		assertThat(loginInfo.get().refreshToken()).isEqualTo("refreshToken");
+	}
+
+
+	@Test
 	@DisplayName("OAuth2UserInfo가 넘어왔을 때 기대하는 응답(Guest)을 반환한다.")
 	void when_OAuth2UserInfo_were_given_will_return_guest() throws Exception {
 
