@@ -30,6 +30,7 @@ dependencies {
     // rest-assured
     testImplementation "io.rest-assured:rest-assured"
 
+    implementation 'org.apache.commons:commons-lang3'
 }
 
 tasks.named('test') {
