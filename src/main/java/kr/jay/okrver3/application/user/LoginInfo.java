@@ -12,6 +12,6 @@ public record LoginInfo(String guestUuid, String email, String name, ProviderTyp
 	}
 
 	public LoginInfo(GuestInfo guestInfo) {
-		this("guestUuid" , guestInfo.email(), guestInfo.name(), guestInfo.providerType(), guestInfo.profileImageUrl(), null, null);
+		this(guestInfo.guestUuid() , guestInfo.email(), guestInfo.name(), guestInfo.providerType(), guestInfo.profileImageUrl(), null, null);
 	}
 }

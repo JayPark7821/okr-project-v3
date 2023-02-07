@@ -1,4 +1,4 @@
-package kr.jay.okrver3.interfaces.user;
+package kr.jay.okrver3.interfaces.user.auth;
 
 import kr.jay.okrver3.domain.guset.Guest;
 import kr.jay.okrver3.domain.user.ProviderType;

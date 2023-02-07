@@ -2,7 +2,6 @@ package kr.jay.okrver3.interfaces.user;
 
 import java.util.Optional;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.user.LoginInfo;
 import kr.jay.okrver3.application.user.UserFacade;
-import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.interfaces.user.auth.TokenVerifier;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
