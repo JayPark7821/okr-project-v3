@@ -7,7 +7,7 @@ public record GuestInfo(String guestUuid, String email, String name, ProviderTyp
 
 	public GuestInfo(Guest guest) {
 
-		this(guest.getGuestId(), guest.getEmail(), guest.getGuestName(), guest.getProviderType(),
+		this(guest.getGuestUuid(), guest.getEmail(), guest.getGuestName(), guest.getProviderType(),
 			guest.getProfileImage());
 	}
 }

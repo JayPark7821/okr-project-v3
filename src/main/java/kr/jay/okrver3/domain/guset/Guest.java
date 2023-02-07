@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "guest")
 public class Guest {
 
-	private static final String GUEST_PREFIX = "guest_";
+	private static final String GUEST_PREFIX = "guest-";
 
 	@Id
 	private String guestUuid;

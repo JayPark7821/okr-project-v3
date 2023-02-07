@@ -1,6 +1,8 @@
 package kr.jay.okrver3.domain.guset.service.impl;
 
 
+import java.util.regex.Pattern;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,10 +36,15 @@ class GuestServiceImplTest {
 
 		GuestInfo guestInfo = sut.createNewGuestFrom(info);
 
-		Assertions.assertThat(guestInfo.guestUuid()).isNotNull();
-		Assertions.assertThat(guestInfo.name()).isEqualTo(userName);
-		Assertions.assertThat(guestInfo.email()).isEqualTo(email);
-		Assertions.assertThat(guestInfo.profileImageUrl()).isEqualTo(pictureUrl);
-		Assertions.assertThat(guestInfo.providerType()).isEqualTo(google);
+		assertGuestInfo(guestInfo, info);
+	}
+
+	private void assertGuestInfo(GuestInfo actual, OAuth2UserInfo expected){
+		Assertions.assertThat(actual.guestUuid()).containsPattern(
+			Pattern.compile("guest-[a-zA-Z0-9]{14}"));
+		Assertions.assertThat(actual.name()).isEqualTo(expected.name());
+		Assertions.assertThat(actual.email()).isEqualTo(expected.email());
+		Assertions.assertThat(actual.profileImageUrl()).isEqualTo(expected.picture());
+		Assertions.assertThat(actual.providerType()).isEqualTo(expected.providerType());
 	}
 }
