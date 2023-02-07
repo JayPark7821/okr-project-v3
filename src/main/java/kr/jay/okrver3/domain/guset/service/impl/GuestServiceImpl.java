@@ -18,6 +18,6 @@ public class GuestServiceImpl implements GuestService {
 
 	@Override
 	public GuestInfo createNewGuestFrom(OAuth2UserInfo info) {
-		return null;
+		return new GuestInfo(guestStore.save(info.toGuest()));
 	}
 }
