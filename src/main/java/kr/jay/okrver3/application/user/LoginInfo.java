@@ -2,7 +2,7 @@ package kr.jay.okrver3.application.user;
 
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
-import kr.jay.okrver3.domain.user.UserInfo;
+import kr.jay.okrver3.domain.user.service.UserInfo;
 
 public record LoginInfo(String guestUuid, String email, String name, ProviderType providerType, String profileImageUrl, String accessToken,
 						String refreshToken) {

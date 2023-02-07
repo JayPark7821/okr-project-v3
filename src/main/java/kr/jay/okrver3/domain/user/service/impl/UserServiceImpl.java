@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import kr.jay.okrver3.domain.user.UserInfo;
+import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserReader;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.interfaces.user.OAuth2UserInfo;

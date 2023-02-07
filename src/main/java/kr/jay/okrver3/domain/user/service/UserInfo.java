@@ -1,4 +1,7 @@
-package kr.jay.okrver3.domain.user;
+package kr.jay.okrver3.domain.user.service;
+
+import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
 
 public record UserInfo(String id, String name, String email, String profileImageUrl, ProviderType providerType){
 

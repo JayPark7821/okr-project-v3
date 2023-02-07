@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.domain.user.ProviderType;
-import kr.jay.okrver3.domain.user.UserInfo;
+import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.interfaces.user.OAuth2UserInfo;
 
