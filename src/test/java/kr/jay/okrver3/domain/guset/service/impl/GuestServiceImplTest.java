@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
@@ -29,6 +30,24 @@ class GuestServiceImplTest {
 		String userName = "userName";
 		String email = "google@gmail.com";
 		String pictureUrl = "pictureUrl";
+		ProviderType google = ProviderType.GOOGLE;
+
+		OAuth2UserInfo info =
+			new OAuth2UserInfo(id, userName, email, pictureUrl, google);
+
+		GuestInfo guestInfo = sut.createNewGuestFrom(info);
+
+		assertGuestInfo(guestInfo, info);
+	}
+
+	@Test
+	@Sql("classpath:insert-guest.sql")
+	@DisplayName("가입을 시도한적이 있는 유저가 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(새로운 Guest)을 반환한다.")
+	void delete_old_guest_and_create_new_guest_from_oauth2info () throws Exception {
+		String id = "testId";
+		String userName = "testUser";
+		String email = "test@email.com";
+		String pictureUrl = "pic";
 		ProviderType google = ProviderType.GOOGLE;
 
 		OAuth2UserInfo info =
