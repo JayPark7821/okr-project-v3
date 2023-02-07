@@ -1,21 +1,33 @@
 package kr.jay.okrver3.domain.user.service.impl;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.service.UserReader;
 import kr.jay.okrver3.interfaces.user.OAuth2UserInfo;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest{
 
 	private UserServiceImpl sut;
 
+	@Mock
+	private UserReader userReader;
+
 	@BeforeEach
 	void setUp(){
-		sut = new UserServiceImpl();
+		sut = new UserServiceImpl(userReader);
 	}
 
 	@Test
@@ -23,6 +35,17 @@ class UserServiceImplTest{
 	void login_With_different_social_IdToken() throws Exception {
 		OAuth2UserInfo info =
 			new OAuth2UserInfo("googleId", "userName", "email", "pictureUrl", ProviderType.GOOGLE);
+
+		User user = User.builder()
+			.userSeq(1L)
+			.email("email")
+			.userId("appleId")
+			.profileImage("pictureUrl")
+			.providerType(ProviderType.APPLE)
+			.build();
+
+		given(userReader.findByEmail(info.email()))
+			.willReturn(Optional.of(user));
 
 		assertThatThrownBy(() -> sut.getUserInfoFrom(info))
 			.isExactlyInstanceOf(IllegalArgumentException.class)
