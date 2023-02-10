@@ -25,14 +25,21 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.apache.commons:commons-lang3'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Google IdToken verify
+    implementation 'com.google.api-client:google-api-client:1.32.1'
+
+    // jsonwebtoken 추가
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     // rest-assured
     testImplementation "io.rest-assured:rest-assured"
 
-    implementation 'org.apache.commons:commons-lang3'
 
-    implementation 'com.google.api-client:google-api-client:1.32.1'
 }
 
 tasks.named('test') {
