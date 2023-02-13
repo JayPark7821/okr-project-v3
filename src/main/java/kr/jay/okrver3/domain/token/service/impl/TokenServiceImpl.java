@@ -8,6 +8,7 @@ import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.RefreshTokenRepository;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.TokenService;
+import kr.jay.okrver3.domain.user.service.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,10 +26,10 @@ public class TokenServiceImpl implements TokenService {
 	private Long accessExpiredTimeMs;
 
 	@Override
-	public AuthTokenInfo generateTokenSet(String userEmail) {
-		String accessToken = JwtTokenUtils.generateToken(userEmail, secretKey, accessExpiredTimeMs);
-		String refreshToken = JwtTokenUtils.generateToken(userEmail, secretKey, refreshExpiredTimeMs);
-		RefreshToken savedRefreshToken = refreshTokenRepository.save(new RefreshToken(userEmail,refreshToken ));
+	public AuthTokenInfo generateTokenSet(UserInfo userInfo){
+		String accessToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, accessExpiredTimeMs);
+		String refreshToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, refreshExpiredTimeMs);
+		RefreshToken savedRefreshToken = refreshTokenRepository.save(new RefreshToken(userInfo.userSeq(),refreshToken ));
 
 		return new AuthTokenInfo(accessToken, savedRefreshToken.getRefreshToken());
 	}
