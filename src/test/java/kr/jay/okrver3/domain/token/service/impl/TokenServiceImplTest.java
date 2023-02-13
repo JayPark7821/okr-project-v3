@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 
 @DataJpaTest
-@Import(GuestServiceImpl.class)
+@Import(TokenServiceImpl.class)
 class TokenServiceImplTest {
 
 	@Autowired
