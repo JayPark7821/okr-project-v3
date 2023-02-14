@@ -20,6 +20,10 @@ public class JwtTokenUtils {
 			.build().parseClaimsJws(token).getBody();
 	}
 
+	public static Date getExpiration(String token, String key) {
+		return extractClaims(token, key).getExpiration();
+	}
+
 	public static String generateToken(String email, String key, Long expiredTimMs) {
 		Claims claims = Jwts.claims();
 		claims.put("email", email);

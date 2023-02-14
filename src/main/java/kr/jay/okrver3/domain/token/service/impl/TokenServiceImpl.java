@@ -1,5 +1,8 @@
 package kr.jay.okrver3.domain.token.service.impl;
 
+import java.util.Date;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +30,20 @@ public class TokenServiceImpl implements TokenService {
 
 	@Override
 	public AuthTokenInfo generateTokenSet(UserInfo userInfo){
+
+		Optional<RefreshToken> savedRefreshToken = refreshTokenRepository.findByUserSeq(userInfo.userSeq());
+		if(savedRefreshToken.isPresent()){
+			String refreshToken = savedRefreshToken.get().getRefreshToken();
+			long validTime = JwtTokenUtils.getExpiration(refreshToken, secretKey).getTime() - new Date().getTime();
+			if(validTime > refreshExpiredTimeMs){
+				String accessToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, accessExpiredTimeMs);
+				return new AuthTokenInfo(accessToken, refreshToken);
+			}
+		}
 		String accessToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, accessExpiredTimeMs);
 		String refreshToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, refreshExpiredTimeMs);
-		RefreshToken savedRefreshToken = refreshTokenRepository.save(new RefreshToken(userInfo.userSeq(),refreshToken ));
+		RefreshToken createdRefreshToken = refreshTokenRepository.save(new RefreshToken(userInfo.userSeq(),refreshToken ));
 
-		return new AuthTokenInfo(accessToken, savedRefreshToken.getRefreshToken());
+		return new AuthTokenInfo(accessToken, createdRefreshToken.getRefreshToken());
 	}
 }
