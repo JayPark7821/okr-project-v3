@@ -14,9 +14,6 @@ public class FakeTokenVerifier implements TokenVerifier {
 
 	@Override
 	public OAuth2UserInfo verifyIdToken(String token) {
-		if (token.equals("userToken")) {
-			return new OAuth2UserInfo(id, name, email, pic, provider);
-		}
 		return new OAuth2UserInfo(id, name, email, pic, provider);
 	}
 }
