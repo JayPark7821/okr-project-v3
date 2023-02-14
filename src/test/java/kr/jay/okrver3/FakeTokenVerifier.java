@@ -10,7 +10,7 @@ public class FakeTokenVerifier implements TokenVerifier {
 	public static final String name = "fakeName";
 	public static final String email = "fakeEmail";
 	public static final String pic = "fakePic";
-	public static final ProviderType provider = ProviderType.GOOGLE;
+	public static final ProviderType provider = ProviderType.APPLE;
 
 	@Override
 	public OAuth2UserInfo verifyIdToken(String token) {

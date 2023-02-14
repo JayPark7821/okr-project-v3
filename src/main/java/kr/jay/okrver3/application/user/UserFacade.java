@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.domain.guset.service.GuestService;
+import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,11 @@ public class UserFacade {
 
 	private final UserService userService;
 	private final GuestService guestService;
+	private final TokenService tokenService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(OAuth2UserInfo oAuth2UserInfo) {
-		return userService.getUserInfoFrom(oAuth2UserInfo).map(LoginInfo::new);
+		return userService.getUserInfoFrom(oAuth2UserInfo)
+			.map(info -> new LoginInfo(info, tokenService.generateTokenSet(info)));
 	}
 
 	public LoginInfo createGuestInfoFrom(OAuth2UserInfo oAuth2UserInfo) {

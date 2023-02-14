@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
+import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
@@ -21,7 +22,8 @@ import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
 
 @DataJpaTest
-@Import({UserFacade.class, UserServiceImpl.class, UserReaderImpl.class, GuestServiceImpl.class, GuestStoreImpl.class, GuestReaderImpl.class})
+@Import({UserFacade.class, UserServiceImpl.class, UserReaderImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
+	GuestReaderImpl.class, TokenServiceImpl.class})
 class UserFacadeTest {
 
 	@Autowired
@@ -33,7 +35,6 @@ class UserFacadeTest {
 
 		OAuth2UserInfo info = new OAuth2UserInfo("googleId", "userName", "email", "pictureUrl",
 			ProviderType.GOOGLE);
-
 
 		Optional<LoginInfo> loginInfo = sut.getLoginInfoFrom(info);
 
@@ -76,7 +77,6 @@ class UserFacadeTest {
 		assertThat(loginInfo.get().accessToken()).isNotNull();
 		assertThat(loginInfo.get().refreshToken()).isNotNull();
 	}
-
 
 	@Test
 	@DisplayName("OAuth2UserInfo가 넘어왔을 때 기대하는 응답(Guest)을 반환한다.")

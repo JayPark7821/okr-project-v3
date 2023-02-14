@@ -22,7 +22,6 @@ import kr.jay.okrver3.domain.user.ProviderType;
 @SpringBootTest
 class UserApiControllerTest {
 
-
 	@Autowired
 	private UserApiController sut;
 
@@ -36,13 +35,13 @@ class UserApiControllerTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql("classpath:insert-fake-google-user.sql")
 	@DisplayName("가입한 유저 정보가 있지만 가입한 소셜 정보와 다른 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Exception)을 반환한다.")
 	void login_With_different_social_IdToken() throws Exception {
 
 		assertThatThrownBy(() -> sut.loginWithIdToken("GOOGLE", "idToken"))
 			.isExactlyInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.hasMessage(ProviderType.GOOGLE.getName() + "(으)로 가입한 계정이 있습니다.");
 	}
 
 	@Test
@@ -65,6 +64,7 @@ class UserApiControllerTest {
 		assertThat(body.accessToken()).isNull();
 		assertThat(body.refreshToken()).isNull();
 	}
+
 	private static void assertUserLoginResponse(LoginResponse body) {
 		assertThat(body.guestId()).isNull();
 		assertThat(body.name()).isEqualTo(FakeTokenVerifier.name);
