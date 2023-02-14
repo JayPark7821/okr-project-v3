@@ -1,12 +1,12 @@
 package kr.jay.okrver3.domain.token.service.impl;
 
+import static kr.jay.okrver3.common.utils.JwtTokenUtils.*;
+
 import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.RefreshTokenRepository;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
@@ -28,22 +28,32 @@ public class TokenServiceImpl implements TokenService {
 	@Value("${app.auth.tokenExpiry}")
 	private Long accessExpiredTimeMs;
 
+	@Value("${app.auth.refreshTokenRegenerationThreshold}")
+	private Long refreshTokenRegenerationThreshold;
+
+
+
 	@Override
 	public AuthTokenInfo generateTokenSet(UserInfo userInfo){
 
-		Optional<RefreshToken> savedRefreshToken = refreshTokenRepository.findByUserSeq(userInfo.userSeq());
-		if(savedRefreshToken.isPresent()){
-			String refreshToken = savedRefreshToken.get().getRefreshToken();
-			long validTime = JwtTokenUtils.getExpiration(refreshToken, secretKey).getTime() - new Date().getTime();
-			if(validTime > refreshExpiredTimeMs){
-				String accessToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, accessExpiredTimeMs);
-				return new AuthTokenInfo(accessToken, refreshToken);
-			}
-		}
-		String accessToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, accessExpiredTimeMs);
-		String refreshToken = JwtTokenUtils.generateToken(userInfo.email(), secretKey, refreshExpiredTimeMs);
-		RefreshToken createdRefreshToken = refreshTokenRepository.save(new RefreshToken(userInfo.userSeq(),refreshToken ));
+		RefreshToken refreshToken = refreshTokenRepository.findByUserSeq(userInfo.userSeq())
+			.orElseGet(() -> refreshTokenRepository.save(createNewRefreshToken(userInfo)));
 
-		return new AuthTokenInfo(accessToken, createdRefreshToken.getRefreshToken());
+		if (getRemainingTimeOf(refreshToken) <= refreshTokenRegenerationThreshold)
+			refreshToken.updateRefreshToken(createNewToken(userInfo, refreshExpiredTimeMs));
+
+		return new AuthTokenInfo(createNewToken(userInfo, accessExpiredTimeMs), refreshToken.getRefreshToken());
+	}
+
+	private long getRemainingTimeOf(RefreshToken refreshToken) {
+		return getExpiration(refreshToken.getRefreshToken(), secretKey).getTime() - new Date().getTime();
+	}
+
+	private String createNewToken(UserInfo userInfo, Long expiredTimeMs) {
+		return generateToken(userInfo.email(), secretKey, expiredTimeMs);
+	}
+
+	private RefreshToken createNewRefreshToken(UserInfo userInfo) {
+		return new RefreshToken(userInfo.userSeq(), createNewToken(userInfo, refreshExpiredTimeMs));
 	}
 }
