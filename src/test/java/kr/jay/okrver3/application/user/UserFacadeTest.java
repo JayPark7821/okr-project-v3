@@ -73,8 +73,8 @@ class UserFacadeTest {
 		assertThat(loginInfo.get().guestUuid()).isNull();
 		assertThat(loginInfo.get().profileImageUrl()).isEqualTo(profileImage);
 		assertThat(loginInfo.get().providerType()).isEqualTo(ProviderType.APPLE);
-		assertThat(loginInfo.get().accessToken()).isEqualTo("accessToken");
-		assertThat(loginInfo.get().refreshToken()).isEqualTo("refreshToken");
+		assertThat(loginInfo.get().accessToken()).isNotNull();
+		assertThat(loginInfo.get().refreshToken()).isNotNull();
 	}
 
 

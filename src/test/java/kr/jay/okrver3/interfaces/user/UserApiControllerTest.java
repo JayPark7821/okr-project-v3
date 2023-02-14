@@ -11,12 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.FakeTokenVerifier;
 import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.domain.user.ProviderType;
 
 @Import(TestConfig.class)
+@Transactional
 @SpringBootTest
 class UserApiControllerTest {
 
@@ -30,7 +32,7 @@ class UserApiControllerTest {
 
 		final ResponseEntity<LoginResponse> response = sut.loginWithIdToken("GOOGLE", "idToken");
 
-		assertLoginResponse(response.getBody());
+		assertGuestLoginResponse(response.getBody());
 	}
 
 	@Test
@@ -43,7 +45,17 @@ class UserApiControllerTest {
 			.hasMessage(ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
 	}
 
-	private static void assertLoginResponse(LoginResponse body) {
+	@Test
+	@Sql("classpath:insert-user.sql")
+	@DisplayName("가입한 유저 정보가 있을때 가입한 소셜idToken을 통해 로그인을 시도하면 기대하는 응답(LoginResponse)을 반환한다.")
+	void login_With_social_IdToken() throws Exception {
+
+		ResponseEntity<LoginResponse> response = sut.loginWithIdToken("APPLE", "idToken");
+
+		assertUserLoginResponse(response.getBody());
+	}
+
+	private static void assertGuestLoginResponse(LoginResponse body) {
 		assertThat(body.guestId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
 		);
@@ -52,5 +64,13 @@ class UserApiControllerTest {
 		assertThat(body.providerType()).isEqualTo(FakeTokenVerifier.provider);
 		assertThat(body.accessToken()).isNull();
 		assertThat(body.refreshToken()).isNull();
+	}
+	private static void assertUserLoginResponse(LoginResponse body) {
+		assertThat(body.guestId()).isNull();
+		assertThat(body.name()).isEqualTo(FakeTokenVerifier.name);
+		assertThat(body.email()).isEqualTo(FakeTokenVerifier.email);
+		assertThat(body.providerType()).isEqualTo(FakeTokenVerifier.provider);
+		assertThat(body.accessToken()).isNotNull();
+		assertThat(body.refreshToken()).isNotNull();
 	}
 }
