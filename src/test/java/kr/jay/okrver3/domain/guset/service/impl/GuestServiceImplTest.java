@@ -1,6 +1,5 @@
 package kr.jay.okrver3.domain.guset.service.impl;
 
-
 import java.util.regex.Pattern;
 
 import org.assertj.core.api.Assertions;
@@ -11,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.OAuth2UserInfoFixture;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
@@ -26,15 +26,8 @@ class GuestServiceImplTest {
 
 	@Test
 	@DisplayName("가입한 유저 정보가 없을때 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Guest)을 반환한다.")
-	void create_new_guest_from_oauth2info () throws Exception {
-		String id = "googleId";
-		String userName = "userName";
-		String email = "google@gmail.com";
-		String pictureUrl = "pictureUrl";
-		ProviderType google = ProviderType.GOOGLE;
-
-		OAuth2UserInfo info =
-			new OAuth2UserInfo(id, userName, email, pictureUrl, google);
+	void create_new_guest_from_oauth2info() throws Exception {
+		OAuth2UserInfo info = OAuth2UserInfoFixture.GoogleUserInfoFixture.build();
 
 		GuestInfo guestInfo = sut.createNewGuestFrom(info);
 
@@ -44,7 +37,7 @@ class GuestServiceImplTest {
 	@Test
 	@Sql("classpath:insert-guest.sql")
 	@DisplayName("가입을 시도한적이 있는 유저가 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(새로운 Guest)을 반환한다.")
-	void delete_old_guest_and_create_new_guest_from_oauth2info () throws Exception {
+	void delete_old_guest_and_create_new_guest_from_oauth2info() throws Exception {
 		String id = "testId";
 		String userName = "testUser";
 		String email = "test@email.com";
@@ -59,7 +52,7 @@ class GuestServiceImplTest {
 		assertGuestInfo(guestInfo, info);
 	}
 
-	private void assertGuestInfo(GuestInfo actual, OAuth2UserInfo expected){
+	private void assertGuestInfo(GuestInfo actual, OAuth2UserInfo expected) {
 		Assertions.assertThat(actual.guestUuid()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}"));
 		Assertions.assertThat(actual.name()).isEqualTo(expected.name());

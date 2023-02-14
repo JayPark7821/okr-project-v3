@@ -7,21 +7,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import kr.jay.okrver3.TestConfig;
 
+@Import(TestConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserApiControllerAcceptanceTest {
-
 
 	@LocalServerPort
 	private int port;
 
-	private static final String PROVIDER = "LOCAL";
-	private static final String ID_TOKEN = "test-token";
+	private static final String PROVIDER = "APPLE";
+	private static final String ID_TOKEN = "idToken";
 
 	@BeforeEach
 	void setUp() {
@@ -29,7 +32,7 @@ public class UserApiControllerAcceptanceTest {
 	}
 
 	@Test
-	@DisplayName("가입한 유저 정보가 없을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Guest)을 반환한다.")
+	@DisplayName("가입한 유저 정보가 없을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Guest without token)을 반환한다.")
 	void login_With_IdToken_when_before_join() throws Exception {
 		final JsonPath response = RestAssured.
 
@@ -40,20 +43,15 @@ public class UserApiControllerAcceptanceTest {
 			.post("/api/v1/user/login/" + PROVIDER + "/" + ID_TOKEN).
 
 			then()
-			.statusCode(201)
+			.statusCode(HttpStatus.OK.value())
 			.extract().jsonPath();
 
-		assertThat(response).hasNoNullFieldsOrPropertiesExcept(
-			"roleType",
-			"jobFieldDetail",
-			"accessToken",
-			"refreshToken"
-		);
-		assertThat(response.getString("guestUuid")).isNotNull();
+		assertGuset(response);
 	}
 
 	@Test
-	@DisplayName("가입한 유저 정보가 있을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Tokens)을 반환한다.")
+	@Sql("classpath:insert-user.sql")
+	@DisplayName("가입한 유저 정보가 있을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(with token)을 반환한다.")
 	void login_With_IdToken_when_after_join() throws Exception {
 
 		final JsonPath response = RestAssured.
@@ -65,17 +63,29 @@ public class UserApiControllerAcceptanceTest {
 			.post("/api/v1/user/login/" + PROVIDER + "/" + ID_TOKEN).
 
 			then()
-			.statusCode(201)
+			.statusCode(HttpStatus.OK.value())
 			.extract().jsonPath();
 
+		assertLoginUser(response);
 
+	}
+
+	private void assertLoginUser(JsonPath response) {
 		assertThat(response.getString("guestId")).isNull();
 		assertThat(response.getString("email")).isNotNull();
 		assertThat(response.getString("name")).isNotNull();
 		assertThat(response.getString("providerType")).isNotNull();
 		assertThat(response.getString("accessToken")).isNotNull();
 		assertThat(response.getString("refreshToken")).isNotNull();
+	}
 
+	private void assertGuset(JsonPath response) {
+		assertThat(response.getString("guestId")).isNotNull();
+		assertThat(response.getString("email")).isNotNull();
+		assertThat(response.getString("name")).isNotNull();
+		assertThat(response.getString("providerType")).isNotNull();
+		assertThat(response.getString("accessToken")).isNull();
+		assertThat(response.getString("refreshToken")).isNull();
 	}
 
 }
