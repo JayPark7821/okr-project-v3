@@ -1,7 +1,7 @@
 package kr.jay.okrver3;
 
 import kr.jay.okrver3.domain.user.ProviderType;
-import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 
 public final class OAuth2UserInfoFixture {
 

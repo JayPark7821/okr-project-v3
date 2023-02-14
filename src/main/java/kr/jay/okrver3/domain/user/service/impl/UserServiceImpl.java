@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserReader;
 import kr.jay.okrver3.domain.user.service.UserService;
-import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
 	private final UserReader userReader;
 

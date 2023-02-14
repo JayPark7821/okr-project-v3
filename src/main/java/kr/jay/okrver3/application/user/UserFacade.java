@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.domain.guset.service.GuestService;
 import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.service.UserService;
-import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

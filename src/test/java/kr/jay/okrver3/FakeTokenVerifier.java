@@ -1,9 +1,15 @@
 package kr.jay.okrver3;
 
-import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
-import kr.jay.okrver3.interfaces.user.auth.TokenVerifier;
+import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.infrastructure.user.auth.TokenVerifier;
 
 public class FakeTokenVerifier implements TokenVerifier {
+
+	@Override
+	public boolean support(ProviderType providerType) {
+		return true;
+	}
 
 	@Override
 	public OAuth2UserInfo verifyIdToken(String token) {
