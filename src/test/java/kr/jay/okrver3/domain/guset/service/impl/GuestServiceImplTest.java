@@ -15,7 +15,7 @@ import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
-import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 
 @DataJpaTest
 @Import({GuestServiceImpl.class, GuestStoreImpl.class, GuestReaderImpl.class})

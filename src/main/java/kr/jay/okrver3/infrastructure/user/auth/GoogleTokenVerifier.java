@@ -1,4 +1,4 @@
-package kr.jay.okrver3.interfaces.user.auth;
+package kr.jay.okrver3.infrastructure.user.auth;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -20,6 +20,11 @@ public class GoogleTokenVerifier implements TokenVerifier {
 
 	private final NetHttpTransport transport = new NetHttpTransport();
 	private final JsonFactory jsonFactory = new GsonFactory();
+
+	@Override
+	public boolean support(ProviderType providerType) {
+		return ProviderType.GOOGLE == providerType;
+	}
 
 	@Override
 	public OAuth2UserInfo verifyIdToken(String token) {

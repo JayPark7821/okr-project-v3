@@ -20,7 +20,7 @@ import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
 import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
-import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 
 @DataJpaTest
 @Import({UserFacade.class, UserServiceImpl.class, UserReaderImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
