@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.user.LoginInfo;
 import kr.jay.okrver3.application.user.UserFacade;
-import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
-import kr.jay.okrver3.interfaces.user.auth.TokenVerifier;
+import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/v1/user")
 public class UserApiController {
 
-	private final TokenVerifier tokenVerifier;
+	private final TokenVerifyProcessor tokenVerifyProcessor;
 	private final UserFacade userFacade;
-
 
 	@PostMapping("/login/{provider}/{idToken}")
 	ResponseEntity<LoginResponse> loginWithIdToken(
@@ -32,7 +32,7 @@ public class UserApiController {
 		@PathVariable("idToken") String idToken
 	) {
 
-		OAuth2UserInfo oAuth2UserInfo = tokenVerifier.verifyIdToken(idToken);
+		OAuth2UserInfo oAuth2UserInfo = tokenVerifyProcessor.verifyIdToken(ProviderType.of(provider), idToken);
 		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(oAuth2UserInfo);
 
 		return loginInfo.map(this::getLoginResponseFrom)
