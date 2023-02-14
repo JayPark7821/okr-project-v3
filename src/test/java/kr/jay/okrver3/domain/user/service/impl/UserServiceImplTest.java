@@ -1,5 +1,6 @@
 package kr.jay.okrver3.domain.user.service.impl;
 
+import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
@@ -18,18 +19,16 @@ import kr.jay.okrver3.interfaces.user.auth.OAuth2UserInfo;
 
 @DataJpaTest
 @Import({UserServiceImpl.class, UserReaderImpl.class})
-class UserServiceImplTest{
+class UserServiceImplTest {
 
 	@Autowired
 	private UserServiceImpl sut;
 
-
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql("classpath:insert-different-social-google-user.sql")
 	@DisplayName("가입한 유저 정보가 있지만 가입한 소셜 정보와 다른 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Exception)을 반환한다.")
 	void login_With_different_social_IdToken() throws Exception {
-		OAuth2UserInfo info =
-			new OAuth2UserInfo("googleId", "userName", "apple@apple.com", "pictureUrl", ProviderType.GOOGLE);
+		OAuth2UserInfo info = GoogleUserInfoFixture.build();
 
 		assertThatThrownBy(() -> sut.getUserInfoFrom(info))
 			.isExactlyInstanceOf(IllegalArgumentException.class)
@@ -40,8 +39,7 @@ class UserServiceImplTest{
 	@DisplayName("가입한 유저 정보가 없을때 idToken을 통해 로그인을 시도하면 기대하는 응답(Optional.empty())을 반환한다.")
 	void try_to_login_with_social_IdToken_for_the_first_time() throws Exception {
 
-		OAuth2UserInfo info =
-			new OAuth2UserInfo("googleId", "userName", "apple@apple.com", "pictureUrl", ProviderType.GOOGLE);
+		OAuth2UserInfo info = AppleUserInfoFixture.build();
 
 		Optional<UserInfo> userInfoFrom = sut.getUserInfoFrom(info);
 
@@ -52,8 +50,8 @@ class UserServiceImplTest{
 	@Sql("classpath:insert-user.sql")
 	@DisplayName("가입한 유저 정보가 있을때 idToken을 통해 로그인을 시도하면 기대하는 응답(UserInfo)을 반환한다.")
 	void will_return_userInfo_when_user_try_to_login_with_idToken() throws Exception {
-		OAuth2UserInfo info =
-			new OAuth2UserInfo("appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE);
+
+		OAuth2UserInfo info = AppleUserInfoFixture.build();
 
 		Optional<UserInfo> userInfoFrom = sut.getUserInfoFrom(info);
 

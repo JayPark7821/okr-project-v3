@@ -4,9 +4,9 @@ INSERT INTO user_table ( user_seq
                        , email
                        , profile_image
                        , provider_type)
-VALUES ( 1
-       , 'fakeId'
-       , 'fakeName'
-       , 'fakeEmail'
-       , 'fakePic'
-       , 'GOOGLE');
+VALUES ( 3
+       , 'fakeGoogleId'
+       , 'fakeGoogleName'
+       , 'fakeGoogleIdEmail'
+       , 'fakeGoogleIdPic'
+       , 'APPLE');
