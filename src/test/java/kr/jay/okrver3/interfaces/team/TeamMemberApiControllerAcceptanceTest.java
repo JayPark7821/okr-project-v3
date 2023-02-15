@@ -42,7 +42,7 @@ public class TeamMemberApiControllerAcceptanceTest {
 
 	@Test
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
-	void login_With_IdToken_when_before_join() throws Exception {
+	void invite_team_member() throws Exception {
 		final String response = RestAssured.
 
 			given()
