@@ -18,7 +18,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
 @Sql("classpath:insert-user.sql")
@@ -48,7 +47,7 @@ public class ProjectApiControllerAcceptanceTest {
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-		final JsonPath response = RestAssured.
+		final String response = RestAssured.
 
 			given()
 			.header("Authorization", "Bearer " + authToken)
@@ -61,9 +60,9 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
-			.extract().jsonPath();
+			.extract().body().asString();
 
-		assertThat(response.prettyPrint()).containsPattern(
+		assertThat(response).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 
 	}
