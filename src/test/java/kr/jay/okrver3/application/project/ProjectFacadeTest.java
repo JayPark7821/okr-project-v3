@@ -48,15 +48,16 @@ class ProjectFacadeTest {
 	}
 
 	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
 	void retrieve_project_with_project_token() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
 			RoleType.ADMIN, "pass");
 
-		ProjectInfo projectInfo = sut.getProjectInfoBy("project-123456789012", user);
+		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", user);
 
-		assertThat(projectInfo.projectToken()).isEqualTo("projectName");
+		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(projectInfo.name()).isEqualTo("projectName");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
 		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
