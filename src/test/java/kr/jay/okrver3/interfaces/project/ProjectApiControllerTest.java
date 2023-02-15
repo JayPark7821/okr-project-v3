@@ -65,4 +65,21 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody().endDate()).isEqualTo("2020-12-12");
 		assertThat(response.getBody().projectType()).isEqualTo("SINGLE");
 	}
+
+	@Test
+	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
+	void invite_team_member() throws Exception {
+
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass");
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.inviteTeamMember(
+			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "test@gmail.com"), auth);
+
+		assertThat(response.getBody()).isEqualTo("test@gmail.com");
+	}
+
 }

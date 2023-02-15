@@ -44,4 +44,12 @@ public class ProjectApiController {
 				projectFacade.getProjectInfoBy(projectToken, (User)authentication.getPrincipal())));
 	}
 
+	@PostMapping("/team/invite")
+	ResponseEntity<String> inviteTeamMember(
+		TeamMemberInviteRequestDto teamMemberInviteRequestDto,
+		Authentication authentication
+	) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(projectFacade.inviteTeamMember(teamMemberInviteRequestDto, (User)authentication.getPrincipal()));
+	}
 }
