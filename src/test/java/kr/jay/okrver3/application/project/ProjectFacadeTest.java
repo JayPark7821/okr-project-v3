@@ -19,11 +19,13 @@ import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
+import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
-@Import({ProjectFacade.class, ProjectServiceImpl.class})
+@Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class, UserReaderImpl.class})
 class ProjectFacadeTest {
 
 	@Autowired
@@ -67,6 +69,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
 	void invite_team_member() throws Exception {
 
@@ -74,9 +77,9 @@ class ProjectFacadeTest {
 			RoleType.ADMIN, "pass");
 
 		String response = sut.inviteTeamMember(
-			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "test@gmail.com"), user);
+			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), user);
 
-		assertThat(response).isEqualTo("test@gmail.com");
+		assertThat(response).isEqualTo("fakeAppleEmail");
 	}
 
 }
