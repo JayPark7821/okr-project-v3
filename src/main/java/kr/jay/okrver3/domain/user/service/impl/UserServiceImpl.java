@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserReader;
 import kr.jay.okrver3.domain.user.service.UserService;
@@ -25,5 +26,10 @@ public class UserServiceImpl implements UserService {
 				user.validateProvider(oAuth2UserInfo.providerType());
 				return new UserInfo(user);
 			});
+	}
+
+	@Override
+	public Optional<User> findByEmail(String email) {
+		return userReader.findByEmail(email);
 	}
 }
