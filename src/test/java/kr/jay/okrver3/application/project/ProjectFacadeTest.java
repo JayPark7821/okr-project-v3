@@ -1,6 +1,6 @@
 package kr.jay.okrver3.application.project;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
@@ -46,4 +47,20 @@ class ProjectFacadeTest {
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 	}
 
+	@Test
+	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
+	void retrieve_project_with_project_token() throws Exception {
+
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass");
+
+		ProjectInfo projectInfo = sut.getProjectInfoBy("project-123456789012", user);
+
+		assertThat(projectInfo.projectToken()).isEqualTo("projectName");
+		assertThat(projectInfo.name()).isEqualTo("projectName");
+		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
+		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
+		assertThat(projectInfo.endDate()).isEqualTo("2020-12-12");
+		assertThat(projectInfo.projectType()).isEqualTo("SINGLE");
+	}
 }
