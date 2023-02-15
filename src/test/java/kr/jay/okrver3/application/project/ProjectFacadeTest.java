@@ -14,13 +14,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 
 @DataJpaTest
-@Import(ProjectFacade.class)
+@Import({ProjectFacade.class, ProjectServiceImpl.class})
 class ProjectFacadeTest {
 
 	@Autowired
