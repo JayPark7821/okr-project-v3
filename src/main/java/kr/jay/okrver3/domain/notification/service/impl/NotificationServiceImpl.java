@@ -11,8 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class NotificationServiceImpl {
 
+	private final NotificationRepository notificationRepository;
+
 	public void sendNotification(Notification notification) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.domain.notification.service.impl.NotificationServiceImpl.sendNotification()");
+		notificationRepository.save(notification);
 	}
 }
