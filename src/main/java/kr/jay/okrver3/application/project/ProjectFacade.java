@@ -22,6 +22,6 @@ public class ProjectFacade {
 	}
 
 	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.getProjectInfoBy()");
+		return projectService.getProjectInfoBy(projectToken, user);
 	}
 }

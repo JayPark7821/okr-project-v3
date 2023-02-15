@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.project.service.ProjectService;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,5 +20,10 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public ProjectInfo registerProject(ProjectMasterSaveDto dto) {
 		return new ProjectInfo(projectRepository.save(dto.toEntity()));
+	}
+
+	@Override
+	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
+		return null;
 	}
 }
