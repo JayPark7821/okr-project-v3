@@ -19,6 +19,7 @@ import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
+import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
 @Import(ProjectServiceImpl.class)
@@ -58,6 +59,19 @@ class ProjectServiceImplTest {
 		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
 		assertThat(projectInfo.endDate()).isEqualTo("2020-12-12");
 		assertThat(projectInfo.projectType()).isEqualTo("SINGLE");
+	}
+
+	@Test
+	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
+	void invite_team_member() throws Exception {
+
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass");
+
+		String response = sut.inviteTeamMember(
+			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "test@gmail.com"), user);
+
+		assertThat(response).isEqualTo("test@gmail.com");
 	}
 
 }
