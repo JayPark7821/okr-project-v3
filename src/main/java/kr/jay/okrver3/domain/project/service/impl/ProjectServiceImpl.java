@@ -24,6 +24,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
-		return null;
+		return projectRepository.findByProjectTokenAndUser(projectToken, user)
+			.map(ProjectInfo::new)
+			.orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다."));
 	}
 }

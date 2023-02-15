@@ -2,6 +2,7 @@ package kr.jay.okrver3.domain.user;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -85,4 +86,23 @@ public class User implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		User user = (User)o;
+		return Objects.equals(userSeq, user.userSeq) && Objects.equals(userId, user.userId)
+			&& Objects.equals(username, user.username) && Objects.equals(email, user.email)
+			&& Objects.equals(profileImage, user.profileImage) && providerType == user.providerType
+			&& roleType == user.roleType && Objects.equals(password, user.password);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(userSeq, userId, username, email, profileImage, providerType, roleType, password);
+	}
+
 }

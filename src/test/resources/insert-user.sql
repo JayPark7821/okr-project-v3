@@ -4,14 +4,16 @@ INSERT INTO user_table ( user_seq
                        , email
                        , profile_image
                        , provider_type
-                       , role_type)
+                       , role_type
+                       , password)
 VALUES ( 1
        , 'appleId'
        , 'appleUser'
        , 'apple@apple.com'
        , 'appleProfileImage'
        , 'APPLE'
-       , 'ADMIN');
+       , 'ADMIN'
+       , 'pass');
 INSERT INTO user_table ( user_seq
                        , user_id
                        , username
