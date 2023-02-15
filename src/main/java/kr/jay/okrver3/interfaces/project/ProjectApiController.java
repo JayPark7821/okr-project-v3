@@ -26,7 +26,7 @@ public class ProjectApiController {
 	private final ProjectFacade projectFacade;
 
 	@PostMapping
-	public ResponseEntity<String> registerProject(
+	ResponseEntity<String> registerProject(
 		@RequestBody @Valid ProjectMasterSaveDto requestDto,
 		Authentication authentication
 	) {
@@ -35,7 +35,7 @@ public class ProjectApiController {
 	}
 
 	@GetMapping("/{projectToken}")
-	public ResponseEntity<ProjectInfoResponse> getProjectInfoBy(
+	ResponseEntity<ProjectInfoResponse> getProjectInfoBy(
 		@PathVariable("projectToken") String projectToken,
 		Authentication authentication
 	) {
