@@ -18,9 +18,10 @@ import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
-@Sql("classpath:insert-user.sql")
+@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProjectApiControllerAcceptanceTest {
 
@@ -62,8 +63,35 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().body().asString();
 
+		System.out.println("response = " + response);
 		assertThat(response).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
+
+	}
+
+	@Test
+	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
+	void retrieve_project_with_project_token() throws Exception {
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + authToken)
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "project-fgFHxGWeIUQt").
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().jsonPath();
+
+		assertThat(response.getString("projectToken")).isEqualTo("project-fgFHxGWeIUQt");
+		assertThat(response.getString("name")).isEqualTo("projectName");
+		assertThat(response.getString("objective")).isEqualTo("projectObjective");
+		assertThat(response.getString("sdt")).isEqualTo("2020-12-01");
+		assertThat(response.getString("edt")).isEqualTo("2020-12-12");
+		assertThat(response.getString("projectType")).isEqualTo("SINGLE");
 
 	}
 }

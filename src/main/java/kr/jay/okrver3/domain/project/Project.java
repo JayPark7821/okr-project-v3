@@ -11,7 +11,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
@@ -24,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@Table(name = "project", indexes = @Index(name = "idx_project_token", columnList = "projectToken"))
 public class Project {
 
 	private static final String PROJECT_MASTER_PREFIX = "project-";
