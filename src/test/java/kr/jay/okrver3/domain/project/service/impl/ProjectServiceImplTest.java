@@ -60,4 +60,22 @@ class ProjectServiceImplTest {
 		assertThat(projectInfo.projectType()).isEqualTo("SINGLE");
 	}
 
+	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
+	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
+	void invite_team_member() throws Exception {
+
+		User inviter = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass");
+
+		User invitedUser = new User(2L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage",
+			ProviderType.APPLE,
+			RoleType.ADMIN, "pass");
+
+		String response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
+
+		assertThat(response).isEqualTo("apple@apple.com");
+
+	}
+
 }

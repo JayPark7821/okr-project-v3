@@ -7,4 +7,6 @@ public interface ProjectService {
 	ProjectInfo registerProject(ProjectMasterSaveDto dto);
 
 	ProjectInfo getProjectInfoBy(String projectToken, User user);
+
+	String inviteTeamMember(String projectToken, User invitedUser, User inviter);
 }

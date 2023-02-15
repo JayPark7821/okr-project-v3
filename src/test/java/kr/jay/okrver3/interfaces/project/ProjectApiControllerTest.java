@@ -14,11 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 
+@Transactional
 @SpringBootTest
 class ProjectApiControllerTest {
 
@@ -65,4 +67,22 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody().endDate()).isEqualTo("2020-12-12");
 		assertThat(response.getBody().projectType()).isEqualTo("SINGLE");
 	}
+
+	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
+	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
+	void invite_team_member() throws Exception {
+
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass");
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.inviteTeamMember(
+			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), auth);
+
+		assertThat(response.getBody()).isEqualTo("fakeAppleEmail");
+	}
+
 }

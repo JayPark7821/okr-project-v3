@@ -9,4 +9,6 @@ public interface ProjectRepository {
 	Project save(Project project);
 
 	Optional<Project> findByProjectTokenAndUser(String projectToken, User user);
+
+	Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(String projectToken, User inviter);
 }

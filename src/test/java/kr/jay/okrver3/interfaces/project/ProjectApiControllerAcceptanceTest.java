@@ -79,7 +79,6 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().body().asString();
 
-		System.out.println("response = " + response);
 		assertThat(response).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 
@@ -110,6 +109,27 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.getString("projectType")).isEqualTo("SINGLE");
 
 	}
+
+	@Test
+	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
+	void invite_team_member() throws Exception {
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken)
+			.body(new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail")).
+
+			when()
+			.post(baseUrl + "team/invite").
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo("fakeAppleEmail");
+	}
+
 }
 
 
