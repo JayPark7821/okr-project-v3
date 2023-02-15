@@ -2,26 +2,32 @@ package kr.jay.okrver3.interfaces.project;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.junit.jupiter.api.BeforeEach;
+import javax.sql.DataSource;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
-@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql"})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProjectApiControllerAcceptanceTest {
 
@@ -30,16 +36,26 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Value("${app.auth.tokenExpiry}")
 	private Long accessExpiredTimeMs;
+
+	@Autowired
+	DataSource dataSource;
 	private static final String baseUrl = "/api/v1/project/";
 	@LocalServerPort
 	private int port;
 
 	private String authToken;
 
-	@BeforeEach
+	@BeforeAll
 	void setUp() {
 		RestAssured.port = port;
 		authToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+		try (Connection conn = dataSource.getConnection()) {
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-user.sql"));
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project.sql"));
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -89,8 +105,8 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.getString("projectToken")).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(response.getString("name")).isEqualTo("projectName");
 		assertThat(response.getString("objective")).isEqualTo("projectObjective");
-		assertThat(response.getString("sdt")).isEqualTo("2020-12-01");
-		assertThat(response.getString("edt")).isEqualTo("2020-12-12");
+		assertThat(response.getString("startDate")).isEqualTo("2020-12-01");
+		assertThat(response.getString("endDate")).isEqualTo("2020-12-12");
 		assertThat(response.getString("projectType")).isEqualTo("SINGLE");
 
 	}
