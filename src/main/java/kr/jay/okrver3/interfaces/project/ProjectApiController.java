@@ -46,7 +46,7 @@ public class ProjectApiController {
 
 	@PostMapping("/team/invite")
 	ResponseEntity<String> inviteTeamMember(
-		TeamMemberInviteRequestDto teamMemberInviteRequestDto,
+		@RequestBody @Valid TeamMemberInviteRequestDto teamMemberInviteRequestDto,
 		Authentication authentication
 	) {
 		return ResponseEntity.status(HttpStatus.CREATED)

@@ -118,7 +118,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "test@gmail.com")).
+			.body(new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail")).
 
 			when()
 			.post(baseUrl + "team/invite").
@@ -127,7 +127,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo("test@gmail.com");
+		assertThat(response).isEqualTo("fakeAppleEmail");
 	}
 
 }

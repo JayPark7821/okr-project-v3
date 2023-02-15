@@ -14,11 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 
+@Transactional
 @SpringBootTest
 class ProjectApiControllerTest {
 
@@ -67,6 +69,7 @@ class ProjectApiControllerTest {
 	}
 
 	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
 	void invite_team_member() throws Exception {
 
@@ -77,9 +80,9 @@ class ProjectApiControllerTest {
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.inviteTeamMember(
-			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "test@gmail.com"), auth);
+			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), auth);
 
-		assertThat(response.getBody()).isEqualTo("test@gmail.com");
+		assertThat(response.getBody()).isEqualTo("fakeAppleEmail");
 	}
 
 }
