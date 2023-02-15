@@ -15,6 +15,11 @@ public class JwtTokenUtils {
 		return extractClaims(token, key).get("email", String.class);
 	}
 
+	public static boolean isExpired(String token, String key) {
+		Date expiration = extractClaims(token, key).getExpiration();
+		return expiration.before(new Date());
+	}
+
 	private static Claims extractClaims(String token, String key) {
 		return Jwts.parserBuilder().setSigningKey(getKey(key))
 			.build().parseClaimsJws(token).getBody();
