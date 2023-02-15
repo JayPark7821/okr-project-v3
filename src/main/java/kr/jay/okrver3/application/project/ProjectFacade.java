@@ -27,6 +27,6 @@ public class ProjectFacade {
 	}
 
 	public String inviteTeamMember(TeamMemberInviteRequestDto teamMemberInviteRequestDto, User user) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.inviteTeamMember()");
+		return projectService.inviteTeamMember(teamMemberInviteRequestDto, user);
 	}
 }
