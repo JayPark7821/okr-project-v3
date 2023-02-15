@@ -10,24 +10,36 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
+@Sql("classpath:insert-user.sql")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProjectApiControllerAcceptanceTest {
 
+	@Value("${app.auth.tokenSecret}")
+	private String key;
+
+	@Value("${app.auth.tokenExpiry}")
+	private Long accessExpiredTimeMs;
 	private static final String baseUrl = "/api/v1/project/";
 	@LocalServerPort
 	private int port;
 
+	private String authToken;
+
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;
+		authToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
 	}
 
 	@Test
@@ -39,6 +51,7 @@ public class ProjectApiControllerAcceptanceTest {
 		final JsonPath response = RestAssured.
 
 			given()
+			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
 			.body(new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
 				List.of("keyResult1", "keyResult2"))).
