@@ -79,7 +79,6 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().body().asString();
 
-		System.out.println("response = " + response);
 		assertThat(response).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 
