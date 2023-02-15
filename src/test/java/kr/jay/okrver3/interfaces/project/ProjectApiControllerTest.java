@@ -19,7 +19,6 @@ import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 
-@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql"})
 @SpringBootTest
 class ProjectApiControllerTest {
 
@@ -47,6 +46,7 @@ class ProjectApiControllerTest {
 	}
 
 	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
 	void retrieve_project_with_project_token() throws Exception {
 
@@ -56,9 +56,9 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("project-123456789012", auth);
+		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("project-fgFHxGWeIUQt", auth);
 
-		assertThat(response.getBody().projectToken()).isEqualTo("projectName");
+		assertThat(response.getBody().projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(response.getBody().name()).isEqualTo("projectName");
 		assertThat(response.getBody().objective()).isEqualTo("projectObjective");
 		assertThat(response.getBody().startDate()).isEqualTo("2020-12-01");
