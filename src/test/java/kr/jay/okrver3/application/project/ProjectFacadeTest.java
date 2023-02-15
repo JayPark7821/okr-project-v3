@@ -1,11 +1,14 @@
 package kr.jay.okrver3.application.project;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.domain.notification.Notification;
+import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
@@ -30,6 +35,9 @@ class ProjectFacadeTest {
 
 	@Autowired
 	private ProjectFacade sut;
+
+	@PersistenceContext
+	EntityManager em;
 
 	@Test
 	@Sql("classpath:insert-user.sql")
@@ -70,7 +78,7 @@ class ProjectFacadeTest {
 
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
-	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
+	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환하고 알림을 저장한다.")
 	void invite_team_member() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
@@ -80,6 +88,11 @@ class ProjectFacadeTest {
 			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), user);
 
 		assertThat(response).isEqualTo("fakeAppleEmail");
+		List<Notification> result = em.createQuery("select n from Notification n", Notification.class)
+			.getResultList();
+		assertThat(result).hasSize(1);
+		assertThat(result.get(0).getMsg()).isEqualTo(Notifications.NEW_TEAM_MATE.getMsg("appleUser"));
+
 	}
 
 }
