@@ -20,4 +20,8 @@ public class ProjectFacade {
 		ProjectInfo projectInfo = projectService.registerProject(dto);
 		return projectInfo.projectToken();
 	}
+
+	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
+		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.getProjectInfoBy()");
+	}
 }

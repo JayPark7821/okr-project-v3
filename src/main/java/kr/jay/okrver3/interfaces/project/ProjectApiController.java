@@ -39,7 +39,9 @@ public class ProjectApiController {
 		@PathVariable("projectToken") String projectToken,
 		Authentication authentication
 	) {
-		throw new UnsupportedOperationException("not implemented yet");
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(new ProjectInfoResponse(
+				projectFacade.getProjectInfoBy(projectToken, (User)authentication.getPrincipal())));
 	}
 
 }
