@@ -19,7 +19,7 @@ import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 
-@Sql("classpath:insert-user.sql")
+@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql"})
 @SpringBootTest
 class ProjectApiControllerTest {
 
@@ -46,4 +46,23 @@ class ProjectApiControllerTest {
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 	}
 
+	@Test
+	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
+	void retrieve_project_with_project_token() throws Exception {
+
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass");
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("project-123456789012", auth);
+
+		assertThat(response.getBody().projectToken()).isEqualTo("projectName");
+		assertThat(response.getBody().name()).isEqualTo("projectName");
+		assertThat(response.getBody().objective()).isEqualTo("projectObjective");
+		assertThat(response.getBody().startDate()).isEqualTo("2020-12-01");
+		assertThat(response.getBody().endDate()).isEqualTo("2020-12-12");
+		assertThat(response.getBody().projectType()).isEqualTo("SINGLE");
+	}
 }
