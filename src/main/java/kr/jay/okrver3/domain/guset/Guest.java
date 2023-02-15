@@ -10,12 +10,13 @@ import javax.persistence.Table;
 
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.user.ProviderType;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "guest")
 public class Guest {

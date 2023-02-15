@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.domain.token.RefreshToken;
-import kr.jay.okrver3.domain.token.RefreshTokenRepository;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
+import kr.jay.okrver3.domain.token.service.RefreshTokenRepository;
 import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.service.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +31,8 @@ public class TokenServiceImpl implements TokenService {
 	@Value("${app.auth.refreshTokenRegenerationThreshold}")
 	private Long refreshTokenRegenerationThreshold;
 
-
-
 	@Override
-	public AuthTokenInfo generateTokenSet(UserInfo userInfo){
+	public AuthTokenInfo generateTokenSet(UserInfo userInfo) {
 
 		RefreshToken refreshToken = refreshTokenRepository.findByUserSeq(userInfo.userSeq())
 			.orElseGet(() -> refreshTokenRepository.save(createNewRefreshToken(userInfo)));
