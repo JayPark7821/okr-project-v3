@@ -8,5 +8,5 @@ public interface ProjectService {
 
 	ProjectInfo getProjectInfoBy(String projectToken, User user);
 
-	String inviteTeamMember(String projectToken, User invitedUser, User inviter);
+	ProjectTeamMemberInfo inviteTeamMember(String projectToken, User invitedUser, User inviter);
 }

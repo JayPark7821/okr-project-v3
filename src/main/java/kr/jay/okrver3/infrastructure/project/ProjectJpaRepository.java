@@ -21,7 +21,9 @@ public interface ProjectJpaRepository extends ProjectRepository, JpaRepository<P
 
 	@Query("select p "
 		+ "from Project p "
-		+ "join fetch p.teamMember t "
+		+ "join fetch p.teamMember pt "
+		+ "join fetch pt.user u "
+		+ "join p.teamMember t "
 		+ "where t.user = :user "
 		+ "and p.projectToken =:projectToken ")
 	Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(@Param("projectToken") String projectToken,

@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.user.User;
@@ -35,11 +34,9 @@ public class TeamMember {
 
 	@Column(name = "project_role_type")
 	@Enumerated(EnumType.STRING)
-	@NotNull
 	private ProjectRoleType projectRoleType;
 
 	@Column(name = "is_new")
-	@NotNull
 	private boolean isNew;
 
 	@Builder
