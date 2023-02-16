@@ -25,7 +25,7 @@ public class ProjectFacade {
 	private final NotificationService notificationService;
 
 	public String registerProject(ProjectMasterSaveDto dto, User user) {
-		ProjectInfo projectInfo = projectService.registerProject(dto);
+		ProjectInfo projectInfo = projectService.registerProject(dto, user);
 		return projectInfo.projectToken();
 	}
 

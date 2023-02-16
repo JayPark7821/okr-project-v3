@@ -1,12 +1,12 @@
 # FLAG Project
 
 ## 1. 프로젝트 설계 & 구조
+* ATDD 인수테스트를 통한 기능 구현
+* 리팩터링 내성을 향상시키기 위해 기능이 요청에 대해 기대하는 대로 응답을 하는지 검증  
+<br /> 
 
 * 도메인 주도 설계(by 에릭 에반스)에서 소개된 계층형 구조 참조 설계
-* 계층 간의 참조 관계는 단방향을 유지, 계층 간 호출에서는 인터페이스를 통해 호출 되도록 함.  
-<br /> 
-* ATDD 인수테스트를 통한 기능 구현
-* 리팩터링 내성을 향상시키기 위해 기능이 요청에 대해 기대하는 대로 응답을 하는지만 검증
+* 계층 간의 참조 관계는 단방향을 유지, 계층 간 호출에서는 인터페이스를 통해 호출 되도록 함.
 
 ### 1-1 프로젝트 구조
 
@@ -73,8 +73,6 @@
 * id 전략을 Sequence나 Table 전략을 사용하면 bulk insert를 사용할 수 있지만 Mysql에서는 Sequence 전략은 사용할 수 없고 table 전략은 키를 위한 테이블을 추가로 만든다는 것이 부담스럽다.
 * 그래서 결국 JDBC batchUpdate를 사용하여 구연하였다. (spring data jpa도 결국 jdbc를 사용하기 때문에 가능 별도 의존성 추가 필요 없음)
 
- 
-
 ### 2-3 소셜 IdToken 인증 - TokenVerifyProcessor
 
 (https://app.diagrams.net/#G1gH04HWyWNztDXyJcMkPEIfy_aaFNWKRc)
@@ -123,3 +121,5 @@ public class TokenVerifyProcessorImpl implements TokenVerifyProcessor {
 * 팀원 저장에 대한 요청을 할 때 유저는 팀원이 저장되길 기대한다, 알림은 부가적인 기능임.
 * 사용자가 팀원 초대에 대한 API 호출했을때 팀원 저장이 완료되면 바로 팀원 초대 완료를 리턴하고     
    알림 저장은 message Queue에 publish해 담아 놓고 비동기적으로 처리하여 응답 속도를 개선할 수 있을 것 같다.
+
+ 

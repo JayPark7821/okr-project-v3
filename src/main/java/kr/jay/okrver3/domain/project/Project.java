@@ -18,7 +18,9 @@ import javax.persistence.Table;
 
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
+import kr.jay.okrver3.domain.team.ProjectRoleType;
 import kr.jay.okrver3.domain.team.TeamMember;
+import kr.jay.okrver3.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,7 +61,7 @@ public class Project {
 
 	@Builder
 	public Project(String name, LocalDate startDate, LocalDate endDate, ProjectType type, String objective,
-		double progress) {
+		double progress, TeamMember teamMember){
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_MASTER_PREFIX);
 		this.name = name;
 		this.startDate = startDate;
@@ -67,9 +69,19 @@ public class Project {
 		this.type = type;
 		this.objective = objective;
 		this.progress = progress;
+		this.teamMember.add(teamMember);
 	}
 
 	public void inviteTeamMember(TeamMember teamMember) {
 		this.teamMember.add(teamMember);
+	}
+
+	public void addLeader(User user) {
+		TeamMember.builder()
+			.user(user)
+			.project(this)
+			.projectRoleType(ProjectRoleType.LEADER)
+			.isNew(true)
+			.build();
 	}
 }

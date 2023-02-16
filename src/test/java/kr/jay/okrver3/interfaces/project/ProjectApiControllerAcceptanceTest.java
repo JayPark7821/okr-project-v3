@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,13 +21,15 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProjectApiControllerAcceptanceTest {
 
@@ -45,7 +47,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	private String authToken;
 
-	@BeforeAll
+	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;
 		authToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);

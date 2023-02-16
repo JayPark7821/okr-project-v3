@@ -1,6 +1,7 @@
 package kr.jay.okrver3.domain.project.service.impl;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
@@ -21,9 +22,12 @@ public class ProjectServiceImpl implements ProjectService {
 
 	private final ProjectRepository projectRepository;
 
+	@Transactional
 	@Override
-	public ProjectInfo registerProject(ProjectMasterSaveDto dto) {
-		return new ProjectInfo(projectRepository.save(dto.toEntity()));
+	public ProjectInfo registerProject(ProjectMasterSaveDto dto, User user) {
+		Project project = projectRepository.save(dto.toCreateProject());
+		project.addLeader(user);
+		return new ProjectInfo(project);
 	}
 
 	@Override

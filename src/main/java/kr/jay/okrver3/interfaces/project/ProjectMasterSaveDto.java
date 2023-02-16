@@ -9,7 +9,7 @@ import kr.jay.okrver3.domain.project.ProjectType;
 
 public record ProjectMasterSaveDto(String name, String sdt, String edt, String objective, List<String> keyResults) {
 
-	public Project toEntity() {
+	public Project toCreateProject() {
 		LocalDate startDt = LocalDate.parse(sdt, DateTimeFormatter.ofPattern("yyyyMMdd"));
 		LocalDate endDt = LocalDate.parse(edt, DateTimeFormatter.ofPattern("yyyyMMdd"));
 

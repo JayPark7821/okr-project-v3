@@ -46,5 +46,4 @@ public class TeamMember {
 		this.projectRoleType = projectRoleType;
 		this.isNew = isNew;
 	}
-
 }
