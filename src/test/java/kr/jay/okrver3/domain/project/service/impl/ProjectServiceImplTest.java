@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
@@ -72,9 +73,9 @@ class ProjectServiceImplTest {
 			ProviderType.APPLE,
 			RoleType.ADMIN, "pass");
 
-		String response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
+		ProjectTeamMemberInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
 
-		assertThat(response).isEqualTo("apple@apple.com");
+		assertThat(response.projectTeamMemberUsers().size()).isEqualTo(3);
 
 	}
 

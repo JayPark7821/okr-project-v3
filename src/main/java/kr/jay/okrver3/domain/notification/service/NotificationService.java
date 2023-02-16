@@ -1,7 +1,9 @@
 package kr.jay.okrver3.domain.notification.service;
 
-import kr.jay.okrver3.domain.notification.Notification;
+import java.util.List;
+
+import kr.jay.okrver3.domain.user.User;
 
 public interface NotificationService {
-	void sendInvitationNotification(Notification notification);
+	void sendInvitationNotification(List<User> notiSendUsers, String projectName, String invitedUserEamil);
 }

@@ -6,6 +6,8 @@ import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.project.service.ProjectService;
+import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.team.ProjectRoleType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
@@ -32,8 +34,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public String inviteTeamMember(String projectToken, User invitedUser,
-		User inviter) {
+	public ProjectTeamMemberInfo inviteTeamMember(String projectToken, User invitedUser, User inviter) {
 
 		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, inviter)
 			.orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다."));
@@ -42,9 +43,10 @@ public class ProjectServiceImpl implements ProjectService {
 			TeamMember.builder()
 				.project(project)
 				.user(invitedUser)
+				.isNew(true)
+				.projectRoleType(ProjectRoleType.MEMBER)
 				.build()
 		);
-
-		return invitedUser.getEmail();
+		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(), project.getName());
 	}
 }

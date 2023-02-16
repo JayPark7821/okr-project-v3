@@ -19,18 +19,21 @@ import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.domain.notification.Notification;
 import kr.jay.okrver3.domain.notification.Notifications;
+import kr.jay.okrver3.domain.notification.service.impl.NotificationServiceImpl;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
+import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
-@Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class, UserReaderImpl.class})
+@Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class, UserReaderImpl.class,
+	NotificationServiceImpl.class, NotificationJDBCRepository.class})
 class ProjectFacadeTest {
 
 	@Autowired
@@ -88,10 +91,11 @@ class ProjectFacadeTest {
 			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), user);
 
 		assertThat(response).isEqualTo("fakeAppleEmail");
+
 		List<Notification> result = em.createQuery("select n from Notification n", Notification.class)
 			.getResultList();
-		assertThat(result).hasSize(1);
-		assertThat(result.get(0).getMsg()).isEqualTo(Notifications.NEW_TEAM_MATE.getMsg("appleUser"));
+		assertThat(result).hasSize(2);
+		assertThat(result.get(0).getMsg()).isEqualTo(	Notifications.NEW_TEAM_MATE.getMsg("fakeAppleName","projectName"));
 
 	}
 
