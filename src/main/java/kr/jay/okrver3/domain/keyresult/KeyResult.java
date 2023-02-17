@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class KeyResult {
 
-	private static final String PROJECT_KEYRESULT_PREFIX = "key_";
+	private static final String PROJECT_KEYRESULT_PREFIX = "key-";
 	@Id
 	@Column(name = "key_result_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

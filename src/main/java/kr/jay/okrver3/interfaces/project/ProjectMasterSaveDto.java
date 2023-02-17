@@ -20,6 +20,7 @@ public record ProjectMasterSaveDto(String name, String sdt, String edt, String o
 			.type(ProjectType.SINGLE)
 			.objective(objective)
 			.progress(0)
+			.keyResultList(keyResults)
 			.build();
 	}
 

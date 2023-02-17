@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "notification")
 public class Notification {
 
-	private static final String NOTIFICATION_PREFIX = "noti_";
+	private static final String NOTIFICATION_PREFIX = "noti-";
 
 	@Id
 	@Column(name = "notification_id")

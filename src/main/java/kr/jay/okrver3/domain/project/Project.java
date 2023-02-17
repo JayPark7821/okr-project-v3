@@ -43,7 +43,7 @@ public class Project {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private List<TeamMember> teamMember = new ArrayList<>();
 
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private List<KeyResult> keyResults = new ArrayList<>();
 
 	private String name;
@@ -61,7 +61,7 @@ public class Project {
 
 	@Builder
 	public Project(String name, LocalDate startDate, LocalDate endDate, ProjectType type, String objective,
-		double progress, TeamMember teamMember){
+		double progress, List<String> keyResultList) {
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_MASTER_PREFIX);
 		this.name = name;
 		this.startDate = startDate;
@@ -69,7 +69,13 @@ public class Project {
 		this.type = type;
 		this.objective = objective;
 		this.progress = progress;
-		this.teamMember.add(teamMember);
+		keyResultList.forEach(keyResult -> {
+			this.keyResults.add(KeyResult.builder()
+				.project(this)
+				.name(keyResult)
+				.index(this.keyResults.size() + 1)
+				.build());
+		});
 	}
 
 	public void inviteTeamMember(TeamMember teamMember) {
