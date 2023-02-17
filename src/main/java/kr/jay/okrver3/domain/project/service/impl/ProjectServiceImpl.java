@@ -51,6 +51,7 @@ public class ProjectServiceImpl implements ProjectService {
 				.projectRoleType(ProjectRoleType.MEMBER)
 				.build()
 		);
-		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(), project.getName());
+		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),
+			project.getName());
 	}
 }
