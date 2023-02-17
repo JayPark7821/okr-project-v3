@@ -39,10 +39,12 @@ class ProjectServiceImplTest {
 
 		ProjectInfo projectInfo = sut.registerProject(
 			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
-				List.of("keyResult1", "keyResult2")),user);
+				List.of("keyResult1", "keyResult2")), user);
 
 		assertThat(projectInfo.projectToken()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
+		assertThat(projectInfo.keyResultInfos().get(0).name()).isEqualTo("keyResult1");
+		assertThat(projectInfo.keyResultInfos().get(1).name()).isEqualTo("keyResult2");
 	}
 
 	@Test
