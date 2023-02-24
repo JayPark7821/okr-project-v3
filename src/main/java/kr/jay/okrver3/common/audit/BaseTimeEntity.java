@@ -1,4 +1,4 @@
-package kr.jay.okrver3.common;
+package kr.jay.okrver3.common.audit;
 
 import java.time.LocalDateTime;
 
