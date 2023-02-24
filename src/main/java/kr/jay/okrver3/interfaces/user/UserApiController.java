@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.user.LoginInfo;
 import kr.jay.okrver3.application.user.UserFacade;
+import kr.jay.okrver3.common.Response;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
@@ -40,8 +41,9 @@ public class UserApiController {
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(new LoginResponse(loginInfo));
+		return Response.success(
+			HttpStatus.OK,
+			new LoginResponse(loginInfo)
+		);
 	}
-
 }
