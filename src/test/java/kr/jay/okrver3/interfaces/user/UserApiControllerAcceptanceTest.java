@@ -70,6 +70,24 @@ public class UserApiControllerAcceptanceTest {
 
 	}
 
+	@Test
+	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_before_guest_login() {
+
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_again_when_after_join() {
+
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보와 다른 ProviderType으로 loginWithSocialIdToken()을 호출하면 기대하는 예외를 던진다.")
+	void loginWithSocialIdToken_when_after_join_and_with_another_provider() {
+
+	}
+
 	private void assertLoginUser(JsonPath response) {
 		assertThat(response.getString("guestId")).isNull();
 		assertThat(response.getString("email")).isNotNull();
