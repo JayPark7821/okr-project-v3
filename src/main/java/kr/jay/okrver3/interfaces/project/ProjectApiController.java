@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.project.ProjectFacade;
+import kr.jay.okrver3.common.Response;
 import kr.jay.okrver3.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +31,10 @@ public class ProjectApiController {
 		@RequestBody @Valid ProjectMasterSaveDto requestDto,
 		Authentication authentication
 	) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(projectFacade.registerProject(requestDto, (User)authentication.getPrincipal()));
+		return Response.success(
+			HttpStatus.CREATED,
+			projectFacade.registerProject(requestDto, (User)authentication.getPrincipal())
+		);
 	}
 
 	@GetMapping("/{projectToken}")
@@ -39,9 +42,12 @@ public class ProjectApiController {
 		@PathVariable("projectToken") String projectToken,
 		Authentication authentication
 	) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(new ProjectInfoResponse(
-				projectFacade.getProjectInfoBy(projectToken, (User)authentication.getPrincipal())));
+		return Response.success(
+			HttpStatus.CREATED,
+			new ProjectInfoResponse(
+				projectFacade.getProjectInfoBy(projectToken, (User)authentication.getPrincipal()))
+		);
+
 	}
 
 	@PostMapping("/team/invite")
@@ -49,7 +55,11 @@ public class ProjectApiController {
 		@RequestBody @Valid TeamMemberInviteRequestDto teamMemberInviteRequestDto,
 		Authentication authentication
 	) {
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(projectFacade.inviteTeamMember(teamMemberInviteRequestDto, (User)authentication.getPrincipal()));
+
+		return Response.success(
+			HttpStatus.CREATED,
+			projectFacade.inviteTeamMember(teamMemberInviteRequestDto, (User)authentication.getPrincipal())
+		);
+	 
 	}
 }
