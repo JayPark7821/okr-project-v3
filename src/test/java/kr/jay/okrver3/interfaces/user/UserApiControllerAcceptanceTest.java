@@ -15,6 +15,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestConfig;
+import kr.jay.okrver3.common.exception.ErrorCode;
 
 @Import(TestConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -25,6 +26,7 @@ public class UserApiControllerAcceptanceTest {
 
 	private static final String PROVIDER = "APPLE";
 	private static final String ID_TOKEN = "idToken";
+	private static final String DIF_PROVIDER = "GOOGLE";
 
 	@BeforeEach
 	void setUp() {
@@ -71,21 +73,59 @@ public class UserApiControllerAcceptanceTest {
 	}
 
 	@Test
+	@DisplayName("가입한 유저 정보와 다른 ProviderType으로 로그인을 호출하면 기대하는 예외를 던진다.")
+	void loginWithSocialIdToken_when_after_join_and_with_another_provider() {
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.post("/api/v1/user/login/" + DIF_PROVIDER + "/" + ID_TOKEN).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.MISS_MATCH_PROVIDER);
+	}
+
+	@Test
 	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_before_guest_login() {
+		final String response = RestAssured.
 
+			given()
+			.contentType(ContentType.JSON)
+			.body(new JoinRequest("not-registered-guest-id", "guest", "guest@email.com", "Developer")).
+
+			when()
+			.post("/api/v1/user/join").
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_JOIN_INFO);
 	}
 
 	@Test
 	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_again_when_after_join() {
+		final String response = RestAssured.
 
-	}
+			given()
+			.contentType(ContentType.JSON)
+			.body(new JoinRequest("registered-guest-id", "appleUser", "apple@apple.com", "Developer")).
 
-	@Test
-	@DisplayName("가입한 유저 정보와 다른 ProviderType으로 loginWithSocialIdToken()을 호출하면 기대하는 예외를 던진다.")
-	void loginWithSocialIdToken_when_after_join_and_with_another_provider() {
+			when()
+			.post("/api/v1/user/join").
 
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.ALREADY_JOINED_USER);
 	}
 
 	private void assertLoginUser(JsonPath response) {
