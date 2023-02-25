@@ -99,7 +99,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequest("registered-guest-id", "guest", "guest@email.com", "Developer")).
+			.body(new JoinRequestDto("registered-guest-id", "guest", "guest@email.com", "Developer")).
 
 			when()
 			.post("/api/v1/user/join").
@@ -119,7 +119,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequest("not-registered-guest-id", "guest", "guest@email.com", "Developer")).
+			.body(new JoinRequestDto("not-registered-guest-id", "guest", "guest@email.com", "Developer")).
 
 			when()
 			.post("/api/v1/user/join").
@@ -138,7 +138,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequest("registered-guest-id", "appleUser", "apple@apple.com", "Developer")).
+			.body(new JoinRequestDto("registered-guest-id", "appleUser", "apple@apple.com", "Developer")).
 
 			when()
 			.post("/api/v1/user/join").
@@ -157,6 +157,7 @@ public class UserApiControllerAcceptanceTest {
 		assertThat(response.getString("providerType")).isNotNull();
 		assertThat(response.getString("accessToken")).isNotNull();
 		assertThat(response.getString("refreshToken")).isNotNull();
+		assertThat(response.getString("jobFieldDetail")).isNotNull();
 	}
 
 	private void assertGuset(JsonPath response) {
@@ -166,6 +167,7 @@ public class UserApiControllerAcceptanceTest {
 		assertThat(response.getString("providerType")).isNotNull();
 		assertThat(response.getString("accessToken")).isNull();
 		assertThat(response.getString("refreshToken")).isNull();
+		assertThat(response.getString("jobFieldDetail")).isNull();
 	}
 
 }

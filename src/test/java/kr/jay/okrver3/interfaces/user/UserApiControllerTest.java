@@ -61,9 +61,10 @@ class UserApiControllerTest {
 	@Sql("/insert-guest-user.sql")
 	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
 	void join_after_guest_login() {
-		JoinRequest joinRequest = new JoinRequest("registered-guest-id", "guest", "guest@email.com", "Developer");
+		JoinRequestDto joinRequestDto = new JoinRequestDto("registered-guest-id", "guest", "guest@email.com",
+			"Developer");
 
-		ResponseEntity<LoginResponse> response = sut.join(joinRequest);
+		ResponseEntity<LoginResponse> response = sut.join(joinRequestDto);
 
 		assertGuestLoginResponse(response.getBody());
 
@@ -72,9 +73,10 @@ class UserApiControllerTest {
 	@Test
 	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_before_guest_login() {
-		JoinRequest joinRequest = new JoinRequest("not-registered-guest-id", "guest", "guest@email.com", "Developer");
+		JoinRequestDto joinRequestDto = new JoinRequestDto("not-registered-guest-id", "guest", "guest@email.com",
+			"Developer");
 
-		assertThatThrownBy(() -> sut.join(joinRequest))
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
 	}
@@ -82,9 +84,10 @@ class UserApiControllerTest {
 	@Test
 	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_again_when_after_join() {
-		JoinRequest joinRequest = new JoinRequest("registered-guest-id", "guest", "guest@email.com", "Developer");
+		JoinRequestDto joinRequestDto = new JoinRequestDto("registered-guest-id", "guest", "guest@email.com",
+			"Developer");
 
-		assertThatThrownBy(() -> sut.join(joinRequest))
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 	}

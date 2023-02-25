@@ -2,10 +2,13 @@ package kr.jay.okrver3.interfaces.user;
 
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,7 +17,6 @@ import kr.jay.okrver3.application.user.UserFacade;
 import kr.jay.okrver3.common.Response;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
-import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,11 +35,24 @@ public class UserApiController {
 		@PathVariable("idToken") String idToken
 	) {
 
-		OAuth2UserInfo oAuth2UserInfo = tokenVerifyProcessor.verifyIdToken(ProviderType.of(provider), idToken);
-		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(oAuth2UserInfo);
+		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(
+			tokenVerifyProcessor.verifyIdToken(ProviderType.of(provider), idToken)
+		);
 
 		return loginInfo.map(this::getLoginResponseFrom)
-			.orElseGet(() -> getLoginResponseFrom(userFacade.createGuestInfoFrom(oAuth2UserInfo)));
+			.orElseGet(() -> getLoginResponseFrom(userFacade.createGuestInfoFrom(
+				tokenVerifyProcessor.verifyIdToken(ProviderType.of(provider), idToken))));
+	}
+
+	@PostMapping("/join")
+	public ResponseEntity<LoginResponse> join(
+		@RequestBody @Valid JoinRequestDto joinRequestDto
+	) {
+
+		return Response.success(
+			HttpStatus.CREATED,
+			new LoginResponse(userFacade.join(joinRequestDto))
+		);
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
