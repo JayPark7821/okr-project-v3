@@ -91,6 +91,28 @@ public class UserApiControllerAcceptanceTest {
 	}
 
 	@Test
+	@Sql("/insert-guest-user.sql")
+	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
+	void join_after_guest_login() {
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.body(new JoinRequest("registered-guest-id", "guest", "guest@email.com", "Developer")).
+
+			when()
+			.post("/api/v1/user/join").
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().jsonPath();
+
+		assertLoginUser(response);
+
+	}
+
+	@Test
 	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_before_guest_login() {
 		final String response = RestAssured.
