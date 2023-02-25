@@ -1,7 +1,8 @@
 package kr.jay.okrver3.interfaces.user;
 
 import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.regex.Pattern;
 
@@ -15,6 +16,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.TestConfig;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.user.ProviderType;
 
 @Import(TestConfig.class)
@@ -52,6 +55,38 @@ class UserApiControllerTest {
 		ResponseEntity<LoginResponse> response = sut.loginWithIdToken("APPLE", "appleToken");
 
 		assertUserLoginResponse(response.getBody());
+	}
+
+	@Test
+	@Sql("/insert-guest-user.sql")
+	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
+	void join_after_guest_login() {
+		JoinRequest joinRequest = new JoinRequest("registered-guest-id", "guest", "guest@email.com", "Developer");
+
+		ResponseEntity<LoginResponse> response = sut.join(joinRequest);
+
+		assertGuestLoginResponse(response.getBody());
+
+	}
+
+	@Test
+	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_before_guest_login() {
+		JoinRequest joinRequest = new JoinRequest("not-registered-guest-id", "guest", "guest@email.com", "Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequest))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_again_when_after_join() {
+		JoinRequest joinRequest = new JoinRequest("registered-guest-id", "guest", "guest@email.com", "Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequest))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {
