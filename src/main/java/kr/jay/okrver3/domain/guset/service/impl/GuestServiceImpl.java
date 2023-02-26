@@ -1,5 +1,7 @@
 package kr.jay.okrver3.domain.guset.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +29,8 @@ public class GuestServiceImpl implements GuestService {
 	}
 
 	@Override
-	public GuestInfo getGuestInfoBy(String guestTempId) {
+	public Optional<GuestInfo> getGuestInfoFrom(String guestTempId) {
 		return null;
+
 	}
 }

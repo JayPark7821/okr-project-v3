@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestService;
 import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.service.UserInfo;
@@ -34,7 +36,8 @@ public class UserFacade {
 	public LoginInfo join(JoinRequestDto joinRequestDto) {
 
 		UserInfo userInfo = userService.registerNewUserFrom(
-			guestService.getGuestInfoBy(joinRequestDto.guestTempId()),
+			guestService.getGuestInfoFrom(joinRequestDto.guestTempId())
+				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_JOIN_INFO)),
 			joinRequestDto
 		);
 

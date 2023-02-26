@@ -1,5 +1,8 @@
 package kr.jay.okrver3.domain.guset.service.impl;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.assertj.core.api.Assertions;
@@ -50,6 +53,33 @@ class GuestServiceImplTest {
 		GuestInfo guestInfo = sut.createNewGuestFrom(info);
 
 		assertGuestInfo(guestInfo, info);
+	}
+
+	@Test
+	@DisplayName("가입을 시도한적이 없는 유저가 getGuestInfoBy()을 호출하면 기대하는 응답(Optional.empty())을 반환한다.")
+	void throw_exception_when_no_guest_request_join() throws Exception {
+
+		String guestTempId = "not-registered-guestUuid";
+		assertThat(sut.getGuestInfoFrom(guestTempId)).isEmpty();
+	}
+
+	@Test
+	@Sql("classpath:insert-guest.sql")
+	@DisplayName("가입을 시도한적이 있는 유저가 getGuestInfoBy()을 호출하면 기대하는 응답(GusetInfo)을 반환한다.")
+	void return_guest_info_when_guest_request() throws Exception {
+		String guestTempId = "registered-guestUuid";
+		String id = "testId";
+		String userName = "testUser";
+		String email = "test@email.com";
+		String pictureUrl = "pic";
+		ProviderType google = ProviderType.GOOGLE;
+
+		OAuth2UserInfo info =
+			new OAuth2UserInfo(id, userName, email, pictureUrl, google);
+
+		Optional<GuestInfo> guestInfo = sut.getGuestInfoFrom(guestTempId);
+
+		assertGuestInfo(guestInfo.get(), info);
 	}
 
 	private void assertGuestInfo(GuestInfo actual, OAuth2UserInfo expected) {
