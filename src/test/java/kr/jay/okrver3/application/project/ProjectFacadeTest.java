@@ -26,14 +26,13 @@ import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.domain.user.service.UserRepository;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
-@Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class, UserRepository.class,
+@Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
 	NotificationServiceImpl.class, NotificationJDBCRepository.class})
 class ProjectFacadeTest {
 

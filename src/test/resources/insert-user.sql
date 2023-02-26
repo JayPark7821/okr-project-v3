@@ -42,3 +42,17 @@ VALUES ( 3
        , 'fakeGoogleIdPic'
        , 'GOOGLE'
        , 'ADMIN');
+INSERT INTO user_table ( user_seq
+                       , user_id
+                       , username
+                       , email
+                       , profile_image
+                       , provider_type
+                       , role_type)
+VALUES ( 4
+       , 'testId'
+       , 'guest'
+       , 'guest@email.com'
+       , 'pic'
+       , 'GOOGLE'
+       , 'USER');
