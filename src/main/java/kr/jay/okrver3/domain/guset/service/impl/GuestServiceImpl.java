@@ -25,4 +25,9 @@ public class GuestServiceImpl implements GuestService {
 		guestReader.findByEmail(info.email()).ifPresent(guestStore::delete);
 		return new GuestInfo(guestStore.save(info.toGuest()));
 	}
+
+	@Override
+	public GuestInfo getGuestInfoBy(String guestTempId) {
+		return null;
+	}
 }

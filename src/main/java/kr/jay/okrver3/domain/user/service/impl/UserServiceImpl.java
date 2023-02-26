@@ -4,11 +4,13 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserReader;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.interfaces.user.JoinRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,5 +33,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<User> findByEmail(String email) {
 		return userReader.findByEmail(email);
+	}
+
+	@Override
+	public UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequestDto joinRequestDto) {
+		return null;
 	}
 }
