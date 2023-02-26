@@ -20,4 +20,9 @@ public class GuestReaderImpl implements GuestReader {
 	public Optional<Guest> findByEmail(String email) {
 		return guestRepository.findByEmail(email);
 	}
+
+	@Override
+	public Optional<Guest> findByGuestUuid(String guestTempId) {
+		return guestRepository.findByGuestUuid(guestTempId);
+	}
 }

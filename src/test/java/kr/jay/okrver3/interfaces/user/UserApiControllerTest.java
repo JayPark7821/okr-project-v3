@@ -1,7 +1,8 @@
 package kr.jay.okrver3.interfaces.user;
 
 import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.regex.Pattern;
 
@@ -15,6 +16,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.TestConfig;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.user.ProviderType;
 
 @Import(TestConfig.class)
@@ -52,6 +55,48 @@ class UserApiControllerTest {
 		ResponseEntity<LoginResponse> response = sut.loginWithIdToken("APPLE", "appleToken");
 
 		assertUserLoginResponse(response.getBody());
+	}
+
+	@Test
+	@Sql("classpath:insert-guest.sql")
+	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
+	void join_after_guest_login() {
+		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
+			"WEB_FRONT_END_DEVELOPER");
+
+		ResponseEntity<LoginResponse> response = sut.join(joinRequestDto);
+
+		assertThat(response.getBody().guestId()).isNull();
+		assertThat(response.getBody().name()).isEqualTo("guest");
+		assertThat(response.getBody().email()).isEqualTo("guest@email.com");
+		assertThat(response.getBody().providerType()).isEqualTo(ProviderType.GOOGLE);
+		assertThat(response.getBody().accessToken()).isNotNull();
+		assertThat(response.getBody().refreshToken()).isNotNull();
+
+	}
+
+	@Test
+	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_before_guest_login() {
+		JoinRequestDto joinRequestDto = new JoinRequestDto("not-registered-guest-id", "guest", "guest@email.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
+	}
+
+	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-guest.sql"})
+	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_again_when_after_join() {
+
+		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {

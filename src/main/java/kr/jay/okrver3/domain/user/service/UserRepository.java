@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import kr.jay.okrver3.domain.user.User;
 
-public interface UserReader {
+public interface UserRepository {
 	Optional<User> findByEmail(String email);
+
+	User save(User user);
 }

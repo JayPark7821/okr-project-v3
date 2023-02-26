@@ -22,17 +22,17 @@ import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.notification.service.impl.NotificationServiceImpl;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
+import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
-import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
-@Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class, UserReaderImpl.class,
+@Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
 	NotificationServiceImpl.class, NotificationJDBCRepository.class})
 class ProjectFacadeTest {
 
@@ -48,7 +48,7 @@ class ProjectFacadeTest {
 	void create_project() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
-			RoleType.ADMIN, "pass");
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -67,7 +67,7 @@ class ProjectFacadeTest {
 	void retrieve_project_with_project_token() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
-			RoleType.ADMIN, "pass");
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
 		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", user);
 
@@ -85,7 +85,7 @@ class ProjectFacadeTest {
 	void invite_team_member() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
-			RoleType.ADMIN, "pass");
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
 		String response = sut.inviteTeamMember(
 			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), user);
@@ -95,7 +95,8 @@ class ProjectFacadeTest {
 		List<Notification> result = em.createQuery("select n from Notification n", Notification.class)
 			.getResultList();
 		assertThat(result).hasSize(2);
-		assertThat(result.get(0).getMsg()).isEqualTo(	Notifications.NEW_TEAM_MATE.getMsg("fakeAppleName","projectName"));
+		assertThat(result.get(0).getMsg()).isEqualTo(
+			Notifications.NEW_TEAM_MATE.getMsg("fakeAppleName", "projectName"));
 
 	}
 

@@ -13,17 +13,19 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
-import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.interfaces.user.JoinRequestDto;
 
 @DataJpaTest
-@Import({UserFacade.class, UserServiceImpl.class, UserReaderImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
+@Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
 	GuestReaderImpl.class, TokenServiceImpl.class})
 class UserFacadeTest {
 
@@ -86,6 +88,55 @@ class UserFacadeTest {
 		assertThat(guestInfo.name()).isEqualTo(GoogleUserInfoFixture.NAME);
 		assertThat(guestInfo.profileImageUrl()).isEqualTo(GoogleUserInfoFixture.PIC);
 		assertThat(guestInfo.providerType()).isEqualTo(GoogleUserInfoFixture.PROVIDER_TYPE);
+	}
+
+	@Test
+	@Sql("classpath:insert-guest.sql")
+	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
+	void join_after_guest_login() {
+
+		String guestNameFromUser = "newGuestName";
+		String registeredGuestEmail = "guest@email.com";
+		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", guestNameFromUser,
+			registeredGuestEmail,
+			"WEB_SERVER_DEVELOPER");
+
+		LoginInfo loginInfo = sut.join(joinRequestDto);
+
+		assertThat(loginInfo.name()).isEqualTo(guestNameFromUser);
+		assertThat(loginInfo.email()).isEqualTo(registeredGuestEmail);
+		assertThat(loginInfo.guestUuid()).isNull();
+		assertThat(loginInfo.profileImageUrl()).isEqualTo("pic");
+		assertThat(loginInfo.providerType()).isEqualTo(ProviderType.GOOGLE);
+		assertThat(loginInfo.accessToken()).isNotNull();
+		assertThat(loginInfo.refreshToken()).isNotNull();
+
+	}
+
+	@Test
+	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_before_guest_login() {
+
+		JoinRequestDto joinRequestDto = new JoinRequestDto("not-registered-guest-id", "guest", "guest@email.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
+	}
+
+	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-guest.sql"})
+	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_again_when_after_join() {
+
+		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
+
 	}
 
 }

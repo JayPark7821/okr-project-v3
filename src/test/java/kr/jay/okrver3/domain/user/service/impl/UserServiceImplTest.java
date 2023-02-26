@@ -12,13 +12,16 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.UserInfo;
-import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.interfaces.user.JoinRequestDto;
 
 @DataJpaTest
-@Import({UserServiceImpl.class, UserReaderImpl.class})
+@Import({UserServiceImpl.class})
 class UserServiceImplTest {
 
 	@Autowired
@@ -62,4 +65,41 @@ class UserServiceImplTest {
 		assertThat(userInfoFrom.get().profileImageUrl()).isEqualTo(info.picture());
 		assertThat(userInfoFrom.get().providerType()).isEqualTo(info.providerType());
 	}
+
+	@Test
+	@DisplayName("가입한 유저 정보가 없을때 회원가입을 시도하면 기대하는 응답(UserInfo)을 반환한다.")
+	void will_return_userInfo_when_guest_try_to_join() throws Exception {
+
+		String newNameFromGuest = "newNameFromGuest";
+		String guestEmail = "apple@apple.com";
+		GuestInfo guestInfo = new GuestInfo("guest-rkmZUIUNWkSMX3", "gusetId", guestEmail, "guest",
+			ProviderType.GOOGLE, "pic");
+		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", newNameFromGuest,
+			guestEmail, "WEB_SERVER_DEVELOPER");
+
+		UserInfo userInfo = sut.registerNewUserFrom(guestInfo, joinRequestDto);
+
+		assertThat(userInfo.email()).isEqualTo(guestEmail);
+		assertThat(userInfo.id()).isNotNull();
+		assertThat(userInfo.name()).isEqualTo(newNameFromGuest);
+		assertThat(userInfo.profileImageUrl()).isEqualTo("pic");
+		assertThat(userInfo.providerType()).isEqualTo(ProviderType.GOOGLE);
+
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	@DisplayName("이미 가입한 유저 정보가 있을때 회원가입을 시도하면 기대하는 응답(exception)을 반환한다.")
+	void will_throw_exception_when_member_request_to_join() throws Exception {
+
+		GuestInfo guestInfo = new GuestInfo("already-joined-guest", "gusetId", "apple@apple.com", "alreadyJoinedUser",
+			ProviderType.GOOGLE, "pic");
+		JoinRequestDto joinRequestDto = new JoinRequestDto("already-joined-guest", "alreadyJoinedUser",
+			"apple@apple.com", "dev");
+
+		assertThatThrownBy(() -> sut.registerNewUserFrom(guestInfo, joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
 }

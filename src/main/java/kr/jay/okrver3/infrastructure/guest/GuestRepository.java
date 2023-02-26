@@ -8,4 +8,6 @@ import kr.jay.okrver3.domain.guset.Guest;
 
 public interface GuestRepository extends JpaRepository<Guest, Long> {
 	Optional<Guest> findByEmail(String email);
+
+	Optional<Guest> findByGuestUuid(String guestTempId);
 }
