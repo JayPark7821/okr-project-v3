@@ -58,15 +58,20 @@ class UserApiControllerTest {
 	}
 
 	@Test
-	@Sql("/insert-guest-user.sql")
+	@Sql("classpath:insert-guest.sql")
 	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
 	void join_after_guest_login() {
-		JoinRequestDto joinRequestDto = new JoinRequestDto("registered-guest-id", "guest", "guest@email.com",
-			"Developer");
+		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
+			"WEB_FRONT_END_DEVELOPER");
 
 		ResponseEntity<LoginResponse> response = sut.join(joinRequestDto);
 
-		assertGuestLoginResponse(response.getBody());
+		assertThat(response.getBody().guestId()).isNull();
+		assertThat(response.getBody().name()).isEqualTo("guest");
+		assertThat(response.getBody().email()).isEqualTo("guest@email.com");
+		assertThat(response.getBody().providerType()).isEqualTo(ProviderType.GOOGLE);
+		assertThat(response.getBody().accessToken()).isNotNull();
+		assertThat(response.getBody().refreshToken()).isNotNull();
 
 	}
 
@@ -82,9 +87,11 @@ class UserApiControllerTest {
 	}
 
 	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-guest.sql"})
 	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_again_when_after_join() {
-		JoinRequestDto joinRequestDto = new JoinRequestDto("registered-guest-id", "guest", "guest@email.com",
+
+		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
 			"Developer");
 
 		assertThatThrownBy(() -> sut.join(joinRequestDto))
