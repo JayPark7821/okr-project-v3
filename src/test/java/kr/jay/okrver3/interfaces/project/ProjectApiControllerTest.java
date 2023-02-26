@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
@@ -32,7 +33,7 @@ class ProjectApiControllerTest {
 	void create_project() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
-			RoleType.ADMIN, "pass");
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
@@ -53,7 +54,7 @@ class ProjectApiControllerTest {
 	void retrieve_project_with_project_token() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
-			RoleType.ADMIN, "pass");
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
@@ -74,7 +75,7 @@ class ProjectApiControllerTest {
 	void invite_team_member() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
-			RoleType.ADMIN, "pass");
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());

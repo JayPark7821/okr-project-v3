@@ -49,7 +49,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 
 	@Builder
 	public User(Long userSeq, String userId, String username, String email, String profileImage,
-		ProviderType providerType, RoleType roleType, String password) {
+		ProviderType providerType, RoleType roleType, String password, JobFieldDetail jobField) {
 		this.userSeq = userSeq;
 		this.userId = userId;
 		this.username = username;
@@ -58,6 +58,7 @@ public class User extends BaseTimeEntity implements UserDetails {
 		this.providerType = providerType;
 		this.roleType = roleType;
 		this.password = password;
+		this.jobField = jobField;
 	}
 
 	public void validateProvider(ProviderType providerType) {

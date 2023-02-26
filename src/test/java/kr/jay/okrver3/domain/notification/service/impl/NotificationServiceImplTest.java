@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.domain.notification.Notification;
 import kr.jay.okrver3.domain.notification.Notifications;
+import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
@@ -37,9 +38,9 @@ class NotificationServiceImplTest {
 	void send_notification() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
-			RoleType.ADMIN, "pass");
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
-		sut.sendInvitationNotification(List.of(user),"프로젝트명" , "invitedUser");
+		sut.sendInvitationNotification(List.of(user), "프로젝트명", "invitedUser");
 
 		List<Notification> result = em.createQuery("select n from Notification n", Notification.class)
 			.getResultList();

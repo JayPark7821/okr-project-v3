@@ -18,15 +18,15 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.service.UserRepository;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
-import kr.jay.okrver3.infrastructure.user.UserReaderImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.JoinRequestDto;
 
 @DataJpaTest
-@Import({UserFacade.class, UserServiceImpl.class, UserReaderImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
+@Import({UserFacade.class, UserServiceImpl.class, UserRepository.class, GuestServiceImpl.class, GuestStoreImpl.class,
 	GuestReaderImpl.class, TokenServiceImpl.class})
 class UserFacadeTest {
 
