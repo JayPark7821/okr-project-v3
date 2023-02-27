@@ -42,7 +42,27 @@ class ProjectApiControllerTest {
 
 		final ResponseEntity<String> response = sut.registerProject(
 			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
-				List.of("keyResult1", "keyResult2")), auth);
+				List.of("keyResult1", "keyResult2"), null), auth);
+
+		assertThat(response.getBody()).containsPattern(
+			Pattern.compile("project-[a-zA-Z0-9]{12}"));
+	}
+
+	@Test
+	@DisplayName("프로젝트를 생성시 팀원을 같이 입력하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_team_members() throws Exception {
+
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.registerProject(
+			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), auth);
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
