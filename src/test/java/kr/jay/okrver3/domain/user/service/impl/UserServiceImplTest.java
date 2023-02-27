@@ -34,8 +34,8 @@ class UserServiceImplTest {
 		OAuth2UserInfo info = GoogleUserInfoFixture.build();
 
 		assertThatThrownBy(() -> sut.getUserInfoFrom(info))
-			.isExactlyInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage("소셜 provider 불일치, " + ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
 	}
 
 	@Test
