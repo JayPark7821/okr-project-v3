@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
@@ -40,12 +41,13 @@ class ProjectServiceImplTest {
 
 		ProjectInfo projectInfo = sut.registerProject(
 			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
-				List.of("keyResult1", "keyResult2"), null), user);
+				List.of("keyResult1", "keyResult2"), null), user, List.of());
 
 		assertThat(projectInfo.projectToken()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 		assertThat(projectInfo.keyResultInfos().get(0).name()).isEqualTo("keyResult1");
 		assertThat(projectInfo.keyResultInfos().get(1).name()).isEqualTo("keyResult2");
+		assertThat(projectInfo.projectType()).isEqualTo(ProjectType.SINGLE.name());
 	}
 
 	@Test
@@ -59,12 +61,15 @@ class ProjectServiceImplTest {
 
 		ProjectInfo projectInfo = sut.registerProject(
 			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
-				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user);
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user, List.of(
+				new User(4L, "testId", "guest", "guest@email.com", "pic", ProviderType.GOOGLE, RoleType.USER, null,
+					JobFieldDetail.WEB_SERVER_DEVELOPER)));
 
 		assertThat(projectInfo.projectToken()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 		assertThat(projectInfo.keyResultInfos().get(0).name()).isEqualTo("keyResult1");
 		assertThat(projectInfo.keyResultInfos().get(1).name()).isEqualTo("keyResult2");
+		assertThat(projectInfo.projectType()).isEqualTo(ProjectType.TEAM.name());
 	}
 
 	@Test

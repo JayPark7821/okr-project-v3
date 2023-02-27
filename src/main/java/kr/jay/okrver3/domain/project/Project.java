@@ -83,11 +83,23 @@ public class Project {
 	}
 
 	public void addLeader(User user) {
-		TeamMember.builder()
+		this.teamMember.add(TeamMember.builder()
 			.user(user)
 			.project(this)
 			.projectRoleType(ProjectRoleType.LEADER)
 			.isNew(true)
-			.build();
+			.build());
+	}
+
+	public void addTeamMember(User user) {
+		this.teamMember.add(
+			TeamMember.builder()
+				.user(user)
+				.project(this)
+				.projectRoleType(ProjectRoleType.MEMBER)
+				.isNew(true)
+				.build());
+		
+		this.type = ProjectType.TEAM;
 	}
 }

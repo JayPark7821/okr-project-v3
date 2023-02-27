@@ -27,15 +27,18 @@ public class ProjectFacade {
 
 	public String registerProject(ProjectMasterSaveDto dto, User user) {
 
-		ProjectInfo projectInfo = projectService.registerProject(
-			dto,
-			user,
-			dto.teamMembers().stream().map(userService::findByEmail)
-				.filter(Optional::isPresent)
-				.map(Optional::get).toList()
-		);
+		List<User> teamMemberUsers =
+			dto.teamMembers() != null ? getTeamUsersFromEmails(dto) : List.of();
+
+		ProjectInfo projectInfo = projectService.registerProject(dto, user, teamMemberUsers);
 
 		return projectInfo.projectToken();
+	}
+
+	private List<User> getTeamUsersFromEmails(ProjectMasterSaveDto dto) {
+		return dto.teamMembers().stream().map(userService::findByEmail)
+			.filter(Optional::isPresent)
+			.map(Optional::get).toList();
 	}
 
 	public ProjectInfo getProjectInfoBy(String projectToken, User user) {

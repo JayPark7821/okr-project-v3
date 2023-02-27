@@ -9,7 +9,7 @@ public record ProjectInfo(String projectToken, String name, String objective, St
 
 	public ProjectInfo(Project project) {
 		this(project.getProjectToken(), project.getName(), project.getObjective(), project.getStartDate().toString(),
-			project.getEndDate().toString(), project.getType().toString(),
+			project.getEndDate().toString(), project.getType().name(),
 			project.getKeyResults().stream().map(KeyResultInfo::new).toList());
 	}
 }
