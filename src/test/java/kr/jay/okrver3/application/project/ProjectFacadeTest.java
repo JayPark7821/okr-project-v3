@@ -44,7 +44,7 @@ class ProjectFacadeTest {
 
 	@Test
 	@Sql("classpath:insert-user.sql")
-	@DisplayName("프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	@DisplayName("팀원 추가 없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
 
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
@@ -55,7 +55,26 @@ class ProjectFacadeTest {
 
 		String projectToken = sut.registerProject(
 			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
-				List.of("keyResult1", "keyResult2")), user);
+				List.of("keyResult1", "keyResult2"), null), user);
+
+		assertThat(projectToken).containsPattern(
+			Pattern.compile("project-[a-zA-Z0-9]{12}"));
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	@DisplayName("프로젝트를 생성시 팀원을 같이 입력하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_team_members() throws Exception {
+
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
+
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+		String projectToken = sut.registerProject(
+			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user);
 
 		assertThat(projectToken).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
