@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
@@ -18,6 +19,7 @@ import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 
 @Import(TestConfig.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserApiControllerAcceptanceTest {
 
@@ -26,6 +28,8 @@ public class UserApiControllerAcceptanceTest {
 
 	private static final String PROVIDER = "APPLE";
 	private static final String ID_TOKEN = "idToken";
+	private static final String DIF_ID_TOKEN = "googleToken";
+
 	private static final String DIF_PROVIDER = "GOOGLE";
 
 	@BeforeEach
@@ -62,7 +66,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + PROVIDER + "/" + ID_TOKEN).
+			.post("/api/v1/user/login/" + DIF_PROVIDER + "/" + ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
@@ -73,6 +77,7 @@ public class UserApiControllerAcceptanceTest {
 	}
 
 	@Test
+	@Sql("classpath:insert-different-social-google-user.sql")
 	@DisplayName("가입한 유저 정보와 다른 ProviderType으로 로그인을 호출하면 기대하는 예외를 던진다.")
 	void loginWithSocialIdToken_when_after_join_and_with_another_provider() {
 		final String response = RestAssured.
@@ -81,17 +86,17 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + DIF_PROVIDER + "/" + ID_TOKEN).
+			.post("/api/v1/user/login/" + PROVIDER + "/" + DIF_ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo(ErrorCode.MISS_MATCH_PROVIDER);
+		assertThat(response).isEqualTo("소셜 provider 불일치, APPLE(으)로 가입한 계정이 있습니다.");
 	}
 
 	@Test
-	@Sql("/insert-guest-user.sql")
+	@Sql("classpath:insert-guest.sql")
 	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
 	void join_after_guest_login() {
 
@@ -99,7 +104,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequestDto("registered-guest-id", "guest", "guest@email.com", "Developer")).
+			.body(new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com", "WEB_SERVER_DEVELOPER")).
 
 			when()
 			.post("/api/v1/user/join").
@@ -128,17 +133,18 @@ public class UserApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo(ErrorCode.INVALID_JOIN_INFO);
+		assertThat(response).isEqualTo(ErrorCode.INVALID_JOIN_INFO.getMessage());
 	}
 
 	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-guest.sql"})
 	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_again_when_after_join() {
 		final String response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequestDto("registered-guest-id", "appleUser", "apple@apple.com", "Developer")).
+			.body(new JoinRequestDto("guest-rkmZUIUNWkSMX3", "appleUser", "guest@email.com", "WEB_SERVER_DEVELOPER")).
 
 			when()
 			.post("/api/v1/user/join").
@@ -147,7 +153,7 @@ public class UserApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo(ErrorCode.ALREADY_JOINED_USER);
+		assertThat(response).isEqualTo(ErrorCode.ALREADY_JOINED_USER.getMessage());
 	}
 
 	private void assertLoginUser(JsonPath response) {

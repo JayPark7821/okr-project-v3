@@ -1,18 +1,21 @@
 package kr.jay.okrver3.common.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class OkrApplicationException extends RuntimeException {
 
 	private final ErrorCode errorCode;
-	private String message;
+	private final String message;
 
 	public OkrApplicationException(ErrorCode errorCode) {
 		this.errorCode = errorCode;
 		this.message = null;
+	}
+
+	public OkrApplicationException(ErrorCode errorCode, String msg) {
+		this.errorCode = errorCode;
+		this.message = msg;
 	}
 
 	@Override
