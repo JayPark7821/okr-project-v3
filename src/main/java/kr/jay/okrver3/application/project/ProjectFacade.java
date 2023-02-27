@@ -1,6 +1,7 @@
 package kr.jay.okrver3.application.project;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,15 @@ public class ProjectFacade {
 	private final NotificationService notificationService;
 
 	public String registerProject(ProjectMasterSaveDto dto, User user) {
-		ProjectInfo projectInfo = projectService.registerProject(dto, user);
+
+		ProjectInfo projectInfo = projectService.registerProject(
+			dto,
+			user,
+			dto.teamMembers().stream().map(userService::findByEmail)
+				.filter(Optional::isPresent)
+				.map(Optional::get).toList()
+		);
+
 		return projectInfo.projectToken();
 	}
 
@@ -38,7 +47,8 @@ public class ProjectFacade {
 		User invitedUser = userService.findByEmail(requestDto.email())
 			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 사용자가 존재하지 않습니다."));
 
-		ProjectTeamMemberInfo projectTeamMemberInfo = projectService.inviteTeamMember(requestDto.projectToken(), invitedUser, inviter);
+		ProjectTeamMemberInfo projectTeamMemberInfo = projectService.inviteTeamMember(requestDto.projectToken(),
+			invitedUser, inviter);
 
 		notificationService.sendInvitationNotification(
 			getTeamMemberToSendNoti(invitedUser, projectTeamMemberInfo),
