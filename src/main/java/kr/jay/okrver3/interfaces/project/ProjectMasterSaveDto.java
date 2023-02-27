@@ -7,7 +7,8 @@ import java.util.List;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 
-public record ProjectMasterSaveDto(String name, String sdt, String edt, String objective, List<String> keyResults) {
+public record ProjectMasterSaveDto(String name, String sdt, String edt, String objective, List<String> keyResults,
+								   List<String> teamMembers) {
 
 	public Project toCreateProject() {
 		LocalDate startDt = LocalDate.parse(sdt, DateTimeFormatter.ofPattern("yyyyMMdd"));

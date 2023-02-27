@@ -61,7 +61,7 @@ public class ProjectApiControllerAcceptanceTest {
 	}
 
 	@Test
-	@DisplayName("프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	@DisplayName("팀원 없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -72,7 +72,33 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
 			.body(new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
-				List.of("keyResult1", "keyResult2"))).
+				List.of("keyResult1", "keyResult2"), null)).
+
+			when()
+			.post(baseUrl).
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().body().asString();
+
+		assertThat(response).containsPattern(
+			Pattern.compile("project-[a-zA-Z0-9]{12}"));
+
+	}
+
+	@Test
+	@DisplayName("팀원을 추가하여 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_team_members() throws Exception {
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + authToken)
+			.contentType(ContentType.JSON)
+			.body(new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
 			.post(baseUrl).
