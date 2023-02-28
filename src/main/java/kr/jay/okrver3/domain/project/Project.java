@@ -16,6 +16,8 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.team.ProjectRoleType;
@@ -78,7 +80,6 @@ public class Project {
 				.build());
 		});
 	}
-
 	public void addLeader(User leader) {
 		this.teamMember.add(
 			TeamMember.builder()
@@ -89,7 +90,6 @@ public class Project {
 				.build()
 		);
 	}
-
 	public void addTeamMember(User user) {
 		this.teamMember.add(
 			TeamMember.builder()
@@ -100,5 +100,19 @@ public class Project {
 				.build());
 		
 		this.type = ProjectType.TEAM;
+	}
+
+	public void validateEmail(String email) {
+		if(this.teamMember
+			.stream()
+			.anyMatch(tm-> tm.getUser().getEmail().equals(email)))
+			throw new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER);
+
+	}
+
+	public TeamMember getProjectLeader() {
+		return this.teamMember.stream().filter(tm -> tm.getProjectRoleType() == ProjectRoleType.LEADER)
+			.findFirst()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.PROJECT_LEADER_NOT_FOUND));
 	}
 }

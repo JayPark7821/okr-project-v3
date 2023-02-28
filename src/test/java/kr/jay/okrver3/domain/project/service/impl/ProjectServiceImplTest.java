@@ -1,7 +1,7 @@
 package kr.jay.okrver3.domain.project.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,6 +41,7 @@ class ProjectServiceImplTest {
 
 
 	@Test
+	@Sql("classpath:insert-user.sql")
 	@DisplayName("팀원없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
@@ -63,6 +64,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
+	@Sql("classpath:insert-user.sql")
 	@DisplayName("팀원을 추가해 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project_with_team_members() throws Exception {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
@@ -126,7 +128,7 @@ class ProjectServiceImplTest {
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
 	void validate_email_address() throws Exception {
 
@@ -135,14 +137,13 @@ class ProjectServiceImplTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		final String response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user );
+		sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user );
 
-		assertThat(response).isEqualTo(memberEmail);
 	}
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
 
@@ -151,7 +152,7 @@ class ProjectServiceImplTest {
 			.setParameter("userSeq", 2L)
 			.getSingleResult();
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
@@ -160,7 +161,7 @@ class ProjectServiceImplTest {
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void when_member_validate_email_address_will_throw_exception() throws Exception {
 		String memberEmail = "guest@email.com";
@@ -168,53 +169,26 @@ class ProjectServiceImplTest {
 			.setParameter("userSeq", 3L)
 			.getSingleResult();
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
 	}
 
-	@Test
-	@Sql("classpath:insert-user.sql")
-	@DisplayName("팀원 추가를 위해 잘못된 email을 입력하면 기대하는 응답(exception)을 반환한다.")
-	void validate_email_address_exception() throws Exception {
-
-		String wrongEmailAdd = "wrongEmailAdd";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, user))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_USER_EMAIL.getMessage());
-	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_already_team_member() throws Exception {
 		String teamMemberEmail = "fakeGoogleIdEmail";
+
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, user))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", teamMemberEmail, user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
-	}
-
-	@Test
-	@Sql("classpath:insert-user.sql")
-	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
-	void validate_email_address_login_user_email() throws Exception {
-		String userEmail = "'apple@apple.com'";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, user))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
 
 }

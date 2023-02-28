@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
@@ -66,7 +68,17 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public String validateEmail(String projectToken, String email, User user) {
-		return null;
+	public void validateUserToInvite(String projectToken, String invitedUserEmail, User user) {
+		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, user)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+
+		if (!isUserProjectLeader(user, project))
+			throw new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER);
+
+		project.validateEmail(invitedUserEmail);
+	}
+
+	private boolean isUserProjectLeader(User user, Project project) {
+		return project.getProjectLeader().getUser().equals(user);
 	}
 }

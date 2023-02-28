@@ -21,7 +21,7 @@ public enum ErrorCode {
 	USER_IS_NOT_LEADER(HttpStatus.BAD_REQUEST, "해당 프로젝트의 리더만 팀원을 초대할 수 있습니다."),
 	INVALID_PROJECT_TOKEN(HttpStatus.BAD_REQUEST, "잘못된 프로젝트 토큰 입니다."),
 	CASTING_USER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Casting to User failed"),
-	;
+	PROJECT_LEADER_NOT_FOUND(HttpStatus.BAD_REQUEST,"프로젝트의 리더가 없습니다." );
 
 	private HttpStatus status;
 	private String message;
