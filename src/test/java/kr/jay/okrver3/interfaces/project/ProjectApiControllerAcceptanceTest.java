@@ -53,7 +53,7 @@ public class ProjectApiControllerAcceptanceTest {
 	void setUpAll() {
 		try (Connection conn = dataSource.getConnection()) {
 			authToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
-			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-user.sql"));
+
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
 		} catch (Exception e) {
@@ -174,13 +174,57 @@ public class ProjectApiControllerAcceptanceTest {
 
 
 			when()
-			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
+			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
 			.extract().body().asString();
 
 		assertThat(response).isEqualTo(memberEmail);
+	}
+
+
+	@Test
+	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
+		String memberEmail = "guest@email.com";
+
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + JwtTokenUtils.generateToken("fakeAppleEmail", key, accessExpiredTimeMs)).
+
+			when()
+			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
+	}
+
+
+
+	@Test
+	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void when_member_validate_email_address_will_throw_exception() throws Exception {
+		String memberEmail = "guest@email.com";
+
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + JwtTokenUtils.generateToken("fakeGoogleIdEmail", key, accessExpiredTimeMs)).
+
+
+			when()
+			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
 
 	@Test
@@ -194,7 +238,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + wrongEmailAdd).
+			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + wrongEmailAdd).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -215,7 +259,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
+			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -236,7 +280,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
+			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
