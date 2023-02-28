@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -24,6 +26,9 @@ import kr.jay.okrver3.domain.notification.Notification;
 import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.notification.service.impl.NotificationServiceImpl;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.ProjectType;
+import kr.jay.okrver3.domain.project.SortType;
+import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.User;
@@ -228,6 +233,19 @@ class ProjectFacadeTest {
 		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
+	}
+
+
+	@Test
+	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 1L)
+			.getSingleResult();
+
+		Page<ProjectDetailInfo> result = sut.getDetailProjectList(SortType.RECENTLY_CREATE, ProjectType.TEAM, "Y", user,
+			PageRequest.of(0, 5));
+
 	}
 
 }

@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.service.NotificationService;
+import kr.jay.okrver3.domain.project.ProjectType;
+import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectService;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
-import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
@@ -87,7 +88,7 @@ public class ProjectFacade {
 			.toList();
 	}
 
-	public Page<ProjectDetailInfo> getDetailProjectList(ProviderType of, ProviderType of1, String validateIncludeFinishedProjectYN,
+	public Page<ProjectDetailInfo> getDetailProjectList(SortType sortType, ProjectType projectType , String validateIncludeFinishedProjectYN,
 		User user, Pageable pageable) {
 		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.getProjectList())");
 	}
