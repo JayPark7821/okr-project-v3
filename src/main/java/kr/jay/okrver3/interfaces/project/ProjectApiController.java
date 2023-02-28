@@ -21,12 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/project")
+@RequestMapping("/api/v1")
 public class ProjectApiController {
 
 	private final ProjectFacade projectFacade;
 
-	@PostMapping
+	@PostMapping("/project")
 	ResponseEntity<String> registerProject(
 		@RequestBody @Valid ProjectMasterSaveDto requestDto,
 		Authentication authentication
@@ -37,7 +37,7 @@ public class ProjectApiController {
 		);
 	}
 
-	@GetMapping("/{projectToken}")
+	@GetMapping("/project/{projectToken}")
 	ResponseEntity<ProjectInfoResponse> getProjectInfoBy(
 		@PathVariable("projectToken") String projectToken,
 		Authentication authentication

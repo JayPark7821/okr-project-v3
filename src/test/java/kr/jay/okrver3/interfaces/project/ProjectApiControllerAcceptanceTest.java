@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
 @Transactional
@@ -42,7 +43,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Autowired
 	DataSource dataSource;
-	private static final String baseUrl = "/api/v1/project/";
+	private static final String baseUrl = "/api/v1/";
 	@LocalServerPort
 	private int port;
 
@@ -79,7 +80,7 @@ public class ProjectApiControllerAcceptanceTest {
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
-			.post(baseUrl).
+			.post(baseUrl+"project").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -105,7 +106,7 @@ public class ProjectApiControllerAcceptanceTest {
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
-			.post(baseUrl).
+			.post(baseUrl+"project").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -127,7 +128,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.get(baseUrl + "project-fgFHxGWeIUFa").
+			.get(baseUrl +"project"+ "/project-fgFHxGWeIUFa").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -160,6 +161,88 @@ public class ProjectApiControllerAcceptanceTest {
 			.extract().body().asString();
 
 		assertThat(response).isEqualTo("fakeAppleEmail");
+	}
+
+	@Test
+	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address() throws Exception {
+		String memberEmail = "guest@email.com";
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + authToken).
+
+
+			when()
+			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(memberEmail);
+	}
+
+	@Test
+	@DisplayName("팀원 추가를 위해 잘못된 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_exception() throws Exception {
+		String wrongEmailAdd = "wrongEmailAdd";
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + wrongEmailAdd).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_USER_EMAIL.getMessage());
+	}
+
+	@Test
+	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_already_team_member() throws Exception {
+		String teamMemberEmail = "fakeGoogleIdEmail";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
+	}
+
+	@Test
+	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_login_user_email() throws Exception {
+		String teamMemberEmail = "fakeGoogleIdEmail";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.post(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
 
 }
