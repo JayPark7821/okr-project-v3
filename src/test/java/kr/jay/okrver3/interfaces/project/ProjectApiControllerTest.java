@@ -20,6 +20,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.user.User;
 
 @Transactional
@@ -120,7 +121,7 @@ class ProjectApiControllerTest {
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
 	void validate_email_address() throws Exception {
 
@@ -140,7 +141,7 @@ class ProjectApiControllerTest {
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
 
@@ -149,19 +150,19 @@ class ProjectApiControllerTest {
 			.setParameter("userSeq", 2L)
 			.getSingleResult();
 
-
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth );
+		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth ))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
-		assertThat(response.getBody()).isEqualTo(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 	}
 
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void when_member_validate_email_address_will_throw_exception() throws Exception {
 		String memberEmail = "guest@email.com";
@@ -169,18 +170,17 @@ class ProjectApiControllerTest {
 			.setParameter("userSeq", 3L)
 			.getSingleResult();
 
-
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth );
-
-		assertThat(response.getBody()).isEqualTo(ErrorCode.USER_IS_NOT_LEADER.getMessage());
+		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth ))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
 	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 잘못된 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_exception() throws Exception {
 
@@ -192,13 +192,13 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, auth );
-
-		assertThat(response.getBody()).isEqualTo(ErrorCode.INVALID_USER_EMAIL.getMessage());
+		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, auth ))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_USER_EMAIL.getMessage());
 	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_already_team_member() throws Exception {
 		String teamMemberEmail = "fakeGoogleIdEmail";
@@ -209,16 +209,16 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, auth );
-
-		assertThat(response.getBody()).isEqualTo(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
+		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, auth ))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_login_user_email() throws Exception {
-		String userEmail = "'apple@apple.com'";
+		String userEmail = "apple@apple.com";
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
@@ -226,8 +226,8 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth );
-
-		assertThat(response.getBody()).isEqualTo(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
+		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth ))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
 }

@@ -76,8 +76,8 @@ public class ProjectApiController {
 
 	@GetMapping("/team/invite/{projectToken}/{email}")
 	ResponseEntity<String> validateEmail(
-		@PathVariable @Valid String projectToken,
-		@PathVariable @Valid String email,
+		@PathVariable("projectToken") String projectToken,
+		@PathVariable("email") String email,
 		Authentication authentication
 	) {
 
