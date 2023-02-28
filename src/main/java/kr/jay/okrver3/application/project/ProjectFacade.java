@@ -43,8 +43,10 @@ public class ProjectFacade {
 
 	public String inviteTeamMember(TeamMemberInviteRequestDto requestDto, User inviter) {
 
-		User invitedUser = userService.findByEmail(requestDto.email())
-			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 사용자가 존재하지 않습니다."));
+		if(inviter.getEmail().equals(requestDto.email()))
+			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
+
+		User invitedUser = getUserToInviteBy(requestDto.email());
 
 		ProjectTeamMemberInfo projectTeamMemberInfo = projectService.inviteTeamMember(requestDto.projectToken(),
 			invitedUser, inviter);
@@ -59,16 +61,13 @@ public class ProjectFacade {
 	}
 
 	public String validateEmail(String projectToken, String email, User user) {
-
-		if(user.getEmail().equals(email))
-			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
-
-		User invitedUser = userService.findByEmail(email)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
-
-		projectService.validateUserToInvite(projectToken, invitedUser.getEmail(), user);
-
+		projectService.validateUserToInvite(projectToken, getUserToInviteBy(email).getEmail(), user);
 		return email;
+	}
+
+	private User getUserToInviteBy(String email) {
+		return userService.findByEmail(email)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
 	}
 
 	private List<User> getTeamUsersFromEmails(ProjectMasterSaveDto dto) {
