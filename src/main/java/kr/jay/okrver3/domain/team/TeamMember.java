@@ -10,6 +10,7 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kr.jay.okrver3.common.audit.BaseEntity;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.user.User;
 import lombok.AccessLevel;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @IdClass(TeamMemberId.class)
 @Getter
 @Entity
-public class TeamMember {
+public class TeamMember extends BaseEntity {
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_seq")

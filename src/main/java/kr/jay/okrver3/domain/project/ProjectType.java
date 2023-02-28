@@ -1,17 +1,22 @@
 package kr.jay.okrver3.domain.project;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.Arrays;
 
-@Getter
-@AllArgsConstructor
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+
 public enum ProjectType {
 
-	TEAM("Team"),
-	SINGLE("Single"),
-	ALL("All"),
+	TEAM,
+	SINGLE,
+	ALL,
 	;
 
-	private final String code;
+	public static ProjectType of(String projectTypeString) {
+		return Arrays.stream(ProjectType.values())
+			.filter(projectType -> projectType.name().equals(projectTypeString))
+			.findAny()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TYPE));
+	}
 
 }

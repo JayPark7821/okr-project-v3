@@ -7,10 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.user.User;
 
-public interface ProjectJpaRepository extends ProjectRepository, JpaRepository<Project, Long> {
+public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
 	@Query("select p "
 		+ "from Project p "

@@ -13,6 +13,8 @@ import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import io.restassured.response.ResponseBodyExtractionOptions;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,15 +73,15 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	@DisplayName("팀원 없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		final String response = RestAssured.
 
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
@@ -92,8 +97,8 @@ public class ProjectApiControllerAcceptanceTest {
 	}
 
 	@Test
-	@DisplayName("팀원을 추가하여 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
-	void create_project_with_team_members() throws Exception {
+	@DisplayName("프로젝트를 생성시 시작&종료 일자 포멧을 잘못 입력하면 기대하는 응답(exception)을 반환한다.")
+	void create_project_date_validation_fail() throws Exception {
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
@@ -102,7 +107,32 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+				List.of("keyResult1", "keyResult2"), null)).
+
+			when()
+			.post(baseUrl+"/project").
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo("8자리의 yyyy-MM-dd 형식이어야 합니다.");
+
+	}
+
+	@Test
+	@DisplayName("팀원을 추가하여 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_team_members() throws Exception {
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + authToken)
+			.contentType(ContentType.JSON)
+			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
@@ -135,7 +165,6 @@ public class ProjectApiControllerAcceptanceTest {
 			.extract().jsonPath();
 
 		assertThat(response.getString("projectToken")).isEqualTo("project-fgFHxGWeIUFa");
-		assertThat(response.getString("name")).isEqualTo("projectName2");
 		assertThat(response.getString("objective")).isEqualTo("projectObjective2");
 		assertThat(response.getString("startDate")).isEqualTo("2020-12-01");
 		assertThat(response.getString("endDate")).isEqualTo("2020-12-12");
@@ -288,6 +317,28 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response).isEqualTo(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
+
+
+	@Test
+	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/project" + "?" + "sortType=RECENTLY_CREATE" + "&" + "includeFinishedProjectYN=N" + "&"
+				+ "projectType=TEAM").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+	}
+
+
+
 
 }
 

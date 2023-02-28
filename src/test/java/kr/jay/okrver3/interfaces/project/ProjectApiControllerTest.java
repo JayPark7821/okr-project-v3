@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.user.User;
 
 @Transactional
@@ -42,14 +45,14 @@ class ProjectApiControllerTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -65,14 +68,14 @@ class ProjectApiControllerTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -94,7 +97,6 @@ class ProjectApiControllerTest {
 		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("project-fgFHxGWeIUQt", auth);
 
 		assertThat(response.getBody().projectToken()).isEqualTo("project-fgFHxGWeIUQt");
-		assertThat(response.getBody().name()).isEqualTo("projectName");
 		assertThat(response.getBody().objective()).isEqualTo("projectObjective");
 		assertThat(response.getBody().startDate()).isEqualTo("2020-12-01");
 		assertThat(response.getBody().endDate()).isEqualTo("2020-12-12");
@@ -119,7 +121,6 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody()).isEqualTo("fakeAppleEmail");
 	}
 
-
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
@@ -130,15 +131,13 @@ class ProjectApiControllerTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth );
+		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth);
 
 		assertThat(response.getBody()).isEqualTo(memberEmail);
 	}
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
@@ -153,13 +152,11 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth ))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
 	}
-
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
@@ -173,7 +170,7 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth ))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
@@ -192,7 +189,7 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, auth ))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_USER_EMAIL.getMessage());
 	}
@@ -209,7 +206,7 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, auth ))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 	}
@@ -226,8 +223,36 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth ))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_미포함_팀프로젝트() throws Exception {
+
+		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 13L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N", "TEAM",
+			auth,
+			PageRequest.of(0, 5));
+
+		assertThat(response.getBody().getTotalElements()).isEqualTo(2);
+		List<ProjectDetailResponse> content = response.getBody().getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+			ProjectDetailResponse r = content.get(i);
+			assertThat(r.projectType()).isEqualTo(ProjectType.TEAM.name());
+			assertThat(r.progress()).isLessThan(100);
+			assertThat(r.projectToken()).isEqualTo(recentlyCreatedSortProject.get(i));
+		}
+
 	}
 }
