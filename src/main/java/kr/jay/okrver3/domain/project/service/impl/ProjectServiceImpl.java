@@ -64,7 +64,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Page<ProjectDetailInfo> getDetailProjectList(SortType sortType, ProjectType projectType,
 		String validateIncludeFinishedProjectYN, User user, Pageable pageable) {
-		return null;
+		return projectRepository.getDetailProjectList(sortType, projectType,
+			validateIncludeFinishedProjectYN, user, pageable);
 	}
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {

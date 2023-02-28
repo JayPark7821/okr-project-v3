@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import kr.jay.okrver3.common.audit.BaseEntity;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.TokenGenerator;
@@ -34,7 +35,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Table(name = "project", indexes = @Index(name = "idx_project_token", columnList = "projectToken"))
-public class Project {
+public class Project extends BaseEntity {
 
 	private static final String PROJECT_MASTER_PREFIX = "project-";
 	@Id
@@ -69,7 +70,7 @@ public class Project {
 
 	@Builder
 	public Project(LocalDate startDate, LocalDate endDate, String objective,
-		double progress, List<String> keyResultList ) {
+		double progress, List<String> keyResultList) {
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_MASTER_PREFIX);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -85,6 +86,7 @@ public class Project {
 				.build());
 		});
 	}
+
 	public void addLeader(User leader) {
 		this.teamMember.add(
 			TeamMember.builder()
@@ -95,6 +97,7 @@ public class Project {
 				.build()
 		);
 	}
+
 	public void addTeamMember(User user) {
 		this.teamMember.add(
 			TeamMember.builder()
@@ -103,14 +106,14 @@ public class Project {
 				.projectRoleType(ProjectRoleType.MEMBER)
 				.isNew(true)
 				.build());
-		
+
 		this.type = ProjectType.TEAM;
 	}
 
 	public void validateEmail(String email) {
-		if(this.teamMember
+		if (this.teamMember
 			.stream()
-			.anyMatch(tm-> tm.getUser().getEmail().equals(email)))
+			.anyMatch(tm -> tm.getUser().getEmail().equals(email)))
 			throw new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER);
 
 	}

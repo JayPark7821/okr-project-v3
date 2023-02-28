@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
-import kr.jay.okrver3.domain.user.ProviderType;
 
 public enum ProjectType {
 
@@ -13,10 +12,9 @@ public enum ProjectType {
 	ALL,
 	;
 
-
-	public static ProviderType of(String providerInString) {
-		return Arrays.stream(ProviderType.values())
-			.filter(provider -> provider.getName().equals(providerInString))
+	public static ProjectType of(String projectTypeString) {
+		return Arrays.stream(ProjectType.values())
+			.filter(projectType -> projectType.name().equals(projectTypeString))
 			.findAny()
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TYPE));
 	}

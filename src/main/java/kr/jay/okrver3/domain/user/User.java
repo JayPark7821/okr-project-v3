@@ -65,7 +65,8 @@ public class User extends BaseTimeEntity implements UserDetails {
 
 	public void validateProvider(ProviderType providerType) {
 		if (this.providerType != providerType) {
-			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, this.providerType.getName() + "(으)로 가입한 계정이 있습니다.");
+			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER,
+				this.providerType.getName() + "(으)로 가입한 계정이 있습니다.");
 		}
 	}
 
