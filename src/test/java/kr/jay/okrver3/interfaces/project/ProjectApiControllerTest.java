@@ -14,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
@@ -228,5 +230,21 @@ class ProjectApiControllerTest {
 		assertThatThrownBy(()->sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth ))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
+	}
+
+
+	@Test
+	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 1L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<Page<ProjectListResponse>> response = sut.getProjectList("RECENTLY_CREATE", "Y", "TEAM", auth,
+			PageRequest.of(0, 5));
+
 	}
 }
