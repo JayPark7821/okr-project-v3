@@ -43,7 +43,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Autowired
 	DataSource dataSource;
-	private static final String baseUrl = "/api/v1/";
+	private static final String baseUrl = "/api/v1";
 	@LocalServerPort
 	private int port;
 
@@ -53,7 +53,7 @@ public class ProjectApiControllerAcceptanceTest {
 	void setUpAll() {
 		try (Connection conn = dataSource.getConnection()) {
 			authToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
-
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-user.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
 		} catch (Exception e) {
@@ -80,7 +80,7 @@ public class ProjectApiControllerAcceptanceTest {
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
-			.post(baseUrl+"project").
+			.post(baseUrl+"/project").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -106,7 +106,7 @@ public class ProjectApiControllerAcceptanceTest {
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
-			.post(baseUrl+"project").
+			.post(baseUrl+"/project").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -128,7 +128,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.get(baseUrl +"project"+ "/project-fgFHxGWeIUFa").
+			.get(baseUrl +"/project"+ "/project-fgFHxGWeIUFa").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -154,7 +154,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.body(new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail")).
 
 			when()
-			.post(baseUrl + "team/invite").
+			.post(baseUrl + "/team/invite").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -177,7 +177,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
 
 			then()
-			.statusCode(HttpStatus.OK.value())
+ 			.statusCode(HttpStatus.OK.value())
 			.extract().body().asString();
 
 		assertThat(response).isEqualTo(memberEmail);
@@ -271,7 +271,7 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_login_user_email() throws Exception {
-		String teamMemberEmail = "'apple@apple.com'";
+		String teamMemberEmail = "apple@apple.com";
 
 		final String response = RestAssured.
 
