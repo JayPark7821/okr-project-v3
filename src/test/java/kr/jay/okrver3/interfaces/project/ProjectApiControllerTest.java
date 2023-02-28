@@ -49,7 +49,7 @@ class ProjectApiControllerTest {
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -72,7 +72,7 @@ class ProjectApiControllerTest {
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -94,7 +94,6 @@ class ProjectApiControllerTest {
 		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("project-fgFHxGWeIUQt", auth);
 
 		assertThat(response.getBody().projectToken()).isEqualTo("project-fgFHxGWeIUQt");
-		assertThat(response.getBody().name()).isEqualTo("projectName");
 		assertThat(response.getBody().objective()).isEqualTo("projectObjective");
 		assertThat(response.getBody().startDate()).isEqualTo("2020-12-01");
 		assertThat(response.getBody().endDate()).isEqualTo("2020-12-12");

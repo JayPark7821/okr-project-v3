@@ -53,7 +53,7 @@ class ProjectServiceImplTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		ProjectInfo projectInfo = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), user, List.of());
 
 		assertThat(projectInfo.projectToken()).containsPattern(
@@ -76,7 +76,7 @@ class ProjectServiceImplTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		ProjectInfo projectInfo = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user, List.of(
 				new User(4L, "testId", "guest", "guest@email.com", "pic", ProviderType.GOOGLE, RoleType.USER, null,
 					JobFieldDetail.WEB_SERVER_DEVELOPER)));
@@ -100,7 +100,6 @@ class ProjectServiceImplTest {
 		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", user);
 
 		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
-		assertThat(projectInfo.name()).isEqualTo("projectName");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
 		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
 		assertThat(projectInfo.endDate()).isEqualTo("2020-12-12");

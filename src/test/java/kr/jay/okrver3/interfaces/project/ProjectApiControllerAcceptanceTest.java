@@ -76,7 +76,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
@@ -102,7 +102,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
@@ -135,7 +135,6 @@ public class ProjectApiControllerAcceptanceTest {
 			.extract().jsonPath();
 
 		assertThat(response.getString("projectToken")).isEqualTo("project-fgFHxGWeIUFa");
-		assertThat(response.getString("name")).isEqualTo("projectName2");
 		assertThat(response.getString("objective")).isEqualTo("projectObjective2");
 		assertThat(response.getString("startDate")).isEqualTo("2020-12-01");
 		assertThat(response.getString("endDate")).isEqualTo("2020-12-12");

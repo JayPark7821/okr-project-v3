@@ -48,8 +48,6 @@ public class Project {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private final List<KeyResult> keyResults = new ArrayList<>();
 
-	private String name;
-
 	private LocalDate startDate;
 
 	private LocalDate endDate;
@@ -62,10 +60,9 @@ public class Project {
 	private double progress;
 
 	@Builder
-	public Project(String name, LocalDate startDate, LocalDate endDate, String objective,
+	public Project(LocalDate startDate, LocalDate endDate, String objective,
 		double progress, List<String> keyResultList ) {
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_MASTER_PREFIX);
-		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = ProjectType.SINGLE;

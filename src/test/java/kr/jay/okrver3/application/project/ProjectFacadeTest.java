@@ -56,13 +56,13 @@ class ProjectFacadeTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		String projectToken = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), user);
 
 
 		Project result =
-			em.createQuery("select n from Project n where n.name =: projectName", Project.class)
-				.setParameter("projectName", "projectName")
+			em.createQuery("select n from Project n where n.objective =: objective", Project.class)
+				.setParameter("objective", "projectObjective")
 				.getSingleResult();
 
 		assertThat(result.getTeamMember().size()).isEqualTo(1);
@@ -83,12 +83,12 @@ class ProjectFacadeTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		String projectToken = sut.registerProject(
-			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
+			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user);
 
 		Project result =
-			em.createQuery("select n from Project n where n.name =: projectName", Project.class)
-				.setParameter("projectName", "projectName")
+			em.createQuery("select n from Project n where n.objective =: objective", Project.class)
+				.setParameter("objective", "projectObjective")
 				.getSingleResult();
 
 		assertThat(result.getTeamMember().size()).isEqualTo(2);
@@ -109,7 +109,6 @@ class ProjectFacadeTest {
 		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", user);
 
 		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
-		assertThat(projectInfo.name()).isEqualTo("projectName");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
 		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
 		assertThat(projectInfo.endDate()).isEqualTo("2020-12-12");
@@ -134,7 +133,7 @@ class ProjectFacadeTest {
 			.getResultList();
 		assertThat(result.size()).isEqualTo(2);
 		assertThat(result.get(0).getMsg()).isEqualTo(
-			Notifications.NEW_TEAM_MATE.getMsg("fakeAppleName", "projectName"));
+			Notifications.NEW_TEAM_MATE.getMsg("fakeAppleName", "projectObjective"));
 
 	}
 

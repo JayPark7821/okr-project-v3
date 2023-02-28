@@ -40,14 +40,14 @@ public class ProjectServiceImpl implements ProjectService {
 	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
 		return projectRepository.findByProjectTokenAndUser(projectToken, user)
 			.map(ProjectInfo::new)
-			.orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다."));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
 	@Override
 	public ProjectTeamMemberInfo inviteTeamMember(String projectToken, User invitedUser, User inviter) {
 		Project project = inviteUserValidator(projectToken, invitedUser.getEmail(), inviter);
 		project.addTeamMember(invitedUser);
-		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),project.getName());
+		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),project.getObjective());
 	}
 
 	@Override
@@ -80,7 +80,6 @@ public class ProjectServiceImpl implements ProjectService {
 		LocalDate endDt = LocalDate.parse(dto.edt(), DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		return Project.builder()
-			.name(dto.name())
 			.startDate(startDt)
 			.endDate(endDt)
 			.objective(dto.objective())
