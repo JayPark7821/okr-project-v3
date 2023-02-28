@@ -35,12 +35,6 @@ public class ProjectFacade {
 		return projectInfo.projectToken();
 	}
 
-	private List<User> getTeamUsersFromEmails(ProjectMasterSaveDto dto) {
-		return dto.teamMembers().stream().map(userService::findByEmail)
-			.filter(Optional::isPresent)
-			.map(Optional::get).toList();
-	}
-
 	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
 		return projectService.getProjectInfoBy(projectToken, user);
 	}
@@ -62,14 +56,20 @@ public class ProjectFacade {
 		return invitedUser.getEmail();
 	}
 
+	public String validateEmail(String projectToken, String email, User user) {
+		return projectService.validateEmail(projectToken, email, user);
+	}
+
+	private List<User> getTeamUsersFromEmails(ProjectMasterSaveDto dto) {
+		return dto.teamMembers().stream().map(userService::findByEmail)
+			.filter(Optional::isPresent)
+			.map(Optional::get).toList();
+	}
+
 	private static List<User> getTeamMemberToSendNoti(User invitedUser, ProjectTeamMemberInfo projectTeamMemberInfo) {
 		return projectTeamMemberInfo.projectTeamMemberUsers()
 			.stream()
 			.filter(user -> !user.equals(invitedUser))
 			.toList();
-	}
-
-	public String validateEmail(String projectToken, String email, User user) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.validateEmail())");
 	}
 }
