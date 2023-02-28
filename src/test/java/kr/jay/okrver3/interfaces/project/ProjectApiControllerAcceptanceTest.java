@@ -271,7 +271,7 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_login_user_email() throws Exception {
-		String teamMemberEmail = "fakeGoogleIdEmail";
+		String teamMemberEmail = "'apple@apple.com'";
 
 		final String response = RestAssured.
 

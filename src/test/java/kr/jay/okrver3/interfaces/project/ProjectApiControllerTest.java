@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
@@ -106,4 +107,106 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody()).isEqualTo("fakeAppleEmail");
 	}
 
+
+	@Test
+	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address() throws Exception {
+
+		String memberEmail = "guest@email.com";
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
+
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth );
+
+		assertThat(response.getBody()).isEqualTo(memberEmail);
+	}
+
+
+	@Test
+	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
+
+		String memberEmail = "guest@email.com";
+		User user = new User(2L, "fakeAppleId", "fakeAppleName", "fakeAppleEmail", "fakeApplePic", ProviderType.APPLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
+
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth );
+
+		assertThat(response.getBody()).isEqualTo(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
+	}
+
+
+
+	@Test
+	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void when_member_validate_email_address_will_throw_exception() throws Exception {
+		String memberEmail = "guest@email.com";
+		User user = new User(3L, "fakeGoogleId", "fakeGoogleName", "fakeGoogleIdEmail", "fakeGoogleIdPic", ProviderType.GOOGLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_SERVER_DEVELOPER);
+
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth );
+
+		assertThat(response.getBody()).isEqualTo(ErrorCode.USER_IS_NOT_LEADER.getMessage());
+
+	}
+
+	@Test
+	@DisplayName("팀원 추가를 위해 잘못된 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_exception() throws Exception {
+
+		String wrongEmailAdd = "wrongEmailAdd";
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
+
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, auth );
+
+		assertThat(response.getBody()).isEqualTo(ErrorCode.INVALID_USER_EMAIL.getMessage());
+	}
+
+	@Test
+	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_already_team_member() throws Exception {
+		String teamMemberEmail = "fakeGoogleIdEmail";
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
+
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, auth );
+
+		assertThat(response.getBody()).isEqualTo(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
+	}
+
+	@Test
+	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
+	void validate_email_address_login_user_email() throws Exception {
+		String userEmail = "'apple@apple.com'";
+		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth );
+
+		assertThat(response.getBody()).isEqualTo(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
+	}
 }
