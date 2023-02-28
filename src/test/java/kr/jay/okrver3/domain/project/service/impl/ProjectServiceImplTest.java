@@ -16,11 +16,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.ProjectType;
+import kr.jay.okrver3.domain.project.SortType;
+import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
@@ -39,7 +43,6 @@ class ProjectServiceImplTest {
 	@PersistenceContext
 	EntityManager em;
 
-
 	@Test
 	@Sql("classpath:insert-user.sql")
 	@DisplayName("팀원없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
@@ -47,7 +50,6 @@ class ProjectServiceImplTest {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
-
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -70,7 +72,6 @@ class ProjectServiceImplTest {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
-
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -124,8 +125,6 @@ class ProjectServiceImplTest {
 
 	}
 
-
-
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
@@ -136,10 +135,9 @@ class ProjectServiceImplTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user );
+		sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user);
 
 	}
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
@@ -157,8 +155,6 @@ class ProjectServiceImplTest {
 
 	}
 
-
-
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
@@ -174,7 +170,6 @@ class ProjectServiceImplTest {
 
 	}
 
-
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
@@ -188,6 +183,18 @@ class ProjectServiceImplTest {
 		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", teamMemberEmail, user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
+	}
+
+	@Test
+	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 1L)
+			.getSingleResult();
+
+		Page<ProjectDetailInfo> result = sut.getDetailProjectList(SortType.RECENTLY_CREATE, ProjectType.TEAM, "Y", user,
+			PageRequest.of(0, 5));
+
 	}
 
 }

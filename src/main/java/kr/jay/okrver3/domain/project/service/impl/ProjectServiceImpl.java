@@ -4,12 +4,17 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.ProjectType;
+import kr.jay.okrver3.domain.project.SortType;
+import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.project.service.ProjectService;
@@ -47,7 +52,8 @@ public class ProjectServiceImpl implements ProjectService {
 	public ProjectTeamMemberInfo inviteTeamMember(String projectToken, User invitedUser, User inviter) {
 		Project project = inviteUserValidator(projectToken, invitedUser.getEmail(), inviter);
 		project.addTeamMember(invitedUser);
-		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),project.getObjective());
+		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),
+			project.getObjective());
 	}
 
 	@Override
@@ -55,8 +61,14 @@ public class ProjectServiceImpl implements ProjectService {
 		inviteUserValidator(projectToken, invitedUserEmail, user);
 	}
 
+	@Override
+	public Page<ProjectDetailInfo> getDetailProjectList(SortType sortType, ProjectType projectType,
+		String validateIncludeFinishedProjectYN, User user, Pageable pageable) {
+		return null;
+	}
+
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {
-		if(user.getEmail().equals(invitedUserEmail))
+		if (user.getEmail().equals(invitedUserEmail))
 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 
 		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, user)
@@ -73,7 +85,6 @@ public class ProjectServiceImpl implements ProjectService {
 	private boolean isUserProjectLeader(User user, Project project) {
 		return project.getProjectLeader().getUser().equals(user);
 	}
-
 
 	private Project buildProjectFrom(ProjectMasterSaveDto dto) {
 		LocalDate startDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);
