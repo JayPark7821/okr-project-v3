@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +34,12 @@ public class ProjectApiController {
 		@RequestBody @Valid ProjectMasterSaveDto requestDto,
 		Authentication authentication
 	) {
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
 		return Response.success(
 			HttpStatus.CREATED,
-			projectFacade.registerProject(requestDto, (User)authentication.getPrincipal())
+			projectFacade.registerProject(requestDto, user)
 		);
 	}
 
@@ -42,10 +48,13 @@ public class ProjectApiController {
 		@PathVariable("projectToken") String projectToken,
 		Authentication authentication
 	) {
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
 		return Response.success(
 			HttpStatus.CREATED,
 			new ProjectInfoResponse(
-				projectFacade.getProjectInfoBy(projectToken, (User)authentication.getPrincipal()))
+				projectFacade.getProjectInfoBy(projectToken, user))
 		);
 
 	}
@@ -56,9 +65,12 @@ public class ProjectApiController {
 		Authentication authentication
 	) {
 
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
 		return Response.success(
 			HttpStatus.CREATED,
-			projectFacade.inviteTeamMember(teamMemberInviteRequestDto, (User)authentication.getPrincipal())
+			projectFacade.inviteTeamMember(teamMemberInviteRequestDto, user)
 		);
 	}
 
