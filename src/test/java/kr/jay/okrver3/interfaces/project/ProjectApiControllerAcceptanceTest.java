@@ -68,8 +68,8 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	@DisplayName("팀원 없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		final String response = RestAssured.
 
@@ -92,10 +92,35 @@ public class ProjectApiControllerAcceptanceTest {
 	}
 
 	@Test
-	@DisplayName("팀원을 추가하여 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
-	void create_project_with_team_members() throws Exception {
+	@DisplayName("프로젝트를 생성시 시작&종료 일자 포멧을 잘못 입력하면 기대하는 응답(exception)을 반환한다.")
+	void create_project_date_validation_fail() throws Exception {
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + authToken)
+			.contentType(ContentType.JSON)
+			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+				List.of("keyResult1", "keyResult2"), null)).
+
+			when()
+			.post(baseUrl+"/project").
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo("8자리의 yyyy-MM-dd 형식이어야 합니다.");
+
+	}
+
+	@Test
+	@DisplayName("팀원을 추가하여 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_team_members() throws Exception {
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		final String response = RestAssured.
 

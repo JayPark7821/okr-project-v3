@@ -15,6 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
@@ -48,13 +50,19 @@ public class Project {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private final List<KeyResult> keyResults = new ArrayList<>();
 
+	@Column(name = "project_sdt")
 	private LocalDate startDate;
 
+	@Column(name = "project_edt")
 	private LocalDate endDate;
 
+	@Column(name = "project_type")
 	@Enumerated(EnumType.STRING)
 	private ProjectType type;
 
+	@Column(name = "project_objective")
+	@NotNull
+	@Size(max = 50)
 	private String objective;
 
 	private double progress;

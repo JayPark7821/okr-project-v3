@@ -76,8 +76,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 
 	private Project buildProjectFrom(ProjectMasterSaveDto dto) {
-		LocalDate startDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ofPattern("yyyyMMdd"));
-		LocalDate endDt = LocalDate.parse(dto.edt(), DateTimeFormatter.ofPattern("yyyyMMdd"));
+		LocalDate startDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);
+		LocalDate endDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);
 
 		return Project.builder()
 			.startDate(startDt)
