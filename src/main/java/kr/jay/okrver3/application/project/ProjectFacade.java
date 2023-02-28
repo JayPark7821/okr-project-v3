@@ -90,6 +90,6 @@ public class ProjectFacade {
 
 	public Page<ProjectDetailInfo> getDetailProjectList(SortType sortType, ProjectType projectType , String validateIncludeFinishedProjectYN,
 		User user, Pageable pageable) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.getProjectList())");
+		return projectService.getDetailProjectList(sortType, projectType, validateIncludeFinishedProjectYN, user, pageable);
 	}
 }

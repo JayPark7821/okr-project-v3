@@ -10,8 +10,12 @@ public record ProjectDetailResponse(
 ) {
 
 	public ProjectDetailResponse(ProjectDetailInfo projectDetailInfo) {
-		this(projectDetailInfo.projectToken(), projectDetailInfo.newProject(), projectDetailInfo.progress(),
-			 projectDetailInfo.sdt(), projectDetailInfo.edt(), projectDetailInfo.teamMembers(),
-			 projectDetailInfo.projectType());
+		this(projectDetailInfo.projectToken(),
+			projectDetailInfo.newProject(),
+			projectDetailInfo.progress(),
+			 projectDetailInfo.sdt(),
+			projectDetailInfo.edt(),
+			projectDetailInfo.teamMembers().projectTeamMemberUsers().stream().map(ProjectTeamMemberResponse::new).toList(),
+			 projectDetailInfo.projectType().name());
 	}
 }
