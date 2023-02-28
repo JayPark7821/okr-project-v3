@@ -40,6 +40,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public User getReferenceById(Long id) {
+		return userRepository.getReferenceById(id);
+	}
+
+	@Override
 	public UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequestDto joinRequestDto) {
 		userRepository.findByEmail(guestInfo.email())
 			.ifPresent(user -> {

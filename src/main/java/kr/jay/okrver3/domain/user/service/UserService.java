@@ -12,6 +12,7 @@ public interface UserService {
 
 	Optional<User> findByEmail(String email);
 
+	User getReferenceById(Long id);
 	UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequestDto joinRequestDto);
 
 }

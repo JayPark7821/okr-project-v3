@@ -16,6 +16,8 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.team.ProjectRoleType;
@@ -41,10 +43,10 @@ public class Project {
 	private String projectToken;
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	private List<TeamMember> teamMember = new ArrayList<>();
+	private final List<TeamMember> teamMember = new ArrayList<>();
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	private List<KeyResult> keyResults = new ArrayList<>();
+	private final List<KeyResult> keyResults = new ArrayList<>();
 
 	private String name;
 
@@ -60,15 +62,16 @@ public class Project {
 	private double progress;
 
 	@Builder
-	public Project(String name, LocalDate startDate, LocalDate endDate, ProjectType type, String objective,
-		double progress, List<String> keyResultList) {
+	public Project(String name, LocalDate startDate, LocalDate endDate, String objective,
+		double progress, List<String> keyResultList ) {
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_MASTER_PREFIX);
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.type = type;
+		this.type = ProjectType.SINGLE;
 		this.objective = objective;
 		this.progress = progress;
+
 		keyResultList.forEach(keyResult -> {
 			this.keyResults.add(KeyResult.builder()
 				.project(this)
@@ -77,17 +80,39 @@ public class Project {
 				.build());
 		});
 	}
-
-	public void inviteTeamMember(TeamMember teamMember) {
-		this.teamMember.add(teamMember);
+	public void addLeader(User leader) {
+		this.teamMember.add(
+			TeamMember.builder()
+				.user(leader)
+				.project(this)
+				.projectRoleType(ProjectRoleType.LEADER)
+				.isNew(true)
+				.build()
+		);
+	}
+	public void addTeamMember(User user) {
+		this.teamMember.add(
+			TeamMember.builder()
+				.user(user)
+				.project(this)
+				.projectRoleType(ProjectRoleType.MEMBER)
+				.isNew(true)
+				.build());
+		
+		this.type = ProjectType.TEAM;
 	}
 
-	public void addLeader(User user) {
-		TeamMember.builder()
-			.user(user)
-			.project(this)
-			.projectRoleType(ProjectRoleType.LEADER)
-			.isNew(true)
-			.build();
+	public void validateEmail(String email) {
+		if(this.teamMember
+			.stream()
+			.anyMatch(tm-> tm.getUser().getEmail().equals(email)))
+			throw new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER);
+
+	}
+
+	public TeamMember getProjectLeader() {
+		return this.teamMember.stream().filter(tm -> tm.getProjectRoleType() == ProjectRoleType.LEADER)
+			.findFirst()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.PROJECT_LEADER_NOT_FOUND));
 	}
 }

@@ -1,9 +1,12 @@
 package kr.jay.okrver3.application.project;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.service.NotificationService;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectService;
@@ -25,7 +28,12 @@ public class ProjectFacade {
 	private final NotificationService notificationService;
 
 	public String registerProject(ProjectMasterSaveDto dto, User user) {
-		ProjectInfo projectInfo = projectService.registerProject(dto, user);
+
+		List<User> teamMemberUsers =
+			dto.teamMembers() != null ? getTeamUsersFromEmails(dto) : List.of();
+
+		ProjectInfo projectInfo = projectService.registerProject(dto, userService.getReferenceById(user.getUserSeq()), teamMemberUsers);
+
 		return projectInfo.projectToken();
 	}
 
@@ -35,10 +43,13 @@ public class ProjectFacade {
 
 	public String inviteTeamMember(TeamMemberInviteRequestDto requestDto, User inviter) {
 
-		User invitedUser = userService.findByEmail(requestDto.email())
-			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 사용자가 존재하지 않습니다."));
+		if(inviter.getEmail().equals(requestDto.email()))
+			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 
-		ProjectTeamMemberInfo projectTeamMemberInfo = projectService.inviteTeamMember(requestDto.projectToken(), invitedUser, inviter);
+		User invitedUser = getUserToInviteBy(requestDto.email());
+
+		ProjectTeamMemberInfo projectTeamMemberInfo = projectService.inviteTeamMember(requestDto.projectToken(),
+			invitedUser, inviter);
 
 		notificationService.sendInvitationNotification(
 			getTeamMemberToSendNoti(invitedUser, projectTeamMemberInfo),
@@ -47,6 +58,22 @@ public class ProjectFacade {
 		);
 
 		return invitedUser.getEmail();
+	}
+
+	public String validateEmail(String projectToken, String email, User user) {
+		projectService.validateUserToInvite(projectToken, getUserToInviteBy(email).getEmail(), user);
+		return email;
+	}
+
+	private User getUserToInviteBy(String email) {
+		return userService.findByEmail(email)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
+	}
+
+	private List<User> getTeamUsersFromEmails(ProjectMasterSaveDto dto) {
+		return dto.teamMembers().stream().map(userService::findByEmail)
+			.filter(Optional::isPresent)
+			.map(Optional::get).toList();
 	}
 
 	private static List<User> getTeamMemberToSendNoti(User invitedUser, ProjectTeamMemberInfo projectTeamMemberInfo) {

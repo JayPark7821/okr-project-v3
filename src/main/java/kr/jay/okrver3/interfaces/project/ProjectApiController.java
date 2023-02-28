@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,31 +24,37 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/project")
+@RequestMapping("/api/v1")
 public class ProjectApiController {
 
 	private final ProjectFacade projectFacade;
 
-	@PostMapping
+	@PostMapping("/project")
 	ResponseEntity<String> registerProject(
 		@RequestBody @Valid ProjectMasterSaveDto requestDto,
 		Authentication authentication
 	) {
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
 		return Response.success(
 			HttpStatus.CREATED,
-			projectFacade.registerProject(requestDto, (User)authentication.getPrincipal())
+			projectFacade.registerProject(requestDto, user)
 		);
 	}
 
-	@GetMapping("/{projectToken}")
+	@GetMapping("/project/{projectToken}")
 	ResponseEntity<ProjectInfoResponse> getProjectInfoBy(
 		@PathVariable("projectToken") String projectToken,
 		Authentication authentication
 	) {
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
 		return Response.success(
 			HttpStatus.CREATED,
 			new ProjectInfoResponse(
-				projectFacade.getProjectInfoBy(projectToken, (User)authentication.getPrincipal()))
+				projectFacade.getProjectInfoBy(projectToken, user))
 		);
 
 	}
@@ -56,10 +65,29 @@ public class ProjectApiController {
 		Authentication authentication
 	) {
 
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
 		return Response.success(
 			HttpStatus.CREATED,
-			projectFacade.inviteTeamMember(teamMemberInviteRequestDto, (User)authentication.getPrincipal())
+			projectFacade.inviteTeamMember(teamMemberInviteRequestDto, user)
 		);
-	 
+	}
+
+	@GetMapping("/team/invite/{projectToken}/{email}")
+	ResponseEntity<String> validateEmail(
+		@PathVariable("projectToken") String projectToken,
+		@PathVariable("email") String email,
+		Authentication authentication
+	) {
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.OK,
+				projectFacade.validateEmail(projectToken, email, user)
+			);
 	}
 }
