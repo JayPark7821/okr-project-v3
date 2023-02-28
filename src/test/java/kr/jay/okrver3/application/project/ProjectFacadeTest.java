@@ -34,12 +34,15 @@ import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
+import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
+import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
-	NotificationServiceImpl.class, NotificationJDBCRepository.class})
+	NotificationServiceImpl.class, NotificationJDBCRepository.class, ProjectRepositoryImpl.class,
+	ProjectQueryDslRepository.class})
 class ProjectFacadeTest {
 
 	@Autowired
@@ -57,13 +60,12 @@ class ProjectFacadeTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		String projectToken = sut.registerProject(
 			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), user);
-
 
 		Project result =
 			em.createQuery("select n from Project n where n.objective =: objective", Project.class)
@@ -84,8 +86,8 @@ class ProjectFacadeTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		String projectToken = sut.registerProject(
 			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
@@ -142,7 +144,6 @@ class ProjectFacadeTest {
 
 	}
 
-
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
@@ -153,11 +154,10 @@ class ProjectFacadeTest {
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
 
-		final String response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user );
+		final String response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user);
 
 		assertThat(response).isEqualTo(memberEmail);
 	}
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
@@ -174,8 +174,6 @@ class ProjectFacadeTest {
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
 	}
-
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
@@ -235,16 +233,27 @@ class ProjectFacadeTest {
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
 
-
 	@Test
-	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
+	@Sql("classpath:insert-project-date.sql")
+	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_미포함_팀프로젝트() throws Exception {
 
+		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
+			.setParameter("userSeq", 13L)
 			.getSingleResult();
 
-		Page<ProjectDetailInfo> result = sut.getDetailProjectList(SortType.RECENTLY_CREATE, ProjectType.TEAM, "Y", user,
+		Page<ProjectDetailInfo> result = sut.getDetailProjectList(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N", user,
 			PageRequest.of(0, 5));
+
+		assertThat(result.getTotalElements()).isEqualTo(2);
+		List<ProjectDetailInfo> content = result.getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+			ProjectDetailInfo r = content.get(i);
+			assertThat(r.projectType()).isEqualTo(ProjectType.TEAM.name());
+			assertThat(r.progress()).isLessThan(100);
+			assertThat(r.projectToken()).isEqualTo(recentlyCreatedSortProject.get(i));
+		}
 
 	}
 
