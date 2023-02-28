@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.service.NotificationService;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectService;
@@ -57,7 +59,16 @@ public class ProjectFacade {
 	}
 
 	public String validateEmail(String projectToken, String email, User user) {
-		return projectService.validateEmail(projectToken, email, user);
+
+		if(user.getEmail().equals(email))
+			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
+
+		User invitedUser = userService.findByEmail(email)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
+
+		projectService.validateUserToInvite(projectToken, invitedUser.getEmail(), user);
+
+		return email;
 	}
 
 	private List<User> getTeamUsersFromEmails(ProjectMasterSaveDto dto) {

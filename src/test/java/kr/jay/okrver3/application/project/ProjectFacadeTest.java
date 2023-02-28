@@ -140,7 +140,7 @@ class ProjectFacadeTest {
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
 	void validate_email_address() throws Exception {
 
@@ -156,7 +156,7 @@ class ProjectFacadeTest {
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
 
@@ -174,7 +174,7 @@ class ProjectFacadeTest {
 
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void when_member_validate_email_address_will_throw_exception() throws Exception {
 		String memberEmail = "guest@email.com";
@@ -189,7 +189,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 위해 잘못된 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_exception() throws Exception {
 
@@ -204,7 +204,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_already_team_member() throws Exception {
 		String teamMemberEmail = "fakeGoogleIdEmail";
@@ -218,10 +218,10 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-user.sql")
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_login_user_email() throws Exception {
-		String userEmail = "'apple@apple.com'";
+		String userEmail = "apple@apple.com";
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", 1L)
 			.getSingleResult();
