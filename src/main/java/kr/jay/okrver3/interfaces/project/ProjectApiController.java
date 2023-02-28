@@ -60,6 +60,14 @@ public class ProjectApiController {
 			HttpStatus.CREATED,
 			projectFacade.inviteTeamMember(teamMemberInviteRequestDto, (User)authentication.getPrincipal())
 		);
-	 
+	}
+
+	@GetMapping("/team/invite/{projectToken}/{email}")
+	ResponseEntity<String> validateEmail(
+		@PathVariable @Valid String projectToken,
+		@PathVariable @Valid String email,
+		Authentication authentication
+	) {
+		throw new UnsupportedOperationException("Not yet implemented");
 	}
 }
