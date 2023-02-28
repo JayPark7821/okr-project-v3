@@ -23,7 +23,9 @@ public enum ErrorCode {
 	CASTING_USER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Casting to User failed"),
 	PROJECT_LEADER_NOT_FOUND(HttpStatus.BAD_REQUEST,"프로젝트의 리더가 없습니다." ),
 	REQUIRED_DATE_VALUE(HttpStatus.BAD_REQUEST, "날짜는 필수 값 입니다."),
-	;
+	INVALID_FINISHED_PROJECT_YN(HttpStatus.BAD_REQUEST, "종료된 프로젝트 포함여부는 Y 또는 N 만 가능합니다. "),
+	INVALID_SORT_TYPE(HttpStatus.BAD_REQUEST, "잘못된 정렬 타입 입니다."),
+	INVALID_PROJECT_TYPE(HttpStatus.BAD_REQUEST, "잘못된 프로젝트 타입입니다.");
 
 
 	private HttpStatus status;

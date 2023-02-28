@@ -243,7 +243,7 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		ResponseEntity<Page<ProjectListResponse>> response = sut.getProjectList("RECENTLY_CREATE", "Y", "TEAM", auth,
+		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "Y", "TEAM", auth,
 			PageRequest.of(0, 5));
 
 	}
