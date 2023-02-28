@@ -64,4 +64,9 @@ public class ProjectServiceImpl implements ProjectService {
 		project.addTeamMember(invitedUser);
 		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),project.getName());
 	}
+
+	@Override
+	public String validateEmail(String projectToken, String email, User user) {
+		return null;
+	}
 }

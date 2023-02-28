@@ -11,4 +11,6 @@ public interface ProjectService {
 	ProjectInfo getProjectInfoBy(String projectToken, User user);
 
 	ProjectTeamMemberInfo inviteTeamMember(String projectToken, User invitedUser, User inviter);
+
+	String validateEmail(String projectToken, String email, User user);
 }
