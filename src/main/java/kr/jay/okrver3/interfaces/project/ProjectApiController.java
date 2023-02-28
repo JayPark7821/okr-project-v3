@@ -80,6 +80,14 @@ public class ProjectApiController {
 		@PathVariable @Valid String email,
 		Authentication authentication
 	) {
-		throw new UnsupportedOperationException("Not yet implemented");
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.OK,
+				projectFacade.validateEmail(projectToken, email, user)
+			);
 	}
 }

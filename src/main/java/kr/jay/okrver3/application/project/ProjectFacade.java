@@ -68,4 +68,8 @@ public class ProjectFacade {
 			.filter(user -> !user.equals(invitedUser))
 			.toList();
 	}
+
+	public String validateEmail(String projectToken, String email, User user) {
+		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.validateEmail())");
+	}
 }
