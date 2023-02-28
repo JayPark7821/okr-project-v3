@@ -41,10 +41,10 @@ public class Project {
 	private String projectToken;
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	private List<TeamMember> teamMember = new ArrayList<>();
+	private final List<TeamMember> teamMember = new ArrayList<>();
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	private List<KeyResult> keyResults = new ArrayList<>();
+	private final List<KeyResult> keyResults = new ArrayList<>();
 
 	private String name;
 
@@ -60,15 +60,16 @@ public class Project {
 	private double progress;
 
 	@Builder
-	public Project(String name, LocalDate startDate, LocalDate endDate, ProjectType type, String objective,
-		double progress, List<String> keyResultList) {
+	public Project(String name, LocalDate startDate, LocalDate endDate, String objective,
+		double progress, List<String> keyResultList ) {
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_MASTER_PREFIX);
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.type = type;
+		this.type = ProjectType.SINGLE;
 		this.objective = objective;
 		this.progress = progress;
+
 		keyResultList.forEach(keyResult -> {
 			this.keyResults.add(KeyResult.builder()
 				.project(this)
@@ -78,17 +79,15 @@ public class Project {
 		});
 	}
 
-	public void inviteTeamMember(TeamMember teamMember) {
-		this.teamMember.add(teamMember);
-	}
-
-	public void addLeader(User user) {
-		this.teamMember.add(TeamMember.builder()
-			.user(user)
-			.project(this)
-			.projectRoleType(ProjectRoleType.LEADER)
-			.isNew(true)
-			.build());
+	public void addLeader(User leader) {
+		this.teamMember.add(
+			TeamMember.builder()
+				.user(leader)
+				.project(this)
+				.projectRoleType(ProjectRoleType.LEADER)
+				.isNew(true)
+				.build()
+		);
 	}
 
 	public void addTeamMember(User user) {

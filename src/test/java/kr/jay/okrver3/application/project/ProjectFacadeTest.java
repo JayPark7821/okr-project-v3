@@ -20,6 +20,7 @@ import org.springframework.test.context.jdbc.Sql;
 import kr.jay.okrver3.domain.notification.Notification;
 import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.notification.service.impl.NotificationServiceImpl;
+import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
@@ -57,6 +58,13 @@ class ProjectFacadeTest {
 			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
 				List.of("keyResult1", "keyResult2"), null), user);
 
+
+		Project result =
+			em.createQuery("select n from Project n where n.name =: projectName", Project.class)
+				.setParameter("projectName", "projectName")
+				.getSingleResult();
+
+		assertThat(result.getTeamMember().size()).isEqualTo(1);
 		assertThat(projectToken).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 	}
@@ -75,6 +83,13 @@ class ProjectFacadeTest {
 		String projectToken = sut.registerProject(
 			new ProjectMasterSaveDto("projectName", projectSdt, projectEdt, "projectObjective",
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user);
+
+		Project result =
+			em.createQuery("select n from Project n where n.name =: projectName", Project.class)
+				.setParameter("projectName", "projectName")
+				.getSingleResult();
+
+		assertThat(result.getTeamMember().size()).isEqualTo(2);
 
 		assertThat(projectToken).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));

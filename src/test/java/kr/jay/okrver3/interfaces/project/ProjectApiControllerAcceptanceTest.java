@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProjectApiControllerAcceptanceTest {
 
@@ -47,17 +48,20 @@ public class ProjectApiControllerAcceptanceTest {
 
 	private String authToken;
 
-	@BeforeEach
-	void setUp() {
-		RestAssured.port = port;
-		authToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+	@BeforeAll
+	void setUpAll() {
 		try (Connection conn = dataSource.getConnection()) {
+			authToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-user.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	@BeforeEach
+	void setUp() {
+		RestAssured.port = port;
 	}
 
 	@Test
@@ -123,15 +127,15 @@ public class ProjectApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.get(baseUrl + "project-fgFHxGWeIUQt").
+			.get(baseUrl + "project-fgFHxGWeIUFa").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().jsonPath();
 
-		assertThat(response.getString("projectToken")).isEqualTo("project-fgFHxGWeIUQt");
-		assertThat(response.getString("name")).isEqualTo("projectName");
-		assertThat(response.getString("objective")).isEqualTo("projectObjective");
+		assertThat(response.getString("projectToken")).isEqualTo("project-fgFHxGWeIUFa");
+		assertThat(response.getString("name")).isEqualTo("projectName2");
+		assertThat(response.getString("objective")).isEqualTo("projectObjective2");
 		assertThat(response.getString("startDate")).isEqualTo("2020-12-01");
 		assertThat(response.getString("endDate")).isEqualTo("2020-12-12");
 		assertThat(response.getString("projectType")).isEqualTo("SINGLE");

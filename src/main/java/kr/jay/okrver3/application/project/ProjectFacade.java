@@ -30,7 +30,7 @@ public class ProjectFacade {
 		List<User> teamMemberUsers =
 			dto.teamMembers() != null ? getTeamUsersFromEmails(dto) : List.of();
 
-		ProjectInfo projectInfo = projectService.registerProject(dto, user, teamMemberUsers);
+		ProjectInfo projectInfo = projectService.registerProject(dto, userService.getReferenceById(user.getUserSeq()), teamMemberUsers);
 
 		return projectInfo.projectToken();
 	}
