@@ -10,7 +10,6 @@ import java.util.Objects;
 import javax.persistence.EntityManager;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +21,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 
 @Repository
 public class ProjectQueryDslRepository {
@@ -35,21 +34,20 @@ public class ProjectQueryDslRepository {
 		this.queryFactory = new JPAQueryFactory(em);
 	}
 
-	public Page<Project> getDetailProjectList(SortType sortType, ProjectType projectType,
-		String includeFinishedProjectYN, User requestUser, Pageable pageable) {
+	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command) {
 
 		List<Project> results = queryFactory
 			.select(project)
 			.from(project)
 			.innerJoin(project.teamMember, teamMember)
 			.innerJoin(teamMember.user, user)
-			.where(user.eq(requestUser),
-				includeFinishedProject(includeFinishedProjectYN),
-				projectTypeOption(projectType)
+			.where(user.eq(command.user()),
+				includeFinishedProject(command.includeFinishedProjectYN()),
+				projectTypeOption(command.projectType())
 			)
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.orderBy(getSortType(sortType))
+			.offset(command.pageable().getOffset())
+			.limit(command.pageable().getPageSize())
+			.orderBy(getSortType(command.sortType()))
 			.fetch();
 
 		JPAQuery<Long> countQuery = queryFactory
@@ -57,12 +55,12 @@ public class ProjectQueryDslRepository {
 			.from(project)
 			.innerJoin(project.teamMember, teamMember)
 			.innerJoin(teamMember.user, user)
-			.where(user.eq(requestUser),
-				includeFinishedProject(includeFinishedProjectYN),
-				projectTypeOption(projectType)
+			.where(user.eq(command.user()),
+				includeFinishedProject(command.includeFinishedProjectYN()),
+				projectTypeOption(command.projectType())
 			);
 
-		return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetch().size());
+		return PageableExecutionUtils.getPage(results, command.pageable(), () -> countQuery.fetch().size());
 	}
 
 	private BooleanExpression projectTypeOption(ProjectType projectType) {

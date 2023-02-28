@@ -4,20 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.service.NotificationService;
-import kr.jay.okrver3.domain.project.ProjectType;
-import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectService;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
+import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,8 @@ public class ProjectFacade {
 		List<User> teamMemberUsers =
 			dto.teamMembers() != null ? getTeamUsersFromEmails(dto) : List.of();
 
-		ProjectInfo projectInfo = projectService.registerProject(dto, userService.getReferenceById(user.getUserSeq()), teamMemberUsers);
+		ProjectInfo projectInfo = projectService.registerProject(dto, userService.getReferenceById(user.getUserSeq()),
+			teamMemberUsers);
 
 		return projectInfo.projectToken();
 	}
@@ -48,7 +47,7 @@ public class ProjectFacade {
 
 	public String inviteTeamMember(TeamMemberInviteRequestDto requestDto, User inviter) {
 
-		if(inviter.getEmail().equals(requestDto.email()))
+		if (inviter.getEmail().equals(requestDto.email()))
 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 
 		User invitedUser = getUserToInviteBy(requestDto.email());
@@ -88,8 +87,7 @@ public class ProjectFacade {
 			.toList();
 	}
 
-	public Page<ProjectDetailInfo> getDetailProjectList(SortType sortType, ProjectType projectType , String validateIncludeFinishedProjectYN,
-		User user, Pageable pageable) {
-		return projectService.getDetailProjectList(sortType, projectType, validateIncludeFinishedProjectYN, user, pageable);
+	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
+		return projectService.getDetailProjectList(command);
 	}
 }

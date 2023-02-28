@@ -62,7 +62,6 @@ public class ProjectApiController {
 		);
 	}
 
-
 	@GetMapping("/project")
 	public ResponseEntity<Page<ProjectDetailResponse>> getDetailProjectList(
 		String sortType,
@@ -78,25 +77,19 @@ public class ProjectApiController {
 			.success(
 				HttpStatus.OK,
 				projectFacade.getDetailProjectList(
-					SortType.of(sortType),
-					ProjectType.of(projectType),
-					validateIncludeFinishedProjectYN(includeFinishedProjectYN),
-					user,
-					pageable
+					new ProjectDetailRetrieveCommand(SortType.of(sortType),
+						ProjectType.of(projectType),
+						validateIncludeFinishedProjectYN(includeFinishedProjectYN),
+						user,
+						pageable)
 				).map(ProjectDetailResponse::new)
 			);
 
-
-
-
-		// } else {
-		// 	throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_RPOJECT_YN);
-		// }
 	}
 
 	private String validateIncludeFinishedProjectYN(String includeFinishedProjectYN) {
 		String finishedProjectYN = includeFinishedProjectYN == null ? "N" : includeFinishedProjectYN.toUpperCase();
-		if( finishedProjectYN.matches("[YN]") )
+		if (finishedProjectYN.matches("[YN]"))
 			return finishedProjectYN;
 
 		throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_PROJECT_YN);

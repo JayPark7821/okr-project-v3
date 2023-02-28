@@ -36,6 +36,7 @@ import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
+import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
@@ -242,8 +243,9 @@ class ProjectFacadeTest {
 			.setParameter("userSeq", 13L)
 			.getSingleResult();
 
-		Page<ProjectDetailInfo> result = sut.getDetailProjectList(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N", user,
-			PageRequest.of(0, 5));
+		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
+			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N", user,
+				PageRequest.of(0, 5)));
 
 		assertThat(result.getTotalElements()).isEqualTo(2);
 		List<ProjectDetailInfo> content = result.getContent();

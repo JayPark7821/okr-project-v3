@@ -5,15 +5,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.ProjectType;
-import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
@@ -21,6 +18,7 @@ import kr.jay.okrver3.domain.project.service.ProjectService;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,10 +60,8 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Page<ProjectDetailInfo> getDetailProjectList(SortType sortType, ProjectType projectType,
-		String validateIncludeFinishedProjectYN, User user, Pageable pageable) {
-		return projectRepository.getDetailProjectList(sortType, projectType,
-			validateIncludeFinishedProjectYN, user, pageable);
+	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
+		return projectRepository.getDetailProjectList(command);
 	}
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {

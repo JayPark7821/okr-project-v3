@@ -3,18 +3,16 @@ package kr.jay.okrver3.infrastructure.project;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.ProjectType;
-import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -40,12 +38,10 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
-	public Page<ProjectDetailInfo> getDetailProjectList(SortType sortType, ProjectType projectType,
-		String validateIncludeFinishedProjectYN, User user, Pageable pageable) {
+	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
 
-		return projectQueryDslRepository.getDetailProjectList(sortType, projectType,
-			validateIncludeFinishedProjectYN,
-			user, pageable).map(project -> getProjectDetailInfo(project, user.getEmail()));
+		return projectQueryDslRepository.getDetailProjectList(command)
+			.map(project -> getProjectDetailInfo(project, command.user().getEmail()));
 	}
 
 	private ProjectDetailInfo getProjectDetailInfo(Project project, String email) {

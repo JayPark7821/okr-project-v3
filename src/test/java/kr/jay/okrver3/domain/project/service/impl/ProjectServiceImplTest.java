@@ -33,6 +33,7 @@ import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
+import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 
 @DataJpaTest
@@ -106,7 +107,7 @@ class ProjectServiceImplTest {
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
 		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
 		assertThat(projectInfo.endDate()).isEqualTo("2020-12-12");
-		assertThat(projectInfo.projectType()).isEqualTo("TEAM");
+		assertThat(projectInfo.projectType()).isEqualTo("SINGLE");
 	}
 
 	@Test
@@ -196,8 +197,9 @@ class ProjectServiceImplTest {
 			.setParameter("userSeq", 13L)
 			.getSingleResult();
 
-		Page<ProjectDetailInfo> result = sut.getDetailProjectList(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N", user,
-			PageRequest.of(0, 5));
+		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
+			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N", user,
+				PageRequest.of(0, 5)));
 
 		assertThat(result.getTotalElements()).isEqualTo(2);
 		List<ProjectDetailInfo> content = result.getContent();
