@@ -47,9 +47,6 @@ public class ProjectFacade {
 
 	public String inviteTeamMember(TeamMemberInviteRequestDto requestDto, User inviter) {
 
-		if (inviter.getEmail().equals(requestDto.email()))
-			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
-
 		User invitedUser = getUserToInviteBy(requestDto.email());
 
 		ProjectTeamMemberInfo projectTeamMemberInfo = projectService.inviteTeamMember(requestDto.projectToken(),

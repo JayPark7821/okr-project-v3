@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import io.restassured.response.ResponseBodyExtractionOptions;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
@@ -65,6 +63,7 @@ public class ProjectApiControllerAcceptanceTest {
 			e.printStackTrace();
 		}
 	}
+
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;
@@ -85,7 +84,7 @@ public class ProjectApiControllerAcceptanceTest {
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
-			.post(baseUrl+"/project").
+			.post(baseUrl + "/project").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -111,7 +110,7 @@ public class ProjectApiControllerAcceptanceTest {
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
-			.post(baseUrl+"/project").
+			.post(baseUrl + "/project").
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -136,7 +135,7 @@ public class ProjectApiControllerAcceptanceTest {
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
-			.post(baseUrl+"/project").
+			.post(baseUrl + "/project").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -158,7 +157,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.get(baseUrl +"/project"+ "/project-fgFHxGWeIUFa").
+			.get(baseUrl + "/project" + "/project-fgFHxGWeIUFa").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
@@ -201,17 +200,15 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken).
 
-
 			when()
-			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
+			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + memberEmail).
 
 			then()
- 			.statusCode(HttpStatus.OK.value())
+			.statusCode(HttpStatus.OK.value())
 			.extract().body().asString();
 
 		assertThat(response).isEqualTo(memberEmail);
 	}
-
 
 	@Test
 	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
@@ -221,10 +218,11 @@ public class ProjectApiControllerAcceptanceTest {
 		final String response = RestAssured.
 
 			given()
-			.header("Authorization", "Bearer " + JwtTokenUtils.generateToken("fakeAppleEmail", key, accessExpiredTimeMs)).
+			.header("Authorization",
+				"Bearer " + JwtTokenUtils.generateToken("fakeAppleEmail", key, accessExpiredTimeMs)).
 
 			when()
-			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
+			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + memberEmail).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -232,8 +230,6 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response).isEqualTo(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 	}
-
-
 
 	@Test
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
@@ -243,11 +239,11 @@ public class ProjectApiControllerAcceptanceTest {
 		final String response = RestAssured.
 
 			given()
-			.header("Authorization", "Bearer " + JwtTokenUtils.generateToken("fakeGoogleIdEmail", key, accessExpiredTimeMs)).
-
+			.header("Authorization",
+				"Bearer " + JwtTokenUtils.generateToken("fakeGoogleIdEmail", key, accessExpiredTimeMs)).
 
 			when()
-			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + memberEmail).
+			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + memberEmail).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -267,7 +263,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + wrongEmailAdd).
+			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + wrongEmailAdd).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -288,7 +284,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
+			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + teamMemberEmail).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -309,7 +305,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl+"/team/invite" +"/project-fgFHxGWeIUQt"+ "/" + teamMemberEmail).
+			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + teamMemberEmail).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -317,7 +313,6 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response).isEqualTo(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
-
 
 	@Test
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
@@ -337,8 +332,27 @@ public class ProjectApiControllerAcceptanceTest {
 
 	}
 
+	@Test
+	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
+		String projectToken = "";
 
+		final JsonPath response = RestAssured.
 
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/project" + "/" + projectToken + "/side").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().jsonPath();
+
+		assertThat(response.getString("progress")).isNotNull();
+		assertThat(response.getList("teamMembers").size()).isEqualTo(3);
+
+	}
 
 }
 
