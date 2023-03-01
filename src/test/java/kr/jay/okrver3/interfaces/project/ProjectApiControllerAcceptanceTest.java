@@ -351,7 +351,24 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response.getString("progress")).isEqualTo("0.0");
 		assertThat(response.getList("teamMembers").size()).isEqualTo(2);
+	}
 
+	@Test
+	void 프로젝트_켈린더_조회시_기대하는_응답을_리턴한다_ProjectCalendarResponse() throws Exception {
+		String yearMonth = "2023-03";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/project/calendar/" + yearMonth).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().jsonPath();
 	}
 
 }
