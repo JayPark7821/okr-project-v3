@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
+import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 
 public interface ProjectService {
 	ProjectInfo registerProject(ProjectMasterSaveDto dto, User user, List<User> teamMemberUsers);
@@ -18,5 +19,7 @@ public interface ProjectService {
 	void validateUserToInvite(String projectToken, String invitedUserEmail, User user);
 
 	Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command);
+
+	ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user);
 }
 
