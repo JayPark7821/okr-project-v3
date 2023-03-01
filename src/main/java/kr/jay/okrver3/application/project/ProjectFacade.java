@@ -17,6 +17,7 @@ import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
+import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,5 +87,9 @@ public class ProjectFacade {
 
 	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
 		return projectService.getDetailProjectList(command);
+	}
+
+	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
+		return null;
 	}
 }
