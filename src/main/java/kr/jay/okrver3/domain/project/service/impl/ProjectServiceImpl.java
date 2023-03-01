@@ -67,7 +67,9 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
-		return null;
+		return projectRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, user)
+			.map(ProjectSideMenuResponse::new)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {

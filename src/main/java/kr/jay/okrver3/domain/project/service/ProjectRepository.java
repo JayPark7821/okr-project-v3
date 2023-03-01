@@ -16,4 +16,6 @@ public interface ProjectRepository {
 	Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(String projectToken, User inviter);
 
 	Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command);
+
+	Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(String projectToken, User user);
 }
