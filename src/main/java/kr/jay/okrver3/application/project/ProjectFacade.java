@@ -90,6 +90,6 @@ public class ProjectFacade {
 	}
 
 	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
-		return null;
+		return projectService.getProjectSideMenuDetails(projectToken, user);
 	}
 }
