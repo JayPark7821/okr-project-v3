@@ -126,4 +126,12 @@ public class ProjectApiController {
 				projectFacade.validateEmail(projectToken, email, user)
 			);
 	}
+
+	@GetMapping("/project/{projectToken}/side")
+	ResponseEntity<ProjectSideMenuResponse> getProjectSideMenuDetails(
+		@PathVariable("projectToken") String projectToken,
+		Authentication authentication
+	) {
+		return null;
+	}
 }
