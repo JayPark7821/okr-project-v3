@@ -257,6 +257,7 @@ class ProjectApiControllerTest {
 	}
 
 	@Test
+	@Sql("classpath:insert-project-date.sql")
 	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
 		String projectToken = "mst_K4g4tfdaergg6421";
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)

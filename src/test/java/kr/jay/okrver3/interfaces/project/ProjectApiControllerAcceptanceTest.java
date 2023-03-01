@@ -334,7 +334,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
-		String projectToken = "";
+		String projectToken = "project-fgFHxGWeIUQt";
 
 		final JsonPath response = RestAssured.
 
@@ -349,8 +349,8 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.OK.value())
 			.extract().jsonPath();
 
-		assertThat(response.getString("progress")).isNotNull();
-		assertThat(response.getList("teamMembers").size()).isEqualTo(3);
+		assertThat(response.getString("progress")).isEqualTo("0.0");
+		assertThat(response.getList("teamMembers").size()).isEqualTo(2);
 
 	}
 
