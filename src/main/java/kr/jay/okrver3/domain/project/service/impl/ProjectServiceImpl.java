@@ -20,6 +20,7 @@ import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
+import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,6 +63,13 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
 		return projectRepository.getDetailProjectList(command);
+	}
+
+	@Override
+	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
+		return projectRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, user)
+			.map(ProjectSideMenuResponse::new)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {

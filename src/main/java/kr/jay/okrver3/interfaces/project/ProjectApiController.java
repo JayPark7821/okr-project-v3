@@ -126,4 +126,20 @@ public class ProjectApiController {
 				projectFacade.validateEmail(projectToken, email, user)
 			);
 	}
+
+	@GetMapping("/project/{projectToken}/side")
+	ResponseEntity<ProjectSideMenuResponse> getProjectSideMenuDetails(
+		@PathVariable("projectToken") String projectToken,
+		Authentication authentication
+	) {
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.OK,
+				projectFacade.getProjectSideMenuDetails(projectToken, user)
+			);
+	}
 }

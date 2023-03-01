@@ -44,6 +44,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 			.map(project -> getProjectDetailInfo(project, command.user().getEmail()));
 	}
 
+	@Override
+	public Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(String projectToken, User user) {
+		return projectJpaRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, user);
+	}
+
 	private ProjectDetailInfo getProjectDetailInfo(Project project, String email) {
 		return new ProjectDetailInfo(
 			project.getProjectToken(),

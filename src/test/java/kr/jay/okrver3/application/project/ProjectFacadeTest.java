@@ -38,6 +38,7 @@ import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
+import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
@@ -259,4 +260,18 @@ class ProjectFacadeTest {
 
 	}
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
+		String projectToken = "mst_K4g4tfdaergg6421";
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 13L)
+			.getSingleResult();
+
+		ProjectSideMenuResponse response = sut.getProjectSideMenuDetails(projectToken, user);
+
+		assertThat(response.progress()).isEqualTo("60.0");
+		assertThat(response.teamMembers().size()).isEqualTo(3);
+
+	}
 }

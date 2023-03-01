@@ -17,6 +17,7 @@ import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
+import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +47,6 @@ public class ProjectFacade {
 	}
 
 	public String inviteTeamMember(TeamMemberInviteRequestDto requestDto, User inviter) {
-
-		if (inviter.getEmail().equals(requestDto.email()))
-			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 
 		User invitedUser = getUserToInviteBy(requestDto.email());
 
@@ -89,5 +87,9 @@ public class ProjectFacade {
 
 	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
 		return projectService.getDetailProjectList(command);
+	}
+
+	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
+		return projectService.getProjectSideMenuDetails(projectToken, user);
 	}
 }
