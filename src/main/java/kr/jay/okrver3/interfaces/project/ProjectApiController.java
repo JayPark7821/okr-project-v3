@@ -132,6 +132,14 @@ public class ProjectApiController {
 		@PathVariable("projectToken") String projectToken,
 		Authentication authentication
 	) {
-		return null;
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.OK,
+				projectFacade.getProjectSideMenuDetails(projectToken, user)
+			);
 	}
 }
