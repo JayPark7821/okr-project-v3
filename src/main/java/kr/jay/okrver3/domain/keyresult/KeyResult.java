@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kr.jay.okrver3.common.audit.BaseEntity;
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.project.Project;
 import lombok.AccessLevel;
@@ -19,9 +20,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-public class KeyResult {
+public class KeyResult extends BaseEntity {
 
-	private static final String PROJECT_KEYRESULT_PREFIX = "key-";
+	private static final String PROJECT_KEYRESULT_PREFIX = "keyResult-";
 	@Id
 	@Column(name = "key_result_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

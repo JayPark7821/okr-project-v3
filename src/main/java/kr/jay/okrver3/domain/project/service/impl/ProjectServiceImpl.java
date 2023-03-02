@@ -73,9 +73,22 @@ public class ProjectServiceImpl implements ProjectService {
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
+	@Transactional
 	@Override
-	public String registerKeyResult(ProjectKeyResultSaveDto projectKeyResultSaveDto, User user) {
-		return null;
+	public String registerKeyResult(ProjectKeyResultSaveDto dto, User user) {
+		Project project = projectRepository.findProjectKeyResultByProjectTokenAndUser(
+			dto.projectToken(), user).orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+
+		if (!isUserProjectLeader(user, project))
+			throw new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER);
+
+		if(!project.isValidUntilToday())
+			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
+
+		if(!project.isKeyResultAddable())
+			throw new OkrApplicationException(ErrorCode.KEYRESULT_LIMIT_EXCEED);
+
+		return project.addKeyResult(dto.keyResultName());
 	}
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {

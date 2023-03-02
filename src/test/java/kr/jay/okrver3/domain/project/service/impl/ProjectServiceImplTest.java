@@ -251,27 +251,27 @@ class ProjectServiceImplTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 프로젝트_기간_종료후_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
-		String projectToken = "mst_as3fg34tgg6421";
+		String projectToken = "mst_K4e8a5s7d6lb6421";
 		String keyResultName = "keyResult";
 
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 13L)
+			.setParameter("userSeq", 12L)
 			.getSingleResult();
 
 		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.PROJECT_FINISHED.getMessage());
+			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 
 	}
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 팀원이_프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
-		String projectToken = "mst_K4g4tfdaergg6421";
+		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 13L)
+			.setParameter("userSeq", 3L)
 			.getSingleResult();
 
 		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))

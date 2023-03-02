@@ -39,4 +39,12 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 		@Param("token") String token,
 		@Param("user") User user
 	);
+
+	@Query("select p "
+		+ "from Project p "
+		+ "join p.teamMember t "
+		+ "left join fetch p.keyResults k "
+		+ "where t.user = :user "
+		+ "and p.projectToken =:projectToken ")
+	Optional<Project> findProjectKeyResultByProjectTokenAndUser(@Param("projectToken") String projectToken, @Param("user") User user);
 }
