@@ -114,7 +114,7 @@ class ProjectServiceImplTest {
 		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
 		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
-		assertThat(projectInfo.endDate()).isEqualTo("2020-12-12");
+		assertThat(projectInfo.endDate()).isEqualTo("3999-12-12");
 		assertThat(projectInfo.projectType()).isEqualTo("SINGLE");
 	}
 

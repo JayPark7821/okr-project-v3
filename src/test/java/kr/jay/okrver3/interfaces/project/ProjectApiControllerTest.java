@@ -99,7 +99,7 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody().projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(response.getBody().objective()).isEqualTo("projectObjective");
 		assertThat(response.getBody().startDate()).isEqualTo("2020-12-01");
-		assertThat(response.getBody().endDate()).isEqualTo("2020-12-12");
+		assertThat(response.getBody().endDate()).isEqualTo("3999-12-12");
 		assertThat(response.getBody().projectType()).isEqualTo("SINGLE");
 	}
 

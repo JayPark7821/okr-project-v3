@@ -166,7 +166,7 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.getString("projectToken")).isEqualTo("project-fgFHxGWeIUFa");
 		assertThat(response.getString("objective")).isEqualTo("projectObjective2");
 		assertThat(response.getString("startDate")).isEqualTo("2020-12-01");
-		assertThat(response.getString("endDate")).isEqualTo("2020-12-12");
+		assertThat(response.getString("endDate")).isEqualTo("3999-12-12");
 		assertThat(response.getString("projectType")).isEqualTo("SINGLE");
 
 	}
@@ -383,7 +383,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.body(new ProjectKeyResultSaveDto(projectToken,keyResultName )).
 
 			when()
-			.get(baseUrl + "/keyresult").
+			.post(baseUrl + "/keyresult").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())
