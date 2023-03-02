@@ -25,5 +25,6 @@ public interface ProjectService {
 
 	String registerKeyResult(ProjectKeyResultSaveDto projectKeyResultSaveDto, User user);
 
+	ProjectInfo getKeyResultIdForSavingInitiative(String keyResultToken, User user);
 }
 
