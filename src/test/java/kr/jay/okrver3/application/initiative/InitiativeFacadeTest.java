@@ -1,7 +1,8 @@
-package kr.jay.okrver3.interfaces.initiative;
+package kr.jay.okrver3.application.initiative;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
@@ -9,21 +10,20 @@ import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
-import kr.jay.okrver3.TestHelpUtils;
+import kr.jay.okrver3.application.project.ProjectFacade;
+import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.User;
 
-@Transactional
-@SpringBootTest
-class InitiativeApiControllerTest {
+@DataJpaTest
+@Import({InitiativeFacade.class, ProjectServiceImpl.class})
+class InitiativeFacadeTest {
 
 	@Autowired
-	private InitiativeApiController sut;
+	private ProjectFacade sut;
 
 	@PersistenceContext
 	EntityManager em;
@@ -32,11 +32,11 @@ class InitiativeApiControllerTest {
 	@Sql("classpath:insert-project-date.sql")
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
-		InitiativeSaveDto requestDto = new InitiativeSaveDto(
+		InitiativeSaveCommand requestDto = new InitiativeSaveCommand(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
-			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
-			TestHelpUtils.getDateString(-100, "yyyy-MM-dd"),
+			LocalDate.now().minusDays(10),
+			LocalDate.now().plusDays(10),
 			"행동전략 상세내용"
 		);
 
@@ -44,13 +44,9 @@ class InitiativeApiControllerTest {
 			.setParameter("userSeq", 3L)
 			.getSingleResult();
 
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		String response = sut.registerInitiative(requestDto, user);
 
-		ResponseEntity<String> response = sut.registerInitiative(requestDto, auth);
-
-		assertThat(response.getBody()).containsPattern(
+		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{10}"));
 	}
-
 }
