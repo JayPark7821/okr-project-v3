@@ -305,7 +305,7 @@ class ProjectFacadeTest {
 
 		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
+ 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
 
 	@Test

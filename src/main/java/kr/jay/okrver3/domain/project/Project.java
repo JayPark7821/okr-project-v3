@@ -122,7 +122,7 @@ public class Project extends BaseEntity {
 	public TeamMember getProjectLeader() {
 		return this.teamMember.stream().filter(tm -> tm.getProjectRoleType() == ProjectRoleType.LEADER)
 			.findFirst()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.PROJECT_LEADER_NOT_FOUND));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
 	}
 
 	public boolean isValidUntilToday() {
