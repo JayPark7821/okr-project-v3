@@ -274,4 +274,26 @@ class ProjectApiControllerTest {
 
 	}
 
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
+		String projectToken = "project-fgFHxGWeIUQt";
+		String keyResultName = "keyResult";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 13L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<String> response = sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), auth);
+
+
+		assertThat(response.getBody()).containsPattern(
+			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
+
+	}
+
 }

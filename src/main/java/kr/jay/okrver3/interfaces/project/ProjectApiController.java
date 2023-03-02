@@ -142,4 +142,12 @@ public class ProjectApiController {
 				projectFacade.getProjectSideMenuDetails(projectToken, user)
 			);
 	}
+
+	@PostMapping("/keyresult")
+	public ResponseEntity<String> registerKeyResult(
+		@RequestBody @Valid ProjectKeyResultSaveDto projectKeyResultSaveDto,
+		Authentication authentication
+	) {
+		return null;
+	}
 }
