@@ -16,6 +16,7 @@ import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
@@ -91,5 +92,10 @@ public class ProjectFacade {
 
 	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
 		return projectService.getProjectSideMenuDetails(projectToken, user);
+	}
+
+	public String registerKeyResult(ProjectKeyResultSaveDto projectKeyResultSaveDto, User user) {
+		throw new UnsupportedOperationException(
+			"kr.jay.okrver3.application.project.ProjectFacade.registerKeyResult())");
 	}
 }
