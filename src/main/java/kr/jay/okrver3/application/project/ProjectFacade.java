@@ -16,7 +16,6 @@ import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.interfaces.project.ProjectInitiativeSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
@@ -99,7 +98,7 @@ public class ProjectFacade {
 		return projectService.registerKeyResult(projectKeyResultSaveDto, user);
 	}
 
-	public String registerInitiative(ProjectInitiativeSaveDto requestDto, User user) {
-		return projectService.registerInitiative(requestDto, user);
+	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
+		return projectService.registerInitiative(command, user);
 	}
 }

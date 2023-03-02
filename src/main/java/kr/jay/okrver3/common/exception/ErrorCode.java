@@ -28,8 +28,12 @@ public enum ErrorCode {
 	INVALID_USER_INFO(HttpStatus.BAD_REQUEST, "잘못된 사용자 정보 입니다."),
 	KEYRESULT_LIMIT_EXCEED(HttpStatus.BAD_REQUEST, "핵심 결과는 최대 3개까지 등록 가능합니다."),
 	NOT_UNDER_PROJECT_DURATION(HttpStatus.BAD_REQUEST, "프로젝트 기간이 아닙니다"),
-	UNSUPPORTED_VALIDATOR(HttpStatus.INTERNAL_SERVER_ERROR, "Unsupport validator" );
-
+	UNSUPPORTED_VALIDATOR(HttpStatus.INTERNAL_SERVER_ERROR, "Unsupport validator" ),
+	INVALID_KEYRESULT_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 핵심 결과 토큰 입니다."), 
+	INVALID_FEEDBACK_TYPE(HttpStatus.BAD_REQUEST,"잘못된 피드백 타입 입니다."),
+	INITIATIVE_END_DATE_SHOULD_AFTER_TODAY(HttpStatus.BAD_REQUEST,"행동전략 마감일은 오늘 이후여야 합니다."),
+	INVALID_INITIATIVE_DATE(HttpStatus.BAD_REQUEST, "행동전략의 시작, 종료일은 목표 기간 안에서만 등록할 수 있습니다."),
+;
 	private HttpStatus status;
 	private String message;
 

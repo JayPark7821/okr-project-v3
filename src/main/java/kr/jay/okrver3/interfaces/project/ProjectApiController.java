@@ -171,7 +171,7 @@ public class ProjectApiController {
 		return Response
 			.success(
 				HttpStatus.CREATED,
-				projectFacade.registerInitiative(requestDto, user)
+				projectFacade.registerInitiative(requestDto.toCommand(), user)
 			);
 	}
 }

@@ -3,6 +3,7 @@ package kr.jay.okrver3.domain.project.service.impl;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,13 +21,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
@@ -44,7 +48,7 @@ import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class, ProjectValidateProcessor.class, ProjectLeaderValidator.class,
-	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class
+	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class
 })
 class ProjectServiceImplTest {
 
@@ -300,5 +304,33 @@ class ProjectServiceImplTest {
 			.hasMessage(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
 
 	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
+
+		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			LocalDate.now().minusDays(10),
+			LocalDate.now().plusDays(10),
+			"행동전략 상세내용"
+		);
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 3L)
+			.getSingleResult();
+
+		String response = sut.registerInitiative(requestDto, user);
+
+
+		Initiative initiativeToken = em.createQuery(
+				"select i from Initiative i where i.initiativeToken = :initiativeToken", Initiative.class)
+			.setParameter("initiativeToken", response)
+			.getSingleResult();
+		assertThat(initiativeToken.getInitiativeToken()).containsPattern(
+			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+	}
+
 
 }

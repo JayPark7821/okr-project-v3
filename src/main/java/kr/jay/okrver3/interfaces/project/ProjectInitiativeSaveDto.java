@@ -1,8 +1,14 @@
 package kr.jay.okrver3.interfaces.project;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.DateValid;
 
 public record ProjectInitiativeSaveDto(
@@ -26,4 +32,14 @@ public record ProjectInitiativeSaveDto(
 	String detail
 
 ) {
+
+	public ProjectInitiativeSaveCommand toCommand() {
+		LocalDate endDt = LocalDate.parse(this.edt, DateTimeFormatter.ISO_DATE);
+		LocalDate startDt = LocalDate.parse(this.sdt, DateTimeFormatter.ISO_DATE);
+
+		if(LocalDate.now().isAfter(endDt))
+			throw new OkrApplicationException(ErrorCode.INITIATIVE_END_DATE_SHOULD_AFTER_TODAY);
+
+		return new ProjectInitiativeSaveCommand(this.keyResultToken, this.name,startDt, endDt, this.detail);
+	}
 }

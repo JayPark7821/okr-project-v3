@@ -3,6 +3,7 @@ package kr.jay.okrver3.application.project;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -20,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.Notification;
@@ -42,7 +42,6 @@ import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.interfaces.project.ProjectInitiativeSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
@@ -336,11 +335,11 @@ class ProjectFacadeTest {
 	@Sql("classpath:insert-project-date.sql")
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
-		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
-			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
-			TestHelpUtils.getDateString(-100, "yyyy-MM-dd"),
+			LocalDate.now().minusDays(10),
+			LocalDate.now().plusDays(10),
 			"행동전략 상세내용"
 		);
 
