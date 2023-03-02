@@ -27,6 +27,10 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
@@ -39,7 +43,9 @@ import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 
 @DataJpaTest
-@Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class})
+@Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class, ProjectValidateProcessor.class, ProjectLeaderValidator.class,
+	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class
+})
 class ProjectServiceImplTest {
 
 	@Autowired

@@ -28,7 +28,7 @@ public enum ErrorCode {
 	INVALID_USER_INFO(HttpStatus.BAD_REQUEST, "잘못된 사용자 정보 입니다."),
 	KEYRESULT_LIMIT_EXCEED(HttpStatus.BAD_REQUEST, "핵심 결과는 최대 3개까지 등록 가능합니다."),
 	NOT_UNDER_PROJECT_DURATION(HttpStatus.BAD_REQUEST, "프로젝트 기간이 아닙니다"),
-	;
+	UNSUPPORTED_VALIDATOR(HttpStatus.INTERNAL_SERVER_ERROR, "Unsupport validator" );
 
 	private HttpStatus status;
 	private String message;

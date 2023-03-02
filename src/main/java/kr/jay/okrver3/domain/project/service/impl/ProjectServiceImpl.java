@@ -16,6 +16,8 @@ import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.project.service.ProjectService;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectServiceImpl implements ProjectService {
 
 	private final ProjectRepository projectRepository;
+	private final ProjectValidateProcessor validateProcessor;
 
 	@Transactional
 	@Override
@@ -79,14 +82,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = projectRepository.findProjectKeyResultByProjectTokenAndUser(
 			dto.projectToken(), user).orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
-		if (!isUserProjectLeader(user, project))
-			throw new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER);
-
-		if(!project.isValidUntilToday())
-			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
-
-		if(!project.isKeyResultAddable())
-			throw new OkrApplicationException(ErrorCode.KEYRESULT_LIMIT_EXCEED);
+		validateProcessor.validate(ProjectValidateProcessorType.ADD_KEYRESULT_VALIDATION, project, user);
 
 		return project.addKeyResult(dto.keyResultName());
 	}
@@ -98,17 +94,13 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
-		if (!isUserProjectLeader(user, project))
-			throw new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER);
+		validateProcessor.validate(ProjectValidateProcessorType.PROJECT_BASIC_VALIDATION, project, user);
 
 		project.validateEmail(invitedUserEmail);
 
 		return project;
 	}
 
-	private boolean isUserProjectLeader(User user, Project project) {
-		return project.getProjectLeader().getUser().equals(user);
-	}
 
 	private Project buildProjectFrom(ProjectMasterSaveDto dto) {
 		LocalDate startDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);

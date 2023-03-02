@@ -31,6 +31,10 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
+import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
@@ -45,7 +49,9 @@ import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
 	NotificationServiceImpl.class, NotificationJDBCRepository.class, ProjectRepositoryImpl.class,
-	ProjectQueryDslRepository.class})
+	ProjectQueryDslRepository.class,
+	ProjectValidateProcessor.class, ProjectLeaderValidator.class,
+	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class})
 class ProjectFacadeTest {
 
 	@Autowired
