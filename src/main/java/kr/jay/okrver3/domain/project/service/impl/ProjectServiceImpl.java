@@ -8,7 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.application.initiative.InitiativeSaveCommand;
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.initiative.Initiative;
@@ -23,7 +24,6 @@ import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
@@ -89,22 +89,22 @@ public class ProjectServiceImpl implements ProjectService {
 
 		return project.addKeyResult(dto.keyResultName());
 	}
-
-	@Override
-	@Transactional
-	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
-		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
-
-		Initiative initiative = buildInitiative(command, user, project);
-		validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, initiative);
-		KeyResult keyResult = project.getKeyResults()
-			.stream()
-			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
-			.findFirst()
-			.orElseThrow();
-		return keyResult.addInitiative(initiative);
-	}
+	//
+	// @Override
+	// @Transactional
+	// public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
+	// 	Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
+	// 		.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
+	//
+	// 	Initiative initiative = buildInitiative(command, user, project);
+	// 	validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, initiative);
+	// 	KeyResult keyResult = project.getKeyResults()
+	// 		.stream()
+	// 		.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
+	// 		.findFirst()
+	// 		.orElseThrow();
+	// 	return keyResult.addInitiative(initiative);
+	// }
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {
 		if (user.getEmail().equals(invitedUserEmail))
@@ -133,8 +133,7 @@ public class ProjectServiceImpl implements ProjectService {
 			.build();
 	}
 
-
-	private Initiative buildInitiative(ProjectInitiativeSaveCommand command, User user, Project project) {
+	private Initiative buildInitiative(InitiativeSaveCommand command, User user, Project project) {
 		KeyResult keyResult = project.getKeyResults()
 			.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))

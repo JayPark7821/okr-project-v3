@@ -18,10 +18,10 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 
 @Repository
 public class ProjectQueryDslRepository {

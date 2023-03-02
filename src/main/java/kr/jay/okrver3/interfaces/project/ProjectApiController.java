@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.Response;
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -159,19 +160,4 @@ public class ProjectApiController {
 			);
 	}
 
-	@PostMapping("/initiative")
-	public ResponseEntity<String> registerInitiative(
-		@RequestBody @Valid ProjectInitiativeSaveDto requestDto,
-		Authentication authentication
-	) {
-
-		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
-
-		return Response
-			.success(
-				HttpStatus.CREATED,
-				projectFacade.registerInitiative(requestDto.toCommand(), user)
-			);
-	}
 }
