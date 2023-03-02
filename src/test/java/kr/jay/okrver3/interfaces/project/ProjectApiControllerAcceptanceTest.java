@@ -3,7 +3,6 @@ package kr.jay.okrver3.interfaces.project;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.sql.Connection;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -30,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
@@ -378,12 +378,21 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
+
+		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
+			TestHelpUtils.getDateString(-100, "yyyy-MM-dd"),
+			"행동전략 상세내용"
+		);
+
 		final String response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new ProjectInitiativeSaveDto( "key_wV6MX15WQ3DTzQMs", "행동전략", getDateString(10, "yyyy-MM-dd"), getDateString(-100, "yyyy-MM-dd"),"행동전략 상세내용")).
+			.body(requestDto).
 
 			when()
 			.post(baseUrl + "/initiative").
@@ -394,14 +403,6 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{10}"));
-	}
-
-	public static String getDateString(int calcDays, String pattern) {
-		if (calcDays < 0) {
-			return LocalDate.now().minusDays(calcDays * -1).format(DateTimeFormatter.ofPattern(pattern));
-		} else {
-			return LocalDate.now().plusDays(calcDays).format(DateTimeFormatter.ofPattern(pattern));
-		}
 	}
 }
 

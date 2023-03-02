@@ -158,4 +158,13 @@ public class ProjectApiController {
 				projectFacade.registerKeyResult(projectKeyResultSaveDto, user)
 			);
 	}
+
+	@PostMapping("/initiative")
+	public ResponseEntity<String> registerInitiative(
+		@RequestBody @Valid ProjectInitiativeSaveDto requestDto,
+		Authentication auth
+	) {
+		throw new UnsupportedOperationException(
+			"kr.jay.okrver3.interfaces.project.ProjectApiController.registerInitiative())");
+	}
 }
