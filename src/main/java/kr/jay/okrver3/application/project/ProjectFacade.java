@@ -95,7 +95,6 @@ public class ProjectFacade {
 	}
 
 	public String registerKeyResult(ProjectKeyResultSaveDto projectKeyResultSaveDto, User user) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.application.project.ProjectFacade.registerKeyResult())");
+		return projectService.registerKeyResult(projectKeyResultSaveDto, user);
 	}
 }
