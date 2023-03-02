@@ -27,6 +27,10 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
@@ -34,11 +38,14 @@ import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 
 @DataJpaTest
-@Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class})
+@Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class, ProjectValidateProcessor.class, ProjectLeaderValidator.class,
+	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class
+})
 class ProjectServiceImplTest {
 
 	@Autowired
@@ -226,6 +233,71 @@ class ProjectServiceImplTest {
 
 		assertThat(response.progress()).isEqualTo("60.0");
 		assertThat(response.teamMembers().size()).isEqualTo(3);
+
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
+		String projectToken = "mst_as3fg34tgg6421";
+		String keyResultName = "keyResult";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 13L)
+			.getSingleResult();
+
+		String response = sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user);
+
+		assertThat(response).containsPattern(
+			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
+
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 프로젝트_기간_종료후_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
+		String projectToken = "mst_K4e8a5s7d6lb6421";
+		String keyResultName = "keyResult";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 12L)
+			.getSingleResult();
+
+		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
+
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 팀원이_프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
+		String projectToken = "mst_as3fg34tgg6421";
+		String keyResultName = "keyResult";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 3L)
+			.getSingleResult();
+
+		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 프로젝트에_핵심결과_3개_이상_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
+		String projectToken = "mst_Kiwqnp1Nq6lbTNn0";
+		String keyResultName = "keyResult";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 2L)
+			.getSingleResult();
+
+		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
 
 	}
 

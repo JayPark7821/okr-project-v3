@@ -38,6 +38,7 @@ import lombok.NoArgsConstructor;
 public class Project extends BaseEntity {
 
 	private static final String PROJECT_MASTER_PREFIX = "project-";
+	private static final int MAX_KEYRESULT_COUNT = 3;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "project_id")
@@ -121,6 +122,28 @@ public class Project extends BaseEntity {
 	public TeamMember getProjectLeader() {
 		return this.teamMember.stream().filter(tm -> tm.getProjectRoleType() == ProjectRoleType.LEADER)
 			.findFirst()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.PROJECT_LEADER_NOT_FOUND));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
 	}
+
+	public boolean isValidUntilToday() {
+		return this.endDate.isAfter(LocalDate.now()) &&
+			(this.startDate.isEqual(LocalDate.now()) || this.startDate.isBefore(LocalDate.now()));
+	}
+
+	public boolean isKeyResultAddable() {
+		return this.keyResults.size() < MAX_KEYRESULT_COUNT;
+	}
+
+	public String addKeyResult(String keyResultName) {
+		KeyResult keyResult = KeyResult.builder()
+			.project(this)
+			.name(keyResultName)
+			.index(this.keyResults.size() + 1)
+			.build();
+
+		this.keyResults.add(keyResult);
+
+		return keyResult.getKeyResultToken();
+	}
+
 }

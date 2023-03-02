@@ -142,4 +142,20 @@ public class ProjectApiController {
 				projectFacade.getProjectSideMenuDetails(projectToken, user)
 			);
 	}
+
+	@PostMapping("/keyresult")
+	public ResponseEntity<String> registerKeyResult(
+		@RequestBody @Valid ProjectKeyResultSaveDto projectKeyResultSaveDto,
+		Authentication authentication
+	) {
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.CREATED,
+				projectFacade.registerKeyResult(projectKeyResultSaveDto, user)
+			);
+	}
 }

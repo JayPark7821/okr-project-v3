@@ -16,9 +16,12 @@ import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.project.service.ProjectService;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProjectServiceImpl implements ProjectService {
 
 	private final ProjectRepository projectRepository;
+	private final ProjectValidateProcessor validateProcessor;
 
 	@Transactional
 	@Override
@@ -72,6 +76,17 @@ public class ProjectServiceImpl implements ProjectService {
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
+	@Transactional
+	@Override
+	public String registerKeyResult(ProjectKeyResultSaveDto dto, User user) {
+		Project project = projectRepository.findProjectKeyResultByProjectTokenAndUser(
+			dto.projectToken(), user).orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+
+		validateProcessor.validate(ProjectValidateProcessorType.ADD_KEYRESULT_VALIDATION, project, user);
+
+		return project.addKeyResult(dto.keyResultName());
+	}
+
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {
 		if (user.getEmail().equals(invitedUserEmail))
 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
@@ -79,17 +94,13 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
-		if (!isUserProjectLeader(user, project))
-			throw new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER);
+		validateProcessor.validate(ProjectValidateProcessorType.PROJECT_BASIC_VALIDATION, project, user);
 
 		project.validateEmail(invitedUserEmail);
 
 		return project;
 	}
 
-	private boolean isUserProjectLeader(User user, Project project) {
-		return project.getProjectLeader().getUser().equals(user);
-	}
 
 	private Project buildProjectFrom(ProjectMasterSaveDto dto) {
 		LocalDate startDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);

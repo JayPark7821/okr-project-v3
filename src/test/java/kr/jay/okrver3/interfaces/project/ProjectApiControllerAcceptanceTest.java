@@ -351,9 +351,51 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response.getString("progress")).isEqualTo("0.0");
 		assertThat(response.getList("teamMembers").size()).isEqualTo(2);
+	}
+
+	@Test
+	void 프로젝트_켈린더_조회시_기대하는_응답을_리턴한다_ProjectCalendarResponse() throws Exception {
+		String yearMonth = "2023-03";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/project/calendar/" + yearMonth).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().jsonPath();
+	}
+
+	@Test
+	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
+		String projectToken = "project-fgFHxGWeIUQt";
+		String keyResultName = "keyResult";
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken)
+			.body(new ProjectKeyResultSaveDto(projectToken,keyResultName )).
+
+			when()
+			.get(baseUrl + "/keyresult").
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().body().asString();
+
+		assertThat(response).containsPattern(
+			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
 
 	}
 
+
+	//TODO : 프로젝트 생성시 keyresult 4개 이상 등록시 exception 케이스 추가.
 }
 
 
