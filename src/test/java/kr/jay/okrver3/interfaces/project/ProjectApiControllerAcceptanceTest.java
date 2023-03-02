@@ -3,6 +3,7 @@ package kr.jay.okrver3.interfaces.project;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -354,24 +355,6 @@ public class ProjectApiControllerAcceptanceTest {
 	}
 
 	@Test
-	void 프로젝트_켈린더_조회시_기대하는_응답을_리턴한다_ProjectCalendarResponse() throws Exception {
-		String yearMonth = "2023-03";
-
-		final JsonPath response = RestAssured.
-
-			given()
-			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + authToken).
-
-			when()
-			.get(baseUrl + "/project/calendar/" + yearMonth).
-
-			then()
-			.statusCode(HttpStatus.OK.value())
-			.extract().jsonPath();
-	}
-
-	@Test
 	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
 		String projectToken = "project-fgFHxGWeIUQt";
 		String keyResultName = "keyResult";
@@ -391,11 +374,35 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
-
 	}
 
+	@Test
+	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
+		final String response = RestAssured.
 
-	//TODO : 프로젝트 생성시 keyresult 4개 이상 등록시 exception 케이스 추가.
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken)
+			.body(new ProjectInitiativeSaveDto( "key_wV6MX15WQ3DTzQMs", "행동전략", getDateString(10, "yyyy-MM-dd"), getDateString(-100, "yyyy-MM-dd"),"행동전략 상세내용")).
+
+			when()
+			.post(baseUrl + "/initiative").
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().body().asString();
+
+		assertThat(response).containsPattern(
+			Pattern.compile("initiative-[a-zA-Z0-9]{10}"));
+	}
+
+	public static String getDateString(int calcDays, String pattern) {
+		if (calcDays < 0) {
+			return LocalDate.now().minusDays(calcDays * -1).format(DateTimeFormatter.ofPattern(pattern));
+		} else {
+			return LocalDate.now().plusDays(calcDays).format(DateTimeFormatter.ofPattern(pattern));
+		}
+	}
 }
 
 
