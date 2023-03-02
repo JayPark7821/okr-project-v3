@@ -371,6 +371,29 @@ public class ProjectApiControllerAcceptanceTest {
 			.extract().jsonPath();
 	}
 
+	@Test
+	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
+		String projectToken = "project-fgFHxGWeIUQt";
+		String keyResultName = "keyResult";
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken)
+			.body(new ProjectKeyResultSaveDto(projectToken,keyResultName )).
+
+			when()
+			.get(baseUrl + "/keyresult").
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().body().asString();
+
+		assertThat(response).containsPattern(
+			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
+
+	}
+
 }
 
 
