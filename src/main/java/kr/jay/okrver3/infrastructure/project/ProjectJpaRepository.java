@@ -2,7 +2,10 @@ package kr.jay.okrver3.infrastructure.project;
 
 import java.util.Optional;
 
+import javax.persistence.LockModeType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -48,6 +51,7 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 		+ "and p.projectToken =:projectToken ")
 	Optional<Project> findProjectKeyResultByProjectTokenAndUser(@Param("projectToken") String projectToken, @Param("user") User user);
 
+	@Lock(value= LockModeType.PESSIMISTIC_WRITE)
 	@Query("select p "
 		+ "from Project p "
 		+ "join fetch p.teamMember t "

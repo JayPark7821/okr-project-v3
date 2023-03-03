@@ -91,19 +91,21 @@ public class ProjectQueryDslRepository {
 	}
 
 	public double getProjectProgress(Project targetProject) {
-		List<Double> progress = queryFactory
-			.select((new CaseBuilder()
-				.when(initiative.done.isTrue()).then(1D)
-				.otherwise(0D)
-				.sum()).divide(initiative.count().add(1)).multiply(100)
-			)
+		Double progress = queryFactory
+			.select(new CaseBuilder().when(initiative.count().eq(0L)).then(0D)
+				.otherwise(
+					(new CaseBuilder()
+						.when(initiative.done.isTrue()).then(1D)
+						.otherwise(0D)
+						.sum()).divide(initiative.count().add(1)).multiply(100)
+				))
 			.from(project)
 			.innerJoin(project.keyResults, keyResult)
 			.innerJoin(keyResult.initiative, initiative)
 			.where(project.eq(targetProject))
-			.fetch();
+			.fetchOne();
 
-		return progress.get(0);
+		return progress;
 
 	}
 }

@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -68,6 +69,7 @@ public class Project extends BaseEntity {
 	private String objective;
 
 	private double progress;
+
 
 	@Builder
 	public Project(LocalDate startDate, LocalDate endDate, String objective,

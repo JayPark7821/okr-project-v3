@@ -90,8 +90,8 @@ public class ProjectServiceImpl implements ProjectService {
 		return project.addKeyResult(dto.keyResultName());
 	}
 
-	@Override
 	@Transactional
+	@Override
 	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
 		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
@@ -100,7 +100,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 		project.updateProgress(projectRepository.getProjectProgress(project));
 
-		return getKeyResult(command, project)
+		return 	getKeyResult(command, project)
 			.addInitiative(
 				buildInitiative(command, getTeamMember(user, project))
 			);

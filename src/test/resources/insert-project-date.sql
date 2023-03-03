@@ -18,26 +18,26 @@ insert into user_table (user_seq, user_id,username, password, email, provider_ty
     ( 10,'testId10', 'testUser10','password','user2222@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' );
 
 insert into project
-(project_id, created_date, last_modified_date, created_by, last_modified_by, project_edt, project_objective, progress, project_token, project_sdt, project_type) values
-(99999, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', '2022-12-14', '프로젝트 1 멀티 프로젝트', 0.0, 'mst_Kiwqnp1Nq6lb4256', '2022-12-07', 'SINGLE'),
-(99998, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', '3999-12-14', '팀 맴버 테스트용 프로젝트', 100.0, 'mst_Kiwqnp1Nq6lbTNn0', '2022-12-07', 'SINGLE'),
-(99997, '2000-12-12', '2023-12-12', 'testUser1', 'testUser1', '2023-12-14', 'key result 테스트용 프로젝트', 0.0, 'mst_Kiwqnp1Nq6lb6421', '2000-12-12', 'TEAM'),
-(99996, '2000-12-12', '2022-12-12', 'testUser1', 'testUser1', '2022-12-14', 'Initiative 테스트용 프로젝트', 11.0, 'mst_K4e8a5s7d6lb6421', '2000-12-12', 'TEAM'),
-(99995, '2000-12-12', '2023-12-12', 'testUser1', 'testUser1', '2023-12-14', '프로젝트 조회 테스트용 프로젝트', 0.0, 'mst_K4232g4g5rgg6421', '2000-12-12', 'TEAM'),
-(99994, '2001-12-12', '2022-12-12', 'testUser1', 'testUser1', '3999-12-31', '프로젝트 조회 테스트용 프로젝트(프로젝트 완료)', 100.0, 'mst_as3fg34tgg6421', '2000-12-12', 'TEAM'),
-(99993, '2002-12-12', '2023-12-12', 'testUser1', 'testUser1', '2033-12-12', '프로젝트 조회 테스트용 프로젝트(프로젝트 70)', 70.0, 'mst_3gbyy554frgg6421', '2000-12-12', 'TEAM'),
-(99992, '2003-12-12', '2023-12-12', 'testUser1', 'testUser1', '2003-12-12', '프로젝트 조회 테스트용 프로젝트(프로젝트 60)', 60.0, 'mst_K4g4tfdaergg6421', '2000-12-12', 'SINGLE'),
-(99991, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2004-12-12', '프로젝트 조회 테스트용 프로젝트(프로젝트 완료2)', 100.0, 'mst_K42334fffrgg6421', '2000-12-12', 'TEAM'),
-(99990, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-10-01', '프로젝트 for 달력 1',  100.0, 'mst_111334fffrgg6421', '2022-01-12', 'TEAM'),
-(99989, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-11-12', '프로젝트 for 달력 2',  100.0, 'mst_K42h45dfd4gg6421', '2022-01-01', 'TEAM'),
-(99988, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-09-12', '프로젝트 for 달력 3',  100.0, 'mst_ff4g34fffrgg6421', '2022-01-12', 'TEAM'),
-(99987, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-12-12', '프로젝트 for 달력 4',  100.0, 'mst_aa344tg5dfgg6421', '2022-01-12', 'TEAM'),
-(99986, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for 달력 5',  100.0, 'mst_qq2f4gbfeefe1gg6421', '2022-01-12', 'TEAM'),
-(88888, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 1',  100.0, 'mst_qq2f4gbffrgg6421', '2022-01-12', 'TEAM'),
-(88887, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 2',  100.0, 'mst_qsdzcxbffrgg6421', '2022-01-12', 'TEAM'),
-(88886, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  100.0, 'mst_qq2aaaaaaagg6421', '2022-01-12', 'TEAM'),
-(88885, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 4',  100.0, 'mst_qq2f4gbfffffe421', '2022-01-12', 'TEAM'),
-(88884, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 5',  100.0, 'mst_qq2f4gaawdeg6421', '2022-01-12', 'TEAM')
+( project_id, created_date, last_modified_date, created_by, last_modified_by, project_edt, project_objective, progress, project_token, project_sdt, project_type) values
+(  99999, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', '2022-12-14', '프로젝트 1 멀티 프로젝트', 0.0, 'mst_Kiwqnp1Nq6lb4256', '2022-12-07', 'SINGLE'),
+(  99998, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', '3999-12-14', '팀 맴버 테스트용 프로젝트', 100.0, 'mst_Kiwqnp1Nq6lbTNn0', '2022-12-07', 'SINGLE'),
+(  99997, '2000-12-12', '2023-12-12', 'testUser1', 'testUser1', '2023-12-14', 'key result 테스트용 프로젝트', 0.0, 'mst_Kiwqnp1Nq6lb6421', '2000-12-12', 'TEAM'),
+(  99996, '2000-12-12', '2022-12-12', 'testUser1', 'testUser1', '2022-12-14', 'Initiative 테스트용 프로젝트', 11.0, 'mst_K4e8a5s7d6lb6421', '2000-12-12', 'TEAM'),
+(  99995, '2000-12-12', '2023-12-12', 'testUser1', 'testUser1', '2023-12-14', '프로젝트 조회 테스트용 프로젝트', 0.0, 'mst_K4232g4g5rgg6421', '2000-12-12', 'TEAM'),
+(  99994, '2001-12-12', '2022-12-12', 'testUser1', 'testUser1', '3999-12-31', '프로젝트 조회 테스트용 프로젝트(프로젝트 완료)', 100.0, 'mst_as3fg34tgg6421', '2000-12-12', 'TEAM'),
+(  99993, '2002-12-12', '2023-12-12', 'testUser1', 'testUser1', '2033-12-12', '프로젝트 조회 테스트용 프로젝트(프로젝트 70)', 70.0, 'mst_3gbyy554frgg6421', '2000-12-12', 'TEAM'),
+(  99992, '2003-12-12', '2023-12-12', 'testUser1', 'testUser1', '2003-12-12', '프로젝트 조회 테스트용 프로젝트(프로젝트 60)', 60.0, 'mst_K4g4tfdaergg6421', '2000-12-12', 'SINGLE'),
+(  99991, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2004-12-12', '프로젝트 조회 테스트용 프로젝트(프로젝트 완료2)', 100.0, 'mst_K42334fffrgg6421', '2000-12-12', 'TEAM'),
+(  99990, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-10-01', '프로젝트 for 달력 1',  100.0, 'mst_111334fffrgg6421', '2022-01-12', 'TEAM'),
+(  99989, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-11-12', '프로젝트 for 달력 2',  100.0, 'mst_K42h45dfd4gg6421', '2022-01-01', 'TEAM'),
+(  99988, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-09-12', '프로젝트 for 달력 3',  100.0, 'mst_ff4g34fffrgg6421', '2022-01-12', 'TEAM'),
+(  99987, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-12-12', '프로젝트 for 달력 4',  100.0, 'mst_aa344tg5dfgg6421', '2022-01-12', 'TEAM'),
+(  99986, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for 달력 5',  100.0, 'mst_qq2f4gbfeefe1gg6421', '2022-01-12', 'TEAM'),
+(  88888, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 1',  100.0, 'mst_qq2f4gbffrgg6421', '2022-01-12', 'TEAM'),
+(  88887, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 2',  100.0, 'mst_qsdzcxbffrgg6421', '2022-01-12', 'TEAM'),
+(  88886, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  100.0, 'mst_qq2aaaaaaagg6421', '2022-01-12', 'TEAM'),
+(  88885, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 4',  100.0, 'mst_qq2f4gbfffffe421', '2022-01-12', 'TEAM'),
+(  88884, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 5',  100.0, 'mst_qq2f4gaawdeg6421', '2022-01-12', 'TEAM')
 ;
 
 

@@ -6,8 +6,13 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -32,6 +37,10 @@ import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
+import kr.jay.okrver3.domain.initiative.Initiative;
+import kr.jay.okrver3.domain.keyresult.KeyResult;
+import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.infrastructure.project.ProjectJpaRepository;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -44,6 +53,9 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Value("${app.auth.tokenExpiry}")
 	private Long accessExpiredTimeMs;
+
+	@PersistenceContext
+	EntityManager em;
 
 	@Autowired
 	DataSource dataSource;
@@ -61,6 +73,7 @@ public class ProjectApiControllerAcceptanceTest {
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-keyresult.sql"));
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-initiative.sql"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -351,7 +364,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.OK.value())
 			.extract().jsonPath();
 
-		assertThat(response.getString("progress")).isEqualTo("0.0");
+		assertThat(response.getString("progress")).isEqualTo("100.0");
 		assertThat(response.getList("teamMembers").size()).isEqualTo(2);
 	}
 
@@ -402,9 +415,64 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().body().asString();
 
+
 		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+
 	}
+
+	@Test
+	void 행동전략_추가시_기대하는_응답을_리턴한다_동시성테스트() throws Exception {
+
+		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
+			TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
+			"행동전략 상세내용"
+		);
+
+		int threadCount = 99;
+		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+		CountDownLatch latch = new CountDownLatch(threadCount);
+
+		for (int i = 0; i < threadCount; i++) {
+			executorService.submit(() -> {
+				try{
+					RestAssured.
+
+						given()
+						.contentType(ContentType.JSON)
+						.header("Authorization", "Bearer " + authToken)
+						.body(requestDto).
+
+						when()
+						.post(baseUrl + "/initiative").
+
+						then()
+						.statusCode(HttpStatus.CREATED.value())
+						.extract().body().asString();
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+		latch.await();
+
+		Project project = em.createQuery(
+				"select p from Project p where p.id = :id", Project.class)
+			.setParameter("id", 9999L)
+			.getSingleResult();
+
+		KeyResult keyResult = em.createQuery(
+				"select k from KeyResult k where k.id = :id", KeyResult.class)
+			.setParameter("id", 9999L)
+			.getSingleResult();
+
+		assertThat(keyResult.getInitiative().size()).isEqualTo(100);
+		assertThat(project.getProgress()).isEqualTo(1.0);
+	}
+
 }
 
 
