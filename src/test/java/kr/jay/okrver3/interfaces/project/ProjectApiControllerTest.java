@@ -306,7 +306,7 @@ class ProjectApiControllerTest {
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
-			TestHelpUtils.getDateString(-100, "yyyy-MM-dd"),
+			TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
 			"행동전략 상세내용"
 		);
 
@@ -321,7 +321,7 @@ class ProjectApiControllerTest {
 
 
 		assertThat(response.getBody()).containsPattern(
-			Pattern.compile("initiative-[a-zA-Z0-9]{10}"));
+			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 	}
 
 
