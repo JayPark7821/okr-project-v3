@@ -25,6 +25,7 @@ import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.initiative.Initiative;
+import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
@@ -330,6 +331,32 @@ class ProjectServiceImplTest {
 			.getSingleResult();
 		assertThat(initiativeToken.getInitiativeToken()).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략_추가시_프로젝트_진척도_변경된다() throws Exception {
+
+		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			LocalDate.now().minusDays(10),
+			LocalDate.now().plusDays(10),
+			"행동전략 상세내용"
+		);
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 3L)
+			.getSingleResult();
+
+		String response = sut.registerInitiative(requestDto, user);
+
+
+		Project project = em.createQuery(
+				"select p from Project p where p.id = :id", Project.class)
+			.setParameter("id", 99998L)
+			.getSingleResult();
+		assertThat(project.getProgress()).isEqualTo(50.0);
 	}
 
 
