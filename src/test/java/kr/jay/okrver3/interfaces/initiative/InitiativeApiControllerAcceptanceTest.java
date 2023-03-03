@@ -25,6 +25,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
+import kr.jay.okrver3.interfaces.project.ProjectInitiativeSaveDto;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -59,7 +60,7 @@ public class InitiativeApiControllerAcceptanceTest {
 	@Test
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
-		InitiativeSaveDto requestDto = new InitiativeSaveDto(
+		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
