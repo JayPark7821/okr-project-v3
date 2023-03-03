@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 
@@ -362,7 +363,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new ProjectKeyResultSaveDto(projectToken, keyResultName)).
+			.body(new ProjectKeyResultSaveDto(projectToken,keyResultName )).
 
 			when()
 			.post(baseUrl + "/keyresult").
@@ -375,6 +376,34 @@ public class ProjectApiControllerAcceptanceTest {
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
 	}
 
+	@Test
+	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
+
+		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
+			TestHelpUtils.getDateString(-100, "yyyy-MM-dd"),
+			"행동전략 상세내용"
+		);
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken)
+			.body(requestDto).
+
+			when()
+			.post(baseUrl + "/initiative").
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().body().asString();
+
+		assertThat(response).containsPattern(
+			Pattern.compile("initiative-[a-zA-Z0-9]{10}"));
+	}
 }
 
 
