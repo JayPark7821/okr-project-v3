@@ -1,5 +1,7 @@
 package kr.jay.okrver3.infrastructure.project;
 
+import static kr.jay.okrver3.domain.initiative.QInitiative.*;
+import static kr.jay.okrver3.domain.keyresult.QKeyResult.*;
 import static kr.jay.okrver3.domain.project.QProject.*;
 import static kr.jay.okrver3.domain.team.QTeamMember.*;
 import static kr.jay.okrver3.domain.user.QUser.*;
@@ -15,9 +17,12 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import kr.jay.okrver3.domain.initiative.QInitiative;
+import kr.jay.okrver3.domain.keyresult.QKeyResult;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
@@ -85,4 +90,20 @@ public class ProjectQueryDslRepository {
 		return Objects.equals(YN, "Y") ? null : project.progress.lt(100);
 	}
 
+	public double getProjectProgress(Project targetProject) {
+		List<Double> progress = queryFactory
+			.select((new CaseBuilder()
+				.when(initiative.done.isTrue()).then(1D)
+				.otherwise(0D)
+				.sum()).divide(initiative.count().add(1)).multiply(100)
+			)
+			.from(project)
+			.innerJoin(project.keyResults, keyResult)
+			.innerJoin(keyResult.initiative, initiative)
+			.where(project.eq(targetProject))
+			.fetch();
+
+		return progress.get(0);
+
+	}
 }

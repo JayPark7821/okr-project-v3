@@ -50,9 +50,10 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
 	@Query("select p "
 		+ "from Project p "
-		+ "join p.teamMember t "
-		+ "join fetch p.keyResults k "
-		+ "where t.user = :user "
+		+ "join fetch p.teamMember t "
+		+ "join fetch t.user u "
+		+ "join p.keyResults k "
+		+ "where u = :user "
 		+ "and k.keyResultToken =:keyResultToken ")
 	Optional<Project> findByKeyResultTokenAndUser(
 		@Param("keyResultToken") String keyResultToken,

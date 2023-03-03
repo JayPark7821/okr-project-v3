@@ -98,13 +98,15 @@ public class ProjectServiceImpl implements ProjectService {
 
 		validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, command);
 
+		project.updateProgress(projectRepository.getProjectProgress(project));
+
 		return getKeyResult(command, project)
 			.addInitiative(
 				buildInitiative(command, getTeamMember(user, project))
 			);
 	}
 
-	private static KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
+	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
 		KeyResult keyResult = project.getKeyResults()
 			.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
@@ -113,7 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return keyResult;
 	}
 
-	private static TeamMember getTeamMember(User user, Project project) {
+	private TeamMember getTeamMember(User user, Project project) {
 		TeamMember teamMember = project.getTeamMember()
 			.stream()
 			.filter(tm -> tm.getUser().equals(user))

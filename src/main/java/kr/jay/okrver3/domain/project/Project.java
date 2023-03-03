@@ -146,4 +146,7 @@ public class Project extends BaseEntity {
 		return keyResult.getKeyResultToken();
 	}
 
+	public void updateProgress(double progress) {
+		this.progress = progress;
+	}
 }
