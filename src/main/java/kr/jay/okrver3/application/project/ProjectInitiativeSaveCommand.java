@@ -1,8 +1,8 @@
-package kr.jay.okrver3.application.initiative;
+package kr.jay.okrver3.application.project;
 
 import java.time.LocalDate;
 
-public record InitiativeSaveCommand(
+public record ProjectInitiativeSaveCommand(
 	String keyResultToken,
 	String name,
 	LocalDate sdt,
