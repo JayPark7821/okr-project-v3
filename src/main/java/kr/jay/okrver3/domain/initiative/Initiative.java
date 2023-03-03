@@ -94,6 +94,9 @@ public class Initiative extends BaseEntity {
 		this.done = false;
 	}
 
+	public void setKeyResult(KeyResult keyResult) {
+		this.keyResult = keyResult;
+	}
 }
 
 

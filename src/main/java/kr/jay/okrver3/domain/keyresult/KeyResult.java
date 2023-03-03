@@ -57,6 +57,7 @@ public class KeyResult extends BaseEntity {
 
 	public String addInitiative(Initiative initiative) {
 		this.initiative.add(initiative);
+		initiative.setKeyResult(this);
 		return initiative.getInitiativeToken();
 	}
 }

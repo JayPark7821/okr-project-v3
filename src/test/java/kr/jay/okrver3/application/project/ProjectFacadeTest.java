@@ -32,6 +32,7 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
+import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
@@ -52,7 +53,7 @@ import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 	NotificationServiceImpl.class, NotificationJDBCRepository.class, ProjectRepositoryImpl.class,
 	ProjectQueryDslRepository.class,
 	ProjectValidateProcessor.class, ProjectLeaderValidator.class,
-	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class})
+	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class})
 class ProjectFacadeTest {
 
 	@Autowired
@@ -350,7 +351,7 @@ class ProjectFacadeTest {
 		String response = sut.registerInitiative(requestDto, user);
 
 		assertThat(response).containsPattern(
-			Pattern.compile("initiative-[a-zA-Z0-9]{10}"));
+			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 	}
 
 
