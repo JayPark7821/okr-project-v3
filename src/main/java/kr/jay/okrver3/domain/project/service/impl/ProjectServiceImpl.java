@@ -96,14 +96,30 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
 
-		Initiative initiative = buildInitiative(command, user, project);
-		validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, initiative);
+		validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, command);
+
+		return getKeyResult(command, project)
+			.addInitiative(
+				buildInitiative(command, getTeamMember(user, project))
+			);
+	}
+
+	private static KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
 		KeyResult keyResult = project.getKeyResults()
 			.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
 			.findFirst()
 			.orElseThrow();
-		return keyResult.addInitiative(initiative);
+		return keyResult;
+	}
+
+	private static TeamMember getTeamMember(User user, Project project) {
+		TeamMember teamMember = project.getTeamMember()
+			.stream()
+			.filter(tm -> tm.getUser().equals(user))
+			.findFirst()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+		return teamMember;
 	}
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {
@@ -134,25 +150,12 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 
-	private Initiative buildInitiative(ProjectInitiativeSaveCommand command, User user, Project project) {
-		KeyResult keyResult = project.getKeyResults()
-			.stream()
-			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
-			.findFirst()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
-
-		TeamMember teamMember = project.getTeamMember()
-			.stream()
-			.filter(tm -> tm.getUser().equals(user))
-			.findFirst()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
-
-		return Initiative.builder()
+	private Initiative buildInitiative(ProjectInitiativeSaveCommand command, TeamMember teamMember) {
+ 		return Initiative.builder()
 			.edt(command.edt())
 			.sdt(command.sdt())
 			.name(command.name())
 			.detail(command.detail())
-			.keyResult(keyResult)
 			.teamMember(teamMember)
 			.build();
 	}

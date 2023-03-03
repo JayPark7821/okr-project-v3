@@ -82,7 +82,7 @@ public class Initiative extends BaseEntity {
 
 
 	@Builder
-	public Initiative(KeyResult keyResult, TeamMember teamMember, String name, LocalDate edt, LocalDate sdt,
+	public Initiative(TeamMember teamMember, String name, LocalDate edt, LocalDate sdt,
 		String detail) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_INITIATIVE_PREFIX);
 		this.keyResult = keyResult;

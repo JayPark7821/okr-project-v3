@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
+import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
@@ -21,11 +22,11 @@ public class ProjectInitiativeDateValidator implements ProjectValidator {
 	@Override
 	public void validate(Project project, Object object) {
 
-		Initiative initiative = ClassUtils.getSafeCastInstance(object, Initiative.class)
+		ProjectInitiativeSaveCommand command = ClassUtils.getSafeCastInstance(object, ProjectInitiativeSaveCommand.class)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
 
-		LocalDate edt = initiative.getEdt();
-		LocalDate sdt = initiative.getSdt();
+		LocalDate edt = command.edt();
+		LocalDate sdt = command.sdt();
 		if (edt.isBefore(project.getStartDate()) ||
 			edt.isAfter(project.getEndDate()) ||
 			sdt.isBefore(project.getStartDate()) ||
