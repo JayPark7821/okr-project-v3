@@ -76,8 +76,6 @@ public class Initiative extends BaseEntity {
 	@NotNull
 	private boolean done;
 
-	private Integer initiativeIndex;
-
 	@OneToMany(mappedBy = "initiative")
 	private List<Feedback> feedback = new ArrayList<>();
 
@@ -85,7 +83,7 @@ public class Initiative extends BaseEntity {
 
 	@Builder
 	public Initiative(KeyResult keyResult, TeamMember teamMember, String name, LocalDate edt, LocalDate sdt,
-		String detail, Integer initiativeIndex) {
+		String detail) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_INITIATIVE_PREFIX);
 		this.keyResult = keyResult;
 		this.teamMember = teamMember;
@@ -94,7 +92,6 @@ public class Initiative extends BaseEntity {
 		this.sdt = sdt;
 		this.detail = detail;
 		this.done = false;
-		this.initiativeIndex = initiativeIndex;
 	}
 
 }

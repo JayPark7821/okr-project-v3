@@ -154,7 +154,6 @@ public class ProjectServiceImpl implements ProjectService {
 			.detail(command.detail())
 			.keyResult(keyResult)
 			.teamMember(teamMember)
-			.initiativeIndex(keyResult.getInitiative().size() + 1)
 			.build();
 	}
 }
