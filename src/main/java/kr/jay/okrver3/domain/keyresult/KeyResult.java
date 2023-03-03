@@ -1,5 +1,9 @@
 package kr.jay.okrver3.domain.keyresult;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,9 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import kr.jay.okrver3.common.audit.BaseEntity;
 import kr.jay.okrver3.common.utils.TokenGenerator;
+import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,6 +44,9 @@ public class KeyResult extends BaseEntity {
 
 	private Integer keyResultIndex;
 
+	@OneToMany(mappedBy = "keyResult", cascade = CascadeType.ALL)
+	private List<Initiative> initiative = new ArrayList<>();
+
 	@Builder
 	public KeyResult(Project project, String name, Integer index) {
 		this.keyResultToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_KEYRESULT_PREFIX);
@@ -46,4 +55,8 @@ public class KeyResult extends BaseEntity {
 		this.keyResultIndex = index;
 	}
 
+	public String addInitiative(Initiative initiative) {
+		this.initiative.add(initiative);
+		return initiative.getInitiativeToken();
+	}
 }

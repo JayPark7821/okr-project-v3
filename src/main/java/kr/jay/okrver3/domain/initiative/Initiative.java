@@ -43,12 +43,9 @@ public class Initiative extends BaseEntity {
 
 	private String initiativeToken;
 
-	@ManyToOne(targetEntity = KeyResult.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "key_result_id", updatable = false, insertable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "key_result_id", updatable = false)
 	private KeyResult keyResult;
-
-	@Column(name = "key_result_id")
-	private Long keyResultId;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumns(value = {
@@ -84,11 +81,13 @@ public class Initiative extends BaseEntity {
 	@OneToMany(mappedBy = "initiative")
 	private List<Feedback> feedback = new ArrayList<>();
 
+
+
 	@Builder
-	public Initiative(Long keyResultId, TeamMember teamMember, String name, LocalDate edt, LocalDate sdt,
+	public Initiative(KeyResult keyResult, TeamMember teamMember, String name, LocalDate edt, LocalDate sdt,
 		String detail, Integer initiativeIndex) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_INITIATIVE_PREFIX);
-		this.keyResultId = keyResultId;
+		this.keyResult = keyResult;
 		this.teamMember = teamMember;
 		this.name = name;
 		this.edt = edt;

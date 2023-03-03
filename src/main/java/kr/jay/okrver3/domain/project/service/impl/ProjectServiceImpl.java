@@ -89,11 +89,6 @@ public class ProjectServiceImpl implements ProjectService {
 
 		return project.addKeyResult(dto.keyResultName());
 	}
-
-	@Override
-	public ProjectInfo getKeyResultIdForSavingInitiative(String keyResultToken, User user) {
-		return null;
-	}
 	//
 	// @Override
 	// @Transactional

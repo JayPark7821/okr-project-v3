@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.user.User;
 
@@ -22,7 +23,7 @@ import kr.jay.okrver3.domain.user.User;
 class InitiativeFacadeTest {
 
 	@Autowired
-	private InitiativeFacade sut;
+	private ProjectFacade sut;
 
 	@PersistenceContext
 	EntityManager em;
