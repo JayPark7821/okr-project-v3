@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
+import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
@@ -23,5 +24,11 @@ public interface ProjectRepository {
 
 	Optional<Project> findByKeyResultTokenAndUser(String keyResultToken, User user);
 
-	double getProjectProgress(Project project);
+	double getProjectProgress(Long projectId);
+
+	Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(String initiativeToken, User user);
+
+	Project getReferenceById(Long projectId);
+
+	Project saveAndFlush(Project project);
 }

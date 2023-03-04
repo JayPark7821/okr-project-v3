@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
@@ -98,13 +99,38 @@ public class ProjectServiceImpl implements ProjectService {
 
 		validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, command);
 
-		project.updateProgress(projectRepository.getProjectProgress(project));
+		Initiative initiative = buildInitiative(command, getTeamMember(user, project));
 
-		return 	getKeyResult(command, project)
+		getKeyResult(command, project)
 			.addInitiative(
-				buildInitiative(command, getTeamMember(user, project))
+				initiative
 			);
+
+		updateProjectProgress(initiative.getProject().getId());
+		return initiative.getInitiativeToken();
 	}
+
+	@Transactional
+	@Override
+	public String initiativeFinished(String initiativeToken, User user) {
+		Initiative initiative = projectRepository.findProjectInitiativeByInitiativeTokenAndUser(initiativeToken, user)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+
+		validateProcessor.validate(
+			ProjectValidateProcessorType.INITIATIVE_FINISH_VALIDATION,
+			initiative.getProject(),
+			initiative
+		);
+		initiative.done();
+		updateProjectProgress(initiative.getProject().getId());
+		return initiative.getInitiativeToken();
+	}
+
+	void updateProjectProgress(Long projectId) {
+		Project projectReference = projectRepository.getReferenceById(projectId);
+		projectReference.updateProgress(projectRepository.getProjectProgress(projectId));
+	}
+
 
 	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
 		KeyResult keyResult = project.getKeyResults()

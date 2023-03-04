@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,7 @@ public class ProjectApiController {
 		Authentication authentication
 	) {
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response.success(
 			HttpStatus.CREATED,
@@ -53,7 +54,7 @@ public class ProjectApiController {
 		Authentication authentication
 	) {
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response.success(
 			HttpStatus.CREATED,
@@ -71,7 +72,7 @@ public class ProjectApiController {
 		Pageable pageable
 	) {
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -102,7 +103,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response.success(
 			HttpStatus.CREATED,
@@ -118,7 +119,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -134,7 +135,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -150,7 +151,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -166,12 +167,27 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
 				HttpStatus.CREATED,
 				projectFacade.registerInitiative(requestDto.toCommand(), user)
+			);
+	}
+
+	@PutMapping("/initiative/{initiativeToken}/done")
+	public ResponseEntity<String> initiativeFinished(
+		@PathVariable("initiativeToken") String initiativeToken,
+		Authentication authentication
+	) {
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.OK,
+				projectFacade.initiativeFinished(initiativeToken, user)
 			);
 	}
 }

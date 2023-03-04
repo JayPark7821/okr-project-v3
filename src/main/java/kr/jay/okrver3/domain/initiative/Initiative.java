@@ -23,6 +23,7 @@ import kr.jay.okrver3.common.audit.BaseEntity;
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.feedback.Feedback;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
+import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.team.TeamMember;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -96,6 +97,14 @@ public class Initiative extends BaseEntity {
 
 	public void setKeyResult(KeyResult keyResult) {
 		this.keyResult = keyResult;
+	}
+
+	public void done() {
+		this.done = true;
+	}
+
+	public Project getProject() {
+		return this.keyResult.getProject();
 	}
 }
 

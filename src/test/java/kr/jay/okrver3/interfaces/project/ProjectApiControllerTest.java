@@ -16,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
@@ -88,12 +91,7 @@ class ProjectApiControllerTest {
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
 	void retrieve_project_with_project_token() throws Exception {
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("project-fgFHxGWeIUQt", auth);
 
@@ -109,12 +107,7 @@ class ProjectApiControllerTest {
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
 	void invite_team_member() throws Exception {
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		final ResponseEntity<String> response = sut.inviteTeamMember(
 			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), auth);
@@ -128,12 +121,7 @@ class ProjectApiControllerTest {
 	void validate_email_address() throws Exception {
 
 		String memberEmail = "guest@email.com";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth);
 
@@ -146,12 +134,7 @@ class ProjectApiControllerTest {
 	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
 
 		String memberEmail = "guest@email.com";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 2L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(2L);
 
 		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
@@ -164,12 +147,7 @@ class ProjectApiControllerTest {
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void when_member_validate_email_address_will_throw_exception() throws Exception {
 		String memberEmail = "guest@email.com";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 3L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(3L);
 
 		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
@@ -183,12 +161,7 @@ class ProjectApiControllerTest {
 	void validate_email_address_exception() throws Exception {
 
 		String wrongEmailAdd = "wrongEmailAdd";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, auth))
 			.isInstanceOf(OkrApplicationException.class)
@@ -200,12 +173,7 @@ class ProjectApiControllerTest {
 	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_already_team_member() throws Exception {
 		String teamMemberEmail = "fakeGoogleIdEmail";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
@@ -217,12 +185,7 @@ class ProjectApiControllerTest {
 	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_login_user_email() throws Exception {
 		String userEmail = "apple@apple.com";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
@@ -234,12 +197,7 @@ class ProjectApiControllerTest {
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_미포함_팀프로젝트() throws Exception {
 
 		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 13L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
 		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N", "TEAM",
 			auth,
@@ -261,12 +219,7 @@ class ProjectApiControllerTest {
 	@Sql("classpath:insert-project-date.sql")
 	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
 		String projectToken = "mst_K4g4tfdaergg6421";
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 13L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
 		ResponseEntity<ProjectSideMenuResponse> response = sut.getProjectSideMenuDetails(projectToken, auth);
 
@@ -282,12 +235,7 @@ class ProjectApiControllerTest {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 13L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
 		ResponseEntity<String> response = sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), auth);
 
@@ -310,12 +258,7 @@ class ProjectApiControllerTest {
 			"행동전략 상세내용"
 		);
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 3L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(3L);
 
 		ResponseEntity<String> response = sut.registerInitiative(requestDto, auth);
 
@@ -325,4 +268,23 @@ class ProjectApiControllerTest {
 	}
 
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
+
+		ResponseEntity<String> response = sut.initiativeFinished(initiativeToken, getAuthenticationToken(11L));
+
+		assertThat(response.getBody()).isEqualTo("ini_ixYjj5nODfeab3AH8");
+	}
+
+	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", value)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+		return auth;
+	}
 }

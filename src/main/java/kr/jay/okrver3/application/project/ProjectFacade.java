@@ -101,4 +101,8 @@ public class ProjectFacade {
 	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
 		return projectService.registerInitiative(command, user);
 	}
+
+	public String initiativeFinished(String initiativeToken, User user) {
+		return projectService.initiativeFinished(initiativeToken, user);
+	}
 }

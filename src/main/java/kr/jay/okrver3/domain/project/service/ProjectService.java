@@ -28,5 +28,6 @@ public interface ProjectService {
 
 	String registerInitiative(ProjectInitiativeSaveCommand command, User user);
 
+	String initiativeFinished(String initiativeToken, User user);
 }
 

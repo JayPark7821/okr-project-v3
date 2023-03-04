@@ -90,19 +90,19 @@ public class ProjectQueryDslRepository {
 		return Objects.equals(YN, "Y") ? null : project.progress.lt(100);
 	}
 
-	public double getProjectProgress(Project targetProject) {
+	public double getProjectProgress(Long projectId) {
 		Double progress = queryFactory
 			.select(new CaseBuilder().when(initiative.count().eq(0L)).then(0D)
 				.otherwise(
 					(new CaseBuilder()
 						.when(initiative.done.isTrue()).then(1D)
 						.otherwise(0D)
-						.sum()).divide(initiative.count().add(1)).multiply(100)
+						.sum()).divide(initiative.count()).multiply(100)
 				))
 			.from(project)
 			.innerJoin(project.keyResults, keyResult)
 			.innerJoin(keyResult.initiative, initiative)
-			.where(project.eq(targetProject))
+			.where(project.id.eq(projectId))
 			.fetchOne();
 
 		return progress;
