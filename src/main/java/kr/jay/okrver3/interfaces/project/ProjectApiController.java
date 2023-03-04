@@ -181,6 +181,13 @@ public class ProjectApiController {
 		@PathVariable("initiativeToken") String initiativeToken,
 		Authentication authentication
 	) {
-		return null;
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.CREATED,
+				projectFacade.initiativeFinished(initiativeToken, user)
+			);
 	}
 }
