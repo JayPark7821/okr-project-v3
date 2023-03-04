@@ -331,7 +331,7 @@ class ProjectFacadeTest {
 
 		String response = sut.initiativeFinished(initiativeToken,  getUser(11L));
 
-		assertThat(response).isEqualTo("ini_ixYjj5nODqtb3AH8");
+		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
 
 	private User getUser(Long seq) {

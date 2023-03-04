@@ -275,7 +275,7 @@ class ProjectApiControllerTest {
 
 		ResponseEntity<String> response = sut.initiativeFinished(initiativeToken, getAuthenticationToken(11L));
 
-		assertThat(response.getBody()).isEqualTo("ini_ixYjj5nODqtb3AH8");
+		assertThat(response.getBody()).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {

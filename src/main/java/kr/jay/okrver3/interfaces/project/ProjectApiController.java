@@ -186,7 +186,7 @@ public class ProjectApiController {
 
 		return Response
 			.success(
-				HttpStatus.CREATED,
+				HttpStatus.OK,
 				projectFacade.initiativeFinished(initiativeToken, user)
 			);
 	}
