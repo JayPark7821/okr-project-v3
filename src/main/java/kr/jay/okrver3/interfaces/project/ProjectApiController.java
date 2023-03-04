@@ -40,7 +40,7 @@ public class ProjectApiController {
 		Authentication authentication
 	) {
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response.success(
 			HttpStatus.CREATED,
@@ -54,7 +54,7 @@ public class ProjectApiController {
 		Authentication authentication
 	) {
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response.success(
 			HttpStatus.CREATED,
@@ -72,7 +72,7 @@ public class ProjectApiController {
 		Pageable pageable
 	) {
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -103,7 +103,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response.success(
 			HttpStatus.CREATED,
@@ -119,7 +119,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -135,7 +135,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -151,7 +151,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -167,7 +167,7 @@ public class ProjectApiController {
 	) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(
@@ -182,7 +182,7 @@ public class ProjectApiController {
 		Authentication authentication
 	) {
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
 
 		return Response
 			.success(

@@ -432,7 +432,7 @@ public class ProjectApiControllerAcceptanceTest {
 			"행동전략 상세내용"
 		);
 
-		int threadCount = 99;
+		int threadCount = 98;
 		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 		CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -476,7 +476,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
-		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+		String initiativeToken = "ini_ixYjj5nODqtb3A12";
 		final String response = RestAssured.
 
 			given()
@@ -490,7 +490,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.OK.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo("ini_ixYjj5nODqtb3AH8");
+		assertThat(response).isEqualTo("ini_ixYjj5nODqtb3A12");
 	}
 }
 

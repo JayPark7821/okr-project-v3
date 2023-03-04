@@ -51,7 +51,7 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 		+ "and p.projectToken =:projectToken ")
 	Optional<Project> findProjectKeyResultByProjectTokenAndUser(@Param("projectToken") String projectToken, @Param("user") User user);
 
-	// @Lock(value= LockModeType.PESSIMISTIC_WRITE)
+	@Lock(value= LockModeType.PESSIMISTIC_WRITE)
 	@Query("select p "
 		+ "from Project p "
 		+ "join fetch p.teamMember t "

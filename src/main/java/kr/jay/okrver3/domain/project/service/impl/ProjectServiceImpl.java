@@ -126,7 +126,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return initiative.getInitiativeToken();
 	}
 
-	@Transactional//(propagation = Propagation.REQUIRES_NEW)
 	void updateProjectProgress(Long projectId) {
 		Project projectReference = projectRepository.getReferenceById(projectId);
 		projectReference.updateProgress(projectRepository.getProjectProgress(projectId));
