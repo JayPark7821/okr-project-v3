@@ -102,6 +102,10 @@ public class Initiative extends BaseEntity {
 	public void done() {
 		this.done = true;
 	}
+
+	public Project getProject() {
+		return this.keyResult.getProject();
+	}
 }
 
 

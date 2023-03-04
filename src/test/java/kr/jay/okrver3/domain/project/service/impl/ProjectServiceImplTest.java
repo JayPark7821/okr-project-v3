@@ -31,6 +31,7 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
@@ -50,6 +51,7 @@ import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class, ProjectValidateProcessor.class, ProjectLeaderValidator.class,
 	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class
+	, InitiativeDoneValidator.class
 })
 class ProjectServiceImplTest {
 
@@ -347,15 +349,15 @@ class ProjectServiceImplTest {
 
 		assertThatThrownBy(()->sut.initiativeFinished(initiativeToken,  getUser(14L)))
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.FINISHED_PROJECT.getMessage());
+			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 이미_종료된_행동전략_완료_요청시_기대하는_응답Exception을_리턴한다() throws Exception {
-		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+		String initiativeToken = "ini_ixYjj5aaafeab3AH8";
 
-		assertThatThrownBy(()->sut.initiativeFinished(initiativeToken,  getUser(3L)))
+		assertThatThrownBy(()->sut.initiativeFinished(initiativeToken,  getUser(11L)))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.FINISHED_INITIATIVE.getMessage());
 	}

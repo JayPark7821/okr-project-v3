@@ -63,13 +63,24 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
-	public double getProjectProgress(Project project) {
-		return projectQueryDslRepository.getProjectProgress(project);
+	public double getProjectProgress(Long projectId) {
+		return projectQueryDslRepository.getProjectProgress(projectId);
 	}
 
 	@Override
 	public Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(String initiativeToken, User user) {
 		return initiativeJpaRepository.findProjectInitiativeByInitiativeTokenAndUser(initiativeToken, user);
+	}
+
+	@Override
+	public Project getReferenceById(Long projectId) {
+		return projectJpaRepository.getReferenceById(projectId);
+
+	}
+
+	@Override
+	public Project saveAndFlush(Project project) {
+		return projectJpaRepository.saveAndFlush(project);
 	}
 
 	private ProjectDetailInfo getProjectDetailInfo(Project project, String email) {

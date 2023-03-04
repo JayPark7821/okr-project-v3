@@ -24,7 +24,11 @@ public interface ProjectRepository {
 
 	Optional<Project> findByKeyResultTokenAndUser(String keyResultToken, User user);
 
-	double getProjectProgress(Project project);
+	double getProjectProgress(Long projectId);
 
 	Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(String initiativeToken, User user);
+
+	Project getReferenceById(Long projectId);
+
+	Project saveAndFlush(Project project);
 }
