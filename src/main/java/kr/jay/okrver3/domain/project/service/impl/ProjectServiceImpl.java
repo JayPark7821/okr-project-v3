@@ -106,6 +106,11 @@ public class ProjectServiceImpl implements ProjectService {
 			);
 	}
 
+	@Override
+	public String initiativeFinished(String initiativeToken, User user) {
+		return null;
+	}
+
 	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
 		KeyResult keyResult = project.getKeyResults()
 			.stream()
