@@ -97,7 +97,7 @@ public class ProjectApiController {
 
 	@PostMapping("/team/invite")
 	ResponseEntity<String> inviteTeamMember(
-		@RequestBody @Valid TeamMemberInviteRequestDto teamMemberInviteRequestDto,
+		@RequestBody @Valid TeamMemberInviteRequestDto requestDto,
 		Authentication authentication
 	) {
 
@@ -106,7 +106,7 @@ public class ProjectApiController {
 
 		return Response.success(
 			HttpStatus.CREATED,
-			projectFacade.inviteTeamMember(teamMemberInviteRequestDto, user)
+			projectFacade.inviteTeamMember(requestDto, user)
 		);
 	}
 
@@ -145,7 +145,7 @@ public class ProjectApiController {
 
 	@PostMapping("/keyresult")
 	public ResponseEntity<String> registerKeyResult(
-		@RequestBody @Valid ProjectKeyResultSaveDto projectKeyResultSaveDto,
+		@RequestBody @Valid ProjectKeyResultSaveDto requestDto,
 		Authentication authentication
 	) {
 
@@ -155,7 +155,23 @@ public class ProjectApiController {
 		return Response
 			.success(
 				HttpStatus.CREATED,
-				projectFacade.registerKeyResult(projectKeyResultSaveDto, user)
+				projectFacade.registerKeyResult(requestDto, user)
+			);
+	}
+
+	@PostMapping("/initiative")
+	public ResponseEntity<String> registerInitiative(
+		@RequestBody @Valid ProjectInitiativeSaveDto requestDto,
+		Authentication authentication
+	) {
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_USER_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.CREATED,
+				projectFacade.registerInitiative(requestDto.toCommand(), user)
 			);
 	}
 }

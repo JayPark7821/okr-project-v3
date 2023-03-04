@@ -8,8 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.initiative.Initiative;
+import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
@@ -87,6 +90,40 @@ public class ProjectServiceImpl implements ProjectService {
 		return project.addKeyResult(dto.keyResultName());
 	}
 
+	@Transactional
+	@Override
+	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
+		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
+
+		validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, command);
+
+		project.updateProgress(projectRepository.getProjectProgress(project));
+
+		return 	getKeyResult(command, project)
+			.addInitiative(
+				buildInitiative(command, getTeamMember(user, project))
+			);
+	}
+
+	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
+		KeyResult keyResult = project.getKeyResults()
+			.stream()
+			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
+			.findFirst()
+			.orElseThrow();
+		return keyResult;
+	}
+
+	private TeamMember getTeamMember(User user, Project project) {
+		TeamMember teamMember = project.getTeamMember()
+			.stream()
+			.filter(tm -> tm.getUser().equals(user))
+			.findFirst()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+		return teamMember;
+	}
+
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {
 		if (user.getEmail().equals(invitedUserEmail))
 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
@@ -101,7 +138,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return project;
 	}
 
-
 	private Project buildProjectFrom(ProjectMasterSaveDto dto) {
 		LocalDate startDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);
 		LocalDate endDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);
@@ -115,4 +151,14 @@ public class ProjectServiceImpl implements ProjectService {
 			.build();
 	}
 
+
+	private Initiative buildInitiative(ProjectInitiativeSaveCommand command, TeamMember teamMember) {
+ 		return Initiative.builder()
+			.edt(command.edt())
+			.sdt(command.sdt())
+			.name(command.name())
+			.detail(command.detail())
+			.teamMember(teamMember)
+			.build();
+	}
 }

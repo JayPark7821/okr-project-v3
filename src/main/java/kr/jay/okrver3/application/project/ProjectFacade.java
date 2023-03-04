@@ -97,4 +97,8 @@ public class ProjectFacade {
 	public String registerKeyResult(ProjectKeyResultSaveDto projectKeyResultSaveDto, User user) {
 		return projectService.registerKeyResult(projectKeyResultSaveDto, user);
 	}
+
+	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
+		return projectService.registerInitiative(command, user);
+	}
 }

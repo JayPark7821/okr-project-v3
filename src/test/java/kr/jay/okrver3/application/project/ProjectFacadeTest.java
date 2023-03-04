@@ -3,6 +3,7 @@ package kr.jay.okrver3.application.project;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,6 +32,7 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
+import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
@@ -51,7 +53,7 @@ import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 	NotificationServiceImpl.class, NotificationJDBCRepository.class, ProjectRepositoryImpl.class,
 	ProjectQueryDslRepository.class,
 	ProjectValidateProcessor.class, ProjectLeaderValidator.class,
-	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class})
+	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class})
 class ProjectFacadeTest {
 
 	@Autowired
@@ -127,7 +129,7 @@ class ProjectFacadeTest {
 		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
 		assertThat(projectInfo.startDate()).isEqualTo("2020-12-01");
-		assertThat(projectInfo.endDate()).isEqualTo("2020-12-12");
+		assertThat(projectInfo.endDate()).isEqualTo("3999-12-12");
 		assertThat(projectInfo.projectType()).isEqualTo("SINGLE");
 	}
 
@@ -329,5 +331,28 @@ class ProjectFacadeTest {
 			.hasMessage(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
 
 	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
+
+		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			LocalDate.now().minusDays(10),
+			LocalDate.now().plusDays(10),
+			"행동전략 상세내용"
+		);
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 3L)
+			.getSingleResult();
+
+		String response = sut.registerInitiative(requestDto, user);
+
+		assertThat(response).containsPattern(
+			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+	}
+
 
 }

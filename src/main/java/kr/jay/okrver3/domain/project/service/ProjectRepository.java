@@ -20,4 +20,8 @@ public interface ProjectRepository {
 	Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(String projectToken, User user);
 
 	Optional<Project> findProjectKeyResultByProjectTokenAndUser(String projectToken, User user);
+
+	Optional<Project> findByKeyResultTokenAndUser(String keyResultToken, User user);
+
+	double getProjectProgress(Project project);
 }
