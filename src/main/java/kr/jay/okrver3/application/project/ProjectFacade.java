@@ -103,7 +103,6 @@ public class ProjectFacade {
 	}
 
 	public String initiativeFinished(String initiativeToken, User user) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.application.project.ProjectFacade.initiativeFinished()");
+		return projectService.initiativeFinished(initiativeToken, user);
 	}
 }
