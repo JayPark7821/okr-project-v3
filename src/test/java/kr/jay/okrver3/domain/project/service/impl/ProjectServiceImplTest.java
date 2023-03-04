@@ -332,8 +332,17 @@ class ProjectServiceImplTest {
 
 		String response = sut.initiativeFinished(initiativeToken,  getUser(11L));
 
-		assertThat(response).isEqualTo("ini_ixYjj5nODqtb3AH8");
+		Initiative initiative = em.createQuery(
+				"select i from Initiative i where i.id = :id", Initiative.class)
+			.setParameter("id", 99998L)
+			.getSingleResult();
+		assertThat(initiative.isDone()).isTrue();
+		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
+
+	// TODO : 종료된 프로젝트이면 행동전략 완료 비활성화
+	// TODO : 이미 완료된 행동전략 예외 처리
+	// TODO : 행동전략 완료후 프로젝트 진척도 변경
 
 
 	private User getUser(long userSeq) {

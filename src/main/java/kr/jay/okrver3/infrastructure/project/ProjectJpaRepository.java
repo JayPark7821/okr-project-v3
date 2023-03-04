@@ -62,4 +62,5 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 	Optional<Project> findByKeyResultTokenAndUser(
 		@Param("keyResultToken") String keyResultToken,
 		@Param("user") User user);
+
 }

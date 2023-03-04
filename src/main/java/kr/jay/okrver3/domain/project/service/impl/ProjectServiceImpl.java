@@ -108,7 +108,10 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public String initiativeFinished(String initiativeToken, User user) {
-		return null;
+		Initiative initiative = projectRepository.findProjectInitiativeByInitiativeTokenAndUser(initiativeToken, user)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+		initiative.done();
+		return initiative.getInitiativeToken();
 	}
 
 	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {

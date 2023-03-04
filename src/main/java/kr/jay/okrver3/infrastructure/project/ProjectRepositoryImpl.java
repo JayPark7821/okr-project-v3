@@ -7,11 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.infrastructure.initiative.InitiativeJpaRepository;
 import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class ProjectRepositoryImpl implements ProjectRepository {
 
 	private final ProjectJpaRepository projectJpaRepository;
+	private final InitiativeJpaRepository initiativeJpaRepository;
 	private final ProjectQueryDslRepository projectQueryDslRepository;
 
 	@Override
@@ -62,6 +65,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	@Override
 	public double getProjectProgress(Project project) {
 		return projectQueryDslRepository.getProjectProgress(project);
+	}
+
+	@Override
+	public Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(String initiativeToken, User user) {
+		return initiativeJpaRepository.findProjectInitiativeByInitiativeTokenAndUser(initiativeToken, user);
 	}
 
 	private ProjectDetailInfo getProjectDetailInfo(Project project, String email) {
