@@ -33,7 +33,12 @@ public enum ErrorCode {
 	INVALID_FEEDBACK_TYPE(HttpStatus.BAD_REQUEST,"잘못된 피드백 타입 입니다."),
 	INITIATIVE_END_DATE_SHOULD_AFTER_TODAY(HttpStatus.BAD_REQUEST,"행동전략 마감일은 오늘 이후여야 합니다."),
 	INVALID_INITIATIVE_DATE(HttpStatus.BAD_REQUEST, "행동전략의 시작, 종료일은 목표 기간 안에서만 등록할 수 있습니다."),
-	INVALID_INITIATIVE_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 행동적략 토큰 입니다." );
+	INVALID_INITIATIVE_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 행동적략 토큰 입니다." ),
+	FINISHED_PROJECT(HttpStatus.BAD_REQUEST,"이미 종료된 프로젝트 입니다." ),
+	FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST,"이미 완료된 행동전략 입니다." ),
+
+	;
+
 	private HttpStatus status;
 	private String message;
 

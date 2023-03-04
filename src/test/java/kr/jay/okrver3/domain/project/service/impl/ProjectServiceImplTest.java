@@ -340,9 +340,39 @@ class ProjectServiceImplTest {
 		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
 
-	// TODO : 종료된 프로젝트이면 행동전략 완료 비활성화
-	// TODO : 이미 완료된 행동전략 예외 처리
-	// TODO : 행동전략 완료후 프로젝트 진척도 변경
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 종료된_프로젝트의_행동전략_완료시_기대하는_응답Exception을_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5na3fdab3AH8";
+
+		assertThatThrownBy(()->sut.initiativeFinished(initiativeToken,  getUser(14L)))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.FINISHED_PROJECT.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 이미_종료된_행동전략_완료_요청시_기대하는_응답Exception을_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		assertThatThrownBy(()->sut.initiativeFinished(initiativeToken,  getUser(3L)))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.FINISHED_INITIATIVE.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략_완료시_프로젝트_진척도_update() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
+
+		String response = sut.initiativeFinished(initiativeToken,  getUser(11L));
+
+		Project project = em.createQuery(
+				"select p from Project p where p.id = :id", Project.class)
+			.setParameter("id", 99997L)
+			.getSingleResult();
+		assertThat(project.getProgress()).isEqualTo(100.0);
+	}
 
 
 	private User getUser(long userSeq) {
