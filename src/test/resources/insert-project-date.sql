@@ -92,5 +92,6 @@ insert into initiative
 (99999, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-14', 'ini_ixYjj5nODqtb3AH8', 99999, 'ini name', '2000-12-12', 99998, 3),
 (99998, '2022-12-10', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', false, '2023-12-14', 'ini_ixYjj5nODfeab3AH8', 99996, 'ini name', '2000-12-12', 99997, 11),
 (99996, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-14', 'ini_ixYjj5aaafeab3AH8', 99996, 'ini name', '2000-12-12', 99997, 11),
+(99995, '2022-12-15', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-14', 'ini_ixYjjnnnafeab3AH8', 99996, 'ini name', '2000-12-12', 99997, 14),
 (99997, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', false, '2023-12-14', 'ini_ixYjj5na3fdab3AH8', 99995, 'ini name', '2000-12-12', 99988, 14)
 ;
