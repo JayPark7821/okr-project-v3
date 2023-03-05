@@ -3,6 +3,7 @@ package kr.jay.okrver3.infrastructure.project;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -10,9 +11,11 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
+import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.infrastructure.initiative.InitiativeJpaRepository;
 import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +85,16 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	public Optional<Project> findProjectForUpdateById(Long projectId) {
 		return projectJpaRepository.findProjectForUpdateById(projectId);
 	}
+
+	@Override
+	public Page<Initiative> findInitiativeByKeyResultTokenAndUser(
+		String keyResultToken,
+		User user,
+		Pageable pageable
+	) {
+		return projectQueryDslRepository.findInitiativeByKeyResultTokenAndUser(keyResultToken, user, pageable);
+	}
+
 
 	private ProjectDetailInfo getProjectDetailInfo(Project project, String email) {
 		return new ProjectDetailInfo(

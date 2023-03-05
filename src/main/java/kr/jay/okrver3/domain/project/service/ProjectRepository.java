@@ -3,6 +3,9 @@ package kr.jay.okrver3.domain.project.service;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.google.common.io.Files;
 
 import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
@@ -31,4 +34,6 @@ public interface ProjectRepository {
 	Project getReferenceById(Long projectId);
 
 	Optional<Project> findProjectForUpdateById(Long projectId);
+
+	Page<Initiative> findInitiativeByKeyResultTokenAndUser(String keyResultToken, User user, Pageable pageable);
 }

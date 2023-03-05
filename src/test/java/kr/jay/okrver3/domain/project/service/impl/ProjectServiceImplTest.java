@@ -382,7 +382,7 @@ class ProjectServiceImplTest {
 	@Sql("classpath:insert-project-date.sql")
 	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
 		String keyResultToken = "key_wV6f45vWQaaazQaa";
-		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5aaafeab3AH8","ini_ixYjj5nODfeab3AH8");
+		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8","ini_ixYjj5aaafeab3AH8");
 		Page<ProjectInitiativeInfo> response =
 			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L),PageRequest.of(0, 5));
 

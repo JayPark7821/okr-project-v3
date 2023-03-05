@@ -27,6 +27,7 @@ import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
@@ -131,8 +132,14 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
 		Pageable pageable) {
-		return null;
+		return projectRepository.findInitiativeByKeyResultTokenAndUser(keyResultToken, user, pageable)
+			.map(this::getProjectInitiativeInfo);
 	}
+
+	private ProjectInitiativeInfo getProjectInitiativeInfo(Initiative initiative) {
+		return new ProjectInitiativeInfo(initiative.getInitiativeToken(), initiative.getName(), initiative.isDone(), new UserInfo(initiative.getTeamMember().getUser()));
+	}
+
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	void updateProjectProgress(Long projectId) {
