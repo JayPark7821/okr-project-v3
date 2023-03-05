@@ -14,7 +14,7 @@ import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.initiative.InitiativeJpaRepository;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import lombok.RequiredArgsConstructor;
 
 @Repository

@@ -43,7 +43,7 @@ import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;

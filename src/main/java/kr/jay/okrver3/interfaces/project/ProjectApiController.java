@@ -3,9 +3,11 @@ package kr.jay.okrver3.interfaces.project;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.Response;
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -189,5 +192,15 @@ public class ProjectApiController {
 				HttpStatus.OK,
 				projectFacade.initiativeFinished(initiativeToken, user)
 			);
+	}
+
+	@GetMapping("/initiative/list/{keyResultToken}")
+	public ResponseEntity<Page<ProjectInitiativeResponse>> getInitiativeByKeyResultToken(
+		@PathVariable("keyResultToken") String keyResultToken,
+		Authentication authentication,
+		Pageable pageable
+	) {
+		throw new UnsupportedOperationException(
+			"kr.jay.okrver3.interfaces.project.ProjectApiController.getInitiativeByKeyResultToken()");
 	}
 }

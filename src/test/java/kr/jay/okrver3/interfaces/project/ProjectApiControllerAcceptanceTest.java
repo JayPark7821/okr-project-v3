@@ -504,7 +504,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/initiative/"+ keyResultToken).
+			.get(baseUrl + "/initiative/list/"+ keyResultToken).
 
 			then()
 			.statusCode(HttpStatus.OK.value())

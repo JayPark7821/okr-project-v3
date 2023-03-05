@@ -19,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -44,7 +43,6 @@ import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;

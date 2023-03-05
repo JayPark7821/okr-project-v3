@@ -278,6 +278,24 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody()).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
+		String keyResultToken = "ini_ixYjj5nODfeab3AH8";
+
+
+		ResponseEntity<Page<ProjectInitiativeResponse>> response =
+			sut.getInitiativeByKeyResultToken(keyResultToken, getAuthenticationToken(11L),PageRequest.of(0, 5));
+
+		assertThat(response.getBody().getTotalElements()).isEqualTo(2);
+		List<ProjectInitiativeResponse> content = response.getBody().getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+
+		}
+
+	}
+
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", value)

@@ -1,4 +1,4 @@
-package kr.jay.okrver3.interfaces.project;
+package kr.jay.okrver3.application.project;
 
 import org.springframework.data.domain.Pageable;
 

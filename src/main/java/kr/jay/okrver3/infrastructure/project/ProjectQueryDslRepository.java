@@ -21,12 +21,10 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kr.jay.okrver3.domain.initiative.QInitiative;
-import kr.jay.okrver3.domain.keyresult.QKeyResult;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 
 @Repository
 public class ProjectQueryDslRepository {

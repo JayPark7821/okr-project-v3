@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 
 public interface ProjectRepository {
 	Project save(Project project);
