@@ -30,5 +30,5 @@ public interface ProjectRepository {
 
 	Project getReferenceById(Long projectId);
 
-	Project saveAndFlush(Project project);
+	Optional<Project> findProjectForUpdateById(Long projectId);
 }

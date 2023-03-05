@@ -126,8 +126,10 @@ public class ProjectServiceImpl implements ProjectService {
 		return initiative.getInitiativeToken();
 	}
 
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	void updateProjectProgress(Long projectId) {
-		Project projectReference = projectRepository.getReferenceById(projectId);
+		Project projectReference = projectRepository.findProjectForUpdateById(projectId)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 		projectReference.updateProgress(projectRepository.getProjectProgress(projectId));
 	}
 

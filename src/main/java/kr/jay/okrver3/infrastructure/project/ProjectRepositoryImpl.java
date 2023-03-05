@@ -79,8 +79,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
-	public Project saveAndFlush(Project project) {
-		return projectJpaRepository.saveAndFlush(project);
+	public Optional<Project> findProjectForUpdateById(Long projectId) {
+		return projectJpaRepository.findProjectForUpdateById(projectId);
 	}
 
 	private ProjectDetailInfo getProjectDetailInfo(Project project, String email) {
