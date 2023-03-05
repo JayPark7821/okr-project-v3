@@ -19,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -45,7 +44,6 @@ import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.ProjectInitiativeResponse;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
@@ -65,6 +63,13 @@ class ProjectFacadeTest {
 
 	@PersistenceContext
 	EntityManager em;
+
+	private User getUser(Long seq) {
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", seq)
+			.getSingleResult();
+		return user;
+	}
 
 	@Test
 	@Sql("classpath:insert-user.sql")
@@ -289,7 +294,7 @@ class ProjectFacadeTest {
 
 		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
- 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
+			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
 
 	@Test
@@ -326,13 +331,12 @@ class ProjectFacadeTest {
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken,  getUser(11L));
+		String response = sut.initiativeFinished(initiativeToken, getUser(11L));
 
 		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
@@ -340,26 +344,20 @@ class ProjectFacadeTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
-		String keyResultToken = "ini_ixYjj5nODfeab3AH8";
-
+		String keyResultToken = "key_wV6f45vWQaaazQaa";
+		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
+			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
 		Page<ProjectInitiativeInfo> response =
-			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L),PageRequest.of(0, 5));
+			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
 
 		assertThat(response.getTotalElements()).isEqualTo(2);
 		List<ProjectInitiativeInfo> content = response.getContent();
 
 		for (int i = 0; i < content.size(); i++) {
-
+			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
 		}
 
-	}
-
-	private User getUser(Long seq) {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", seq)
-			.getSingleResult();
-		return user;
 	}
 
 }

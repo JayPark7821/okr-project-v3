@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
@@ -44,13 +45,13 @@ import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
-import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 
 @DataJpaTest
-@Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class, ProjectValidateProcessor.class, ProjectLeaderValidator.class,
+@Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class,
+	ProjectValidateProcessor.class, ProjectLeaderValidator.class,
 	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class
 	, InitiativeDoneValidator.class
 })
@@ -61,6 +62,13 @@ class ProjectServiceImplTest {
 
 	@PersistenceContext
 	EntityManager em;
+
+	private User getUser(long userSeq) {
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", userSeq)
+			.getSingleResult();
+		return user;
+	}
 
 	@Test
 	@Sql("classpath:insert-user.sql")
@@ -222,7 +230,6 @@ class ProjectServiceImplTest {
 
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
@@ -295,7 +302,6 @@ class ProjectServiceImplTest {
 
 		String response = sut.registerInitiative(requestDto, user);
 
-
 		Initiative initiativeToken = em.createQuery(
 				"select i from Initiative i where i.initiativeToken = :initiativeToken", Initiative.class)
 			.setParameter("initiativeToken", response)
@@ -320,7 +326,6 @@ class ProjectServiceImplTest {
 
 		String response = sut.registerInitiative(requestDto, user);
 
-
 		Project project = em.createQuery(
 				"select p from Project p where p.id = :id", Project.class)
 			.setParameter("id", 99998L)
@@ -333,7 +338,7 @@ class ProjectServiceImplTest {
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken,  getUser(11L));
+		String response = sut.initiativeFinished(initiativeToken, getUser(11L));
 
 		Initiative initiative = em.createQuery(
 				"select i from Initiative i where i.id = :id", Initiative.class)
@@ -348,7 +353,7 @@ class ProjectServiceImplTest {
 	void 종료된_프로젝트의_행동전략_완료시_기대하는_응답Exception을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5na3fdab3AH8";
 
-		assertThatThrownBy(()->sut.initiativeFinished(initiativeToken,  getUser(14L)))
+		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, getUser(14L)))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
@@ -358,7 +363,7 @@ class ProjectServiceImplTest {
 	void 이미_종료된_행동전략_완료_요청시_기대하는_응답Exception을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5aaafeab3AH8";
 
-		assertThatThrownBy(()->sut.initiativeFinished(initiativeToken,  getUser(11L)))
+		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, getUser(11L)))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.FINISHED_INITIATIVE.getMessage());
 	}
@@ -368,7 +373,7 @@ class ProjectServiceImplTest {
 	void 행동전략_완료시_프로젝트_진척도_update() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken,  getUser(11L));
+		String response = sut.initiativeFinished(initiativeToken, getUser(11L));
 
 		Project project = em.createQuery(
 				"select p from Project p where p.id = :id", Project.class)
@@ -377,14 +382,15 @@ class ProjectServiceImplTest {
 		assertThat(project.getProgress()).isEqualTo(100.0);
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
 		String keyResultToken = "key_wV6f45vWQaaazQaa";
-		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8","ini_ixYjj5aaafeab3AH8","ini_ixYjjnnnafeab3AH8");
+		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
+			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
+
 		Page<ProjectInitiativeInfo> response =
-			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L),PageRequest.of(0, 5));
+			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
 
 		assertThat(response.getTotalElements()).isEqualTo(2);
 		List<ProjectInitiativeInfo> content = response.getContent();
@@ -393,14 +399,6 @@ class ProjectServiceImplTest {
 			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
 		}
 
-	}
-
-
-	private User getUser(long userSeq) {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", userSeq)
-			.getSingleResult();
-		return user;
 	}
 
 }
