@@ -200,7 +200,19 @@ public class ProjectApiController {
 		Authentication authentication,
 		Pageable pageable
 	) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.interfaces.project.ProjectApiController.getInitiativeByKeyResultToken()");
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
+
+		return Response
+			.success(
+				HttpStatus.OK,
+				projectFacade.getInitiativeByKeyResultToken(
+					keyResultToken,
+					user,
+					pageable
+				).map(ProjectInitiativeResponse::new)
+			);
+
 	}
 }

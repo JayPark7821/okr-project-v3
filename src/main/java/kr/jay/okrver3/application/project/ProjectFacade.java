@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -11,6 +12,7 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.service.NotificationService;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.ProjectService;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.user.User;
@@ -103,5 +105,11 @@ public class ProjectFacade {
 
 	public String initiativeFinished(String initiativeToken, User user) {
 		return projectService.initiativeFinished(initiativeToken, user);
+	}
+
+	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
+		Pageable pageable) {
+		throw new UnsupportedOperationException(
+			"kr.jay.okrver3.application.project.ProjectFacade.getInitiativeByKeyResultToken()");
 	}
 }
