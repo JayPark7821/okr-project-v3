@@ -492,6 +492,25 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response).isEqualTo("ini_ixYjj5nODqtb3A12");
 	}
+
+	@Test
+	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
+		String keyResultToken = "key_wV6MX15WQ3DTzQMs";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/"+ keyResultToken).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+	}
 }
 
 
