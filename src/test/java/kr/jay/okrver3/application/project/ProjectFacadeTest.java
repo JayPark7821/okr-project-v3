@@ -19,6 +19,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -31,6 +32,7 @@ import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
@@ -43,6 +45,7 @@ import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
+import kr.jay.okrver3.interfaces.project.ProjectInitiativeResponse;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
@@ -332,6 +335,24 @@ class ProjectFacadeTest {
 		String response = sut.initiativeFinished(initiativeToken,  getUser(11L));
 
 		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
+		String keyResultToken = "ini_ixYjj5nODfeab3AH8";
+
+
+		Page<ProjectInitiativeInfo> response =
+			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L),PageRequest.of(0, 5));
+
+		assertThat(response.getTotalElements()).isEqualTo(2);
+		List<ProjectInitiativeInfo> content = response.getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+
+		}
+
 	}
 
 	private User getUser(Long seq) {
