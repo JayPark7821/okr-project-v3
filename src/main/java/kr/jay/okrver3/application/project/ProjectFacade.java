@@ -107,9 +107,11 @@ public class ProjectFacade {
 		return projectService.initiativeFinished(initiativeToken, user);
 	}
 
-	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
-		Pageable pageable) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.application.project.ProjectFacade.getInitiativeByKeyResultToken()");
+	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(
+		String keyResultToken,
+		User user,
+		Pageable pageable
+	) {
+		return projectService.getInitiativeByKeyResultToken(keyResultToken, user, pageable);
 	}
 }

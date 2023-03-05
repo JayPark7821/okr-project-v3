@@ -3,6 +3,7 @@ package kr.jay.okrver3.domain.project.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.user.User;
@@ -29,5 +30,7 @@ public interface ProjectService {
 	String registerInitiative(ProjectInitiativeSaveCommand command, User user);
 
 	String initiativeFinished(String initiativeToken, User user);
+
+	Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user, Pageable pageable);
 }
 
