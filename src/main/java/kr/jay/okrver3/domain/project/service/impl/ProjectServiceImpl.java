@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.project.service.ProjectService;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
@@ -124,6 +126,12 @@ public class ProjectServiceImpl implements ProjectService {
 		initiative.done();
 		updateProjectProgress(initiative.getProject().getId());
 		return initiative.getInitiativeToken();
+	}
+
+	@Override
+	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
+		Pageable pageable) {
+		return null;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -30,6 +30,7 @@ import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
 import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
@@ -374,6 +375,24 @@ class ProjectServiceImplTest {
 			.setParameter("id", 99997L)
 			.getSingleResult();
 		assertThat(project.getProgress()).isEqualTo(100.0);
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
+		String keyResultToken = "key_wV6f45vWQaaazQaa";
+		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5aaafeab3AH8","ini_ixYjj5nODfeab3AH8");
+		Page<ProjectInitiativeInfo> response =
+			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L),PageRequest.of(0, 5));
+
+		assertThat(response.getTotalElements()).isEqualTo(2);
+		List<ProjectInitiativeInfo> content = response.getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
+		}
+
 	}
 
 
