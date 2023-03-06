@@ -37,10 +37,13 @@ import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.infrastructure.project.ProjectJpaRepository;
+import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -95,7 +98,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
@@ -121,7 +124,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
@@ -146,7 +149,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
@@ -194,7 +197,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail")).
+			.body(new TeamMemberInviteRequest("project-fgFHxGWeIUQt", "fakeAppleEmail")).
 
 			when()
 			.post(baseUrl + "/team/invite").
@@ -377,7 +380,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new ProjectKeyResultSaveDto(projectToken,keyResultName )).
+			.body(new ProjectKeyResultSaveRequest(projectToken, keyResultName)).
 
 			when()
 			.post(baseUrl + "/keyresult").
@@ -393,7 +396,7 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
-		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
@@ -415,16 +418,15 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().body().asString();
 
-
 		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 
 	}
 
 	@Test
-	void 행동전략_추가시_기대하는_응답을_리턴한다_동시성테스트() throws Exception {
+	void 행동전략_추가시_프로젝트_진척도가_변경된다_동시성테스트() throws Exception {
 
-		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
@@ -432,13 +434,13 @@ public class ProjectApiControllerAcceptanceTest {
 			"행동전략 상세내용"
 		);
 
-		int threadCount = 98;
+		int threadCount = 99;
 		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 		CountDownLatch latch = new CountDownLatch(threadCount);
 
 		for (int i = 0; i < threadCount; i++) {
 			executorService.submit(() -> {
-				try{
+				try {
 					RestAssured.
 
 						given()
@@ -473,10 +475,9 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(project.getProgress()).isEqualTo(1.0);
 	}
 
-
 	@Test
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
-		String initiativeToken = "ini_ixYjj5nODqtb3A12";
+		String initiativeToken = "ini_ixYjj5nODa3sdA12";
 		final String response = RestAssured.
 
 			given()
@@ -484,13 +485,54 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.put(baseUrl + "/initiative/"+initiativeToken + "/done").
+			.put(baseUrl + "/initiative/" + initiativeToken + "/done").
 
 			then()
 			.statusCode(HttpStatus.OK.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo("ini_ixYjj5nODqtb3A12");
+		assertThat(response).isEqualTo("ini_ixYjj5nODa3sdA12");
+	}
+
+	@Test
+	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
+		String keyResultToken = "key_wV6MX15WQ3DTzQMs";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/list/" + keyResultToken).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+	}
+
+	@Test
+	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
+
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + authToken)
+			.contentType(ContentType.JSON)
+			.body(new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "project-fgFHxGWeIUQt", "ini_ixYjj5nODqtb3AH8")).
+
+			when()
+			.post(baseUrl).
+
+			then()
+			.statusCode(HttpStatus.CREATED.value())
+			.extract().body().asString();
+
+		assertThat(response).containsPattern(
+			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
+
 	}
 }
 

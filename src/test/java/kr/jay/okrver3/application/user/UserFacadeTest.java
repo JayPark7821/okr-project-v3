@@ -18,11 +18,12 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.service.LoginInfo;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
-import kr.jay.okrver3.interfaces.user.JoinRequestDto;
+import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @DataJpaTest
 @Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
@@ -51,7 +52,7 @@ class UserFacadeTest {
 
 		assertThatThrownBy(() -> sut.getLoginInfoFrom(info))
 			.isExactlyInstanceOf(OkrApplicationException.class)
-			.hasMessage("소셜 provider 불일치, " +ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.hasMessage("소셜 provider 불일치, " + ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
 
 	}
 
@@ -97,11 +98,11 @@ class UserFacadeTest {
 
 		String guestNameFromUser = "newGuestName";
 		String registeredGuestEmail = "guest@email.com";
-		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", guestNameFromUser,
+		JoinRequest joinRequest = new JoinRequest("guest-rkmZUIUNWkSMX3", guestNameFromUser,
 			registeredGuestEmail,
 			"WEB_SERVER_DEVELOPER");
 
-		LoginInfo loginInfo = sut.join(joinRequestDto);
+		LoginInfo loginInfo = sut.join(joinRequest);
 
 		assertThat(loginInfo.name()).isEqualTo(guestNameFromUser);
 		assertThat(loginInfo.email()).isEqualTo(registeredGuestEmail);
@@ -117,10 +118,10 @@ class UserFacadeTest {
 	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_before_guest_login() {
 
-		JoinRequestDto joinRequestDto = new JoinRequestDto("not-registered-guest-id", "guest", "guest@email.com",
+		JoinRequest joinRequest = new JoinRequest("not-registered-guest-id", "guest", "guest@email.com",
 			"Developer");
 
-		assertThatThrownBy(() -> sut.join(joinRequestDto))
+		assertThatThrownBy(() -> sut.join(joinRequest))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
 	}
@@ -130,10 +131,10 @@ class UserFacadeTest {
 	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_again_when_after_join() {
 
-		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
+		JoinRequest joinRequest = new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
 			"Developer");
 
-		assertThatThrownBy(() -> sut.join(joinRequestDto))
+		assertThatThrownBy(() -> sut.join(joinRequest))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 

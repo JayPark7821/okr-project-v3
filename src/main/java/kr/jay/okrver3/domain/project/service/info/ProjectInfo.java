@@ -1,4 +1,4 @@
-package kr.jay.okrver3.domain.project.service;
+package kr.jay.okrver3.domain.project.service.info;
 
 import java.util.List;
 

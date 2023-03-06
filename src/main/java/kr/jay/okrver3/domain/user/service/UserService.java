@@ -5,7 +5,7 @@ import java.util.Optional;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
-import kr.jay.okrver3.interfaces.user.JoinRequestDto;
+import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 public interface UserService {
 	Optional<UserInfo> getUserInfoFrom(OAuth2UserInfo oAuth2UserInfo);
@@ -13,6 +13,7 @@ public interface UserService {
 	Optional<User> findByEmail(String email);
 
 	User getReferenceById(Long id);
-	UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequestDto joinRequestDto);
+
+	UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequest joinRequest);
 
 }

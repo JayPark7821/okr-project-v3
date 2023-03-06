@@ -4,22 +4,26 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.service.NotificationService;
-import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
-import kr.jay.okrver3.domain.project.service.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.ProjectService;
-import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectKeyResultSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.service.info.ProjectDetailInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
-import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
+import kr.jay.okrver3.interfaces.feedback.FeedbackSaveCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,12 +36,13 @@ public class ProjectFacade {
 	private final UserService userService;
 	private final NotificationService notificationService;
 
-	public String registerProject(ProjectMasterSaveDto dto, User user) {
+	public String registerProject(ProjectSaveCommand command, User user) {
 
 		List<User> teamMemberUsers =
-			dto.teamMembers() != null ? getTeamUsersFromEmails(dto) : List.of();
+			command.teamMembers() != null ? getTeamUsersFromEmails(command) : List.of();
 
-		ProjectInfo projectInfo = projectService.registerProject(dto, userService.getReferenceById(user.getUserSeq()),
+		ProjectInfo projectInfo = projectService.registerProject(command,
+			userService.getReferenceById(user.getUserSeq()),
 			teamMemberUsers);
 
 		return projectInfo.projectToken();
@@ -47,16 +52,18 @@ public class ProjectFacade {
 		return projectService.getProjectInfoBy(projectToken, user);
 	}
 
-	public String inviteTeamMember(TeamMemberInviteRequestDto requestDto, User inviter) {
+	public String inviteTeamMember(TeamMemberInviteCommand command, User inviter) {
 
-		User invitedUser = getUserToInviteBy(requestDto.email());
+		User invitedUser = getUserToInviteBy(command.email());
 
-		ProjectTeamMemberInfo projectTeamMemberInfo = projectService.inviteTeamMember(requestDto.projectToken(),
-			invitedUser, inviter);
+		ProjectTeamMembersInfo projectTeamMembersInfo = projectService.inviteTeamMember(
+			command.projectToken(),
+			invitedUser, inviter
+		);
 
 		notificationService.sendInvitationNotification(
-			getTeamMemberToSendNoti(invitedUser, projectTeamMemberInfo),
-			projectTeamMemberInfo.projectName(),
+			getTeamMemberToSendNoti(invitedUser, projectTeamMembersInfo),
+			projectTeamMembersInfo.projectName(),
 			invitedUser.getUsername()
 		);
 
@@ -73,29 +80,29 @@ public class ProjectFacade {
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
 	}
 
-	private List<User> getTeamUsersFromEmails(ProjectMasterSaveDto dto) {
-		return dto.teamMembers().stream().map(userService::findByEmail)
+	private List<User> getTeamUsersFromEmails(ProjectSaveCommand command) {
+		return command.teamMembers().stream().map(userService::findByEmail)
 			.filter(Optional::isPresent)
 			.map(Optional::get).toList();
 	}
 
-	private static List<User> getTeamMemberToSendNoti(User invitedUser, ProjectTeamMemberInfo projectTeamMemberInfo) {
-		return projectTeamMemberInfo.projectTeamMemberUsers()
+	private static List<User> getTeamMemberToSendNoti(User invitedUser, ProjectTeamMembersInfo info) {
+		return info.projectTeamMemberUsers()
 			.stream()
 			.filter(user -> !user.equals(invitedUser))
 			.toList();
 	}
 
-	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
-		return projectService.getDetailProjectList(command);
+	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, User user) {
+		return projectService.getDetailProjectList(command, user);
 	}
 
-	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
+	public ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, User user) {
 		return projectService.getProjectSideMenuDetails(projectToken, user);
 	}
 
-	public String registerKeyResult(ProjectKeyResultSaveDto projectKeyResultSaveDto, User user) {
-		return projectService.registerKeyResult(projectKeyResultSaveDto, user);
+	public String registerKeyResult(ProjectKeyResultSaveCommand command, User user) {
+		return projectService.registerKeyResult(command, user);
 	}
 
 	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
@@ -104,5 +111,17 @@ public class ProjectFacade {
 
 	public String initiativeFinished(String initiativeToken, User user) {
 		return projectService.initiativeFinished(initiativeToken, user);
+	}
+
+	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(
+		String keyResultToken,
+		User user,
+		Pageable pageable
+	) {
+		return projectService.getInitiativeByKeyResultToken(keyResultToken, user, pageable);
+	}
+
+	public String registerFeedback(FeedbackSaveCommand command, User requester) {
+		return projectService.registerFeedback(command, requester);
 	}
 }

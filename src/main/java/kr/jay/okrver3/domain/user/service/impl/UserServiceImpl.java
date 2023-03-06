@@ -14,7 +14,7 @@ import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserRepository;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
-import kr.jay.okrver3.interfaces.user.JoinRequestDto;
+import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequestDto joinRequestDto) {
+	public UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequest joinRequest) {
 		userRepository.findByEmail(guestInfo.email())
 			.ifPresent(user -> {
 				throw new OkrApplicationException(ErrorCode.ALREADY_JOINED_USER);
@@ -54,11 +54,11 @@ public class UserServiceImpl implements UserService {
 		User user = User.builder()
 			.userId(guestInfo.guestId())
 			.email(guestInfo.email())
-			.username(joinRequestDto.name())
+			.username(joinRequest.name())
 			.roleType(RoleType.USER)
 			.profileImage(guestInfo.profileImageUrl())
 			.providerType(guestInfo.providerType())
-			.jobField(JobFieldDetail.lookup(joinRequestDto.jobField()))
+			.jobField(JobFieldDetail.lookup(joinRequest.jobField()))
 			.build();
 
 		return new UserInfo(userRepository.save(user));

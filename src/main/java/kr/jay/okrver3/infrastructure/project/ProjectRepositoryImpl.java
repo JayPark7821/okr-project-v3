@@ -3,18 +3,18 @@ package kr.jay.okrver3.infrastructure.project;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import kr.jay.okrver3.common.exception.ErrorCode;
-import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.feedback.Feedback;
 import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
-import kr.jay.okrver3.domain.team.TeamMember;
+import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.infrastructure.feedback.FeedbackJpaRepository;
 import kr.jay.okrver3.infrastructure.initiative.InitiativeJpaRepository;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.infrastructure.initiative.InitiativeQueryDslRepository;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -24,6 +24,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	private final ProjectJpaRepository projectJpaRepository;
 	private final InitiativeJpaRepository initiativeJpaRepository;
 	private final ProjectQueryDslRepository projectQueryDslRepository;
+	private final InitiativeQueryDslRepository initiativeQueryDslRepository;
+	private final FeedbackJpaRepository feedbackJpaRepository;
 
 	@Override
 	public Project save(Project project) {
@@ -41,10 +43,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
-	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
-
-		return projectQueryDslRepository.getDetailProjectList(command)
-			.map(project -> getProjectDetailInfo(project, command.user().getEmail()));
+	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command, User user) {
+		return projectQueryDslRepository.getDetailProjectList(command, user);
 	}
 
 	@Override
@@ -79,23 +79,33 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
-	public Project saveAndFlush(Project project) {
-		return projectJpaRepository.saveAndFlush(project);
+	public Optional<Project> findProjectForUpdateById(Long projectId) {
+		return projectJpaRepository.findProjectForUpdateById(projectId);
 	}
 
-	private ProjectDetailInfo getProjectDetailInfo(Project project, String email) {
-		return new ProjectDetailInfo(
-			project.getProjectToken(),
-			project.getTeamMember().stream()
-				.filter(t -> t.getUser().getEmail().equals(email))
-				.findFirst()
-				.map(TeamMember::isNew)
-				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_INFO)),
-			project.getProgress(),
-			project.getStartDate(),
-			project.getEndDate(),
-			project.getTeamMember().size(),
-			project.getType().name());
+	@Override
+	public Page<Initiative> findInitiativeByKeyResultTokenAndUser(
+		String keyResultToken,
+		User user,
+		Pageable pageable
+	) {
+		return initiativeQueryDslRepository.findInitiativeByKeyResultTokenAndUser(keyResultToken, user, pageable);
+	}
 
+	@Override
+	public Initiative saveAndFlushInitiative(Initiative initiative) {
+		return initiativeJpaRepository.saveAndFlush(initiative);
+	}
+
+	@Override
+	public Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequester(String initiativeToken,
+		User requester) {
+		return initiativeJpaRepository.findInitiativeForFeedbackByInitiativeTokenAndRequester(initiativeToken,
+			requester);
+	}
+
+	@Override
+	public Feedback saveFeedback(Feedback feedback) {
+		return feedbackJpaRepository.save(feedback);
 	}
 }

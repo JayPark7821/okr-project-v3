@@ -16,19 +16,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
 
 @Transactional
 @SpringBootTest
@@ -56,7 +62,7 @@ class ProjectApiControllerTest {
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -79,7 +85,7 @@ class ProjectApiControllerTest {
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -110,7 +116,7 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		final ResponseEntity<String> response = sut.inviteTeamMember(
-			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), auth);
+			new TeamMemberInviteRequest("project-fgFHxGWeIUQt", "fakeAppleEmail"), auth);
 
 		assertThat(response.getBody()).isEqualTo("fakeAppleEmail");
 	}
@@ -199,7 +205,8 @@ class ProjectApiControllerTest {
 		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
-		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N", "TEAM",
+		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N",
+			"TEAM",
 			auth,
 			PageRequest.of(0, 5));
 
@@ -228,7 +235,6 @@ class ProjectApiControllerTest {
 
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
@@ -237,20 +243,19 @@ class ProjectApiControllerTest {
 
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
-		ResponseEntity<String> response = sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), auth);
-
+		ResponseEntity<String> response = sut.registerKeyResult(
+			new ProjectKeyResultSaveRequest(projectToken, keyResultName), auth);
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
 
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
-		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
@@ -262,11 +267,9 @@ class ProjectApiControllerTest {
 
 		ResponseEntity<String> response = sut.registerInitiative(requestDto, auth);
 
-
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 	}
-
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -277,6 +280,45 @@ class ProjectApiControllerTest {
 
 		assertThat(response.getBody()).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
+		String keyResultToken = "key_wV6f45vWQaaazQaa";
+		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
+			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
+
+		ResponseEntity<Page<ProjectInitiativeResponse>> response =
+			sut.getInitiativeByKeyResultToken(keyResultToken, getAuthenticationToken(11L), PageRequest.of(0, 5));
+
+		assertThat(response.getBody().getTotalElements()).isEqualTo(3);
+		List<ProjectInitiativeResponse> content = response.getBody().getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
+		}
+
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
+
+		FeedbackSaveRequest requestDto =
+			new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
+				"ini_ixYjj5aaafeab3AH8");
+
+		ResponseEntity<String> response =
+			sut.registerFeedback(
+				requestDto,
+				getAuthenticationToken(3L)
+			);
+
+		assertThat(response.getBody()).containsPattern(
+			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+	}
+
+
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)

@@ -21,12 +21,11 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kr.jay.okrver3.domain.initiative.QInitiative;
-import kr.jay.okrver3.domain.keyresult.QKeyResult;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.interfaces.project.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.user.User;
 
 @Repository
 public class ProjectQueryDslRepository {
@@ -39,14 +38,14 @@ public class ProjectQueryDslRepository {
 		this.queryFactory = new JPAQueryFactory(em);
 	}
 
-	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command) {
+	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command, User requestUser) {
 
 		List<Project> results = queryFactory
 			.select(project)
 			.from(project)
 			.innerJoin(project.teamMember, teamMember)
 			.innerJoin(teamMember.user, user)
-			.where(user.eq(command.user()),
+			.where(user.eq(requestUser),
 				includeFinishedProject(command.includeFinishedProjectYN()),
 				projectTypeOption(command.projectType())
 			)
@@ -60,7 +59,7 @@ public class ProjectQueryDslRepository {
 			.from(project)
 			.innerJoin(project.teamMember, teamMember)
 			.innerJoin(teamMember.user, user)
-			.where(user.eq(command.user()),
+			.where(user.eq(requestUser),
 				includeFinishedProject(command.includeFinishedProjectYN()),
 				projectTypeOption(command.projectType())
 			);

@@ -17,6 +17,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @Import(TestConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -104,7 +105,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com", "WEB_SERVER_DEVELOPER")).
+			.body(new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com", "WEB_SERVER_DEVELOPER")).
 
 			when()
 			.post("/api/v1/user/join").
@@ -124,7 +125,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequestDto("not-registered-guest-id", "guest", "guest@email.com", "Developer")).
+			.body(new JoinRequest("not-registered-guest-id", "guest", "guest@email.com", "Developer")).
 
 			when()
 			.post("/api/v1/user/join").
@@ -144,7 +145,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.body(new JoinRequestDto("guest-rkmZUIUNWkSMX3", "appleUser", "guest@email.com", "WEB_SERVER_DEVELOPER")).
+			.body(new JoinRequest("guest-rkmZUIUNWkSMX3", "appleUser", "guest@email.com", "WEB_SERVER_DEVELOPER")).
 
 			when()
 			.post("/api/v1/user/join").
