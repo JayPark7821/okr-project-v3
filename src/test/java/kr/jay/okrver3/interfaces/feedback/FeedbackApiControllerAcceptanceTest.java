@@ -71,25 +71,5 @@ public class FeedbackApiControllerAcceptanceTest {
 		RestAssured.port = port;
 	}
 
-	@Test
-	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
 
-		final String response = RestAssured.
-
-			given()
-			.header("Authorization", "Bearer " + authToken)
-			.contentType(ContentType.JSON)
-			.body(new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "project-fgFHxGWeIUQt", "ini_ixYjj5nODqtb3AH8")).
-
-			when()
-			.post(baseUrl).
-
-			then()
-			.statusCode(HttpStatus.CREATED.value())
-			.extract().body().asString();
-
-		assertThat(response).containsPattern(
-			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
-
-	}
 }

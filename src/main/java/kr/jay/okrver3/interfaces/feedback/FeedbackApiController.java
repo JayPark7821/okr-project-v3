@@ -28,18 +28,6 @@ public class FeedbackApiController {
 	private final FeedbackFacade feedbackFacade;
 	private final FeedbackDtoMapper mapper;
 
-	@PostMapping
-	public ResponseEntity<String> registerFeedback(
-		@RequestBody @Valid FeedbackSaveRequest requestDto,
-		Authentication authentication) {
-
-		return Response.successOk(
-			feedbackFacade.registerFeedback(
-				mapper.of(requestDto),
-				getUserFromAuthentication(authentication)
-			)
-		);
-	}
 
 	private User getUserFromAuthentication(Authentication authentication) {
 		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)

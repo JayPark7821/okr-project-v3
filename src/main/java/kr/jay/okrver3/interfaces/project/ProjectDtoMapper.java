@@ -18,6 +18,8 @@ import kr.jay.okrver3.domain.project.service.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.service.info.ProjectTeamMemberUserInfo;
+import kr.jay.okrver3.interfaces.feedback.FeedbackSaveCommand;
+import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
@@ -111,5 +113,15 @@ public class ProjectDtoMapper {
 		);
 
 	}
+
+	public FeedbackSaveCommand of(FeedbackSaveRequest dto) {
+		return new FeedbackSaveCommand(
+			dto.opinion(),
+			dto.grade(),
+			dto.projectToken(),
+			dto.initiativeToken()
+		);
+	}
+
 }
 

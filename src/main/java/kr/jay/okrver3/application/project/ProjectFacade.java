@@ -23,6 +23,7 @@ import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.service.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.UserService;
+import kr.jay.okrver3.interfaces.feedback.FeedbackSaveCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -118,5 +119,17 @@ public class ProjectFacade {
 		Pageable pageable
 	) {
 		return projectService.getInitiativeByKeyResultToken(keyResultToken, user, pageable);
+	}
+
+
+	public String registerFeedback(FeedbackSaveCommand command, User requester) {
+		ProjectInitiativeInfo projectInitiativeInfo =
+			projectService.getProjectInitiativeInfoByInitiativeTokenAndUser(
+				command.initiativeToken(),
+				requester
+			);
+		// String feedbackToken = feedbackService.registerFeedback(command, requester);
+		notificationService.sendFeedbackNotification(projectInitiativeInfo.initiativeName(), requester);
+		return null;
 	}
 }

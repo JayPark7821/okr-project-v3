@@ -20,14 +20,4 @@ public class FeedbackFacade {
 	private final ProjectService projectService;
 	private final NotificationService notificationService;
 
-	public String registerFeedback(FeedbackSaveCommand command, User requester) {
-		ProjectInitiativeInfo projectInitiativeInfo =
-			projectService.getProjectInitiativeInfoByInitiativeTokenAndUser(
-				command.initiativeToken(),
-				requester
-			);
-		String feedbackToken = feedbackService.registerFeedback(command, requester);
-		notificationService.sendFeedbackNotification(projectInitiativeInfo.initiativeName(), requester);
-		return feedbackToken;
-	}
 }

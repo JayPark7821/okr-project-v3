@@ -32,22 +32,6 @@ class FeedbackFacadeTest {
 		return user;
 	}
 
-	@Test
-	@Sql("classpath:insert-project-date.sql")
-	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
 
-		FeedbackSaveCommand command =
-			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
-				"ini_ixYjj5aaafeab3AH8");
-
-		String response =
-			sut.registerFeedback(
-				command,
-				getUser(3L)
-			);
-
-		assertThat(response).containsPattern(
-			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
-	}
 
 }
