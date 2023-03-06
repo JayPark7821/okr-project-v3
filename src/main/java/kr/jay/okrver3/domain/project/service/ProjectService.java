@@ -36,5 +36,7 @@ public interface ProjectService {
 	String initiativeFinished(String initiativeToken, User user);
 
 	Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user, Pageable pageable);
+
+	ProjectInitiativeInfo getProjectInitiativeInfoByInitiativeTokenAndUser(String initiativeToken, User requester);
 }
 
