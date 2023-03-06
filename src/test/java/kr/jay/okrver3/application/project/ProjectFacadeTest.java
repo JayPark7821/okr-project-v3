@@ -23,6 +23,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.feedback.Feedback;
 import kr.jay.okrver3.domain.notification.Notification;
 import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.notification.service.impl.NotificationServiceImpl;
@@ -382,6 +383,29 @@ class ProjectFacadeTest {
 
 		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 팀원의_행동전략에_피드백을_추가하면_행동전략을_작성한_팀원에게_알림이_전송된다() throws Exception {
+
+		FeedbackSaveCommand command =
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
+				"ini_ixYjj5aaafeab3AH8");
+
+		String response =
+			sut.registerFeedback(
+				command,
+				getUser(3L)
+			);
+
+		Notification result =
+			em.createQuery("select n from Notification n where n.user.id =: userId", Notification.class)
+				.setParameter("userId", 33L)
+				.getSingleResult();
+
+		assertThat(result.getType()).isEqualTo("NEW_FEEDBACK");
+
 	}
 
 }
