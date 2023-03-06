@@ -15,6 +15,7 @@ import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.service.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.interfaces.feedback.FeedbackSaveCommand;
 
 public interface ProjectService {
 	ProjectInfo registerProject(ProjectSaveCommand command, User user, List<User> teamMemberUsers);
@@ -38,5 +39,7 @@ public interface ProjectService {
 	Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user, Pageable pageable);
 
 	ProjectInitiativeInfo getProjectInitiativeInfoByInitiativeTokenAndUser(String initiativeToken, User requester);
+
+	String registerFeedback(FeedbackSaveCommand command, User requester);
 }
 

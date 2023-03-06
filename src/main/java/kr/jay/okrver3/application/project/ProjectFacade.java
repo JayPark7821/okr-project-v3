@@ -121,15 +121,7 @@ public class ProjectFacade {
 		return projectService.getInitiativeByKeyResultToken(keyResultToken, user, pageable);
 	}
 
-
 	public String registerFeedback(FeedbackSaveCommand command, User requester) {
-		ProjectInitiativeInfo projectInitiativeInfo =
-			projectService.getProjectInitiativeInfoByInitiativeTokenAndUser(
-				command.initiativeToken(),
-				requester
-			);
-		// String feedbackToken = feedbackService.registerFeedback(command, requester);
-		notificationService.sendFeedbackNotification(projectInitiativeInfo.initiativeName(), requester);
-		return null;
+		return projectService.registerFeedback(command, requester);
 	}
 }

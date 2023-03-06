@@ -28,6 +28,7 @@ import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.interfaces.feedback.FeedbackSaveCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -138,6 +139,17 @@ public class ProjectServiceImpl implements ProjectService {
 		return projectRepository.findInitiativeByKeyResultTokenAndUser(
 			keyResultToken, user, pageable
 		).map(ProjectInitiativeInfo::new);
+	}
+
+	@Override
+	public ProjectInitiativeInfo getProjectInitiativeInfoByInitiativeTokenAndUser(String initiativeToken,
+		User requester) {
+		return null;
+	}
+
+	@Override
+	public String registerFeedback(FeedbackSaveCommand command, User requester) {
+		return null;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
