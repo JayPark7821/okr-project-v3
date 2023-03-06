@@ -3,7 +3,6 @@ package kr.jay.okrver3.interfaces.feedback;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.sql.Connection;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
@@ -28,12 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
+import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class FeedBackApiControllerAcceptanceTest {
+public class FeedbackApiControllerAcceptanceTest {
 
 	@Value("${app.auth.tokenSecret}")
 	private String key;
@@ -79,7 +79,7 @@ public class FeedBackApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new FeedBackSaveRequest("피드백 작성","GOOD_IDEA","project-fgFHxGWeIUQt","ini_ixYjj5nODqtb3AH8")).
+			.body(new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "project-fgFHxGWeIUQt", "ini_ixYjj5nODqtb3AH8")).
 
 			when()
 			.post(baseUrl).

@@ -1,9 +1,9 @@
-package kr.jay.okrver3.interfaces.feedback;
+package kr.jay.okrver3.interfaces.feedback.request;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public record FeedBackSaveRequest(
+public record FeedbackSaveRequest(
 
 	@NotNull(message = "피드백 메시지를 작성해 주세요.")
 	@Size(max = 300, message = "피드백은 300자까지 작성할 수 있습니다.")
