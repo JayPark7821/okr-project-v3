@@ -12,24 +12,19 @@ import java.util.Objects;
 import javax.persistence.EntityManager;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import com.google.common.io.Files;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import kr.jay.okrver3.domain.initiative.Initiative;
-import kr.jay.okrver3.domain.initiative.QInitiative;
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.domain.user.User;
 
 @Repository
 public class ProjectQueryDslRepository {
@@ -110,31 +105,5 @@ public class ProjectQueryDslRepository {
 
 		return progress;
 
-	}
-
-	public Page<Initiative> findInitiativeByKeyResultTokenAndUser(String keyResultToken, User searchUser, Pageable pageable) {
-		List<Initiative> results = queryFactory
-			.select(initiative)
-			.from(initiative)
-			.innerJoin(initiative.teamMember, teamMember).fetchJoin()
-			.innerJoin(teamMember.user, user).fetchJoin()
-			.where(
-				initiative.keyResult.keyResultToken.eq(keyResultToken)
-			)
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.orderBy(initiative.createdDate.asc())
-			.fetch();
-
-		JPAQuery<Long> countQuery = queryFactory
-			.select(initiative.iniId)
-			.from(initiative)
-			.innerJoin(initiative.teamMember, teamMember)
-			.innerJoin(teamMember.user, user)
-			.where(
-				initiative.keyResult.keyResultToken.eq(keyResultToken)
-			);
-
-		return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetch().size());
 	}
 }

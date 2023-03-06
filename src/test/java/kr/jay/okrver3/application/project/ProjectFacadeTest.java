@@ -41,6 +41,7 @@ import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
+import kr.jay.okrver3.infrastructure.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
@@ -55,7 +56,7 @@ import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 	ProjectQueryDslRepository.class,
 	ProjectValidateProcessor.class, ProjectLeaderValidator.class,
 	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class,
-	InitiativeDoneValidator.class})
+	InitiativeDoneValidator.class, InitiativeQueryDslRepository.class})
 class ProjectFacadeTest {
 
 	@Autowired
@@ -351,7 +352,7 @@ class ProjectFacadeTest {
 		Page<ProjectInitiativeInfo> response =
 			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
 
-		assertThat(response.getTotalElements()).isEqualTo(2);
+		assertThat(response.getTotalElements()).isEqualTo(3);
 		List<ProjectInitiativeInfo> content = response.getContent();
 
 		for (int i = 0; i < content.size(); i++) {

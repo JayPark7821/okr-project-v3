@@ -16,14 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
@@ -228,7 +225,6 @@ class ProjectApiControllerTest {
 
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
@@ -237,14 +233,13 @@ class ProjectApiControllerTest {
 
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
-		ResponseEntity<String> response = sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), auth);
-
+		ResponseEntity<String> response = sut.registerKeyResult(
+			new ProjectKeyResultSaveDto(projectToken, keyResultName), auth);
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
 
 	}
-
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -262,11 +257,9 @@ class ProjectApiControllerTest {
 
 		ResponseEntity<String> response = sut.registerInitiative(requestDto, auth);
 
-
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 	}
-
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -281,17 +274,18 @@ class ProjectApiControllerTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
-		String keyResultToken = "ini_ixYjj5nODfeab3AH8";
-
+		String keyResultToken = "key_wV6f45vWQaaazQaa";
+		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
+			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
 		ResponseEntity<Page<ProjectInitiativeResponse>> response =
-			sut.getInitiativeByKeyResultToken(keyResultToken, getAuthenticationToken(11L),PageRequest.of(0, 5));
+			sut.getInitiativeByKeyResultToken(keyResultToken, getAuthenticationToken(11L), PageRequest.of(0, 5));
 
-		assertThat(response.getBody().getTotalElements()).isEqualTo(2);
+		assertThat(response.getBody().getTotalElements()).isEqualTo(3);
 		List<ProjectInitiativeResponse> content = response.getBody().getContent();
 
 		for (int i = 0; i < content.size(); i++) {
-
+			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
 		}
 
 	}

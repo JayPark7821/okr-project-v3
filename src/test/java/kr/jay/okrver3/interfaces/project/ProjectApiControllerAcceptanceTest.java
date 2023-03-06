@@ -37,10 +37,8 @@ import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.infrastructure.project.ProjectJpaRepository;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -377,7 +375,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new ProjectKeyResultSaveDto(projectToken,keyResultName )).
+			.body(new ProjectKeyResultSaveDto(projectToken, keyResultName)).
 
 			when()
 			.post(baseUrl + "/keyresult").
@@ -415,7 +413,6 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.CREATED.value())
 			.extract().body().asString();
 
-
 		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 
@@ -432,13 +429,13 @@ public class ProjectApiControllerAcceptanceTest {
 			"행동전략 상세내용"
 		);
 
-		int threadCount = 98;
+		int threadCount = 99;
 		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 		CountDownLatch latch = new CountDownLatch(threadCount);
 
 		for (int i = 0; i < threadCount; i++) {
 			executorService.submit(() -> {
-				try{
+				try {
 					RestAssured.
 
 						given()
@@ -473,10 +470,9 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(project.getProgress()).isEqualTo(1.0);
 	}
 
-
 	@Test
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
-		String initiativeToken = "ini_ixYjj5nODqtb3A12";
+		String initiativeToken = "ini_ixYjj5nODa3sdA12";
 		final String response = RestAssured.
 
 			given()
@@ -484,13 +480,13 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.put(baseUrl + "/initiative/"+initiativeToken + "/done").
+			.put(baseUrl + "/initiative/" + initiativeToken + "/done").
 
 			then()
 			.statusCode(HttpStatus.OK.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo("ini_ixYjj5nODqtb3A12");
+		assertThat(response).isEqualTo("ini_ixYjj5nODa3sdA12");
 	}
 
 	@Test
@@ -504,7 +500,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/initiative/list/"+ keyResultToken).
+			.get(baseUrl + "/initiative/list/" + keyResultToken).
 
 			then()
 			.statusCode(HttpStatus.OK.value())

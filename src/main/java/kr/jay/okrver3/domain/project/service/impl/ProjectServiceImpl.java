@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
@@ -26,7 +27,6 @@ import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
 import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
@@ -132,14 +132,15 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
 		Pageable pageable) {
-		return projectRepository.findInitiativeByKeyResultTokenAndUser(keyResultToken, user, pageable)
-			.map(this::getProjectInitiativeInfo);
+		return projectRepository.findInitiativeByKeyResultTokenAndUser(
+			keyResultToken, user, pageable
+		).map(this::getProjectInitiativeInfo);
 	}
 
 	private ProjectInitiativeInfo getProjectInitiativeInfo(Initiative initiative) {
-		return new ProjectInitiativeInfo(initiative.getInitiativeToken(), initiative.getName(), initiative.isDone(), new UserInfo(initiative.getTeamMember().getUser()));
+		return new ProjectInitiativeInfo(initiative.getInitiativeToken(), initiative.getName(), initiative.isDone(),
+			new UserInfo(initiative.getTeamMember().getUser()));
 	}
-
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	void updateProjectProgress(Long projectId) {
@@ -147,7 +148,6 @@ public class ProjectServiceImpl implements ProjectService {
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 		projectReference.updateProgress(projectRepository.getProjectProgress(projectId));
 	}
-
 
 	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
 		KeyResult keyResult = project.getKeyResults()
@@ -194,9 +194,8 @@ public class ProjectServiceImpl implements ProjectService {
 			.build();
 	}
 
-
 	private Initiative buildInitiative(ProjectInitiativeSaveCommand command, TeamMember teamMember) {
- 		return Initiative.builder()
+		return Initiative.builder()
 			.edt(command.edt())
 			.sdt(command.sdt())
 			.name(command.name())
