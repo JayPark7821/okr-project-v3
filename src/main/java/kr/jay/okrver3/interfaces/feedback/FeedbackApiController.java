@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.jay.okrver3.application.feedback.FeedbackFacade;
+import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.ClassUtils;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +25,25 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/v1/feedback")
 public class FeedbackApiController {
 
+	private final FeedbackFacade feedbackFacade;
+	private final FeedbackDtoMapper mapper;
+
 	@PostMapping
 	public ResponseEntity<String> registerFeedback(
 		@RequestBody @Valid FeedbackSaveRequest requestDto,
 		Authentication authentication) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.interfaces.feedback.FeedbackApiController.registerFeedback())");
+
+		return Response.successOk(
+			feedbackFacade.registerFeedback(
+				mapper.of(requestDto),
+				getUserFromAuthentication(authentication)
+			)
+		);
 	}
+
+	private User getUserFromAuthentication(Authentication authentication) {
+		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
+	}
+
 }
