@@ -142,14 +142,13 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public ProjectInitiativeInfo getProjectInitiativeInfoByInitiativeTokenAndUser(String initiativeToken,
-		User requester) {
-		return null;
-	}
-
-	@Override
 	public String registerFeedback(FeedbackSaveCommand command, User requester) {
-		return null;
+		Initiative initiative = projectRepository.findInitiativeForFeedbackByInitiativeTokenAndRequester(
+				command.initiativeToken(), requester)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+
+
+		return projectRepository.saveFeedback(command.toEntity(initiative,requester )).getFeedbackToken();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -7,5 +7,4 @@ import kr.jay.okrver3.domain.user.User;
 public interface NotificationService {
 	void sendInvitationNotification(List<User> notiSendUsers, String projectName, String invitedUserEamil);
 
-	void sendFeedbackNotification(String initiativeName, User requester);
 }

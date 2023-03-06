@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import kr.jay.okrver3.domain.feedback.Feedback;
 import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
@@ -36,4 +37,8 @@ public interface ProjectRepository {
 	Page<Initiative> findInitiativeByKeyResultTokenAndUser(String keyResultToken, User user, Pageable pageable);
 
 	Initiative saveAndFlushInitiative(Initiative initiative);
+
+	Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequester(String initiativeToken, User requester);
+
+	Feedback saveFeedback(Feedback feedback);
 }
