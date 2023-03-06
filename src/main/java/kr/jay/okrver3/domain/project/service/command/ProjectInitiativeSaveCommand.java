@@ -1,4 +1,4 @@
-package kr.jay.okrver3.application.project;
+package kr.jay.okrver3.domain.project.service.command;
 
 import java.time.LocalDate;
 

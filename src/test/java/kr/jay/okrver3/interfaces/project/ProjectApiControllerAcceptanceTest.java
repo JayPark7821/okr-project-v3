@@ -39,6 +39,10 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -93,7 +97,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
@@ -119,7 +123,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null)).
 
 			when()
@@ -144,7 +148,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.header("Authorization", "Bearer " + authToken)
 			.contentType(ContentType.JSON)
-			.body(new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com"))).
 
 			when()
@@ -192,7 +196,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail")).
+			.body(new TeamMemberInviteRequest("project-fgFHxGWeIUQt", "fakeAppleEmail")).
 
 			when()
 			.post(baseUrl + "/team/invite").
@@ -375,7 +379,7 @@ public class ProjectApiControllerAcceptanceTest {
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken)
-			.body(new ProjectKeyResultSaveDto(projectToken, keyResultName)).
+			.body(new ProjectKeyResultSaveRequest(projectToken, keyResultName)).
 
 			when()
 			.post(baseUrl + "/keyresult").
@@ -391,7 +395,7 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
-		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
@@ -419,9 +423,9 @@ public class ProjectApiControllerAcceptanceTest {
 	}
 
 	@Test
-	void 행동전략_추가시_기대하는_응답을_리턴한다_동시성테스트() throws Exception {
+	void 행동전략_추가시_프로젝트_진척도가_변경된다_동시성테스트() throws Exception {
 
-		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),

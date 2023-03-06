@@ -19,6 +19,8 @@ import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 
 @Import(TestConfig.class)
 @Transactional
@@ -44,7 +46,7 @@ class UserApiControllerTest {
 
 		assertThatThrownBy(() -> sut.loginWithIdToken("GOOGLE", "googleToken"))
 			.isExactlyInstanceOf(OkrApplicationException.class)
-			.hasMessage("소셜 provider 불일치, " +ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.hasMessage("소셜 provider 불일치, " + ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
 	}
 
 	@Test
@@ -61,7 +63,7 @@ class UserApiControllerTest {
 	@Sql("classpath:insert-guest.sql")
 	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
 	void join_after_guest_login() {
-		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
+		JoinRequest joinRequestDto = new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
 			"WEB_FRONT_END_DEVELOPER");
 
 		ResponseEntity<LoginResponse> response = sut.join(joinRequestDto);
@@ -78,7 +80,7 @@ class UserApiControllerTest {
 	@Test
 	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_before_guest_login() {
-		JoinRequestDto joinRequestDto = new JoinRequestDto("not-registered-guest-id", "guest", "guest@email.com",
+		JoinRequest joinRequestDto = new JoinRequest("not-registered-guest-id", "guest", "guest@email.com",
 			"Developer");
 
 		assertThatThrownBy(() -> sut.join(joinRequestDto))
@@ -91,7 +93,7 @@ class UserApiControllerTest {
 	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_again_when_after_join() {
 
-		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
+		JoinRequest joinRequestDto = new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
 			"Developer");
 
 		assertThatThrownBy(() -> sut.join(joinRequestDto))

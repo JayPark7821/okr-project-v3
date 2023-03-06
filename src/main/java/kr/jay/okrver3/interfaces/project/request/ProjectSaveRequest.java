@@ -1,4 +1,4 @@
-package kr.jay.okrver3.interfaces.project;
+package kr.jay.okrver3.interfaces.project.request;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import javax.validation.constraints.Size;
 
 import kr.jay.okrver3.common.utils.DateValid;
 
-public record ProjectMasterSaveDto(
+public record ProjectSaveRequest(
 
 	@NotNull(message = "목표를 작성해 주세요.")
 	@Size(max = 20, message = "목표는 20자까지 작성할 수 있습니다.")

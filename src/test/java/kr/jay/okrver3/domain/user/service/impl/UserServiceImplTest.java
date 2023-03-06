@@ -18,7 +18,7 @@ import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
-import kr.jay.okrver3.interfaces.user.JoinRequestDto;
+import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @DataJpaTest
 @Import({UserServiceImpl.class})
@@ -74,10 +74,10 @@ class UserServiceImplTest {
 		String guestEmail = "apple@apple.com";
 		GuestInfo guestInfo = new GuestInfo("guest-rkmZUIUNWkSMX3", "gusetId", guestEmail, "guest",
 			ProviderType.GOOGLE, "pic");
-		JoinRequestDto joinRequestDto = new JoinRequestDto("guest-rkmZUIUNWkSMX3", newNameFromGuest,
+		JoinRequest joinRequest = new JoinRequest("guest-rkmZUIUNWkSMX3", newNameFromGuest,
 			guestEmail, "WEB_SERVER_DEVELOPER");
 
-		UserInfo userInfo = sut.registerNewUserFrom(guestInfo, joinRequestDto);
+		UserInfo userInfo = sut.registerNewUserFrom(guestInfo, joinRequest);
 
 		assertThat(userInfo.email()).isEqualTo(guestEmail);
 		assertThat(userInfo.id()).isNotNull();
@@ -94,10 +94,10 @@ class UserServiceImplTest {
 
 		GuestInfo guestInfo = new GuestInfo("already-joined-guest", "gusetId", "apple@apple.com", "alreadyJoinedUser",
 			ProviderType.GOOGLE, "pic");
-		JoinRequestDto joinRequestDto = new JoinRequestDto("already-joined-guest", "alreadyJoinedUser",
+		JoinRequest joinRequest = new JoinRequest("already-joined-guest", "alreadyJoinedUser",
 			"apple@apple.com", "dev");
 
-		assertThatThrownBy(() -> sut.registerNewUserFrom(guestInfo, joinRequestDto))
+		assertThatThrownBy(() -> sut.registerNewUserFrom(guestInfo, joinRequest))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 	}

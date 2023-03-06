@@ -21,8 +21,13 @@ public class Response<T> {
 			.body(errorCode.getMessage());
 	}
 
-	public static <T> ResponseEntity<T> success(HttpStatus status, T result) {
-		return ResponseEntity.status(status)
+	public static <T> ResponseEntity<T> successOk(T result) {
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(result);
+	}
+
+	public static <T> ResponseEntity<T> successCreated(T result) {
+		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(result);
 	}
 

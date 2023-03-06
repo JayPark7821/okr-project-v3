@@ -1,7 +1,5 @@
 package kr.jay.okrver3.domain.project.service.impl;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -10,27 +8,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
-import kr.jay.okrver3.domain.project.service.ProjectInfo;
-import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.service.ProjectRepository;
 import kr.jay.okrver3.domain.project.service.ProjectService;
-import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectKeyResultSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.service.info.ProjectDetailInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.domain.user.service.UserInfo;
-import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,8 +41,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional
 	@Override
-	public ProjectInfo registerProject(ProjectMasterSaveDto dto, User user, List<User> teamMemberUsers) {
-		Project project = projectRepository.save(buildProjectFrom(dto));
+	public ProjectInfo registerProject(ProjectSaveCommand command, User user, List<User> teamMemberUsers) {
+		Project project = projectRepository.save(command.toEntity());
 		project.addLeader(user);
 		teamMemberUsers.forEach(project::addTeamMember);
 		return new ProjectInfo(project);
@@ -59,10 +56,10 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public ProjectTeamMemberInfo inviteTeamMember(String projectToken, User invitedUser, User inviter) {
+	public ProjectTeamMembersInfo inviteTeamMember(String projectToken, User invitedUser, User inviter) {
 		Project project = inviteUserValidator(projectToken, invitedUser.getEmail(), inviter);
 		project.addTeamMember(invitedUser);
-		return new ProjectTeamMemberInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),
+		return new ProjectTeamMembersInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),
 			project.getObjective());
 	}
 
@@ -72,31 +69,34 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command) {
-		return projectRepository.getDetailProjectList(command);
+	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, User user) {
+		return projectRepository.getDetailProjectList(command, user)
+			.map(project -> new ProjectDetailInfo(project, user.getEmail()));
 	}
 
 	@Override
-	public ProjectSideMenuResponse getProjectSideMenuDetails(String projectToken, User user) {
+	public ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, User user) {
 		return projectRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, user)
-			.map(ProjectSideMenuResponse::new)
+			.map(ProjectSideMenuInfo::new)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
 	@Transactional
 	@Override
-	public String registerKeyResult(ProjectKeyResultSaveDto dto, User user) {
+	public String registerKeyResult(ProjectKeyResultSaveCommand command, User user) {
 		Project project = projectRepository.findProjectKeyResultByProjectTokenAndUser(
-			dto.projectToken(), user).orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+				command.projectToken(), user)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
 		validateProcessor.validate(ProjectValidateProcessorType.ADD_KEYRESULT_VALIDATION, project, user);
 
-		return project.addKeyResult(dto.keyResultName());
+		return project.addKeyResult(command.keyResultName());
 	}
 
 	@Transactional
 	@Override
 	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
+
 		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
 
@@ -109,8 +109,10 @@ public class ProjectServiceImpl implements ProjectService {
 				initiative
 			);
 
+		projectRepository.saveAndFlushInitiative(initiative);
 		updateProjectProgress(initiative.getProject().getId());
 		return initiative.getInitiativeToken();
+
 	}
 
 	@Transactional
@@ -125,6 +127,7 @@ public class ProjectServiceImpl implements ProjectService {
 			initiative
 		);
 		initiative.done();
+		projectRepository.saveAndFlushInitiative(initiative);
 		updateProjectProgress(initiative.getProject().getId());
 		return initiative.getInitiativeToken();
 	}
@@ -134,12 +137,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Pageable pageable) {
 		return projectRepository.findInitiativeByKeyResultTokenAndUser(
 			keyResultToken, user, pageable
-		).map(this::getProjectInitiativeInfo);
-	}
-
-	private ProjectInitiativeInfo getProjectInitiativeInfo(Initiative initiative) {
-		return new ProjectInitiativeInfo(initiative.getInitiativeToken(), initiative.getName(), initiative.isDone(),
-			new UserInfo(initiative.getTeamMember().getUser()));
+		).map(ProjectInitiativeInfo::new);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -181,19 +179,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return project;
 	}
 
-	private Project buildProjectFrom(ProjectMasterSaveDto dto) {
-		LocalDate startDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);
-		LocalDate endDt = LocalDate.parse(dto.sdt(), DateTimeFormatter.ISO_DATE);
-
-		return Project.builder()
-			.startDate(startDt)
-			.endDate(endDt)
-			.objective(dto.objective())
-			.progress(0)
-			.keyResultList(dto.keyResults())
-			.build();
-	}
-
 	private Initiative buildInitiative(ProjectInitiativeSaveCommand command, TeamMember teamMember) {
 		return Initiative.builder()
 			.edt(command.edt())
@@ -203,4 +188,5 @@ public class ProjectServiceImpl implements ProjectService {
 			.teamMember(teamMember)
 			.build();
 	}
+
 }

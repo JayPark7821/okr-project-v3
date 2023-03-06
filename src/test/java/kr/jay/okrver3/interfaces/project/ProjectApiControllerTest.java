@@ -26,6 +26,14 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
 
 @Transactional
 @SpringBootTest
@@ -53,7 +61,7 @@ class ProjectApiControllerTest {
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -76,7 +84,7 @@ class ProjectApiControllerTest {
 			user, null, user.getAuthorities());
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), auth);
 
 		assertThat(response.getBody()).containsPattern(
@@ -107,7 +115,7 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
 		final ResponseEntity<String> response = sut.inviteTeamMember(
-			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), auth);
+			new TeamMemberInviteRequest("project-fgFHxGWeIUQt", "fakeAppleEmail"), auth);
 
 		assertThat(response.getBody()).isEqualTo("fakeAppleEmail");
 	}
@@ -196,7 +204,8 @@ class ProjectApiControllerTest {
 		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
-		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N", "TEAM",
+		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N",
+			"TEAM",
 			auth,
 			PageRequest.of(0, 5));
 
@@ -234,7 +243,7 @@ class ProjectApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
 		ResponseEntity<String> response = sut.registerKeyResult(
-			new ProjectKeyResultSaveDto(projectToken, keyResultName), auth);
+			new ProjectKeyResultSaveRequest(projectToken, keyResultName), auth);
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
@@ -245,7 +254,7 @@ class ProjectApiControllerTest {
 	@Sql("classpath:insert-project-date.sql")
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
-		ProjectInitiativeSaveDto requestDto = new ProjectInitiativeSaveDto(
+		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
 			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),

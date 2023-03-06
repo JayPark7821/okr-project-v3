@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
@@ -21,18 +24,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kr.jay.okrver3.application.project.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.application.project.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.initiative.Initiative;
+import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
-import kr.jay.okrver3.domain.project.service.ProjectInfo;
-import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
-import kr.jay.okrver3.domain.project.service.ProjectTeamMemberInfo;
+import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectKeyResultSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.service.info.ProjectDetailInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
@@ -46,9 +53,6 @@ import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
 
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class,
@@ -81,7 +85,7 @@ class ProjectServiceImplTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		ProjectInfo projectInfo = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), user, List.of());
 
 		assertThat(projectInfo.projectToken()).containsPattern(
@@ -101,7 +105,7 @@ class ProjectServiceImplTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		ProjectInfo projectInfo = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user, List.of(
 				new User(4L, "testId", "guest", "guest@email.com", "pic", ProviderType.GOOGLE, RoleType.USER, null,
 					JobFieldDetail.WEB_SERVER_DEVELOPER)));
@@ -137,7 +141,7 @@ class ProjectServiceImplTest {
 
 		User invitedUser = getUser(2L);
 
-		ProjectTeamMemberInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
+		ProjectTeamMembersInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
 
 		assertThat(response.projectTeamMemberUsers().size()).isEqualTo(3);
 
@@ -203,8 +207,8 @@ class ProjectServiceImplTest {
 		User user = getUser(13L);
 
 		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
-			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N", user,
-				PageRequest.of(0, 5)));
+			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N",
+				PageRequest.of(0, 5)), user);
 
 		assertThat(result.getTotalElements()).isEqualTo(2);
 		List<ProjectDetailInfo> content = result.getContent();
@@ -224,7 +228,7 @@ class ProjectServiceImplTest {
 		String projectToken = "mst_K4g4tfdaergg6421";
 		User user = getUser(13L);
 
-		ProjectSideMenuResponse response = sut.getProjectSideMenuDetails(projectToken, user);
+		ProjectSideMenuInfo response = sut.getProjectSideMenuDetails(projectToken, user);
 
 		assertThat(response.progress()).isEqualTo("60.0");
 		assertThat(response.teamMembers().size()).isEqualTo(3);
@@ -239,7 +243,7 @@ class ProjectServiceImplTest {
 
 		User user = getUser(13L);
 
-		String response = sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user);
+		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user);
 
 		assertThat(response).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
@@ -254,7 +258,8 @@ class ProjectServiceImplTest {
 
 		User user = getUser(12L);
 
-		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+		assertThatThrownBy(
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 
@@ -268,7 +273,8 @@ class ProjectServiceImplTest {
 
 		User user = getUser(3L);
 
-		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+		assertThatThrownBy(
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
@@ -281,7 +287,8 @@ class ProjectServiceImplTest {
 
 		User user = getUser(2L);
 
-		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+		assertThatThrownBy(
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
 
@@ -314,7 +321,7 @@ class ProjectServiceImplTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 행동전략_추가시_프로젝트_진척도_변경된다() throws Exception {
-
+		//Given
 		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
 			"key_wV6MX15WQ3DTzQMs",
 			"행동전략",
@@ -325,13 +332,57 @@ class ProjectServiceImplTest {
 
 		User user = getUser(3L);
 
+		//When
 		String response = sut.registerInitiative(requestDto, user);
+
+		//Then
+		Project project = em.createQuery(
+				"select p from Project p where p.id = :id", Project.class)
+			.setParameter("id", 99998L)
+			.getSingleResult();
+
+		assertThat(project.getProgress()).isEqualTo(50.0);
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략_추가시_프로젝트_진척도_변경된다_동시성테스트() throws Exception {
+		//Given
+		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			LocalDate.now().minusDays(10),
+			LocalDate.now().plusDays(10),
+			"행동전략 상세내용"
+		);
+
+		//When
+		int threadCount = 99;
+		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+		CountDownLatch latch = new CountDownLatch(threadCount);
+
+		for (int i = 0; i < threadCount; i++) {
+			executorService.submit(() -> {
+				try {
+					sut.registerInitiative(requestDto, getUser(3L));
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+		latch.await();
+
+		//Then
+		KeyResult ke = em.createQuery("select k from KeyResult k where k.id = :id", KeyResult.class)
+			.setParameter("id", 99999L)
+			.getSingleResult();
+		assertThat(ke.getInitiative().size()).isEqualTo(100);
 
 		Project project = em.createQuery(
 				"select p from Project p where p.id = :id", Project.class)
 			.setParameter("id", 99998L)
 			.getSingleResult();
-		assertThat(project.getProgress()).isEqualTo(50.0);
+		assertThat(project.getProgress()).isEqualTo(1.0);
 	}
 
 	@Test

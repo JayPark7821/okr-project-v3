@@ -29,10 +29,16 @@ import kr.jay.okrver3.domain.notification.service.impl.NotificationServiceImpl;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.domain.project.service.ProjectDetailInfo;
-import kr.jay.okrver3.domain.project.service.ProjectInfo;
-import kr.jay.okrver3.domain.project.service.ProjectInitiativeInfo;
+import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectKeyResultSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.service.command.TeamMemberInviteCommand;
 import kr.jay.okrver3.domain.project.service.impl.ProjectServiceImpl;
+import kr.jay.okrver3.domain.project.service.info.ProjectDetailInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
+import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
@@ -45,10 +51,6 @@ import kr.jay.okrver3.infrastructure.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.ProjectKeyResultSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectMasterSaveDto;
-import kr.jay.okrver3.interfaces.project.ProjectSideMenuResponse;
-import kr.jay.okrver3.interfaces.project.TeamMemberInviteRequestDto;
 
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
@@ -83,7 +85,7 @@ class ProjectFacadeTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		String projectToken = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), null), user);
 
 		Project result =
@@ -107,7 +109,7 @@ class ProjectFacadeTest {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		String projectToken = sut.registerProject(
-			new ProjectMasterSaveDto("projectObjective", projectSdt, projectEdt,
+			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
 				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user);
 
 		Project result =
@@ -145,7 +147,7 @@ class ProjectFacadeTest {
 		User user = getUser(1L);
 
 		String response = sut.inviteTeamMember(
-			new TeamMemberInviteRequestDto("project-fgFHxGWeIUQt", "fakeAppleEmail"), user);
+			new TeamMemberInviteCommand("project-fgFHxGWeIUQt", "fakeAppleEmail"), user);
 
 		assertThat(response).isEqualTo("fakeAppleEmail");
 
@@ -242,8 +244,8 @@ class ProjectFacadeTest {
 		User user = getUser(13L);
 
 		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
-			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N", user,
-				PageRequest.of(0, 5)));
+			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N",
+				PageRequest.of(0, 5)), user);
 
 		assertThat(result.getTotalElements()).isEqualTo(2);
 		List<ProjectDetailInfo> content = result.getContent();
@@ -263,7 +265,7 @@ class ProjectFacadeTest {
 		String projectToken = "mst_K4g4tfdaergg6421";
 		User user = getUser(13L);
 
-		ProjectSideMenuResponse response = sut.getProjectSideMenuDetails(projectToken, user);
+		ProjectSideMenuInfo response = sut.getProjectSideMenuDetails(projectToken, user);
 
 		assertThat(response.progress()).isEqualTo("60.0");
 		assertThat(response.teamMembers().size()).isEqualTo(3);
@@ -278,7 +280,7 @@ class ProjectFacadeTest {
 
 		User user = getUser(13L);
 
-		String response = sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user);
+		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user);
 
 		assertThat(response).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
@@ -293,7 +295,8 @@ class ProjectFacadeTest {
 
 		User user = getUser(13L);
 
-		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+		assertThatThrownBy(
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
@@ -306,7 +309,8 @@ class ProjectFacadeTest {
 
 		User user = getUser(2L);
 
-		assertThatThrownBy(() -> sut.registerKeyResult(new ProjectKeyResultSaveDto(projectToken, keyResultName), user))
+		assertThatThrownBy(
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
 
