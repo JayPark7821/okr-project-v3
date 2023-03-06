@@ -473,5 +473,30 @@ class ProjectServiceImplTest {
 			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
 	}
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 종료된_프로젝트의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
+
+		FeedbackSaveCommand command =
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
+				"ini_ixYjj5nODfeab3AH8");
+
+		assertThatThrownBy(() -> sut.registerFeedback(command,getUser(3L)))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.FINISHED_PROJECT.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 자신의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
+
+		FeedbackSaveCommand command =
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
+				"ini_ixYjj5nODfeab3AH8");
+
+		assertThatThrownBy(() -> sut.registerFeedback(command,getUser(3L)))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.MOT_AVAIL_FEEDBACK_SELF.getMessage());
+	}
 
 }
