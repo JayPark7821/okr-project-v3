@@ -32,9 +32,12 @@ public class Notification {
 	private Long id;
 
 	private String notificationToken;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_seq", updatable = false)
+	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_seq", insertable = false, updatable = false)
 	private User user;
+
+	@Column(name = "user_seq")
+	private Long userSeq;
 
 	@Column(name = "type")
 	@Enumerated(EnumType.STRING)
@@ -43,10 +46,10 @@ public class Notification {
 	@Column(name = "message")
 	private String msg;
 
-	public Notification(User user, Notifications type, String msg) {
+	public Notification(Long userSeq, Notifications type, String... args) {
 		this.notificationToken = TokenGenerator.randomCharacterWithPrefix(NOTIFICATION_PREFIX);
-		this.user = user;
+		this.userSeq = userSeq;
 		this.type = type;
-		this.msg = msg;
+		this.msg = type.getMsg(args);
 	}
 }

@@ -37,9 +37,9 @@ import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
+import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
+import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
@@ -519,12 +519,13 @@ public class ProjectApiControllerAcceptanceTest {
 		final String response = RestAssured.
 
 			given()
-			.header("Authorization", "Bearer " + authToken)
+			.header("Authorization",
+				"Bearer " + JwtTokenUtils.generateToken("fakeGoogleIdEmail", key, accessExpiredTimeMs))
 			.contentType(ContentType.JSON)
-			.body(new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "project-fgFHxGWeIUQt", "ini_ixYjj5nODqtb3AH8")).
+			.body(new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "ini_ixYjj5nODqtb3AH8")).
 
 			when()
-			.post(baseUrl).
+			.post(baseUrl + "/feedback").
 
 			then()
 			.statusCode(HttpStatus.CREATED.value())

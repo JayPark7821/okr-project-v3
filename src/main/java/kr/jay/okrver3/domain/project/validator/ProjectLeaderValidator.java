@@ -17,9 +17,10 @@ public class ProjectLeaderValidator implements ProjectValidator {
 	}
 
 	@Override
-	public void validate(Project project, Object object) {
-		User user = ClassUtils.getSafeCastInstance(object, User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
+	public void validate(Object... args) {
+
+		Project project = ClassUtils.getSafeCastInstance(args, Project.class);
+		User user = ClassUtils.getSafeCastInstance(args, User.class);
 
 		if (!project.getProjectLeader().getUser().equals(user))
 			throw new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER);

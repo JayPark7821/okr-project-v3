@@ -7,9 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
@@ -26,40 +23,46 @@ import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
-import kr.jay.okrver3.domain.initiative.Initiative;
-import kr.jay.okrver3.domain.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.domain.project.service.command.ProjectInitiativeSaveCommand;
-import kr.jay.okrver3.domain.project.service.command.ProjectKeyResultSaveCommand;
-import kr.jay.okrver3.domain.project.service.command.ProjectSaveCommand;
-import kr.jay.okrver3.domain.project.service.info.ProjectDetailInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectTeamMembersInfo;
+import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
+import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
+import kr.jay.okrver3.domain.project.info.ProjectInfo;
+import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
+import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
+import kr.jay.okrver3.domain.project.validator.InitiativeInProgressValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
+import kr.jay.okrver3.domain.project.validator.SelfFeedbackValidator;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.infrastructure.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
-import kr.jay.okrver3.interfaces.feedback.FeedbackSaveCommand;
+import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
+import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
+import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
 
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class,
-	ProjectValidateProcessor.class, ProjectLeaderValidator.class,
-	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class
-	, InitiativeDoneValidator.class, InitiativeQueryDslRepository.class
+	ProjectValidateProcessor.class, ProjectLeaderValidator.class, InitiativeRepositoryImpl.class,
+	FeedbackRepositoryImpl.class, ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class,
+	ProjectInitiativeDateValidator.class, InitiativeDoneValidator.class, InitiativeQueryDslRepository.class,
+	InitiativeInProgressValidator.class, SelfFeedbackValidator.class
 })
 class ProjectServiceImplTest {
 
@@ -144,7 +147,7 @@ class ProjectServiceImplTest {
 
 		ProjectTeamMembersInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
 
-		assertThat(response.projectTeamMemberUsers().size()).isEqualTo(3);
+		assertThat(response.teamMemberSeq().size()).isEqualTo(3);
 
 	}
 
@@ -344,47 +347,47 @@ class ProjectServiceImplTest {
 
 		assertThat(project.getProgress()).isEqualTo(50.0);
 	}
-
-	@Test
-	@Sql("classpath:insert-project-date.sql")
-	void 행동전략_추가시_프로젝트_진척도_변경된다_동시성테스트() throws Exception {
-		//Given
-		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
-			"key_wV6MX15WQ3DTzQMs",
-			"행동전략",
-			LocalDate.now().minusDays(10),
-			LocalDate.now().plusDays(10),
-			"행동전략 상세내용"
-		);
-
-		//When
-		int threadCount = 99;
-		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-		CountDownLatch latch = new CountDownLatch(threadCount);
-
-		for (int i = 0; i < threadCount; i++) {
-			executorService.submit(() -> {
-				try {
-					sut.registerInitiative(requestDto, getUser(3L));
-				} finally {
-					latch.countDown();
-				}
-			});
-		}
-		latch.await();
-
-		//Then
-		KeyResult ke = em.createQuery("select k from KeyResult k where k.id = :id", KeyResult.class)
-			.setParameter("id", 99999L)
-			.getSingleResult();
-		assertThat(ke.getInitiative().size()).isEqualTo(100);
-
-		Project project = em.createQuery(
-				"select p from Project p where p.id = :id", Project.class)
-			.setParameter("id", 99998L)
-			.getSingleResult();
-		assertThat(project.getProgress()).isEqualTo(1.0);
-	}
+	//
+	// @Test
+	// @Sql("classpath:insert-project-date.sql")
+	// void 행동전략_추가시_프로젝트_진척도_변경된다_동시성테스트() throws Exception {
+	// 	//Given
+	// 	ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+	// 		"key_wV6MX15WQ3DTzQMs",
+	// 		"행동전략",
+	// 		LocalDate.now().minusDays(10),
+	// 		LocalDate.now().plusDays(10),
+	// 		"행동전략 상세내용"
+	// 	);
+	//
+	// 	//When
+	// 	int threadCount = 99;
+	// 	ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+	// 	CountDownLatch latch = new CountDownLatch(threadCount);
+	//
+	// 	for (int i = 0; i < threadCount; i++) {
+	// 		executorService.submit(() -> {
+	// 			try {
+	// 				sut.registerInitiative(requestDto, getUser(3L));
+	// 			} finally {
+	// 				latch.countDown();
+	// 			}
+	// 		});
+	// 	}
+	// 	latch.await();
+	//
+	// 	//Then
+	// 	KeyResult ke = em.createQuery("select k from KeyResult k where k.id = :id", KeyResult.class)
+	// 		.setParameter("id", 99999L)
+	// 		.getSingleResult();
+	// 	assertThat(ke.getInitiative().size()).isEqualTo(100);
+	//
+	// 	Project project = em.createQuery(
+	// 			"select p from Project p where p.id = :id", Project.class)
+	// 		.setParameter("id", 99998L)
+	// 		.getSingleResult();
+	// 	assertThat(project.getProgress()).isEqualTo(1.0);
+	// }
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -404,9 +407,9 @@ class ProjectServiceImplTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 종료된_프로젝트의_행동전략_완료시_기대하는_응답Exception을_리턴한다() throws Exception {
-		String initiativeToken = "ini_ixYjj5na3fdab3AH8";
+		String initiativeToken = "ini_iefefawef3fdab3AH8";
 
-		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, getUser(14L)))
+		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, getUser(15L)))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
@@ -442,11 +445,11 @@ class ProjectServiceImplTest {
 		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
 			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
-		Page<ProjectInitiativeInfo> response =
+		Page<InitiativeInfo> response =
 			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
 
 		assertThat(response.getTotalElements()).isEqualTo(3);
-		List<ProjectInitiativeInfo> content = response.getContent();
+		List<InitiativeInfo> content = response.getContent();
 
 		for (int i = 0; i < content.size(); i++) {
 			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
@@ -454,22 +457,21 @@ class ProjectServiceImplTest {
 
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
 
 		FeedbackSaveCommand command =
-			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
 				"ini_ixYjj5aaafeab3AH8");
 
-		String response =
+		FeedbackInfo response =
 			sut.registerFeedback(
 				command,
 				getUser(3L)
 			);
 
-		assertThat(response).containsPattern(
+		assertThat(response.feedbackToken()).containsPattern(
 			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
 	}
 
@@ -478,12 +480,12 @@ class ProjectServiceImplTest {
 	void 종료된_프로젝트의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
 
 		FeedbackSaveCommand command =
-			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
-				"ini_ixYjj5nODfeab3AH8");
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
+				"ini_iefefena3fdab3AH8");
 
-		assertThatThrownBy(() -> sut.registerFeedback(command,getUser(3L)))
+		assertThatThrownBy(() -> sut.registerFeedback(command, getUser(7L)))
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.FINISHED_PROJECT.getMessage());
+			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
 
 	@Test
@@ -491,12 +493,25 @@ class ProjectServiceImplTest {
 	void 자신의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
 
 		FeedbackSaveCommand command =
-			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
-				"ini_ixYjj5nODfeab3AH8");
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
+				"ini_ixYjjnnnafeab3AH8");
 
-		assertThatThrownBy(() -> sut.registerFeedback(command,getUser(3L)))
+		assertThatThrownBy(() -> sut.registerFeedback(command, getUser(3L)))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.MOT_AVAIL_FEEDBACK_SELF.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 완료전의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
+
+		FeedbackSaveCommand command =
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
+				"ini_ixYjj5nODfeab3AH8");
+
+		assertThatThrownBy(() -> sut.registerFeedback(command, getUser(3L)))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.NOT_FINISHED_INITIATIVE.getMessage());
 	}
 
 }

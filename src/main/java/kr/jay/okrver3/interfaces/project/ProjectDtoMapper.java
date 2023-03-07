@@ -8,18 +8,18 @@ import org.springframework.stereotype.Component;
 
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.domain.project.service.command.ProjectInitiativeSaveCommand;
-import kr.jay.okrver3.domain.project.service.command.ProjectKeyResultSaveCommand;
-import kr.jay.okrver3.domain.project.service.command.ProjectSaveCommand;
-import kr.jay.okrver3.domain.project.service.command.TeamMemberInviteCommand;
-import kr.jay.okrver3.domain.project.service.info.ProjectDetailInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectInitiativeInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
-import kr.jay.okrver3.domain.project.service.info.ProjectTeamMemberUserInfo;
-import kr.jay.okrver3.interfaces.feedback.FeedbackSaveCommand;
-import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
+import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
+import kr.jay.okrver3.domain.project.info.ProjectInfo;
+import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
+import kr.jay.okrver3.domain.project.info.TeamMemberUserInfo;
+import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
@@ -80,7 +80,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	ProjectTeamMemberResponse of(ProjectTeamMemberUserInfo info) {
+	ProjectTeamMemberResponse of(TeamMemberUserInfo info) {
 		return new ProjectTeamMemberResponse(
 			info.userEmail(),
 			info.userName(),
@@ -106,7 +106,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	ProjectInitiativeResponse of(ProjectInitiativeInfo info) {
+	ProjectInitiativeResponse of(InitiativeInfo info) {
 		return new ProjectInitiativeResponse(
 			info.initiativeToken(), info.initiativeName(), info.done(),
 			this.of(info.user())
@@ -118,7 +118,6 @@ public class ProjectDtoMapper {
 		return new FeedbackSaveCommand(
 			dto.opinion(),
 			dto.grade(),
-			dto.projectToken(),
 			dto.initiativeToken()
 		);
 	}

@@ -24,10 +24,10 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.domain.project.service.info.ProjectSideMenuInfo;
+import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
@@ -207,14 +207,13 @@ public class ProjectApiController {
 		@RequestBody @Valid FeedbackSaveRequest requestDto,
 		Authentication authentication) {
 
-		return Response.successOk(
+		return Response.successCreated(
 			projectFacade.registerFeedback(
 				mapper.of(requestDto),
 				getUserFromAuthentication(authentication)
 			)
 		);
 	}
-
 
 	private User getUserFromAuthentication(Authentication authentication) {
 		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)

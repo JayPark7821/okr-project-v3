@@ -26,7 +26,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
@@ -305,8 +305,7 @@ class ProjectApiControllerTest {
 	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
 
 		FeedbackSaveRequest requestDto =
-			new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
-				"ini_ixYjj5aaafeab3AH8");
+			new FeedbackSaveRequest("피드백 작성", "GOOD_IDEA", "ini_ixYjj5aaafeab3AH8");
 
 		ResponseEntity<String> response =
 			sut.registerFeedback(
@@ -315,10 +314,8 @@ class ProjectApiControllerTest {
 			);
 
 		assertThat(response.getBody()).containsPattern(
-			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
 	}
-
-
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
