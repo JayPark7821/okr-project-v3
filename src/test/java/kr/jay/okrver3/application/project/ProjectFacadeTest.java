@@ -373,7 +373,7 @@ class ProjectFacadeTest {
 	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
 
 		FeedbackSaveCommand command =
-			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
 				"ini_ixYjj5aaafeab3AH8");
 
 		String response =
@@ -391,7 +391,7 @@ class ProjectFacadeTest {
 	void 팀원의_행동전략에_피드백을_추가하면_행동전략을_작성한_팀원에게_알림이_전송된다() throws Exception {
 
 		FeedbackSaveCommand command =
-			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA", "mst_Kiwqnp1Nq6lb6421",
+			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
 				"ini_ixYjj5aaafeab3AH8");
 
 		String response =

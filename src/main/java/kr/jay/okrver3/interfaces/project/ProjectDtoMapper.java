@@ -118,7 +118,6 @@ public class ProjectDtoMapper {
 		return new FeedbackSaveCommand(
 			dto.opinion(),
 			dto.grade(),
-			dto.projectToken(),
 			dto.initiativeToken()
 		);
 	}

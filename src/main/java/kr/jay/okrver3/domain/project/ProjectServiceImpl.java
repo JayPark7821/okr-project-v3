@@ -122,7 +122,6 @@ public class ProjectServiceImpl implements ProjectService {
 
 		updateProjectProgress(initiative.getProject().getId());
 		return initiative.getInitiativeToken();
-
 	}
 
 	@Transactional
@@ -133,8 +132,9 @@ public class ProjectServiceImpl implements ProjectService {
 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 
 		validateProcessor.validate(
-			List.of(VALIDATE_INITIATIVE_DONE),
-			initiative
+			List.of(VALIDATE_INITIATIVE_IN_PROGRESS, VALIDATE_PROJECT_PERIOD),
+			initiative,
+			initiative.getProject()
 		);
 
 		initiative.done();
@@ -156,11 +156,19 @@ public class ProjectServiceImpl implements ProjectService {
 				command.initiativeToken(), requester)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 
+		validateProcessor.validate(
+			List.of(VALIDATE_PROJECT_PERIOD, VALIDATE_INITIATIVE_DONE, VALIDATE_SELF_FEEDBACK),
+			initiative.getProject(),
+			initiative,
+			initiative.getTeamMember(),
+			requester
+		);
+
 		return feedbackRepository.save(command.toEntity(initiative, requester)).getFeedbackToken();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	private void updateProjectProgress(Long projectId) {
+	void updateProjectProgress(Long projectId) {
 		Project projectReference = projectRepository.findProjectForUpdateById(projectId)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 		projectReference.updateProgress(projectRepository.getProjectProgress(projectId));

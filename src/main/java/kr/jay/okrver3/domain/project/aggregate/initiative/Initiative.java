@@ -84,7 +84,6 @@ public class Initiative extends BaseEntity {
 	public Initiative(TeamMember teamMember, String name, LocalDate edt, LocalDate sdt,
 		String detail) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_INITIATIVE_PREFIX);
-		this.keyResult = keyResult;
 		this.teamMember = teamMember;
 		this.name = name;
 		this.edt = edt;
@@ -104,6 +103,7 @@ public class Initiative extends BaseEntity {
 	public Project getProject() {
 		return this.keyResult.getProject();
 	}
+
 }
 
 
