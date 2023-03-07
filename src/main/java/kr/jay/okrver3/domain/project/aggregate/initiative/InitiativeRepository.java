@@ -15,6 +15,6 @@ public interface InitiativeRepository {
 
 	Page<Initiative> findInitiativeByKeyResultTokenAndUser(String keyResultToken, User user, Pageable pageable);
 
-	Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(String initiativeToken, User user);
+	Optional<Initiative> findInitiativeByInitiativeTokenAndUser(String initiativeToken, User user);
 
 }

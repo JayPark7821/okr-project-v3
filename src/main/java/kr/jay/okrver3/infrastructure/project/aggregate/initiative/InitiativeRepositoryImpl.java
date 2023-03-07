@@ -19,8 +19,8 @@ public class InitiativeRepositoryImpl implements InitiativeRepository {
 	private final InitiativeQueryDslRepository initiativeQueryDslRepository;
 
 	@Override
-	public Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(String initiativeToken, User user) {
-		return initiativeJpaRepository.findProjectInitiativeByInitiativeTokenAndUser(initiativeToken, user);
+	public Optional<Initiative> findInitiativeByInitiativeTokenAndUser(String initiativeToken, User user) {
+		return initiativeJpaRepository.findInitiativeByInitiativeTokenAndUser(initiativeToken, user);
 	}
 
 	@Override

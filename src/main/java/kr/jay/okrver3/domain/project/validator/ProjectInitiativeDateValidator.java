@@ -8,7 +8,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 
 @Component
 public class ProjectInitiativeDateValidator implements ProjectValidator {
@@ -19,14 +19,13 @@ public class ProjectInitiativeDateValidator implements ProjectValidator {
 	}
 
 	@Override
-	public void validate(Project project, Object object) {
+	public void validate(Object... args) {
 
-		ProjectInitiativeSaveCommand command = ClassUtils.getSafeCastInstance(object,
-				ProjectInitiativeSaveCommand.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
-
-		LocalDate edt = command.edt();
-		LocalDate sdt = command.sdt();
+		Project project = ClassUtils.getSafeCastInstance(args, Project.class);
+		Initiative initiative = ClassUtils.getSafeCastInstance(args, Initiative.class);
+		
+		LocalDate edt = initiative.getEdt();
+		LocalDate sdt = initiative.getSdt();
 		if (edt.isBefore(project.getStartDate()) ||
 			edt.isAfter(project.getEndDate()) ||
 			sdt.isBefore(project.getStartDate()) ||

@@ -383,7 +383,7 @@ class ProjectFacadeTest {
 			);
 
 		assertThat(response).containsPattern(
-			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
 	}
 
 	@Test

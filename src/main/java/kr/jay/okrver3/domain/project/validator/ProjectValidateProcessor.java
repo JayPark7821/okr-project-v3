@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
-import kr.jay.okrver3.domain.project.Project;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -15,18 +14,17 @@ public class ProjectValidateProcessor {
 
 	private final List<ProjectValidator> projectValidatorList;
 
-	public void validate(ProjectValidateProcessorType type, Project project, Object object) {
-		List<ProjectValidatorType> projectValidatorTypes = type.getProjectValidatorTypes();
-		projectValidatorTypes.forEach(validator -> {
-			ProjectValidator projectValidator = routingValidatorCaller(validator);
-			projectValidator.validate(project, object);
+	public void validate(List<ProjectValidatorType> type, Object... args) {
+		type.forEach(validatorType -> {
+			ProjectValidator projectValidator = routingValidatorCaller(validatorType);
+			projectValidator.validate(args);
 		});
 	}
 
 	private ProjectValidator routingValidatorCaller(ProjectValidatorType type) {
-			return projectValidatorList.stream()
-				.filter(projectValidator -> projectValidator.support(type))
-				.findFirst()
-				.orElseThrow(() -> new OkrApplicationException(ErrorCode.UNSUPPORTED_VALIDATOR));
+		return projectValidatorList.stream()
+			.filter(projectValidator -> projectValidator.support(type))
+			.findFirst()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.UNSUPPORTED_VALIDATOR));
 	}
 }

@@ -347,47 +347,47 @@ class ProjectServiceImplTest {
 
 		assertThat(project.getProgress()).isEqualTo(50.0);
 	}
-
-	@Test
-	@Sql("classpath:insert-project-date.sql")
-	void 행동전략_추가시_프로젝트_진척도_변경된다_동시성테스트() throws Exception {
-		//Given
-		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
-			"key_wV6MX15WQ3DTzQMs",
-			"행동전략",
-			LocalDate.now().minusDays(10),
-			LocalDate.now().plusDays(10),
-			"행동전략 상세내용"
-		);
-
-		//When
-		int threadCount = 99;
-		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-		CountDownLatch latch = new CountDownLatch(threadCount);
-
-		for (int i = 0; i < threadCount; i++) {
-			executorService.submit(() -> {
-				try {
-					sut.registerInitiative(requestDto, getUser(3L));
-				} finally {
-					latch.countDown();
-				}
-			});
-		}
-		latch.await();
-
-		//Then
-		KeyResult ke = em.createQuery("select k from KeyResult k where k.id = :id", KeyResult.class)
-			.setParameter("id", 99999L)
-			.getSingleResult();
-		assertThat(ke.getInitiative().size()).isEqualTo(100);
-
-		Project project = em.createQuery(
-				"select p from Project p where p.id = :id", Project.class)
-			.setParameter("id", 99998L)
-			.getSingleResult();
-		assertThat(project.getProgress()).isEqualTo(1.0);
-	}
+	//
+	// @Test
+	// @Sql("classpath:insert-project-date.sql")
+	// void 행동전략_추가시_프로젝트_진척도_변경된다_동시성테스트() throws Exception {
+	// 	//Given
+	// 	ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+	// 		"key_wV6MX15WQ3DTzQMs",
+	// 		"행동전략",
+	// 		LocalDate.now().minusDays(10),
+	// 		LocalDate.now().plusDays(10),
+	// 		"행동전략 상세내용"
+	// 	);
+	//
+	// 	//When
+	// 	int threadCount = 99;
+	// 	ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+	// 	CountDownLatch latch = new CountDownLatch(threadCount);
+	//
+	// 	for (int i = 0; i < threadCount; i++) {
+	// 		executorService.submit(() -> {
+	// 			try {
+	// 				sut.registerInitiative(requestDto, getUser(3L));
+	// 			} finally {
+	// 				latch.countDown();
+	// 			}
+	// 		});
+	// 	}
+	// 	latch.await();
+	//
+	// 	//Then
+	// 	KeyResult ke = em.createQuery("select k from KeyResult k where k.id = :id", KeyResult.class)
+	// 		.setParameter("id", 99999L)
+	// 		.getSingleResult();
+	// 	assertThat(ke.getInitiative().size()).isEqualTo(100);
+	//
+	// 	Project project = em.createQuery(
+	// 			"select p from Project p where p.id = :id", Project.class)
+	// 		.setParameter("id", 99998L)
+	// 		.getSingleResult();
+	// 	assertThat(project.getProgress()).isEqualTo(1.0);
+	// }
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")

@@ -1,5 +1,7 @@
 package kr.jay.okrver3.domain.project;
 
+import static kr.jay.okrver3.domain.project.validator.ProjectValidatorType.*;
+
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -26,7 +28,6 @@ import kr.jay.okrver3.domain.project.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
-import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessorType;
 import kr.jay.okrver3.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +91,11 @@ public class ProjectServiceImpl implements ProjectService {
 				command.projectToken(), user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
-		validateProcessor.validate(ProjectValidateProcessorType.ADD_KEYRESULT_VALIDATION, project, user);
+		validateProcessor.validate(
+			List.of(VALIDATE_LEADER, VALIDATE_PROJECT_PERIOD, VALIDATE_KEYRESULT_COUNT),
+			project,
+			user
+		);
 
 		return project.addKeyResult(command.keyResultName());
 	}
@@ -102,9 +107,13 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
 
-		validateProcessor.validate(ProjectValidateProcessorType.ADD_INITIATIVE_VALIDATION, project, command);
-
 		Initiative initiative = buildInitiative(command, getTeamMember(user, project));
+
+		validateProcessor.validate(
+			List.of(VALIDATE_PROJECT_PERIOD, VALIDATE_PROJECT_INITIATIVE_DATE),
+			project,
+			initiative
+		);
 
 		getKeyResult(command, project)
 			.addInitiative(
@@ -120,12 +129,11 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public String initiativeFinished(String initiativeToken, User user) {
 		Initiative initiative =
-			initiativeRepository.findProjectInitiativeByInitiativeTokenAndUser(initiativeToken, user)
+			initiativeRepository.findInitiativeByInitiativeTokenAndUser(initiativeToken, user)
 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 
 		validateProcessor.validate(
-			ProjectValidateProcessorType.INITIATIVE_FINISH_VALIDATION,
-			initiative.getProject(),
+			List.of(VALIDATE_INITIATIVE_DONE),
 			initiative
 		);
 
@@ -152,28 +160,26 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	void updateProjectProgress(Long projectId) {
+	private void updateProjectProgress(Long projectId) {
 		Project projectReference = projectRepository.findProjectForUpdateById(projectId)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 		projectReference.updateProgress(projectRepository.getProjectProgress(projectId));
 	}
 
 	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
-		KeyResult keyResult = project.getKeyResults()
+		return project.getKeyResults()
 			.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
 			.findFirst()
 			.orElseThrow();
-		return keyResult;
 	}
 
 	private TeamMember getTeamMember(User user, Project project) {
-		TeamMember teamMember = project.getTeamMember()
+		return project.getTeamMember()
 			.stream()
 			.filter(tm -> tm.getUser().equals(user))
 			.findFirst()
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
-		return teamMember;
 	}
 
 	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {
@@ -183,7 +189,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, user)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
-		validateProcessor.validate(ProjectValidateProcessorType.PROJECT_BASIC_VALIDATION, project, user);
+		validateProcessor.validate(List.of(VALIDATE_LEADER, VALIDATE_PROJECT_PERIOD), project, user);
 
 		project.validateEmail(invitedUserEmail);
 

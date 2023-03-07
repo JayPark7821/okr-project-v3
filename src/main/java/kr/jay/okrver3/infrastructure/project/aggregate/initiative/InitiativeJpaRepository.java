@@ -18,7 +18,7 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 		+ "join i.teamMember t "
 		+ "where t.user = :user "
 		+ "and i.initiativeToken =:initiativeToken ")
-	Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(
+	Optional<Initiative> findInitiativeByInitiativeTokenAndUser(
 		@Param("initiativeToken") String initiativeToken,
 		@Param("user") User user
 	);
