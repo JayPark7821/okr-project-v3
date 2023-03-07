@@ -25,7 +25,6 @@ import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.domain.user.User;
 
 @Repository
 public class ProjectQueryDslRepository {
@@ -38,14 +37,14 @@ public class ProjectQueryDslRepository {
 		this.queryFactory = new JPAQueryFactory(em);
 	}
 
-	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command, User requestUser) {
+	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command, Long requestUserSeq) {
 
 		List<Project> results = queryFactory
 			.select(project)
 			.from(project)
 			.innerJoin(project.teamMember, teamMember)
 			.innerJoin(teamMember.user, user)
-			.where(user.eq(requestUser),
+			.where(user.userSeq.eq(requestUserSeq),
 				includeFinishedProject(command.includeFinishedProjectYN()),
 				projectTypeOption(command.projectType())
 			)
@@ -59,7 +58,7 @@ public class ProjectQueryDslRepository {
 			.from(project)
 			.innerJoin(project.teamMember, teamMember)
 			.innerJoin(teamMember.user, user)
-			.where(user.eq(requestUser),
+			.where(user.userSeq.eq(requestUserSeq),
 				includeFinishedProject(command.includeFinishedProjectYN()),
 				projectTypeOption(command.projectType())
 			);

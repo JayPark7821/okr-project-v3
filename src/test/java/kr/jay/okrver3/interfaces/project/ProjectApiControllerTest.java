@@ -63,7 +63,7 @@ class ProjectApiControllerTest {
 
 		final ResponseEntity<String> response = sut.registerProject(
 			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt,
-				List.of("keyResult1", "keyResult2"), null), auth);
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), auth);
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));

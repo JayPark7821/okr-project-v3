@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectRepository;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
-import kr.jay.okrver3.domain.user.User;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -24,33 +23,33 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
-	public Optional<Project> findByProjectTokenAndUser(String projectToken, User user) {
-		return projectJpaRepository.findByProjectTokenAndUser(projectToken, user);
+	public Optional<Project> findByProjectTokenAndUser(String projectToken, Long userSeq) {
+		return projectJpaRepository.findByProjectTokenAndUser(projectToken, userSeq);
 	}
 
 	@Override
-	public Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(String projectToken, User inviter) {
-		return projectJpaRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, inviter);
+	public Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(String projectToken, Long inviterSeq) {
+		return projectJpaRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, inviterSeq);
 	}
 
 	@Override
-	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command, User user) {
-		return projectQueryDslRepository.getDetailProjectList(command, user);
+	public Page<Project> getDetailProjectList(ProjectDetailRetrieveCommand command, Long userSeq) {
+		return projectQueryDslRepository.getDetailProjectList(command, userSeq);
 	}
 
 	@Override
-	public Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(String projectToken, User user) {
-		return projectJpaRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, user);
+	public Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(String projectToken, Long userSeq) {
+		return projectJpaRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, userSeq);
 	}
 
 	@Override
-	public Optional<Project> findProjectKeyResultByProjectTokenAndUser(String projectToken, User user) {
-		return projectJpaRepository.findProjectKeyResultByProjectTokenAndUser(projectToken, user);
+	public Optional<Project> findProjectKeyResultByProjectTokenAndUser(String projectToken, Long userSeq) {
+		return projectJpaRepository.findProjectKeyResultByProjectTokenAndUser(projectToken, userSeq);
 	}
 
 	@Override
-	public Optional<Project> findByKeyResultTokenAndUser(String keyResultToken, User user) {
-		return projectJpaRepository.findByKeyResultTokenAndUser(keyResultToken, user);
+	public Optional<Project> findByKeyResultTokenAndUser(String keyResultToken, Long userSeq) {
+		return projectJpaRepository.findByKeyResultTokenAndUser(keyResultToken, userSeq);
 	}
 
 	@Override

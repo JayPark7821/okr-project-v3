@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
-import kr.jay.okrver3.domain.user.User;
 
 public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long> {
 
@@ -16,11 +15,11 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 		+ "join fetch i.keyResult k "
 		+ "join fetch k.project p "
 		+ "join i.teamMember t "
-		+ "where t.user = :user "
+		+ "where t.user.userSeq = :userSeq "
 		+ "and i.initiativeToken =:initiativeToken ")
-	Optional<Initiative> findInitiativeByInitiativeTokenAndUser(
+	Optional<Initiative> findInitiativeByInitiativeTokenAndUserSeq(
 		@Param("initiativeToken") String initiativeToken,
-		@Param("user") User user
+		@Param("userSeq") Long userSeq
 	);
 
 	@Query("select i "
@@ -29,9 +28,9 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 		+ "join fetch k.project p "
 		+ "join fetch p.teamMember t "
 		+ "join fetch t.user u "
-		+ "where u = :requester "
+		+ "where u.userSeq = :requesterSeq "
 		+ "and i.initiativeToken =:initiativeToken ")
 	Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequester(
 		@Param("initiativeToken") String initiativeToken,
-		@Param("requester") User requester);
+		@Param("requesterSeq") Long requesterSeq);
 }

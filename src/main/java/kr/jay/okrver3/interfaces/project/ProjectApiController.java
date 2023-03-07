@@ -53,10 +53,9 @@ public class ProjectApiController {
 		@RequestBody @Valid ProjectSaveRequest requestDto,
 		Authentication authentication
 	) {
-		User user = getUserFromAuthentication(authentication);
 
 		return Response.successCreated(
-			projectFacade.registerProject(mapper.of(requestDto), user)
+			projectFacade.registerProject(mapper.of(requestDto), getUserFromAuthentication(authentication))
 		);
 	}
 
@@ -215,9 +214,10 @@ public class ProjectApiController {
 		);
 	}
 
-	private User getUserFromAuthentication(Authentication authentication) {
+	private Long getUserFromAuthentication(Authentication authentication) {
 		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED))
+			.getUserSeq();
 	}
 
 	private String validateIncludeFinishedProjectYN(String includeFinishedProjectYN) {

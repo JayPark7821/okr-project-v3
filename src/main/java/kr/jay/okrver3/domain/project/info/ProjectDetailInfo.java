@@ -10,11 +10,11 @@ import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
 public record ProjectDetailInfo(String projectToken, boolean newProject, double progress, LocalDate sdt, LocalDate edt,
 								int teamMemberCount, String projectType) {
 
-	public ProjectDetailInfo(Project project, String email) {
+	public ProjectDetailInfo(Project project, Long userSeq) {
 		this(
 			project.getProjectToken(),
 			project.getTeamMember().stream()
-				.filter(t -> t.getUser().getEmail().equals(email))
+				.filter(t -> t.getUser().getUserSeq().equals(userSeq))
 				.findFirst()
 				.map(TeamMember::isNew)
 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_INFO)),

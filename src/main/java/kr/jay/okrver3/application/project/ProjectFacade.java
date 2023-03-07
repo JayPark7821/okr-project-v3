@@ -25,7 +25,7 @@ import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
-import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.service.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,55 +39,58 @@ public class ProjectFacade {
 	private final UserService userService;
 	private final NotificationService notificationService;
 
-	public String registerProject(ProjectSaveCommand command, User user) {
+	public String registerProject(ProjectSaveCommand command, Long userSeq) {
 
-		List<User> teamMemberUsers =
-			command.teamMembers() != null ? getTeamUsersFromEmails(command) : List.of();
-
-		ProjectInfo projectInfo = projectService.registerProject(command,
-			userService.getReferenceById(user.getUserSeq()),
-			teamMemberUsers);
+		ProjectInfo projectInfo =
+			projectService.registerProject(
+				command,
+				userSeq,
+				getTeamUsersFromEmails(command)
+			);
 
 		return projectInfo.projectToken();
 	}
 
-	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
-		return projectService.getProjectInfoBy(projectToken, user);
+	public ProjectInfo getProjectInfoBy(String projectToken, Long userSeq) {
+		return projectService.getProjectInfoBy(projectToken, userSeq);
 	}
 
-	public String inviteTeamMember(TeamMemberInviteCommand command, User inviter) {
+	public String inviteTeamMember(TeamMemberInviteCommand command, Long inviterSeq) {
 
-		User invitedUser = getUserToInviteBy(command.email());
+		UserInfo invitedUser = getUserToInviteBy(command.email());
 
-		ProjectTeamMembersInfo projectTeamMembersInfo = projectService.inviteTeamMember(
-			command.projectToken(),
-			invitedUser, inviter
-		);
+		ProjectTeamMembersInfo projectTeamMembersInfo =
+			projectService.inviteTeamMember(
+				command.projectToken(),
+				invitedUser.userSeq(),
+				inviterSeq
+			);
 
 		notificationService.sendInvitationNotification(
 			Notifications.NEW_TEAM_MATE,
-			getTeamMemberToSendNoti(invitedUser.getUserSeq(), projectTeamMembersInfo.teamMemberSeq()),
-			invitedUser.getUsername(),
+			getTeamMemberToSendNoti(invitedUser.userSeq(), projectTeamMembersInfo.teamMemberSeq()),
+			invitedUser.name(),
 			projectTeamMembersInfo.projectName()
 		);
 
-		return invitedUser.getEmail();
+		return invitedUser.email();
 	}
 
-	public String validateEmail(String projectToken, String email, User user) {
-		projectService.validateUserToInvite(projectToken, getUserToInviteBy(email).getEmail(), user);
+	public String validateEmail(String projectToken, String email, Long userSeq) {
+		UserInfo invitedUserInfo = getUserToInviteBy(email);
+		projectService.validateUserToInvite(projectToken, invitedUserInfo.userSeq(), userSeq);
 		return email;
 	}
 
-	private User getUserToInviteBy(String email) {
+	private UserInfo getUserToInviteBy(String email) {
 		return userService.findByEmail(email)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
 	}
 
-	private List<User> getTeamUsersFromEmails(ProjectSaveCommand command) {
+	private List<Long> getTeamUsersFromEmails(ProjectSaveCommand command) {
 		return command.teamMembers().stream().map(userService::findByEmail)
 			.filter(Optional::isPresent)
-			.map(Optional::get).toList();
+			.map(user -> user.get().userSeq()).toList();
 	}
 
 	private List<Long> getTeamMemberToSendNoti(Long invitedUserSeq, List<Long> teamMemberUserSeq) {
@@ -97,40 +100,40 @@ public class ProjectFacade {
 			.toList();
 	}
 
-	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, User user) {
-		return projectService.getDetailProjectList(command, user);
+	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, Long userSeq) {
+		return projectService.getDetailProjectList(command, userSeq);
 	}
 
-	public ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, User user) {
-		return projectService.getProjectSideMenuDetails(projectToken, user);
+	public ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, Long userSeq) {
+		return projectService.getProjectSideMenuDetails(projectToken, userSeq);
 	}
 
-	public String registerKeyResult(ProjectKeyResultSaveCommand command, User user) {
-		return projectService.registerKeyResult(command, user);
+	public String registerKeyResult(ProjectKeyResultSaveCommand command, Long userSeq) {
+		return projectService.registerKeyResult(command, userSeq);
 	}
 
-	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
-		return projectService.registerInitiative(command, user);
+	public String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq) {
+		return projectService.registerInitiative(command, userSeq);
 	}
 
-	public String initiativeFinished(String initiativeToken, User user) {
-		return projectService.initiativeFinished(initiativeToken, user);
+	public String initiativeFinished(String initiativeToken, Long userSeq) {
+		return projectService.initiativeFinished(initiativeToken, userSeq);
 	}
 
 	public Page<InitiativeInfo> getInitiativeByKeyResultToken(
 		String keyResultToken,
-		User user,
+		Long userSeq,
 		Pageable pageable
 	) {
-		return projectService.getInitiativeByKeyResultToken(keyResultToken, user, pageable);
+		return projectService.getInitiativeByKeyResultToken(keyResultToken, userSeq, pageable);
 	}
 
-	public String registerFeedback(FeedbackSaveCommand command, User requester) {
+	public String registerFeedback(FeedbackSaveCommand command, Long requester) {
 		FeedbackInfo feedbackInfo = projectService.registerFeedback(command, requester);
 		notificationService.sendNotification(
 			Notifications.NEW_FEEDBACK,
 			feedbackInfo.initiativeUserSeq(),
-			requester.getUsername(),
+			feedbackInfo.feedbackUserName(),
 			feedbackInfo.initiativeName()
 		);
 		return feedbackInfo.feedbackToken();

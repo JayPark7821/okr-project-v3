@@ -47,9 +47,6 @@ import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
 import kr.jay.okrver3.domain.project.validator.SelfFeedbackValidator;
-import kr.jay.okrver3.domain.user.JobFieldDetail;
-import kr.jay.okrver3.domain.user.ProviderType;
-import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
@@ -83,14 +80,13 @@ class ProjectServiceImplTest {
 	@Sql("classpath:insert-user.sql")
 	@DisplayName("팀원없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
-		User user = getUser(1L);
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		ProjectInfo projectInfo = sut.registerProject(
 			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
-				List.of("keyResult1", "keyResult2"), null), user, List.of());
+				List.of("keyResult1", "keyResult2"), null), 1L, List.of());
 
 		assertThat(projectInfo.projectToken()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
@@ -103,16 +99,13 @@ class ProjectServiceImplTest {
 	@Sql("classpath:insert-user.sql")
 	@DisplayName("팀원을 추가해 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project_with_team_members() throws Exception {
-		User user = getUser(1L);
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		ProjectInfo projectInfo = sut.registerProject(
 			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
-				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user, List.of(
-				new User(4L, "testId", "guest", "guest@email.com", "pic", ProviderType.GOOGLE, RoleType.USER, null,
-					JobFieldDetail.WEB_SERVER_DEVELOPER)));
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), 1L, List.of(4L));
 
 		assertThat(projectInfo.projectToken()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
@@ -126,9 +119,7 @@ class ProjectServiceImplTest {
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
 	void retrieve_project_with_project_token() throws Exception {
 
-		User user = getUser(1L);
-
-		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", user);
+		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", 1L);
 
 		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
@@ -141,11 +132,8 @@ class ProjectServiceImplTest {
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
 	void invite_team_member() throws Exception {
-		User inviter = getUser(1L);
 
-		User invitedUser = getUser(2L);
-
-		ProjectTeamMembersInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
+		ProjectTeamMembersInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", 2L, 1L);
 
 		assertThat(response.teamMemberSeq().size()).isEqualTo(3);
 
@@ -156,10 +144,7 @@ class ProjectServiceImplTest {
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
 	void validate_email_address() throws Exception {
 
-		String memberEmail = "guest@email.com";
-		User user = getUser(1L);
-
-		sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user);
+		sut.validateUserToInvite("project-fgFHxGWeIUQt", 4L, 1L);
 
 	}
 
@@ -168,10 +153,7 @@ class ProjectServiceImplTest {
 	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
 
-		String memberEmail = "guest@email.com";
-		User user = getUser(2L);
-
-		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 4L, 2L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
@@ -181,10 +163,8 @@ class ProjectServiceImplTest {
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void when_member_validate_email_address_will_throw_exception() throws Exception {
-		String memberEmail = "guest@email.com";
-		User user = getUser(3L);
 
-		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", memberEmail, user))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 4L, 3L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
@@ -194,11 +174,8 @@ class ProjectServiceImplTest {
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_already_team_member() throws Exception {
-		String teamMemberEmail = "fakeGoogleIdEmail";
 
-		User user = getUser(1L);
-
-		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", teamMemberEmail, user))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 3L, 1L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 	}
@@ -208,11 +185,10 @@ class ProjectServiceImplTest {
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_미포함_팀프로젝트() throws Exception {
 
 		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
-		User user = getUser(13L);
 
 		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
 			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N",
-				PageRequest.of(0, 5)), user);
+				PageRequest.of(0, 5)), 13L);
 
 		assertThat(result.getTotalElements()).isEqualTo(2);
 		List<ProjectDetailInfo> content = result.getContent();
@@ -230,9 +206,8 @@ class ProjectServiceImplTest {
 	@Sql("classpath:insert-project-date.sql")
 	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
 		String projectToken = "mst_K4g4tfdaergg6421";
-		User user = getUser(13L);
 
-		ProjectSideMenuInfo response = sut.getProjectSideMenuDetails(projectToken, user);
+		ProjectSideMenuInfo response = sut.getProjectSideMenuDetails(projectToken, 13L);
 
 		assertThat(response.progress()).isEqualTo("60.0");
 		assertThat(response.teamMembers().size()).isEqualTo(3);
@@ -245,9 +220,7 @@ class ProjectServiceImplTest {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
-		User user = getUser(13L);
-
-		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user);
+		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), 13L);
 
 		assertThat(response).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
@@ -260,10 +233,8 @@ class ProjectServiceImplTest {
 		String projectToken = "mst_K4e8a5s7d6lb6421";
 		String keyResultName = "keyResult";
 
-		User user = getUser(12L);
-
 		assertThatThrownBy(
-			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), 12L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 
@@ -275,10 +246,8 @@ class ProjectServiceImplTest {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
-		User user = getUser(3L);
-
 		assertThatThrownBy(
-			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), 3L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
@@ -289,10 +258,8 @@ class ProjectServiceImplTest {
 		String projectToken = "mst_Kiwqnp1Nq6lbTNn0";
 		String keyResultName = "keyResult";
 
-		User user = getUser(2L);
-
 		assertThatThrownBy(
-			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), 2L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
 
@@ -310,9 +277,7 @@ class ProjectServiceImplTest {
 			"행동전략 상세내용"
 		);
 
-		User user = getUser(3L);
-
-		String response = sut.registerInitiative(requestDto, user);
+		String response = sut.registerInitiative(requestDto, 3L);
 
 		Initiative initiativeToken = em.createQuery(
 				"select i from Initiative i where i.initiativeToken = :initiativeToken", Initiative.class)
@@ -334,10 +299,8 @@ class ProjectServiceImplTest {
 			"행동전략 상세내용"
 		);
 
-		User user = getUser(3L);
-
 		//When
-		String response = sut.registerInitiative(requestDto, user);
+		String response = sut.registerInitiative(requestDto, 3L);
 
 		//Then
 		Project project = em.createQuery(
@@ -394,7 +357,7 @@ class ProjectServiceImplTest {
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken, getUser(11L));
+		String response = sut.initiativeFinished(initiativeToken, 11L);
 
 		Initiative initiative = em.createQuery(
 				"select i from Initiative i where i.id = :id", Initiative.class)
@@ -409,7 +372,7 @@ class ProjectServiceImplTest {
 	void 종료된_프로젝트의_행동전략_완료시_기대하는_응답Exception을_리턴한다() throws Exception {
 		String initiativeToken = "ini_iefefawef3fdab3AH8";
 
-		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, getUser(15L)))
+		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, 15L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
@@ -419,7 +382,7 @@ class ProjectServiceImplTest {
 	void 이미_종료된_행동전략_완료_요청시_기대하는_응답Exception을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5aaafeab3AH8";
 
-		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, getUser(11L)))
+		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, 11L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.FINISHED_INITIATIVE.getMessage());
 	}
@@ -429,7 +392,7 @@ class ProjectServiceImplTest {
 	void 행동전략_완료시_프로젝트_진척도_update() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken, getUser(11L));
+		String response = sut.initiativeFinished(initiativeToken, 11L);
 
 		Project project = em.createQuery(
 				"select p from Project p where p.id = :id", Project.class)
@@ -446,7 +409,7 @@ class ProjectServiceImplTest {
 			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
 		Page<InitiativeInfo> response =
-			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
+			sut.getInitiativeByKeyResultToken(keyResultToken, 11L, PageRequest.of(0, 5));
 
 		assertThat(response.getTotalElements()).isEqualTo(3);
 		List<InitiativeInfo> content = response.getContent();
@@ -468,7 +431,7 @@ class ProjectServiceImplTest {
 		FeedbackInfo response =
 			sut.registerFeedback(
 				command,
-				getUser(3L)
+				3L
 			);
 
 		assertThat(response.feedbackToken()).containsPattern(
@@ -483,7 +446,7 @@ class ProjectServiceImplTest {
 			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
 				"ini_iefefena3fdab3AH8");
 
-		assertThatThrownBy(() -> sut.registerFeedback(command, getUser(7L)))
+		assertThatThrownBy(() -> sut.registerFeedback(command, 7L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
@@ -496,7 +459,7 @@ class ProjectServiceImplTest {
 			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
 				"ini_ixYjjnnnafeab3AH8");
 
-		assertThatThrownBy(() -> sut.registerFeedback(command, getUser(3L)))
+		assertThatThrownBy(() -> sut.registerFeedback(command, 3L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.MOT_AVAIL_FEEDBACK_SELF.getMessage());
 	}
@@ -509,7 +472,7 @@ class ProjectServiceImplTest {
 			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
 				"ini_ixYjj5nODfeab3AH8");
 
-		assertThatThrownBy(() -> sut.registerFeedback(command, getUser(3L)))
+		assertThatThrownBy(() -> sut.registerFeedback(command, 3L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_FINISHED_INITIATIVE.getMessage());
 	}

@@ -41,7 +41,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 			}
 
 			String email = JwtTokenUtils.getEmail(token, key);
-			User user = userService.findByEmail(email)
+			User user = userService.findUserByEmail(email)
 				.orElseThrow(() -> {
 					log.error("User does not exist");
 					return new ResponseStatusException(HttpStatus.UNAUTHORIZED);

@@ -29,7 +29,6 @@ import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
-import kr.jay.okrver3.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,58 +44,61 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional
 	@Override
-	public ProjectInfo registerProject(ProjectSaveCommand command, User user, List<User> teamMemberUsers) {
+	public ProjectInfo registerProject(ProjectSaveCommand command, Long userSeq, List<Long> teamMemberUserSeqs) {
 		Project project = projectRepository.save(command.toEntity());
-		project.addLeader(user);
-		teamMemberUsers.forEach(project::addTeamMember);
+		project.addLeader(userSeq);
+		teamMemberUserSeqs.forEach(project::addTeamMember);
 		return new ProjectInfo(project);
 	}
 
 	@Override
-	public ProjectInfo getProjectInfoBy(String projectToken, User user) {
-		return projectRepository.findByProjectTokenAndUser(projectToken, user)
+	public ProjectInfo getProjectInfoBy(String projectToken, Long userSeq) {
+		return projectRepository.findByProjectTokenAndUser(projectToken, userSeq)
 			.map(ProjectInfo::new)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
+	@Transactional
 	@Override
-	public ProjectTeamMembersInfo inviteTeamMember(String projectToken, User invitedUser, User inviter) {
-		Project project = inviteUserValidator(projectToken, invitedUser.getEmail(), inviter);
-		project.addTeamMember(invitedUser);
+	public ProjectTeamMembersInfo inviteTeamMember(String projectToken, Long invitedUserSeq, Long inviterSeq) {
+		Project project = inviteUserValidator(projectToken, invitedUserSeq, inviterSeq);
+		project.addTeamMember(invitedUserSeq);
 		return new ProjectTeamMembersInfo(
-			project.getTeamMember().stream().map(teamMember -> teamMember.getUser().getUserSeq()).toList(),
+			project.getTeamMember().stream()
+				.map(TeamMember::getUserSeq)
+				.toList(),
 			project.getObjective());
 	}
 
 	@Override
-	public void validateUserToInvite(String projectToken, String invitedUserEmail, User user) {
-		inviteUserValidator(projectToken, invitedUserEmail, user);
+	public void validateUserToInvite(String projectToken, Long invitedUserSeq, Long inviterSeq) {
+		inviteUserValidator(projectToken, invitedUserSeq, inviterSeq);
 	}
 
 	@Override
-	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, User user) {
-		return projectRepository.getDetailProjectList(command, user)
-			.map(project -> new ProjectDetailInfo(project, user.getEmail()));
+	public Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, Long userSeq) {
+		return projectRepository.getDetailProjectList(command, userSeq)
+			.map(project -> new ProjectDetailInfo(project, userSeq));
 	}
 
 	@Override
-	public ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, User user) {
-		return projectRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, user)
+	public ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, Long userSeq) {
+		return projectRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, userSeq)
 			.map(ProjectSideMenuInfo::new)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
 	@Transactional
 	@Override
-	public String registerKeyResult(ProjectKeyResultSaveCommand command, User user) {
-		Project project = projectRepository.findProjectKeyResultByProjectTokenAndUser(
-				command.projectToken(), user)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+	public String registerKeyResult(ProjectKeyResultSaveCommand command, Long userSeq) {
+		Project project =
+			projectRepository.findProjectKeyResultByProjectTokenAndUser(command.projectToken(), userSeq)
+				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
 		validateProcessor.validate(
 			List.of(VALIDATE_LEADER, VALIDATE_PROJECT_PERIOD, VALIDATE_KEYRESULT_COUNT),
 			project,
-			user
+			userSeq
 		);
 
 		return project.addKeyResult(command.keyResultName());
@@ -104,12 +106,12 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional
 	@Override
-	public String registerInitiative(ProjectInitiativeSaveCommand command, User user) {
+	public String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq) {
 
-		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), user)
+		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), userSeq)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
 
-		Initiative initiative = buildInitiative(command, getTeamMember(user, project));
+		Initiative initiative = buildInitiative(command, getTeamMember(userSeq, project));
 
 		validateProcessor.validate(
 			List.of(VALIDATE_PROJECT_PERIOD, VALIDATE_PROJECT_INITIATIVE_DATE),
@@ -128,9 +130,9 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional
 	@Override
-	public String initiativeFinished(String initiativeToken, User user) {
+	public String initiativeFinished(String initiativeToken, Long userSeq) {
 		Initiative initiative =
-			initiativeRepository.findInitiativeByInitiativeTokenAndUser(initiativeToken, user)
+			initiativeRepository.findInitiativeByInitiativeTokenAndUserSeq(initiativeToken, userSeq)
 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 
 		validateProcessor.validate(
@@ -145,17 +147,15 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
-		Pageable pageable) {
-		return initiativeRepository.findInitiativeByKeyResultTokenAndUser(
-			keyResultToken, user, pageable
-		).map(InitiativeInfo::new);
+	public Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, Long userSeq, Pageable pageable) {
+		return initiativeRepository.findInitiativeByKeyResultTokenAndUserSeq(keyResultToken, userSeq, pageable)
+			.map(InitiativeInfo::new);
 	}
 
 	@Override
-	public FeedbackInfo registerFeedback(FeedbackSaveCommand command, User requester) {
-		Initiative initiative = initiativeRepository.findInitiativeForFeedbackByInitiativeTokenAndRequester(
-				command.initiativeToken(), requester)
+	public FeedbackInfo registerFeedback(FeedbackSaveCommand command, Long requesterSeq) {
+		Initiative initiative = initiativeRepository.findInitiativeForFeedbackByInitiativeTokenAndRequesterSeq(
+				command.initiativeToken(), requesterSeq)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 
 		validateProcessor.validate(
@@ -163,10 +163,10 @@ public class ProjectServiceImpl implements ProjectService {
 			initiative.getProject(),
 			initiative,
 			initiative.getTeamMember(),
-			requester
+			requesterSeq
 		);
 
-		return new FeedbackInfo(feedbackRepository.save(command.toEntity(initiative, requester)));
+		return new FeedbackInfo(feedbackRepository.save(command.toEntity(initiative, requesterSeq)));
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -184,24 +184,24 @@ public class ProjectServiceImpl implements ProjectService {
 			.orElseThrow();
 	}
 
-	private TeamMember getTeamMember(User user, Project project) {
+	private TeamMember getTeamMember(Long userSeq, Project project) {
 		return project.getTeamMember()
 			.stream()
-			.filter(tm -> tm.getUser().equals(user))
+			.filter(tm -> tm.getUser().getUserSeq().equals(userSeq))
 			.findFirst()
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
-	private Project inviteUserValidator(String projectToken, String invitedUserEmail, User user) {
-		if (user.getEmail().equals(invitedUserEmail))
+	private Project inviteUserValidator(String projectToken, Long invitedUserSeq, Long inviterSeq) {
+		if (inviterSeq.equals(invitedUserSeq))
 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 
-		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, user)
+		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, inviterSeq)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
-		validateProcessor.validate(List.of(VALIDATE_LEADER, VALIDATE_PROJECT_PERIOD), project, user);
+		validateProcessor.validate(List.of(VALIDATE_LEADER, VALIDATE_PROJECT_PERIOD), project, inviterSeq);
 
-		project.validateEmail(invitedUserEmail);
+		project.validateTeamMember(invitedUserSeq);
 
 		return project;
 	}

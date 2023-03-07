@@ -94,7 +94,7 @@ class ProjectFacadeTest {
 
 		String projectToken = sut.registerProject(
 			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
-				List.of("keyResult1", "keyResult2"), null), user);
+				List.of("keyResult1", "keyResult2"), null), user.getUserSeq());
 
 		Project result =
 			em.createQuery("select n from Project n where n.objective =: objective", Project.class)
@@ -118,7 +118,7 @@ class ProjectFacadeTest {
 
 		String projectToken = sut.registerProject(
 			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
-				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user);
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), user.getUserSeq());
 
 		Project result =
 			em.createQuery("select n from Project n where n.objective =: objective", Project.class)
@@ -138,7 +138,7 @@ class ProjectFacadeTest {
 
 		User user = getUser(1L);
 
-		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", user);
+		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", user.getUserSeq());
 
 		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
@@ -152,10 +152,8 @@ class ProjectFacadeTest {
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환하고 알림을 저장한다.")
 	void invite_team_member() throws Exception {
 
-		User user = getUser(1L);
-
 		String response = sut.inviteTeamMember(
-			new TeamMemberInviteCommand("project-fgFHxGWeIUQt", "fakeAppleEmail"), user);
+			new TeamMemberInviteCommand("project-fgFHxGWeIUQt", "fakeAppleEmail"), 1L);
 
 		assertThat(response).isEqualTo("fakeAppleEmail");
 
@@ -175,7 +173,7 @@ class ProjectFacadeTest {
 		String memberEmail = "guest@email.com";
 		User user = getUser(1L);
 
-		final String response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user);
+		final String response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq());
 
 		assertThat(response).isEqualTo(memberEmail);
 	}
@@ -188,7 +186,7 @@ class ProjectFacadeTest {
 		String memberEmail = "guest@email.com";
 		User user = getUser(2L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
@@ -201,7 +199,7 @@ class ProjectFacadeTest {
 		String memberEmail = "guest@email.com";
 		User user = getUser(3L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
@@ -215,7 +213,7 @@ class ProjectFacadeTest {
 		String wrongEmailAdd = "wrongEmailAdd";
 		User user = getUser(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, user))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_USER_EMAIL.getMessage());
 	}
@@ -227,7 +225,7 @@ class ProjectFacadeTest {
 		String teamMemberEmail = "fakeGoogleIdEmail";
 		User user = getUser(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, user))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 	}
@@ -239,7 +237,7 @@ class ProjectFacadeTest {
 		String userEmail = "apple@apple.com";
 		User user = getUser(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, user))
+		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
@@ -253,7 +251,7 @@ class ProjectFacadeTest {
 
 		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
 			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N",
-				PageRequest.of(0, 5)), user);
+				PageRequest.of(0, 5)), user.getUserSeq());
 
 		assertThat(result.getTotalElements()).isEqualTo(2);
 		List<ProjectDetailInfo> content = result.getContent();
@@ -273,7 +271,7 @@ class ProjectFacadeTest {
 		String projectToken = "mst_K4g4tfdaergg6421";
 		User user = getUser(13L);
 
-		ProjectSideMenuInfo response = sut.getProjectSideMenuDetails(projectToken, user);
+		ProjectSideMenuInfo response = sut.getProjectSideMenuDetails(projectToken, user.getUserSeq());
 
 		assertThat(response.progress()).isEqualTo("60.0");
 		assertThat(response.teamMembers().size()).isEqualTo(3);
@@ -288,7 +286,8 @@ class ProjectFacadeTest {
 
 		User user = getUser(13L);
 
-		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user);
+		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName),
+			user.getUserSeq());
 
 		assertThat(response).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
@@ -304,7 +303,8 @@ class ProjectFacadeTest {
 		User user = getUser(13L);
 
 		assertThatThrownBy(
-			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName),
+				user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
@@ -318,7 +318,8 @@ class ProjectFacadeTest {
 		User user = getUser(2L);
 
 		assertThatThrownBy(
-			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), user))
+			() -> sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName),
+				user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
 
@@ -338,7 +339,7 @@ class ProjectFacadeTest {
 
 		User user = getUser(3L);
 
-		String response = sut.registerInitiative(requestDto, user);
+		String response = sut.registerInitiative(requestDto, user.getUserSeq());
 
 		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
@@ -349,7 +350,7 @@ class ProjectFacadeTest {
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken, getUser(11L));
+		String response = sut.initiativeFinished(initiativeToken, getUser(11L).getUserSeq());
 
 		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
@@ -362,7 +363,7 @@ class ProjectFacadeTest {
 			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
 		Page<InitiativeInfo> response =
-			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
+			sut.getInitiativeByKeyResultToken(keyResultToken, 11L, PageRequest.of(0, 5));
 
 		assertThat(response.getTotalElements()).isEqualTo(3);
 		List<InitiativeInfo> content = response.getContent();
@@ -384,7 +385,7 @@ class ProjectFacadeTest {
 		String response =
 			sut.registerFeedback(
 				command,
-				getUser(3L)
+				3L
 			);
 
 		assertThat(response).containsPattern(
@@ -402,7 +403,7 @@ class ProjectFacadeTest {
 		String response =
 			sut.registerFeedback(
 				command,
-				getUser(3L)
+				3L
 			);
 
 		Notification result =

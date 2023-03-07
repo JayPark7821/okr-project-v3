@@ -5,16 +5,15 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import kr.jay.okrver3.domain.user.User;
-
 public interface InitiativeRepository {
 
-	Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequester(String initiativeToken, User requester);
+	Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequesterSeq(String initiativeToken,
+		Long requesterSeq);
 
 	Initiative saveAndFlush(Initiative initiative);
 
-	Page<Initiative> findInitiativeByKeyResultTokenAndUser(String keyResultToken, User user, Pageable pageable);
+	Page<Initiative> findInitiativeByKeyResultTokenAndUserSeq(String keyResultToken, Long userSeq, Pageable pageable);
 
-	Optional<Initiative> findInitiativeByInitiativeTokenAndUser(String initiativeToken, User user);
+	Optional<Initiative> findInitiativeByInitiativeTokenAndUserSeq(String initiativeToken, Long userSeq);
 
 }

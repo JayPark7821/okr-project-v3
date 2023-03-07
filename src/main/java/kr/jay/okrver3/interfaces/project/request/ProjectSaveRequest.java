@@ -25,5 +25,7 @@ public record ProjectSaveRequest(
 	@Size(min = 1, max = 3, message = "핵심 결과는 1~3개 까지만 등록이 가능합니다.")
 	List<String> keyResults,
 
+	@NotNull(message = "팀원의 email은 필수 값 입니다.")
+	@Size(min = 1, message = "팀원의 email은 필수 값 입니다.")
 	List<String> teamMembers) {
 }
