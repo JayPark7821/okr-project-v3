@@ -129,7 +129,12 @@ public class ProjectApiController {
 		@PathVariable("email") String email,
 		Authentication authentication
 	) {
-		return null;
+		return Response.successOk(
+			projectFacade.validateEmailForCreateProject(
+				email,
+				getUserFromAuthentication(authentication)
+			)
+		);
 	}
 
 	@GetMapping("/project/{projectToken}/side")
