@@ -81,6 +81,11 @@ public class ProjectFacade {
 		return email;
 	}
 
+	public String validateEmailForCreateProject(String email, Long userFromAuthentication) {
+		throw new UnsupportedOperationException(
+			"kr.jay.okrver3.application.project.ProjectFacade.validateEmailForCreateProject()");
+	}
+
 	private UserInfo getUserToInviteBy(String email) {
 		return userService.findByEmail(email)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
@@ -137,4 +142,5 @@ public class ProjectFacade {
 		);
 		return feedbackInfo.feedbackToken();
 	}
+
 }
