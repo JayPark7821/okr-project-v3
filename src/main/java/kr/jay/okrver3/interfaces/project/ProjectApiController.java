@@ -207,7 +207,7 @@ public class ProjectApiController {
 		@RequestBody @Valid FeedbackSaveRequest requestDto,
 		Authentication authentication) {
 
-		return Response.successOk(
+		return Response.successCreated(
 			projectFacade.registerFeedback(
 				mapper.of(requestDto),
 				getUserFromAuthentication(authentication)
