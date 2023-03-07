@@ -14,11 +14,11 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
-import kr.jay.okrver3.domain.project.info.ProjectTeamMemberUserInfo;
+import kr.jay.okrver3.domain.project.info.TeamMemberUserInfo;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
@@ -80,7 +80,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	ProjectTeamMemberResponse of(ProjectTeamMemberUserInfo info) {
+	ProjectTeamMemberResponse of(TeamMemberUserInfo info) {
 		return new ProjectTeamMemberResponse(
 			info.userEmail(),
 			info.userName(),
@@ -106,7 +106,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	ProjectInitiativeResponse of(ProjectInitiativeInfo info) {
+	ProjectInitiativeResponse of(InitiativeInfo info) {
 		return new ProjectInitiativeResponse(
 			info.initiativeToken(), info.initiativeName(), info.done(),
 			this.of(info.user())

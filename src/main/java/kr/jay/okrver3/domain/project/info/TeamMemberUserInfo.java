@@ -2,13 +2,13 @@ package kr.jay.okrver3.domain.project.info;
 
 import kr.jay.okrver3.domain.user.User;
 
-public record ProjectTeamMemberUserInfo(
+public record TeamMemberUserInfo(
 	String userEmail,
 	String userName,
 	String profileImage,
 	String jobField) {
 
-	public ProjectTeamMemberUserInfo(User user) {
+	public TeamMemberUserInfo(User user) {
 		this(user.getEmail(), user.getUsername(), user.getProfileImage(), user.getJobField().getTitle());
 	}
 }

@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface NotificationRepository {
 	void bulkInsert(List<Notification> notificationStream);
+
+	Notification save(Notification notification);
 }

@@ -33,9 +33,10 @@ import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
@@ -146,7 +147,7 @@ class ProjectServiceImplTest {
 
 		ProjectTeamMembersInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", invitedUser, inviter);
 
-		assertThat(response.projectTeamMemberUsers().size()).isEqualTo(3);
+		assertThat(response.teamMemberSeq().size()).isEqualTo(3);
 
 	}
 
@@ -444,11 +445,11 @@ class ProjectServiceImplTest {
 		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
 			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
-		Page<ProjectInitiativeInfo> response =
+		Page<InitiativeInfo> response =
 			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
 
 		assertThat(response.getTotalElements()).isEqualTo(3);
-		List<ProjectInitiativeInfo> content = response.getContent();
+		List<InitiativeInfo> content = response.getContent();
 
 		for (int i = 0; i < content.size(); i++) {
 			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
@@ -464,13 +465,13 @@ class ProjectServiceImplTest {
 			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
 				"ini_ixYjj5aaafeab3AH8");
 
-		String response =
+		FeedbackInfo response =
 			sut.registerFeedback(
 				command,
 				getUser(3L)
 			);
 
-		assertThat(response).containsPattern(
+		assertThat(response.feedbackToken()).containsPattern(
 			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
 	}
 

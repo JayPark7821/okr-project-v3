@@ -10,9 +10,10 @@ import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.user.User;
@@ -36,8 +37,8 @@ public interface ProjectService {
 
 	String initiativeFinished(String initiativeToken, User user);
 
-	Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user, Pageable pageable);
+	Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user, Pageable pageable);
 
-	String registerFeedback(FeedbackSaveCommand command, User requester);
+	FeedbackInfo registerFeedback(FeedbackSaveCommand command, User requester);
 }
 

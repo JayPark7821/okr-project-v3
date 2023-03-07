@@ -22,9 +22,10 @@ import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
+import kr.jay.okrver3.infrastructure.notification.NotificationRepositoryImpl;
 
 @DataJpaTest
-@Import({NotificationServiceImpl.class, NotificationJDBCRepository.class})
+@Import({NotificationServiceImpl.class, NotificationJDBCRepository.class, NotificationRepositoryImpl.class})
 class NotificationServiceImplTest {
 
 	@Autowired
@@ -41,7 +42,7 @@ class NotificationServiceImplTest {
 		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
 			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
-		sut.sendInvitationNotification(List.of(user), "프로젝트명", "invitedUser");
+		sut.sendInvitationNotification(Notifications.NEW_TEAM_MATE, List.of(user.getUserSeq()), "invitedUser", "프로젝트명");
 
 		List<Notification> result = em.createQuery("select n from Notification n", Notification.class)
 			.getResultList();

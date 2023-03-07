@@ -1,6 +1,7 @@
 package kr.jay.okrver3.application.project;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.NotificationService;
+import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.project.ProjectService;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
@@ -17,9 +19,10 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.user.User;
@@ -62,9 +65,10 @@ public class ProjectFacade {
 		);
 
 		notificationService.sendInvitationNotification(
-			getTeamMemberToSendNoti(invitedUser, projectTeamMembersInfo),
-			projectTeamMembersInfo.projectName(),
-			invitedUser.getUsername()
+			Notifications.NEW_TEAM_MATE,
+			getTeamMemberToSendNoti(invitedUser.getUserSeq(), projectTeamMembersInfo.teamMemberSeq()),
+			invitedUser.getUsername(),
+			projectTeamMembersInfo.projectName()
 		);
 
 		return invitedUser.getEmail();
@@ -86,10 +90,10 @@ public class ProjectFacade {
 			.map(Optional::get).toList();
 	}
 
-	private static List<User> getTeamMemberToSendNoti(User invitedUser, ProjectTeamMembersInfo info) {
-		return info.projectTeamMemberUsers()
+	private List<Long> getTeamMemberToSendNoti(Long invitedUserSeq, List<Long> teamMemberUserSeq) {
+		return teamMemberUserSeq
 			.stream()
-			.filter(user -> !user.equals(invitedUser))
+			.filter(user -> !Objects.equals(user, invitedUserSeq))
 			.toList();
 	}
 
@@ -113,7 +117,7 @@ public class ProjectFacade {
 		return projectService.initiativeFinished(initiativeToken, user);
 	}
 
-	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(
+	public Page<InitiativeInfo> getInitiativeByKeyResultToken(
 		String keyResultToken,
 		User user,
 		Pageable pageable
@@ -122,6 +126,13 @@ public class ProjectFacade {
 	}
 
 	public String registerFeedback(FeedbackSaveCommand command, User requester) {
-		return projectService.registerFeedback(command, requester);
+		FeedbackInfo feedbackInfo = projectService.registerFeedback(command, requester);
+		notificationService.sendNotification(
+			Notifications.NEW_FEEDBACK,
+			feedbackInfo.initiativeUserSeq(),
+			requester.getUsername(),
+			feedbackInfo.initiativeName()
+		);
+		return feedbackInfo.feedbackToken();
 	}
 }

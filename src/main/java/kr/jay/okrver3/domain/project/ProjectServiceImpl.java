@@ -22,9 +22,10 @@ import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
@@ -62,7 +63,8 @@ public class ProjectServiceImpl implements ProjectService {
 	public ProjectTeamMembersInfo inviteTeamMember(String projectToken, User invitedUser, User inviter) {
 		Project project = inviteUserValidator(projectToken, invitedUser.getEmail(), inviter);
 		project.addTeamMember(invitedUser);
-		return new ProjectTeamMembersInfo(project.getTeamMember().stream().map(TeamMember::getUser).toList(),
+		return new ProjectTeamMembersInfo(
+			project.getTeamMember().stream().map(teamMember -> teamMember.getUser().getUserSeq()).toList(),
 			project.getObjective());
 	}
 
@@ -143,15 +145,15 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Page<ProjectInitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
+	public Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user,
 		Pageable pageable) {
 		return initiativeRepository.findInitiativeByKeyResultTokenAndUser(
 			keyResultToken, user, pageable
-		).map(ProjectInitiativeInfo::new);
+		).map(InitiativeInfo::new);
 	}
 
 	@Override
-	public String registerFeedback(FeedbackSaveCommand command, User requester) {
+	public FeedbackInfo registerFeedback(FeedbackSaveCommand command, User requester) {
 		Initiative initiative = initiativeRepository.findInitiativeForFeedbackByInitiativeTokenAndRequester(
 				command.initiativeToken(), requester)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
@@ -164,7 +166,7 @@ public class ProjectServiceImpl implements ProjectService {
 			requester
 		);
 
-		return feedbackRepository.save(command.toEntity(initiative, requester)).getFeedbackToken();
+		return new FeedbackInfo(feedbackRepository.save(command.toEntity(initiative, requester)));
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

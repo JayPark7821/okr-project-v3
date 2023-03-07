@@ -36,19 +36,22 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
-import kr.jay.okrver3.domain.project.info.ProjectInitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
+import kr.jay.okrver3.domain.project.validator.InitiativeInProgressValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
 import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
+import kr.jay.okrver3.domain.project.validator.SelfFeedbackValidator;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
+import kr.jay.okrver3.infrastructure.notification.NotificationRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
@@ -61,7 +64,9 @@ import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepo
 	ProjectQueryDslRepository.class, ProjectValidateProcessor.class, ProjectLeaderValidator.class,
 	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class,
 	InitiativeRepositoryImpl.class, FeedbackRepositoryImpl.class, InitiativeDoneValidator.class,
-	InitiativeQueryDslRepository.class})
+	InitiativeQueryDslRepository.class, NotificationRepositoryImpl.class, SelfFeedbackValidator.class,
+	InitiativeInProgressValidator.class
+})
 class ProjectFacadeTest {
 
 	@Autowired
@@ -356,11 +361,11 @@ class ProjectFacadeTest {
 		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
 			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
-		Page<ProjectInitiativeInfo> response =
+		Page<InitiativeInfo> response =
 			sut.getInitiativeByKeyResultToken(keyResultToken, getUser(11L), PageRequest.of(0, 5));
 
 		assertThat(response.getTotalElements()).isEqualTo(3);
-		List<ProjectInitiativeInfo> content = response.getContent();
+		List<InitiativeInfo> content = response.getContent();
 
 		for (int i = 0; i < content.size(); i++) {
 			assertThat(content.get(i).initiativeToken()).isEqualTo(savedInitiativeTokenRecentlyCreatedOrder.get(i));
@@ -402,10 +407,10 @@ class ProjectFacadeTest {
 
 		Notification result =
 			em.createQuery("select n from Notification n where n.user.id =: userId", Notification.class)
-				.setParameter("userId", 33L)
+				.setParameter("userId", 11L)
 				.getSingleResult();
 
-		assertThat(result.getType()).isEqualTo("NEW_FEEDBACK");
+		assertThat(result.getType()).isEqualTo(Notifications.NEW_FEEDBACK);
 
 	}
 
