@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
@@ -42,7 +43,6 @@ public class ProjectServiceImpl implements ProjectService {
 	private final FeedbackRepository feedbackRepository;
 	private final ProjectValidateProcessor validateProcessor;
 
-	@Transactional
 	@Override
 	public ProjectInfo registerProject(ProjectSaveCommand command, Long userSeq, List<Long> teamMemberUserSeqs) {
 		Project project = projectRepository.save(command.toEntity());
@@ -58,7 +58,6 @@ public class ProjectServiceImpl implements ProjectService {
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
-	@Transactional
 	@Override
 	public ProjectTeamMembersInfo inviteTeamMember(String projectToken, Long invitedUserSeq, Long inviterSeq) {
 		Project project = inviteUserValidator(projectToken, invitedUserSeq, inviterSeq);
@@ -88,7 +87,6 @@ public class ProjectServiceImpl implements ProjectService {
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 	}
 
-	@Transactional
 	@Override
 	public String registerKeyResult(ProjectKeyResultSaveCommand command, Long userSeq) {
 		Project project =
@@ -104,7 +102,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return project.addKeyResult(command.keyResultName());
 	}
 
-	@Transactional
 	@Override
 	public String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq) {
 
@@ -128,7 +125,6 @@ public class ProjectServiceImpl implements ProjectService {
 		return initiative.getInitiativeToken();
 	}
 
-	@Transactional
 	@Override
 	public String initiativeFinished(String initiativeToken, Long userSeq) {
 		Initiative initiative =

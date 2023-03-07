@@ -10,7 +10,7 @@ public record FeedbackSaveCommand(String opinion, String grade, String initiativ
 		TeamMember requestedTeamMember = initiative.getProject()
 			.getTeamMember()
 			.stream()
-			.filter(teamMember -> teamMember.getUser().getUserSeq().equals(requesterSeq))
+			.filter(teamMember -> teamMember.getUserSeq().equals(requesterSeq))
 			.findFirst()
 			.orElseThrow();
 

@@ -45,7 +45,7 @@ public class ProjectFacade {
 			projectService.registerProject(
 				command,
 				userSeq,
-				getTeamUsersFromEmails(command)
+				command.teamMembers() != null ? getTeamUsersFromEmails(command.teamMembers()) : List.of()
 			);
 
 		return projectInfo.projectToken();
@@ -87,8 +87,8 @@ public class ProjectFacade {
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
 	}
 
-	private List<Long> getTeamUsersFromEmails(ProjectSaveCommand command) {
-		return command.teamMembers().stream().map(userService::findByEmail)
+	private List<Long> getTeamUsersFromEmails(List<String> teamMembers) {
+		return teamMembers.stream().map(userService::findByEmail)
 			.filter(Optional::isPresent)
 			.map(user -> user.get().userSeq()).toList();
 	}
