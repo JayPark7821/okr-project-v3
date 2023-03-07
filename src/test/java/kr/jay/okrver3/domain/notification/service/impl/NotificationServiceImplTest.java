@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.domain.notification.Notification;
+import kr.jay.okrver3.domain.notification.NotificationServiceImpl;
 import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;

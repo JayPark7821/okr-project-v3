@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.domain.notification.Notification;
-import kr.jay.okrver3.domain.notification.service.impl.NotificationRepository;
+import kr.jay.okrver3.domain.notification.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -34,7 +34,6 @@ public class NotificationJDBCRepository implements NotificationRepository {
 			.toArray(SqlParameterSource[]::new);
 		namedParameterJdbcTemplate.batchUpdate(sql, params);
 	}
-
 
 }
 

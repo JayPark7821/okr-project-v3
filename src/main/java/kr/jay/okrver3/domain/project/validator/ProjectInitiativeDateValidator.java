@@ -8,7 +8,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.service.command.ProjectInitiativeSaveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 
 @Component
 public class ProjectInitiativeDateValidator implements ProjectValidator {

@@ -1,9 +1,9 @@
 package kr.jay.okrver3.infrastructure.project;
 
-import static kr.jay.okrver3.domain.initiative.QInitiative.*;
-import static kr.jay.okrver3.domain.keyresult.QKeyResult.*;
 import static kr.jay.okrver3.domain.project.QProject.*;
-import static kr.jay.okrver3.domain.team.QTeamMember.*;
+import static kr.jay.okrver3.domain.project.aggregate.initiative.QInitiative.*;
+import static kr.jay.okrver3.domain.project.aggregate.keyresult.QKeyResult.*;
+import static kr.jay.okrver3.domain.project.aggregate.team.QTeamMember.*;
 import static kr.jay.okrver3.domain.user.QUser.*;
 
 import java.util.List;
@@ -24,7 +24,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
-import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.user.User;
 
 @Repository
@@ -90,7 +90,7 @@ public class ProjectQueryDslRepository {
 	}
 
 	public double getProjectProgress(Long projectId) {
-		Double progress = queryFactory
+		return queryFactory
 			.select(new CaseBuilder().when(initiative.count().eq(0L)).then(0D)
 				.otherwise(
 					(new CaseBuilder()
@@ -103,8 +103,5 @@ public class ProjectQueryDslRepository {
 			.innerJoin(keyResult.initiative, initiative)
 			.where(project.id.eq(projectId))
 			.fetchOne();
-
-		return progress;
-
 	}
 }

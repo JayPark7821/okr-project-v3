@@ -26,7 +26,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.interfaces.feedback.request.FeedbackSaveRequest;
+import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
@@ -317,8 +317,6 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 	}
-
-
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)

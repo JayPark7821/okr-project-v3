@@ -3,18 +3,12 @@ package kr.jay.okrver3.infrastructure.project;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import kr.jay.okrver3.domain.feedback.Feedback;
-import kr.jay.okrver3.domain.initiative.Initiative;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.project.service.ProjectRepository;
-import kr.jay.okrver3.domain.project.service.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.ProjectRepository;
+import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.infrastructure.feedback.FeedbackJpaRepository;
-import kr.jay.okrver3.infrastructure.initiative.InitiativeJpaRepository;
-import kr.jay.okrver3.infrastructure.initiative.InitiativeQueryDslRepository;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -22,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class ProjectRepositoryImpl implements ProjectRepository {
 
 	private final ProjectJpaRepository projectJpaRepository;
-	private final InitiativeJpaRepository initiativeJpaRepository;
 	private final ProjectQueryDslRepository projectQueryDslRepository;
-	private final InitiativeQueryDslRepository initiativeQueryDslRepository;
-	private final FeedbackJpaRepository feedbackJpaRepository;
 
 	@Override
 	public Project save(Project project) {
@@ -68,44 +59,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	}
 
 	@Override
-	public Optional<Initiative> findProjectInitiativeByInitiativeTokenAndUser(String initiativeToken, User user) {
-		return initiativeJpaRepository.findProjectInitiativeByInitiativeTokenAndUser(initiativeToken, user);
-	}
-
-	@Override
-	public Project getReferenceById(Long projectId) {
-		return projectJpaRepository.getReferenceById(projectId);
-
-	}
-
-	@Override
 	public Optional<Project> findProjectForUpdateById(Long projectId) {
 		return projectJpaRepository.findProjectForUpdateById(projectId);
-	}
-
-	@Override
-	public Page<Initiative> findInitiativeByKeyResultTokenAndUser(
-		String keyResultToken,
-		User user,
-		Pageable pageable
-	) {
-		return initiativeQueryDslRepository.findInitiativeByKeyResultTokenAndUser(keyResultToken, user, pageable);
-	}
-
-	@Override
-	public Initiative saveAndFlushInitiative(Initiative initiative) {
-		return initiativeJpaRepository.saveAndFlush(initiative);
-	}
-
-	@Override
-	public Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequester(String initiativeToken,
-		User requester) {
-		return initiativeJpaRepository.findInitiativeForFeedbackByInitiativeTokenAndRequester(initiativeToken,
-			requester);
-	}
-
-	@Override
-	public Feedback saveFeedback(Feedback feedback) {
-		return feedbackJpaRepository.save(feedback);
 	}
 }

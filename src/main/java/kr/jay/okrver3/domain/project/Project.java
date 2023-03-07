@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -23,9 +22,9 @@ import kr.jay.okrver3.common.audit.BaseEntity;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.TokenGenerator;
-import kr.jay.okrver3.domain.keyresult.KeyResult;
-import kr.jay.okrver3.domain.team.ProjectRoleType;
-import kr.jay.okrver3.domain.team.TeamMember;
+import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
+import kr.jay.okrver3.domain.project.aggregate.team.ProjectRoleType;
+import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
 import kr.jay.okrver3.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -69,7 +68,6 @@ public class Project extends BaseEntity {
 	private String objective;
 
 	private double progress;
-
 
 	@Builder
 	public Project(LocalDate startDate, LocalDate endDate, String objective,
