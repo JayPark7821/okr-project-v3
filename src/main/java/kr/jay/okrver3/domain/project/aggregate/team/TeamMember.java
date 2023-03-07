@@ -24,9 +24,12 @@ import lombok.NoArgsConstructor;
 @Entity
 public class TeamMember extends BaseEntity {
 	@Id
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_seq")
+	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_seq", updatable = false, insertable = false)
 	private User user;
+
+	@Column(name = "user_seq")
+	private Long userSeq;
 
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -41,8 +44,8 @@ public class TeamMember extends BaseEntity {
 	private boolean isNew;
 
 	@Builder
-	public TeamMember(User user, Project project, ProjectRoleType projectRoleType, boolean isNew) {
-		this.user = user;
+	public TeamMember(Long userSeq, Project project, ProjectRoleType projectRoleType, boolean isNew) {
+		this.userSeq = userSeq;
 		this.project = project;
 		this.projectRoleType = projectRoleType;
 		this.isNew = isNew;

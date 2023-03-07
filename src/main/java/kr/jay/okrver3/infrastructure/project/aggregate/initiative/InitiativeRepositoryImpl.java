@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.aggregate.initiative.InitiativeRepository;
-import kr.jay.okrver3.domain.user.User;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -19,17 +18,17 @@ public class InitiativeRepositoryImpl implements InitiativeRepository {
 	private final InitiativeQueryDslRepository initiativeQueryDslRepository;
 
 	@Override
-	public Optional<Initiative> findInitiativeByInitiativeTokenAndUser(String initiativeToken, User user) {
-		return initiativeJpaRepository.findInitiativeByInitiativeTokenAndUser(initiativeToken, user);
+	public Optional<Initiative> findInitiativeByInitiativeTokenAndUserSeq(String initiativeToken, Long userSeq) {
+		return initiativeJpaRepository.findInitiativeByInitiativeTokenAndUserSeq(initiativeToken, userSeq);
 	}
 
 	@Override
-	public Page<Initiative> findInitiativeByKeyResultTokenAndUser(
+	public Page<Initiative> findInitiativeByKeyResultTokenAndUserSeq(
 		String keyResultToken,
-		User user,
+		Long userSeq,
 		Pageable pageable
 	) {
-		return initiativeQueryDslRepository.findInitiativeByKeyResultTokenAndUser(keyResultToken, user, pageable);
+		return initiativeQueryDslRepository.findInitiativeByKeyResultTokenAndUserSeq(keyResultToken, userSeq, pageable);
 	}
 
 	@Override
@@ -38,10 +37,12 @@ public class InitiativeRepositoryImpl implements InitiativeRepository {
 	}
 
 	@Override
-	public Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequester(String initiativeToken,
-		User requester) {
-		return initiativeJpaRepository.findInitiativeForFeedbackByInitiativeTokenAndRequester(initiativeToken,
-			requester);
+	public Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequesterSeq(String initiativeToken,
+		Long requesterSeq) {
+		return initiativeJpaRepository.findInitiativeForFeedbackByInitiativeTokenAndRequester(
+			initiativeToken,
+			requesterSeq
+		);
 	}
 
 }

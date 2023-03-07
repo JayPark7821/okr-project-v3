@@ -18,7 +18,6 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
-import kr.jay.okrver3.domain.user.User;
 
 @Repository
 public class InitiativeQueryDslRepository {
@@ -31,7 +30,7 @@ public class InitiativeQueryDslRepository {
 		this.queryFactory = new JPAQueryFactory(em);
 	}
 
-	public Page<Initiative> findInitiativeByKeyResultTokenAndUser(String keyResultToken, User searchUser,
+	public Page<Initiative> findInitiativeByKeyResultTokenAndUserSeq(String keyResultToken, Long searchUserSeq,
 		Pageable pageable) {
 		List<Initiative> results = queryFactory
 			.select(initiative)

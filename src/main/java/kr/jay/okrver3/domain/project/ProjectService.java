@@ -16,29 +16,28 @@ import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
-import kr.jay.okrver3.domain.user.User;
 
 public interface ProjectService {
-	ProjectInfo registerProject(ProjectSaveCommand command, User user, List<User> teamMemberUsers);
+	ProjectInfo registerProject(ProjectSaveCommand command, Long userSeq, List<Long> teamMemberUserSeqs);
 
-	ProjectInfo getProjectInfoBy(String projectToken, User user);
+	ProjectInfo getProjectInfoBy(String projectToken, Long userSeq);
 
-	ProjectTeamMembersInfo inviteTeamMember(String projectToken, User invitedUser, User inviter);
+	ProjectTeamMembersInfo inviteTeamMember(String projectToken, Long invitedUserSeq, Long inviterSeq);
 
-	void validateUserToInvite(String projectToken, String invitedUserEmail, User user);
+	void validateUserToInvite(String projectToken, Long invitedUserSeq, Long userSeq);
 
-	Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, User user);
+	Page<ProjectDetailInfo> getDetailProjectList(ProjectDetailRetrieveCommand command, Long userSeq);
 
-	ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, User user);
+	ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, Long userSeq);
 
-	String registerKeyResult(ProjectKeyResultSaveCommand command, User user);
+	String registerKeyResult(ProjectKeyResultSaveCommand command, Long userSeq);
 
-	String registerInitiative(ProjectInitiativeSaveCommand command, User user);
+	String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq);
 
-	String initiativeFinished(String initiativeToken, User user);
+	String initiativeFinished(String initiativeToken, Long userSeq);
 
-	Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, User user, Pageable pageable);
+	Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, Long userSeq, Pageable pageable);
 
-	FeedbackInfo registerFeedback(FeedbackSaveCommand command, User requester);
+	FeedbackInfo registerFeedback(FeedbackSaveCommand command, Long requesterSeq);
 }
 

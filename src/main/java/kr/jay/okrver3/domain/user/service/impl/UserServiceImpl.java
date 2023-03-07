@@ -35,13 +35,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<User> findByEmail(String email) {
-		return userRepository.findByEmail(email);
+	public Optional<UserInfo> findByEmail(String email) {
+		return userRepository.findByEmail(email)
+			.map(UserInfo::new);
 	}
 
 	@Override
-	public User getReferenceById(Long id) {
-		return userRepository.getReferenceById(id);
+	public Optional<User> findUserByEmail(String email) {
+		return userRepository.findByEmail(email);
 	}
 
 	@Override

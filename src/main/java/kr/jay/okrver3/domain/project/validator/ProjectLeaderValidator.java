@@ -6,7 +6,6 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.Project;
-import kr.jay.okrver3.domain.user.User;
 
 @Component
 public class ProjectLeaderValidator implements ProjectValidator {
@@ -20,9 +19,9 @@ public class ProjectLeaderValidator implements ProjectValidator {
 	public void validate(Object... args) {
 
 		Project project = ClassUtils.getSafeCastInstance(args, Project.class);
-		User user = ClassUtils.getSafeCastInstance(args, User.class);
+		Long userSeq = ClassUtils.getSafeCastInstance(args, Long.class);
 
-		if (!project.getProjectLeader().getUser().equals(user))
+		if (!project.getProjectLeader().getUser().getUserSeq().equals(userSeq))
 			throw new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER);
 	}
 

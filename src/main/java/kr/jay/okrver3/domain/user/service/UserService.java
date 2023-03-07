@@ -10,9 +10,9 @@ import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 public interface UserService {
 	Optional<UserInfo> getUserInfoFrom(OAuth2UserInfo oAuth2UserInfo);
 
-	Optional<User> findByEmail(String email);
+	Optional<UserInfo> findByEmail(String email);
 
-	User getReferenceById(Long id);
+	Optional<User> findUserByEmail(String email);
 
 	UserInfo registerNewUserFrom(GuestInfo guestInfo, JoinRequest joinRequest);
 

@@ -25,7 +25,6 @@ import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.aggregate.team.ProjectRoleType;
 import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
-import kr.jay.okrver3.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -88,10 +87,10 @@ public class Project extends BaseEntity {
 		});
 	}
 
-	public void addLeader(User leader) {
+	public void addLeader(Long leaderUserSeq) {
 		this.teamMember.add(
 			TeamMember.builder()
-				.user(leader)
+				.userSeq(leaderUserSeq)
 				.project(this)
 				.projectRoleType(ProjectRoleType.LEADER)
 				.isNew(true)
@@ -99,10 +98,10 @@ public class Project extends BaseEntity {
 		);
 	}
 
-	public void addTeamMember(User user) {
+	public void addTeamMember(Long userSeq) {
 		this.teamMember.add(
 			TeamMember.builder()
-				.user(user)
+				.userSeq(userSeq)
 				.project(this)
 				.projectRoleType(ProjectRoleType.MEMBER)
 				.isNew(true)
@@ -111,10 +110,10 @@ public class Project extends BaseEntity {
 		this.type = ProjectType.TEAM;
 	}
 
-	public void validateEmail(String email) {
+	public void validateTeamMember(Long userSeq) {
 		if (this.teamMember
 			.stream()
-			.anyMatch(tm -> tm.getUser().getEmail().equals(email)))
+			.anyMatch(tm -> tm.getUser().getUserSeq().equals(userSeq)))
 			throw new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER);
 
 	}
