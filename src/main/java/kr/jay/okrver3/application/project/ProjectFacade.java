@@ -82,8 +82,7 @@ public class ProjectFacade {
 	}
 
 	public String validateEmailForCreateProject(String email, Long userFromAuthentication) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.application.project.ProjectFacade.validateEmailForCreateProject()");
+		return getUserToInviteBy(email).email();
 	}
 
 	private UserInfo getUserToInviteBy(String email) {
