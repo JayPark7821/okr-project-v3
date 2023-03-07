@@ -189,6 +189,27 @@ public class ProjectApiControllerAcceptanceTest {
 
 	}
 
+
+	@Test
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/team/create" + "/" + memberEmail).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(memberEmail);
+	}
+
+
 	@Test
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
 	void invite_team_member() throws Exception {
