@@ -200,7 +200,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/team/create" + "/" + memberEmail).
+			.get(baseUrl + "/team/create-project" + "/" + memberEmail).
 
 			then()
 			.statusCode(HttpStatus.OK.value())

@@ -173,7 +173,7 @@ class ProjectFacadeTest {
 		String memberEmail = "guest@email.com";
 		User user = getUser(1L);
 
-		final String response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq());
+		final String response = sut.validateEmailToInvite("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq());
 
 		assertThat(response).isEqualTo(memberEmail);
 	}
@@ -186,7 +186,7 @@ class ProjectFacadeTest {
 		String memberEmail = "guest@email.com";
 		User user = getUser(2L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq()))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
@@ -199,7 +199,7 @@ class ProjectFacadeTest {
 		String memberEmail = "guest@email.com";
 		User user = getUser(3L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq()))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", memberEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
@@ -213,7 +213,7 @@ class ProjectFacadeTest {
 		String wrongEmailAdd = "wrongEmailAdd";
 		User user = getUser(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, user.getUserSeq()))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", wrongEmailAdd, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_USER_EMAIL.getMessage());
 	}
@@ -225,7 +225,7 @@ class ProjectFacadeTest {
 		String teamMemberEmail = "fakeGoogleIdEmail";
 		User user = getUser(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, user.getUserSeq()))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", teamMemberEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 	}
@@ -237,7 +237,7 @@ class ProjectFacadeTest {
 		String userEmail = "apple@apple.com";
 		User user = getUser(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, user.getUserSeq()))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", userEmail, user.getUserSeq()))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}

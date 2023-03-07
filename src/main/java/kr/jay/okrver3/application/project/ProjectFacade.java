@@ -41,14 +41,13 @@ public class ProjectFacade {
 
 	public String registerProject(ProjectSaveCommand command, Long userSeq) {
 
-		ProjectInfo projectInfo =
-			projectService.registerProject(
-				command,
-				userSeq,
-				command.teamMembers() != null ? getTeamUsersFromEmails(command.teamMembers()) : List.of()
-			);
+		List<Long> invitedUserSeq = command.teamMembers() != null ? getTeamUsersFromEmails(command.teamMembers()) : List.of();
 
-		return projectInfo.projectToken();
+		return projectService.registerProject(
+			command,
+			userSeq,
+			invitedUserSeq
+		).projectToken();
 	}
 
 	public ProjectInfo getProjectInfoBy(String projectToken, Long userSeq) {
@@ -76,7 +75,7 @@ public class ProjectFacade {
 		return invitedUser.email();
 	}
 
-	public String validateEmail(String projectToken, String email, Long userSeq) {
+	public String validateEmailToInvite(String projectToken, String email, Long userSeq) {
 		UserInfo invitedUserInfo = getUserToInviteBy(email);
 		projectService.validateUserToInvite(projectToken, invitedUserInfo.userSeq(), userSeq);
 		return email;
