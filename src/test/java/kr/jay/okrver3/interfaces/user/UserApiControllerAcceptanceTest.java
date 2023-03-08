@@ -3,6 +3,7 @@ package kr.jay.okrver3.interfaces.user;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -61,13 +62,22 @@ public class UserApiControllerAcceptanceTest {
 	private static final String NOT_MEMBER_ID_TOKEN = "notMemberIdToken";
 	private static final String ID_TOKEN = "appleToken";
 	private static final String DIF_ID_TOKEN = "googleToken";
-
-
+	private String accessToken ;
 
 
 	@BeforeAll
 	void setUpAll() {
+
 		try (Connection conn = dataSource.getConnection()) {
+
+			accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
+			String sql = "insert into refresh_token (refresh_token_seq, user_email, refresh_token) "
+				+ "values ('9999', 'apple@apple.com', ?)";
+
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, accessToken);
+			statement.executeUpdate();
+
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-user.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
@@ -204,12 +214,7 @@ public class UserApiControllerAcceptanceTest {
 	@Test
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
-		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		RefreshToken entity = new RefreshToken("apple@apple.com", accessToken);
-		em.persist(entity);
 
-		Long refreshTokenSeq = entity.getRefreshTokenSeq();
-		System.out.println("refreshTokenSeq = " + refreshTokenSeq);
 
 		final JsonPath response = RestAssured.
 
