@@ -3,11 +3,22 @@ package kr.jay.okrver3.infrastructure.token;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import kr.jay.okrver3.domain.token.RefreshToken;
-import kr.jay.okrver3.domain.token.service.RefreshTokenRepository;
 
-public interface RefreshTokenJpaRepository extends RefreshTokenRepository, JpaRepository<RefreshToken, Long> {
+public interface RefreshTokenJpaRepository extends JpaRepository<RefreshToken, Long> {
 
-	Optional<RefreshToken> findByUserSeq(Long userSeq);
+	@Query("select r "
+		+ "from RefreshToken r "
+		+ "where r.refreshToken = :refreshToken "
+		+ "and r.userEmail = :userEmail "
+	)
+	Optional<RefreshToken> findByUserEmailAndRefreshToken(
+		@Param("userEmail")String userEmail,
+		@Param("refreshToken")String refreshToken
+	);
+
+	Optional<RefreshToken> findByUserEmail(String userEmail);
 }

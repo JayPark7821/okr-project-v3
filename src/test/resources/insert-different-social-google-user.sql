@@ -9,4 +9,4 @@ VALUES ( 3
        , 'fakeGoogleName'
        , 'fakeGoogleIdEmail'
        , 'fakeGoogleIdPic'
-       , 'APPLE');
+       , 'GOOGLE');

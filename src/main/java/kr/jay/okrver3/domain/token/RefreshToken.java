@@ -14,19 +14,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "refresh_token", indexes = @Index(name = "idx_user_seq", columnList = "userSeq"))
+@Table(name = "refresh_token", indexes = @Index(name = "idx_user_email", columnList = "userEmail"))
 public class RefreshToken {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long refreshTokenSeq;
 
-	private Long userSeq;
+	private String userEmail;
 
 	private String refreshToken;
 
-	public RefreshToken(Long userSeq, String refreshToken) {
-		this.userSeq = userSeq;
+	public RefreshToken(String userEmail, String refreshToken) {
+		this.userEmail = userEmail;
 		this.refreshToken = refreshToken;
 	}
 

@@ -6,21 +6,29 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
+import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
+import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 
 @Import(TestConfig.class)
 @Transactional
@@ -29,6 +37,13 @@ class UserApiControllerTest {
 
 	@Autowired
 	private UserApiController sut;
+
+	@Value("${app.auth.tokenSecret}")
+	private String key;
+
+	@PersistenceContext
+	EntityManager em;
+
 
 	@Test
 	@DisplayName("가입한 유저 정보가 없을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Guest)을 반환한다.")
@@ -46,7 +61,7 @@ class UserApiControllerTest {
 
 		assertThatThrownBy(() -> sut.loginWithIdToken("GOOGLE", "googleToken"))
 			.isExactlyInstanceOf(OkrApplicationException.class)
-			.hasMessage("소셜 provider 불일치, " + ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.hasMessage("소셜 provider 불일치, " + ProviderType.GOOGLE.getName() + "(으)로 가입한 계정이 있습니다.");
 	}
 
 	@Test
@@ -101,13 +116,28 @@ class UserApiControllerTest {
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 	}
 
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+
+		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
+		em.persist(new RefreshToken("apple@apple.com",accessToken ));
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addHeader("Authorization", "Bearer " + accessToken);
+
+		ResponseEntity<TokenResponse> response = sut.getNewAccessToken(request);
+
+		assertThat(response.getBody().accessToken()).isNotEqualTo(accessToken);
+	}
+
 	private static void assertGuestLoginResponse(LoginResponse body) {
 		assertThat(body.guestId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
 		);
-		assertThat(body.name()).isEqualTo(GoogleUserInfoFixture.NAME);
-		assertThat(body.email()).isEqualTo(GoogleUserInfoFixture.EMAIL);
-		assertThat(body.providerType()).isEqualTo(GoogleUserInfoFixture.PROVIDER_TYPE);
+		assertThat(body.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
+		assertThat(body.email()).isEqualTo(DiffAppleUserInfoFixture.EMAIL);
+		assertThat(body.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE);
 		assertThat(body.accessToken()).isNull();
 		assertThat(body.refreshToken()).isNull();
 	}

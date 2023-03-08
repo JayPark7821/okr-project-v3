@@ -17,11 +17,12 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @DataJpaTest
-@Import({UserServiceImpl.class})
+@Import({UserServiceImpl.class, RefreshTokenRepositoryImpl.class})
 class UserServiceImplTest {
 
 	@Autowired
@@ -31,11 +32,11 @@ class UserServiceImplTest {
 	@Sql("classpath:insert-different-social-google-user.sql")
 	@DisplayName("가입한 유저 정보가 있지만 가입한 소셜 정보와 다른 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Exception)을 반환한다.")
 	void login_With_different_social_IdToken() throws Exception {
-		OAuth2UserInfo info = GoogleUserInfoFixture.build();
+		OAuth2UserInfo info = DiffAppleUserInfoFixture.build();
 
 		assertThatThrownBy(() -> sut.getUserInfoFrom(info))
 			.isExactlyInstanceOf(OkrApplicationException.class)
-			.hasMessage("소셜 provider 불일치, " + ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.hasMessage("소셜 provider 불일치, " + ProviderType.GOOGLE.getName() + "(으)로 가입한 계정이 있습니다.");
 	}
 
 	@Test

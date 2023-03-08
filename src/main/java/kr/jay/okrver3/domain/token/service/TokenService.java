@@ -4,4 +4,5 @@ import kr.jay.okrver3.domain.user.service.UserInfo;
 
 public interface TokenService {
 	AuthTokenInfo generateTokenSet( UserInfo userInfo);
+	AuthTokenInfo getNewAccessToken(String accessToken);
 }

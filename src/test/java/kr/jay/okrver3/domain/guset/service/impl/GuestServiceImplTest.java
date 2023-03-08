@@ -31,7 +31,7 @@ class GuestServiceImplTest {
 	@Test
 	@DisplayName("가입한 유저 정보가 없을때 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Guest)을 반환한다.")
 	void create_new_guest_from_oauth2info() throws Exception {
-		OAuth2UserInfo info = OAuth2UserInfoFixture.GoogleUserInfoFixture.build();
+		OAuth2UserInfo info = OAuth2UserInfoFixture.DiffAppleUserInfoFixture.build();
 
 		GuestInfo guestInfo = sut.createNewGuestFrom(info);
 

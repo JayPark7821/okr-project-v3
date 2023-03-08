@@ -3,10 +3,14 @@ package kr.jay.okrver3.domain.token.service.impl;
 import static kr.jay.okrver3.common.utils.JwtTokenUtils.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.RefreshTokenRepository;
@@ -34,24 +38,40 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public AuthTokenInfo generateTokenSet(UserInfo userInfo) {
 
-		RefreshToken refreshToken = refreshTokenRepository.findByUserSeq(userInfo.userSeq())
-			.orElseGet(() -> refreshTokenRepository.save(createNewRefreshToken(userInfo)));
+		RefreshToken refreshToken = refreshTokenRepository.findByUserEmail(userInfo.email())
+			.orElseGet(() -> refreshTokenRepository.save(getRefreshToken(userInfo.email())));
 
-		if (getRemainingTimeOf(refreshToken) <= refreshTokenRegenerationThreshold)
-			refreshToken.updateRefreshToken(createNewToken(userInfo, refreshExpiredTimeMs));
+		if (getRemainingTimeOf(refreshToken.getRefreshToken()) <= refreshTokenRegenerationThreshold)
+			refreshToken.updateRefreshToken(createNewToken(userInfo.email(), refreshExpiredTimeMs));
 
-		return new AuthTokenInfo(createNewToken(userInfo, accessExpiredTimeMs), refreshToken.getRefreshToken());
+		return new AuthTokenInfo(createNewToken(userInfo.email(), accessExpiredTimeMs), refreshToken.getRefreshToken());
 	}
 
-	private long getRemainingTimeOf(RefreshToken refreshToken) {
-		return getExpiration(refreshToken.getRefreshToken(), secretKey).getTime() - new Date().getTime();
+
+	@Override
+	public AuthTokenInfo getNewAccessToken(String refreshToken) {
+		String email = JwtTokenUtils.getEmail(refreshToken, secretKey);
+
+		refreshTokenRepository.findByEmailAndRefreshToken(email, refreshToken)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_TOKEN));
+
+		String newAccessToken = JwtTokenUtils.generateToken(email, secretKey, accessExpiredTimeMs);
+		if (getRemainingTimeOf(refreshToken) <= refreshTokenRegenerationThreshold) {
+			return new AuthTokenInfo(newAccessToken, createNewToken(email, refreshExpiredTimeMs));
+		} else {
+			return new AuthTokenInfo(newAccessToken, refreshToken);
+		}
 	}
 
-	private String createNewToken(UserInfo userInfo, Long expiredTimeMs) {
-		return generateToken(userInfo.email(), secretKey, expiredTimeMs);
+	private long getRemainingTimeOf(String refreshToken) {
+		return getExpiration(refreshToken, secretKey).getTime() - new Date().getTime();
 	}
 
-	private RefreshToken createNewRefreshToken(UserInfo userInfo) {
-		return new RefreshToken(userInfo.userSeq(), createNewToken(userInfo, refreshExpiredTimeMs));
+	private String createNewToken(String email, Long expiredTimeMs) {
+		return generateToken(email, secretKey, expiredTimeMs);
+	}
+
+	private RefreshToken getRefreshToken(String email) {
+		return new RefreshToken(email, createNewToken(email, refreshExpiredTimeMs));
 	}
 }
