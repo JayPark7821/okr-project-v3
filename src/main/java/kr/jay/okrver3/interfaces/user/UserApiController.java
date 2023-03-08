@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.user.UserFacade;
 import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.common.utils.HeaderUtil;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
@@ -61,8 +62,9 @@ public class UserApiController {
 
 	@GetMapping("/refresh")
 	public ResponseEntity<TokenResponse> getRefreshToken(HttpServletRequest request) {
+
 		return Response.successOk(
-			mapper.of(userFacade.getRefreshToken(request))
+			mapper.of(userFacade.getRefreshToken(HeaderUtil.getAccessToken(request)))
 		);
 	}
 
