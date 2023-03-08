@@ -2,9 +2,12 @@ package kr.jay.okrver3.application.user;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.domain.guset.service.GuestService;
+import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
 import kr.jay.okrver3.domain.user.service.UserInfo;
@@ -40,6 +43,10 @@ public class UserFacade {
 		);
 
 		return new LoginInfo(userInfo, tokenService.generateTokenSet(userInfo));
+	}
+
+	public AuthTokenInfo getRefreshToken(HttpServletRequest request) {
+		return null;
 	}
 }
 

@@ -61,7 +61,9 @@ public class UserApiController {
 
 	@GetMapping("/refresh")
 	public ResponseEntity<TokenResponse> getRefreshToken(HttpServletRequest request) {
-		return null;
+		return Response.successOk(
+			mapper.of(userFacade.getRefreshToken(request))
+		);
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
