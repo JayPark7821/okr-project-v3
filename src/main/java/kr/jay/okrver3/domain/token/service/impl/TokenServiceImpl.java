@@ -3,6 +3,7 @@ package kr.jay.okrver3.domain.token.service.impl;
 import static kr.jay.okrver3.common.utils.JwtTokenUtils.*;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,7 +55,6 @@ public class TokenServiceImpl implements TokenService {
 		refreshTokenRepository.findByEmailAndRefreshToken(email, refreshToken)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_TOKEN));
 
-		Date now = new Date();
 		String newAccessToken = JwtTokenUtils.generateToken(email, secretKey, accessExpiredTimeMs);
 		if (getRemainingTimeOf(refreshToken) <= refreshTokenRegenerationThreshold) {
 			return new AuthTokenInfo(newAccessToken, createNewToken(email, refreshExpiredTimeMs));

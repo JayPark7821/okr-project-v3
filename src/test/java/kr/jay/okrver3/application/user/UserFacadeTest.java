@@ -51,7 +51,7 @@ class UserFacadeTest {
 	@DisplayName("가입한 유저 정보가 없는 OAuth2UserInfo가 넘어왔을 때 기대하는 응답(Optional.empty())을 반환한다.")
 	void not_joined_user_will_return_optional_empty() throws Exception {
 
-		OAuth2UserInfo info = GoogleUserInfoFixture.build();
+		OAuth2UserInfo info = DiffAppleUserInfoFixture.build();
 
 		Optional<LoginInfo> loginInfo = sut.getLoginInfoFrom(info);
 
@@ -62,11 +62,11 @@ class UserFacadeTest {
 	@Sql("classpath:insert-different-social-google-user.sql")
 	@DisplayName("가입한 유저 정보가 있지만 가입한 소셜 정보와 다른 소셜 idToken을 통해 로그인을 시도하면 기대하는 응답(Exception)을 반환한다.")
 	void login_With_different_social_IdToken() throws Exception {
-		OAuth2UserInfo info = GoogleUserInfoFixture.build();
+		OAuth2UserInfo info = DiffAppleUserInfoFixture.build();
 
 		assertThatThrownBy(() -> sut.getLoginInfoFrom(info))
 			.isExactlyInstanceOf(OkrApplicationException.class)
-			.hasMessage("소셜 provider 불일치, " + ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.hasMessage("소셜 provider 불일치, " + ProviderType.GOOGLE.getName() + "(으)로 가입한 계정이 있습니다.");
 
 	}
 
@@ -92,17 +92,17 @@ class UserFacadeTest {
 	@DisplayName("OAuth2UserInfo가 넘어왔을 때 기대하는 응답(Guest)을 반환한다.")
 	void when_OAuth2UserInfo_were_given_will_return_guest() throws Exception {
 
-		OAuth2UserInfo info = GoogleUserInfoFixture.build();
+		OAuth2UserInfo info = DiffAppleUserInfoFixture.build();
 
 		LoginInfo guestInfo = sut.createGuestInfoFrom(info);
 
 		assertThat(guestInfo.guestUuid()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
 		);
-		assertThat(guestInfo.email()).isEqualTo(GoogleUserInfoFixture.EMAIL);
-		assertThat(guestInfo.name()).isEqualTo(GoogleUserInfoFixture.NAME);
-		assertThat(guestInfo.profileImageUrl()).isEqualTo(GoogleUserInfoFixture.PIC);
-		assertThat(guestInfo.providerType()).isEqualTo(GoogleUserInfoFixture.PROVIDER_TYPE);
+		assertThat(guestInfo.email()).isEqualTo(DiffAppleUserInfoFixture.EMAIL);
+		assertThat(guestInfo.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
+		assertThat(guestInfo.profileImageUrl()).isEqualTo(DiffAppleUserInfoFixture.PIC);
+		assertThat(guestInfo.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE);
 	}
 
 	@Test

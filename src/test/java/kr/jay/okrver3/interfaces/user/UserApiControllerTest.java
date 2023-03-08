@@ -61,7 +61,7 @@ class UserApiControllerTest {
 
 		assertThatThrownBy(() -> sut.loginWithIdToken("GOOGLE", "googleToken"))
 			.isExactlyInstanceOf(OkrApplicationException.class)
-			.hasMessage("소셜 provider 불일치, " + ProviderType.APPLE.getName() + "(으)로 가입한 계정이 있습니다.");
+			.hasMessage("소셜 provider 불일치, " + ProviderType.GOOGLE.getName() + "(으)로 가입한 계정이 있습니다.");
 	}
 
 	@Test
@@ -135,9 +135,9 @@ class UserApiControllerTest {
 		assertThat(body.guestId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
 		);
-		assertThat(body.name()).isEqualTo(GoogleUserInfoFixture.NAME);
-		assertThat(body.email()).isEqualTo(GoogleUserInfoFixture.EMAIL);
-		assertThat(body.providerType()).isEqualTo(GoogleUserInfoFixture.PROVIDER_TYPE);
+		assertThat(body.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
+		assertThat(body.email()).isEqualTo(DiffAppleUserInfoFixture.EMAIL);
+		assertThat(body.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE);
 		assertThat(body.accessToken()).isNull();
 		assertThat(body.refreshToken()).isNull();
 	}

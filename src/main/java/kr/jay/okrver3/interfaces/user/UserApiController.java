@@ -19,6 +19,7 @@ import kr.jay.okrver3.common.utils.HeaderUtil;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
+import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
@@ -41,13 +42,11 @@ public class UserApiController {
 		@PathVariable("idToken") String idToken
 	) {
 
-		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(
-			tokenVerifyProcessor.verifyIdToken(ProviderType.of(provider), idToken)
-		);
+		OAuth2UserInfo oAuth2UserInfo = tokenVerifyProcessor.verifyIdToken(ProviderType.of(provider), idToken);
+		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(oAuth2UserInfo);
 
 		return loginInfo.map(this::getLoginResponseFrom)
-			.orElseGet(() -> getLoginResponseFrom(userFacade.createGuestInfoFrom(
-				tokenVerifyProcessor.verifyIdToken(ProviderType.of(provider), idToken))));
+			.orElseGet(() -> getLoginResponseFrom(userFacade.createGuestInfoFrom(oAuth2UserInfo)));
 	}
 
 	@PostMapping("/join")
