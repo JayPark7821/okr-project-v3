@@ -9,18 +9,22 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
+import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 
 @Import(TestConfig.class)
 @Transactional
@@ -29,6 +33,10 @@ class UserApiControllerTest {
 
 	@Autowired
 	private UserApiController sut;
+
+	@Value("${app.auth.tokenSecret}")
+	private String key;
+
 
 	@Test
 	@DisplayName("가입한 유저 정보가 없을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Guest)을 반환한다.")
@@ -99,6 +107,21 @@ class UserApiControllerTest {
 		assertThatThrownBy(() -> sut.join(joinRequestDto))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void 만료된_accesstoken으로_getRefreshToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+
+		Long accessExpiredTimeMs = 0L;
+		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addHeader("Authorization", "Bearer " + accessToken);
+
+		ResponseEntity<TokenResponse> response = sut.getRefreshToken(request);
+
+		assertThat(response.getBody().accessToken()).isNotEqualTo(accessToken);
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {

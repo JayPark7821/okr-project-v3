@@ -2,9 +2,11 @@ package kr.jay.okrver3.interfaces.user;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
+import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,6 +57,11 @@ public class UserApiController {
 		return Response.successCreated(
 			mapper.of(userFacade.join(joinRequestDto))
 		);
+	}
+
+	@GetMapping("/refresh")
+	public ResponseEntity<TokenResponse> getRefreshToken(HttpServletRequest request) {
+		return null;
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
