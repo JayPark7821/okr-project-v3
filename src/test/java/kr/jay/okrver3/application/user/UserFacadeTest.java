@@ -22,6 +22,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
+import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
@@ -29,12 +30,13 @@ import kr.jay.okrver3.domain.user.service.LoginInfo;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
+import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @DataJpaTest
 @Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
-	GuestReaderImpl.class, TokenServiceImpl.class})
+	GuestReaderImpl.class, TokenServiceImpl.class, RefreshTokenRepositoryImpl.class})
 class UserFacadeTest {
 
 	@PersistenceContext
@@ -157,7 +159,7 @@ class UserFacadeTest {
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		em.createQuery("insert into refresh_token (token, user_id) values ('"+accessToken+"', 1)").executeUpdate();
+		em.persist(new RefreshToken("apple@apple.com",accessToken ));
 
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
 

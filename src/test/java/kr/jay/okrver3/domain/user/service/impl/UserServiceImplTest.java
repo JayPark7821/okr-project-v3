@@ -17,11 +17,12 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @DataJpaTest
-@Import({UserServiceImpl.class})
+@Import({UserServiceImpl.class, RefreshTokenRepositoryImpl.class})
 class UserServiceImplTest {
 
 	@Autowired

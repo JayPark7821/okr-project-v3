@@ -24,6 +24,7 @@ import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
+import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
@@ -120,7 +121,7 @@ class UserApiControllerTest {
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		em.createQuery("insert into refresh_token (token, user_id) values ('"+accessToken+"', 1)").executeUpdate();
+		em.persist(new RefreshToken("apple@apple.com",accessToken ));
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader("Authorization", "Bearer " + accessToken);

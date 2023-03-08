@@ -19,9 +19,10 @@ import kr.jay.okrver3.domain.token.service.RefreshTokenRepository;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 
 @DataJpaTest
-@Import(TokenServiceImpl.class)
+@Import({TokenServiceImpl.class, RefreshTokenRepositoryImpl.class})
 class TokenServiceImplTest {
 
 	@PersistenceContext
@@ -56,8 +57,8 @@ class TokenServiceImplTest {
 		UserInfo userInfo =
 			new UserInfo(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
 				JobFieldDetail.WEB_SERVER_DEVELOPER);
-		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 259300000L);
-		refreshTokenRepository.save(new RefreshToken("appleUser", UsableRefreshToken));
+		String UsableRefreshToken = JwtTokenUtils.generateToken("apple@apple.com", key, 259300000L);
+		refreshTokenRepository.save(new RefreshToken("apple@apple.com", UsableRefreshToken));
 
 		//when
 		AuthTokenInfo authTokenInfo = sut.generateTokenSet(userInfo);
@@ -74,7 +75,7 @@ class TokenServiceImplTest {
 		UserInfo userInfo =
 			new UserInfo(2L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
 				JobFieldDetail.WEB_SERVER_DEVELOPER);
-		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 1000L);
+		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 100000L);
 		refreshTokenRepository.save(new RefreshToken("google@google.com", UsableRefreshToken));
 
 		//when
@@ -90,10 +91,8 @@ class TokenServiceImplTest {
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		em.createQuery("insert into refresh_token (token, user_id) values ('"+accessToken+"', 1)").executeUpdate();
-
+		em.persist(new RefreshToken("apple@apple.com",accessToken ));
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
-
 		assertThat(info.accessToken()).isNotEqualTo(accessToken);
 	}
 
