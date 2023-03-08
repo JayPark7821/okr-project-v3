@@ -57,7 +57,7 @@ class TokenServiceImplTest {
 			new UserInfo(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
 				JobFieldDetail.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 259300000L);
-		refreshTokenRepository.save(new RefreshToken(1L, UsableRefreshToken));
+		refreshTokenRepository.save(new RefreshToken("appleUser", UsableRefreshToken));
 
 		//when
 		AuthTokenInfo authTokenInfo = sut.generateTokenSet(userInfo);
@@ -75,7 +75,7 @@ class TokenServiceImplTest {
 			new UserInfo(2L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
 				JobFieldDetail.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 1000L);
-		refreshTokenRepository.save(new RefreshToken(2L, UsableRefreshToken));
+		refreshTokenRepository.save(new RefreshToken("google@google.com", UsableRefreshToken));
 
 		//when
 		AuthTokenInfo authTokenInfo = sut.generateTokenSet(userInfo);

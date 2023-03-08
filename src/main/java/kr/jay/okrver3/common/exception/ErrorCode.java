@@ -38,7 +38,7 @@ public enum ErrorCode {
 	FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST,"이미 완료된 행동전략 입니다." ),
 	NOT_FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST,"아직 완료되지 않은 행동전략 입니다." ),
 	MOT_AVAIL_FEEDBACK_SELF(HttpStatus.BAD_REQUEST,"자기 자신에게 피드백을 남길 수 없습니다." ),
-	;
+	INVALID_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 token입니다." );
 
 
 	private HttpStatus status;
