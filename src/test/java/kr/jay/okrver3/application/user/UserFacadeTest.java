@@ -1,7 +1,8 @@
 package kr.jay.okrver3.application.user;
 
 import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -9,13 +10,16 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
+import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
@@ -30,6 +34,8 @@ import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 	GuestReaderImpl.class, TokenServiceImpl.class})
 class UserFacadeTest {
 
+	@Value("${app.auth.tokenSecret}")
+	private String key;
 	@Autowired
 	private UserFacade sut;
 
@@ -138,6 +144,18 @@ class UserFacadeTest {
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void 만료된_accesstoken으로_getRefreshToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+
+		Long accessExpiredTimeMs = 0L;
+		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+
+		AuthTokenInfo info = sut.getRefreshToken(accessToken);
+
+		assertThat(info.accessToken()).isNotEqualTo(accessToken);
 	}
 
 }
