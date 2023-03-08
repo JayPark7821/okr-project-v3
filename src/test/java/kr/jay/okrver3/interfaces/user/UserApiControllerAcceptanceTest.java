@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
@@ -17,6 +18,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @Import(TestConfig.class)
@@ -26,6 +28,9 @@ public class UserApiControllerAcceptanceTest {
 
 	@LocalServerPort
 	private int port;
+
+	@Value("${app.auth.tokenSecret}")
+	private String key;
 
 	private static final String PROVIDER = "APPLE";
 	private static final String ID_TOKEN = "idToken";
@@ -155,6 +160,28 @@ public class UserApiControllerAcceptanceTest {
 			.extract().body().asString();
 
 		assertThat(response).isEqualTo(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
+	@Test
+	void 만료된_accesstoken으로_getRefreshToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+
+		Long accessExpiredTimeMs = 0L;
+		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + accessToken).
+
+			when()
+			.get("/api/v1/user/refresh").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().jsonPath();
+
+		assertThat(response.getString("accessToken")).isNotEqualTo(accessToken);
 	}
 
 	private void assertLoginUser(JsonPath response) {
