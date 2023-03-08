@@ -109,15 +109,28 @@ public class ProjectApiController {
 	}
 
 	@GetMapping("/team/invite/{projectToken}/{email}")
-	ResponseEntity<String> validateEmail(
+	ResponseEntity<String> validateEmailToInvite(
 		@PathVariable("projectToken") String projectToken,
 		@PathVariable("email") String email,
 		Authentication authentication
 	) {
 
 		return Response.successOk(
-			projectFacade.validateEmail(
+			projectFacade.validateEmailToInvite(
 				projectToken,
+				email,
+				getUserFromAuthentication(authentication)
+			)
+		);
+	}
+
+	@GetMapping("/team/create-project/{email}")
+	ResponseEntity<String> validateEmailForCreateProject(
+		@PathVariable("email") String email,
+		Authentication authentication
+	) {
+		return Response.successOk(
+			projectFacade.validateEmailForCreateProject(
 				email,
 				getUserFromAuthentication(authentication)
 			)

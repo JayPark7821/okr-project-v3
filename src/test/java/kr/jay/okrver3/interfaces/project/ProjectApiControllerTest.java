@@ -92,6 +92,25 @@ class ProjectApiControllerTest {
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 	}
 
+
+	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 1L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<String> response = sut.validateEmailForCreateProject(memberEmail, auth);
+		assertThat(response.getBody()).isEqualTo(memberEmail);
+	}
+
+
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
@@ -129,7 +148,7 @@ class ProjectApiControllerTest {
 		String memberEmail = "guest@email.com";
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
-		final ResponseEntity<String> response = sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth);
+		final ResponseEntity<String> response = sut.validateEmailToInvite("project-fgFHxGWeIUQt", memberEmail, auth);
 
 		assertThat(response.getBody()).isEqualTo(memberEmail);
 	}
@@ -142,7 +161,7 @@ class ProjectApiControllerTest {
 		String memberEmail = "guest@email.com";
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(2L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", memberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
@@ -155,7 +174,7 @@ class ProjectApiControllerTest {
 		String memberEmail = "guest@email.com";
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(3L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", memberEmail, auth))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", memberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
@@ -169,7 +188,7 @@ class ProjectApiControllerTest {
 		String wrongEmailAdd = "wrongEmailAdd";
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", wrongEmailAdd, auth))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", wrongEmailAdd, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_USER_EMAIL.getMessage());
 	}
@@ -181,7 +200,7 @@ class ProjectApiControllerTest {
 		String teamMemberEmail = "fakeGoogleIdEmail";
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", teamMemberEmail, auth))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", teamMemberEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 	}
@@ -193,7 +212,7 @@ class ProjectApiControllerTest {
 		String userEmail = "apple@apple.com";
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(1L);
 
-		assertThatThrownBy(() -> sut.validateEmail("project-fgFHxGWeIUQt", userEmail, auth))
+		assertThatThrownBy(() -> sut.validateEmailToInvite("project-fgFHxGWeIUQt", userEmail, auth))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 	}
