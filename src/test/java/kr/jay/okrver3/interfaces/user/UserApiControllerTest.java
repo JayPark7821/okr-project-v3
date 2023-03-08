@@ -119,7 +119,7 @@ class UserApiControllerTest {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader("Authorization", "Bearer " + accessToken);
 
-		ResponseEntity<TokenResponse> response = sut.getRefreshToken(request);
+		ResponseEntity<TokenResponse> response = sut.getNewAccessToken(request);
 
 		assertThat(response.getBody().accessToken()).isNotEqualTo(accessToken);
 	}

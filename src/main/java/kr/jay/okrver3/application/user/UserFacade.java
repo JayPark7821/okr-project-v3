@@ -43,8 +43,8 @@ public class UserFacade {
 		return new LoginInfo(userInfo, tokenService.generateTokenSet(userInfo));
 	}
 
-	public AuthTokenInfo getRefreshToken(String accessToken) {
-		return null;
+	public AuthTokenInfo getNewAccessToken(String accessToken) {
+		return tokenService.getNewAccessToken(accessToken);
 	}
 }
 

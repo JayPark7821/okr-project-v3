@@ -43,6 +43,11 @@ public class TokenServiceImpl implements TokenService {
 		return new AuthTokenInfo(createNewToken(userInfo, accessExpiredTimeMs), refreshToken.getRefreshToken());
 	}
 
+	@Override
+	public AuthTokenInfo getNewAccessToken(String accessToken) {
+		return null;
+	}
+
 	private long getRemainingTimeOf(RefreshToken refreshToken) {
 		return getExpiration(refreshToken.getRefreshToken(), secretKey).getTime() - new Date().getTime();
 	}

@@ -153,7 +153,7 @@ class UserFacadeTest {
 		Long accessExpiredTimeMs = 0L;
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
 
-		AuthTokenInfo info = sut.getRefreshToken(accessToken);
+		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
 
 		assertThat(info.accessToken()).isNotEqualTo(accessToken);
 	}

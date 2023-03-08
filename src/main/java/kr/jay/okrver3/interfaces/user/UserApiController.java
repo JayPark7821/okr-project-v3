@@ -61,10 +61,10 @@ public class UserApiController {
 	}
 
 	@GetMapping("/refresh")
-	public ResponseEntity<TokenResponse> getRefreshToken(HttpServletRequest request) {
+	public ResponseEntity<TokenResponse> getNewAccessToken(HttpServletRequest request) {
 
 		return Response.successOk(
-			mapper.of(userFacade.getRefreshToken(HeaderUtil.getAccessToken(request)))
+			mapper.of(userFacade.getNewAccessToken(HeaderUtil.getAccessToken(request)))
 		);
 	}
 
