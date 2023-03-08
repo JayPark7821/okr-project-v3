@@ -46,6 +46,20 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public AuthTokenInfo getNewAccessToken(String accessToken) {
 		return null;
+		// String email = JwtTokenUtils.getEmail(token, secretKey);
+		//
+		// refreshTokenReader.findRefreshTokenByEmailAndRefreshToken(email, token)
+		// 	.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_TOKEN));
+		//
+		// Date now = new Date();
+		// long validTime = JwtTokenUtils.getExpired(token, secretKey).getTime() - now.getTime();
+		// String accessToken = JwtTokenUtils.generateToken(email, secretKey, accessExpiredTimeMs);
+		//
+		// if (validTime <= THREE_DAYS_MSEC) {
+		// 	return new UserInfo.Token(accessToken, generateRefreshToken(email));
+		// } else {
+		// 	return new UserInfo.Token(accessToken, token);
+		// }
 	}
 
 	private long getRemainingTimeOf(RefreshToken refreshToken) {

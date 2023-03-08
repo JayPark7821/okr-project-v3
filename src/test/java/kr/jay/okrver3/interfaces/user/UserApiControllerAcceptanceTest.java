@@ -2,16 +2,22 @@ package kr.jay.okrver3.interfaces.user;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -22,7 +28,9 @@ import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @Import(TestConfig.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserApiControllerAcceptanceTest {
 
@@ -31,6 +39,9 @@ public class UserApiControllerAcceptanceTest {
 
 	@Value("${app.auth.tokenSecret}")
 	private String key;
+
+	@PersistenceContext
+	EntityManager em;
 
 	private static final String PROVIDER = "APPLE";
 	private static final String ID_TOKEN = "idToken";
@@ -163,10 +174,11 @@ public class UserApiControllerAcceptanceTest {
 	}
 
 	@Test
-	void 만료된_accesstoken으로_getRefreshToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
-		Long accessExpiredTimeMs = 0L;
-		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
+		em.createQuery("insert into refresh_token (token, user_id) values ('"+accessToken+"', 1)").executeUpdate();
+
 
 		final JsonPath response = RestAssured.
 

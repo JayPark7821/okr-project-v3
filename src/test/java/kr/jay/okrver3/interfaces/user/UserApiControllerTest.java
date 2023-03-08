@@ -6,6 +6,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,9 @@ class UserApiControllerTest {
 
 	@Value("${app.auth.tokenSecret}")
 	private String key;
+
+	@PersistenceContext
+	EntityManager em;
 
 
 	@Test
@@ -111,10 +117,10 @@ class UserApiControllerTest {
 
 	@Test
 	@Sql("classpath:insert-user.sql")
-	void 만료된_accesstoken으로_getRefreshToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
-		Long accessExpiredTimeMs = 0L;
-		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
+		em.createQuery("insert into refresh_token (token, user_id) values ('"+accessToken+"', 1)").executeUpdate();
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader("Authorization", "Bearer " + accessToken);
