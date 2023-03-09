@@ -252,7 +252,6 @@ public class UserApiControllerAcceptanceTest {
 		assertThat(response.getString("accessToken")).isNotNull();
 		assertThat(response.getString("refreshToken")).isNotEqualTo(expiredAccessToken);
 	}
-	// TODO :: refresh token 3일 이하 남았을때 refresh token 재발급 테스트
 
 	@Test
 	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
@@ -261,6 +260,7 @@ public class UserApiControllerAcceptanceTest {
 		final String response = RestAssured.
 
 			given()
+			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + availAccessToken).
 
 			when()
@@ -272,6 +272,26 @@ public class UserApiControllerAcceptanceTest {
 
 		assertThat(response).isEqualTo(memberEmail);
 	}
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/category").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response.length()).isEqualTo(6);
+	}
+
+	// TODO :: jobField 조회 api 추가.
 
 	private void assertLoginUser(JsonPath response) {
 		assertThat(response.getString("guestId")).isNull();
