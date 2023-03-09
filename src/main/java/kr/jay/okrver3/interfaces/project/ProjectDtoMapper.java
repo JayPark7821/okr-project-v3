@@ -15,6 +15,7 @@ import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -26,6 +27,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
+import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -137,5 +139,13 @@ public class ProjectDtoMapper {
 		);
 	}
 
+	public InitiativeForCalendarResponse of(InitiativeForCalendarInfo info) {
+		return new InitiativeForCalendarResponse(
+			info.initiativeToken(),
+			info.initiativeName(),
+			info.startDate(),
+			info.endDate()
+		);
+	}
 }
 

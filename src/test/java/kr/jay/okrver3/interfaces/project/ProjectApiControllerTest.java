@@ -32,6 +32,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
+import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -337,6 +338,25 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody().initiativeDetail()).isEqualTo("initiative detail1");
 		assertThat(response.getBody().myInitiative()).isTrue();
 		assertThat(response.getBody().user().userEmail()).isEqualTo("user1@naver.com");
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_리턴한다() throws Exception {
+		String date = "20231215";
+
+		List<InitiativeForCalendarResponse> response =
+			sut.getInitiativeByDate(
+				date,
+				getAuthenticationToken(3L)
+			).getBody();
+
+		assertThat(response.size()).isEqualTo(1);
+		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5aaafeab3AH8");
+		assertThat(response.get(0).initiativeName()).isEqualTo("ini name333");
+		assertThat(response.get(0).startDate()).isEqualTo("2023-12-15");
+		assertThat(response.get(0).endDate()).isEqualTo("2023-12-16");
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
