@@ -33,6 +33,7 @@ import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.infrastructure.user.auth.TokenVerifier;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.response.JobResponse;
 
 @Import(TestConfig.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -276,7 +277,7 @@ public class UserApiControllerAcceptanceTest {
 	@Test
 	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
 
-		final String response = RestAssured.
+		final JsonPath response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON).
@@ -286,9 +287,9 @@ public class UserApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().asString();
+			.extract().body().jsonPath();
 
-		assertThat(response.length()).isEqualTo(6);
+		assertThat(response.getList("",JobResponse.class).size()).isEqualTo(6);
 	}
 
 	// TODO :: jobField 조회 api 추가.
