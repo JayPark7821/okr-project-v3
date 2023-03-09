@@ -494,4 +494,30 @@ class ProjectServiceImplTest {
 		assertThat(response.user().userEmail()).isEqualTo("user1@naver.com");
 	}
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 다른팀원의_행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
+
+		InitiativeDetailInfo response =
+			sut.getInitiativeBy(initiativeToken, 3L);
+
+		assertThat(response.done()).isFalse();
+		assertThat(response.initiativeToken()).isEqualTo(initiativeToken);
+		assertThat(response.initiativeName()).isEqualTo("ini name222");
+		assertThat(response.initiativeDetail()).isEqualTo("initiative detail222");
+		assertThat(response.myInitiative()).isFalse();
+		assertThat(response.user().userEmail()).isEqualTo("keyResultTest@naver.com");
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 잘못된_행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nOfefeAH8";
+
+		assertThatThrownBy(()->sut.getInitiativeBy(initiativeToken, 3L))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_INITIATIVE_TOKEN.getMessage());
+	}
+
 }
