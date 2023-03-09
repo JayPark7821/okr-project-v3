@@ -31,7 +31,9 @@ public class InitiativeRepositoryImpl implements InitiativeRepository {
 
 	@Override
 	public List<Initiative> findInitiativeByDate(LocalDate searchDate, Long userSeq) {
-		return initiativeJpaRepository.findInitiativeByDateAndUserSeq(searchDate, userSeq);
+		List<Initiative> initiativeByDateAndUserSeq = initiativeJpaRepository.findInitiativeByDateAndUserSeq(searchDate,
+			userSeq);
+		return initiativeByDateAndUserSeq;
 	}
 
 	@Override

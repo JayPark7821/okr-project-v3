@@ -437,16 +437,16 @@ class ProjectFacadeTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size1_리턴한다() throws Exception {
-		LocalDate date = LocalDate.of(2023, 12, 15);
+		LocalDate date = LocalDate.of(2023, 12, 01);
 
 		List<InitiativeForCalendarInfo> response =
-			sut.getInitiativeByDate(date, 3L);
+			sut.getInitiativeByDate(date, 14L);
 
 		assertThat(response.size()).isEqualTo(1);
-		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5aaafeab3AH8");
-		assertThat(response.get(0).initiativeName()).isEqualTo("ini name333");
-		assertThat(response.get(0).startDate()).isEqualTo("2023-12-15");
-		assertThat(response.get(0).endDate()).isEqualTo("2023-12-16");
+		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5na3fdab3AH8");
+		assertThat(response.get(0).initiativeName()).isEqualTo("ini name876");
+		assertThat(response.get(0).startDate()).isEqualTo("2000-12-12");
+		assertThat(response.get(0).endDate()).isEqualTo("2023-12-14");
 	}
 
 }

@@ -566,7 +566,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_리턴한다() throws Exception {
-		String date = "20221201";
+		String date = "20231201";
 
 		final JsonPath response = RestAssured.
 
@@ -575,14 +575,14 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/initiative/date" + date).
+			.get(baseUrl + "/initiative/date/" + date).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
 			.extract().body().jsonPath();
 
 		List<InitiativeForCalendarResponse> initiativeResponses = response.getList("", InitiativeForCalendarResponse.class);
-		assertThat(initiativeResponses.size()).isEqualTo(2);
+		assertThat(initiativeResponses.size()).isEqualTo(1);
 
 	}
 
@@ -590,20 +590,20 @@ public class ProjectApiControllerAcceptanceTest {
 	void 잘못된_날짜로_포멧으로_getInitiativeByDate를_호출하면_기대하는_응답_exception을_리턴한다() throws Exception {
 		String date = "2022-12-01";
 
-		final JsonPath response = RestAssured.
+		final String response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/initiative/date" + date).
+			.get(baseUrl + "/initiative/date/" + date).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().jsonPath();
+			.extract().body().asString();
 
-		assertThat(response.getString("")).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
+		assertThat(response).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
 
 	}
 }

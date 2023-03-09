@@ -344,30 +344,30 @@ class ProjectApiControllerTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size1_리턴한다() throws Exception {
-		String date = "20231215";
+		String date = "20231201";
 
 		List<InitiativeForCalendarResponse> response =
 			sut.getInitiativeByDate(
 				date,
-				getAuthenticationToken(3L)
+				getAuthenticationToken(14L)
 			).getBody();
 
 		assertThat(response.size()).isEqualTo(1);
-		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5aaafeab3AH8");
-		assertThat(response.get(0).initiativeName()).isEqualTo("ini name333");
-		assertThat(response.get(0).startDate()).isEqualTo("2023-12-15");
-		assertThat(response.get(0).endDate()).isEqualTo("2023-12-16");
+		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5na3fdab3AH8");
+		assertThat(response.get(0).initiativeName()).isEqualTo("ini name876");
+		assertThat(response.get(0).startDate()).isEqualTo("2000-12-12");
+		assertThat(response.get(0).endDate()).isEqualTo("2023-12-14");
 	}
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size3_리턴한다() throws Exception {
-		String date = "20220101";
+		String date = "20221201";
 
 		List<InitiativeForCalendarResponse> response =
 			sut.getInitiativeByDate(
 				date,
-				getAuthenticationToken(3L)
+				getAuthenticationToken(15L)
 			).getBody();
 
 		assertThat(response.size()).isEqualTo(3);
