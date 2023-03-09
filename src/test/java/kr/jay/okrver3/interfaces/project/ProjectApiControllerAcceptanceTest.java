@@ -611,7 +611,7 @@ public class ProjectApiControllerAcceptanceTest {
 	void 년월로_getInitiativeDatesBy를_호출하면_기대하는_응답을_리턴한다() throws Exception {
 		String yearmonth = "2023-12";
 
-		final JsonPath response = RestAssured.
+		final List<String> response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
@@ -622,15 +622,17 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().jsonPath();
+			.extract().body().jsonPath().getList("",String.class);
 
-		assertThat(response.getList("").size()).isEqualTo(1);
+		assertThat(response.size()).isEqualTo(14);
+		assertThat(response.get(0)).isEqualTo("2023-12-01");
+		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
 
 	}
 
 	@Test
 	void 잘못된_년월_형식으로_getInitiativeDatesBy를_호출하면_기대하는_응답exception을_리턴한다() throws Exception {
-		String yearmonth = "2023-12";
+		String yearmonth = "202312";
 
 		final String response = RestAssured.
 
@@ -642,10 +644,10 @@ public class ProjectApiControllerAcceptanceTest {
 			.get(baseUrl + "/initiative/yearmonth/" + yearmonth).
 
 			then()
-			.statusCode(HttpStatus.OK.value())
+			.statusCode(HttpStatus.BAD_REQUEST.value())
 			.extract().body().asString();
 
-		assertThat(response).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
+		assertThat(response).isEqualTo(ErrorCode.INVALID_YEARMONTH_FORMAT.getMessage());
 
 	}
 }

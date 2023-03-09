@@ -389,7 +389,9 @@ class ProjectApiControllerTest {
 				getAuthenticationToken(15L)
 			).getBody();
 
-		assertThat(response.size()).isEqualTo(1);
+		assertThat(response.size()).isEqualTo(14);
+		assertThat(response.get(0)).isEqualTo("2023-12-01");
+		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
 
 	}
 
