@@ -32,6 +32,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
+import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -337,6 +338,39 @@ class ProjectApiControllerTest {
 		assertThat(response.getBody().initiativeDetail()).isEqualTo("initiative detail1");
 		assertThat(response.getBody().myInitiative()).isTrue();
 		assertThat(response.getBody().user().userEmail()).isEqualTo("user1@naver.com");
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size1_리턴한다() throws Exception {
+		String date = "20231201";
+
+		List<InitiativeForCalendarResponse> response =
+			sut.getInitiativeByDate(
+				date,
+				getAuthenticationToken(14L)
+			).getBody();
+
+		assertThat(response.size()).isEqualTo(1);
+		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5na3fdab3AH8");
+		assertThat(response.get(0).initiativeName()).isEqualTo("ini name876");
+		assertThat(response.get(0).startDate()).isEqualTo("2000-12-12");
+		assertThat(response.get(0).endDate()).isEqualTo("2023-12-14");
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size3_리턴한다() throws Exception {
+		String date = "20221201";
+
+		List<InitiativeForCalendarResponse> response =
+			sut.getInitiativeByDate(
+				date,
+				getAuthenticationToken(15L)
+			).getBody();
+
+		assertThat(response.size()).isEqualTo(3);
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {

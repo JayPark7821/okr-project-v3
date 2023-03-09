@@ -1,5 +1,7 @@
 package kr.jay.okrver3.infrastructure.project.aggregate.initiative;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -25,6 +27,13 @@ public class InitiativeRepositoryImpl implements InitiativeRepository {
 	@Override
 	public Optional<Initiative> findInitiativeDetailByInitiativeTokenAndUserSeq(String initiativeToken, Long userSeq) {
 		return initiativeJpaRepository.findInitiativeDetailByInitiativeTokenAndUserSeq(initiativeToken, userSeq);
+	}
+
+	@Override
+	public List<Initiative> findInitiativeByDate(LocalDate searchDate, Long userSeq) {
+		List<Initiative> initiativeByDateAndUserSeq = initiativeJpaRepository.findInitiativeByDateAndUserSeq(searchDate,
+			userSeq);
+		return initiativeByDateAndUserSeq;
 	}
 
 	@Override

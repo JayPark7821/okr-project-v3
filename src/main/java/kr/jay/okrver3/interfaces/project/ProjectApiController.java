@@ -2,6 +2,7 @@ package kr.jay.okrver3.interfaces.project;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -26,6 +27,7 @@ import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
@@ -34,6 +36,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
+import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -231,9 +234,24 @@ public class ProjectApiController {
 		);
 	}
 
+	@GetMapping("/initiative/date/{date}")
+	public ResponseEntity<List<InitiativeForCalendarResponse>> getInitiativeByDate(
+		@PathVariable("date") String date,
+		Authentication authentication) {
+
+		List<InitiativeForCalendarInfo> info = projectFacade.getInitiativeByDate(
+			validateDate(date),
+			getUserFromAuthentication(authentication)
+		);
+
+		return Response.successOk(
+			info.stream().map(mapper::of).toList()
+		);
+	}
+
 	//------------------ initiative 관련 api ------------------//
 	// TODO :: initiative update
-	// TODO :: initiativeToken으로 initiative 단건 조회
+
 	// TODO :: date 로 initiative 조회
 	// TODO :: 켈린더용 날짜 리스트 조회
 
@@ -262,5 +280,14 @@ public class ProjectApiController {
 			return finishedProjectYN;
 
 		throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_PROJECT_YN);
+	}
+
+
+	private  LocalDate validateDate(String date) {
+		try {
+			return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
+		} catch (Exception e) {
+			throw new OkrApplicationException(ErrorCode.INVALID_SEARCH_DATE_FORM);
+		}
 	}
 }

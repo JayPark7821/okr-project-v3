@@ -45,6 +45,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -561,6 +562,49 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.getString("myInitiative")).isEqualTo("true");
 		TeamMemberUserInfo responseUser = response.getObject("user", TeamMemberUserInfo.class);
 		assertThat(responseUser.userEmail()).isEqualTo("apple@apple.com");
+	}
+
+	@Test
+	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_리턴한다() throws Exception {
+		String date = "20231201";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/date/" + date).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		List<InitiativeForCalendarResponse> initiativeResponses = response.getList("", InitiativeForCalendarResponse.class);
+		assertThat(initiativeResponses.size()).isEqualTo(1);
+
+	}
+
+	@Test
+	void 잘못된_날짜로_포멧으로_getInitiativeByDate를_호출하면_기대하는_응답_exception을_리턴한다() throws Exception {
+		String date = "2022-12-01";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/date/" + date).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
+
 	}
 }
 

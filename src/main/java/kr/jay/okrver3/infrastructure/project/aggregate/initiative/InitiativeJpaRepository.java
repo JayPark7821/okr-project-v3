@@ -1,5 +1,7 @@
 package kr.jay.okrver3.infrastructure.project.aggregate.initiative;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,5 +47,18 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 	Optional<Initiative> findInitiativeDetailByInitiativeTokenAndUserSeq(
 		@Param("initiativeToken") String initiativeToken,
 		@Param("userSeq") Long userSeq
+	);
+
+
+	@Query("SELECT i " +
+		"FROM Initiative i " +
+		"join i.teamMember t " +
+		"join t.user u " +
+		"where i.done = false " +
+		"and :searchDate between i.sdt and i.edt " +
+		"and u.userSeq =:userSeq")
+	List<Initiative> findInitiativeByDateAndUserSeq(
+		@Param("searchDate") LocalDate searchDate,
+		@Param("userSeq")Long userSeq
 	);
 }

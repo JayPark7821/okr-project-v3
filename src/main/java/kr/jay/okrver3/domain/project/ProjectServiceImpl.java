@@ -2,6 +2,7 @@ package kr.jay.okrver3.domain.project;
 
 import static kr.jay.okrver3.domain.project.validator.ProjectValidatorType.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -171,6 +173,14 @@ public class ProjectServiceImpl implements ProjectService {
 		return initiativeRepository.findInitiativeDetailByInitiativeTokenAndUserSeq(initiativeToken, userSeq)
 			.map(initiative-> new InitiativeDetailInfo(initiative, userSeq))
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+	}
+
+	@Override
+	public List<InitiativeForCalendarInfo> getInitiativeByDate(LocalDate searchDate, Long userSeq) {
+		return initiativeRepository.findInitiativeByDate(searchDate, userSeq)
+			.stream()
+			.map(InitiativeForCalendarInfo::new)
+			.toList();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
