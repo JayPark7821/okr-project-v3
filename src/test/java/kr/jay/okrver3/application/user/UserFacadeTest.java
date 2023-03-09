@@ -164,7 +164,9 @@ class UserFacadeTest {
 
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
 
-		assertThat(info.accessToken()).isNotEqualTo(accessToken);
+		assertThat(info.accessToken()).isNotNull();
+		assertThat(info.refreshToken()).isEqualTo(accessToken);
+
 	}
 
 

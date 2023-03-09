@@ -87,6 +87,9 @@ public class UserApiController {
 	}
 
 
+	// TODO :: jobField 조회 api 추가.
+	
+
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
 		return Response.successOk(
 			mapper.of(loginInfo)

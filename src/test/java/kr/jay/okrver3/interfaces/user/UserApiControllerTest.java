@@ -130,7 +130,8 @@ class UserApiControllerTest {
 
 		ResponseEntity<TokenResponse> response = sut.getNewAccessToken(request);
 
-		assertThat(response.getBody().accessToken()).isNotEqualTo(accessToken);
+		assertThat(response.getBody().accessToken()).isNotNull();
+		assertThat(response.getBody().refreshToken()).isEqualTo(accessToken);
 	}
 
 

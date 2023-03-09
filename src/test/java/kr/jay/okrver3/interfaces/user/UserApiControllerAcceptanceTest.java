@@ -47,6 +47,9 @@ public class UserApiControllerAcceptanceTest {
 	@Value("${app.auth.tokenSecret}")
 	private String key;
 
+	@Value("${app.auth.refreshTokenRegenerationThreshold}")
+	private Long refreshTokenRegenerationThreshold;
+
 	@Autowired
 	DataSource dataSource;
 	@Autowired
@@ -55,7 +58,8 @@ public class UserApiControllerAcceptanceTest {
 	private static final String NOT_MEMBER_APPLE_ID_TOKEN = "notMemberIdToken";
 	private static final String APPLE_ID_TOKEN = "appleToken";
 	private static final String GOOGLE_ID_TOKEN = "googleToken";
-	private String accessToken ;
+	private String availAccessToken ;
+	private String expiredAccessToken ;
 	private static final String baseUrl = "/api/v1/user";
 
 
@@ -65,12 +69,15 @@ public class UserApiControllerAcceptanceTest {
 
 		try (Connection conn = dataSource.getConnection()) {
 
-			accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
+			availAccessToken = JwtTokenUtils.generateToken("apple@apple.com", key, refreshTokenRegenerationThreshold + 10000000L);
+			expiredAccessToken = JwtTokenUtils.generateToken("fakeAppleEmail", key, refreshTokenRegenerationThreshold - 10000000L);
 			String sql = "insert into refresh_token (refresh_token_seq, user_email, refresh_token) "
-						+ "values ('9999', 'apple@apple.com', ?)";
+						+ "values ('9999', 'apple@apple.com', ?) ,"
+								+ "('9998', 'fakeAppleEmail', ? )";
 
 			PreparedStatement statement = conn.prepareStatement(sql);
-			statement.setString(1, accessToken);
+			statement.setString(1, availAccessToken);
+			statement.setString(2, expiredAccessToken);
 			statement.executeUpdate();
 
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-user.sql"));
@@ -213,7 +220,7 @@ public class UserApiControllerAcceptanceTest {
 
 			given()
 			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + accessToken).
+			.header("Authorization", "Bearer " + availAccessToken).
 
 			when()
 			.get("/api/v1/user/refresh").
@@ -222,11 +229,31 @@ public class UserApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.OK.value())
 			.extract().jsonPath();
 
-		assertThat(response.getString("accessToken")).isNotEqualTo(accessToken);
+		assertThat(response.getString("accessToken")).isNotNull();
+		assertThat(response.getString("refreshToken")).isEqualTo(availAccessToken);
+	}
+
+	@Test
+	void refreshToken이_기간이_설정값_이하일때_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + expiredAccessToken).
+
+			when()
+			.get("/api/v1/user/refresh").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().jsonPath();
+
+		assertThat(response.getString("accessToken")).isNotNull();
+		assertThat(response.getString("refreshToken")).isNotEqualTo(expiredAccessToken);
 	}
 	// TODO :: refresh token 3일 이하 남았을때 refresh token 재발급 테스트
 
-	// TODO :: jobField 조회 api 추가.
 	@Test
 	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
 	void validate_email_address_for_register_project() throws Exception {
@@ -234,7 +261,7 @@ public class UserApiControllerAcceptanceTest {
 		final String response = RestAssured.
 
 			given()
-			.header("Authorization", "Bearer " + accessToken).
+			.header("Authorization", "Bearer " + availAccessToken).
 
 			when()
 			.get(baseUrl + "/validate" + "/" + memberEmail).

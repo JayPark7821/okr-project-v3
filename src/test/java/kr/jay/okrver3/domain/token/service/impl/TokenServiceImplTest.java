@@ -93,7 +93,10 @@ class TokenServiceImplTest {
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
 		em.persist(new RefreshToken("apple@apple.com",accessToken ));
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
-		assertThat(info.accessToken()).isNotEqualTo(accessToken);
+
+		assertThat(info.accessToken()).isNotNull();
+		assertThat(info.refreshToken()).isEqualTo(accessToken);
+
 	}
 
 
