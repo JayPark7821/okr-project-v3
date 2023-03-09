@@ -3,7 +3,10 @@ package kr.jay.okrver3.domain.project;
 import static kr.jay.okrver3.domain.project.validator.ProjectValidatorType.*;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -183,6 +186,23 @@ public class ProjectServiceImpl implements ProjectService {
 			.toList();
 	}
 
+	@Override
+	public List<String> getInitiativeDatesBy(YearMonth yearMonth, Long userSeq) {
+		LocalDate monthEndDt = yearMonth.atEndOfMonth();
+		LocalDate monthStDt = monthEndDt.minusDays(monthEndDt.lengthOfMonth() - 1);
+		List<Initiative> initiative = initiativeRepository.findInitiativeBySdtAndEdtAndUserSeq(
+			monthStDt, monthEndDt, userSeq);
+
+		return initiative.stream()
+			.map(i -> getFromDate(monthStDt, i)
+				.datesUntil(getToDate(monthEndDt, i))
+				.map(LocalDate::toString)
+				.collect(Collectors.toList()))
+			.flatMap(Collection::stream)
+			.distinct()
+			.collect(Collectors.toList());
+	}
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	void updateProjectProgress(Long projectId) {
 		Project projectReference = projectRepository.findProjectForUpdateById(projectId)
@@ -228,6 +248,14 @@ public class ProjectServiceImpl implements ProjectService {
 			.detail(command.detail())
 			.teamMember(teamMember)
 			.build();
+	}
+
+	private LocalDate getFromDate(LocalDate monthStDt, Initiative i) {
+		return i.getSdt().isAfter(monthStDt) ? i.getSdt() : monthStDt;
+	}
+
+	private LocalDate getToDate(LocalDate monthEndDt, Initiative i) {
+		return (i.getEdt().isBefore(monthEndDt) ? i.getEdt() : monthEndDt).plusDays(1);
 	}
 
 }

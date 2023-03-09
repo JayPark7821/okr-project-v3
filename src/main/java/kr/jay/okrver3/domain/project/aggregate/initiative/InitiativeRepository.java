@@ -21,4 +21,6 @@ public interface InitiativeRepository {
 	Optional<Initiative> findInitiativeDetailByInitiativeTokenAndUserSeq(String initiativeToken, Long userSeq);
 
 	List<Initiative> findInitiativeByDate(LocalDate searchDate, Long userSeq);
+
+	List<Initiative> findInitiativeBySdtAndEdtAndUserSeq(LocalDate monthStDt, LocalDate monthEndDt, Long userSeq);
 }

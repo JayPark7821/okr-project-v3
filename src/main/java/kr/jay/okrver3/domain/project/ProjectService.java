@@ -1,6 +1,7 @@
 package kr.jay.okrver3.domain.project;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -46,5 +47,7 @@ public interface ProjectService {
 	InitiativeDetailInfo getInitiativeBy(String initiativeToken, Long userSeq);
 
 	List<InitiativeForCalendarInfo> getInitiativeByDate(LocalDate searchDate, Long userSeq);
+
+	List<String> getInitiativeDatesBy(YearMonth yearMonth, Long userSeq);
 }
 
