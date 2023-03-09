@@ -54,7 +54,7 @@ public class UserFacade {
 	}
 
 	public List<JobInfo> getJobCategory() {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.user.UserFacade.getJobCategory())");
+		return userService.getJobCategory();
 	}
 }
 

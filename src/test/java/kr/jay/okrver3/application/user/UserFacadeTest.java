@@ -4,6 +4,7 @@ import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -27,6 +28,7 @@ import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
@@ -182,6 +184,14 @@ class UserFacadeTest {
 
 		assertThat(response).isEqualTo(memberEmail);
 	}
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
+
+		List<JobInfo> response = sut.getJobCategory();
+		assertThat(response).isEqualTo(6);
+	}
+
 
 	private User getUser(Long seq) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
