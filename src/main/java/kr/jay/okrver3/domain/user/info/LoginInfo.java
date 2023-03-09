@@ -10,7 +10,7 @@ public record LoginInfo(String guestUuid, String email, String name, ProviderTyp
 
 	public LoginInfo(UserInfo userInfo, AuthTokenInfo authTokenInfo) {
 		this(null, userInfo.email(), userInfo.name(), userInfo.providerType(), userInfo.profileImageUrl(),
-			authTokenInfo.accessToken(), authTokenInfo.refreshToken(), userInfo.jobFieldDetail().getCode());
+			authTokenInfo.accessToken(), authTokenInfo.refreshToken(), userInfo.jobField().getCode());
 	}
 
 	public LoginInfo(GuestInfo guestInfo) {

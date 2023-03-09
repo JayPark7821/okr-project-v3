@@ -157,7 +157,7 @@ class UserApiControllerTest {
 
 
 	@Test
-	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
 		ResponseEntity<List<JobResponse>> response = sut.getJobCategory();
 		assertThat(response.getBody().size()).isEqualTo(6);

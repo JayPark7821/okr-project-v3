@@ -186,7 +186,7 @@ class UserFacadeTest {
 	}
 
 	@Test
-	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
 		List<JobInfo> response = sut.getJobCategory();
 		assertThat(response.size()).isEqualTo(6);

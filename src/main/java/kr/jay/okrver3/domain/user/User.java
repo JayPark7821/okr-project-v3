@@ -47,11 +47,11 @@ public class User extends BaseTimeEntity implements UserDetails {
 	private String password;
 
 	@Enumerated(EnumType.STRING)
-	private JobFieldDetail jobField;
+	private JobField jobField;
 
 	@Builder
 	public User(Long userSeq, String userId, String username, String email, String profileImage,
-		ProviderType providerType, RoleType roleType, String password, JobFieldDetail jobField) {
+		ProviderType providerType, RoleType roleType, String password, JobField jobField) {
 		this.userSeq = userSeq;
 		this.userId = userId;
 		this.username = username;

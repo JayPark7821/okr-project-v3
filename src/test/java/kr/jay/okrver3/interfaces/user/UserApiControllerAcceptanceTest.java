@@ -275,7 +275,7 @@ public class UserApiControllerAcceptanceTest {
 	}
 
 	@Test
-	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
 		final JsonPath response = RestAssured.
 
@@ -290,6 +290,25 @@ public class UserApiControllerAcceptanceTest {
 			.extract().body().jsonPath();
 
 		assertThat(response.getList("",JobResponse.class).size()).isEqualTo(6);
+	}
+
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		String category = "BACK_END";
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/"+ category + "/fields").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		assertThat(response.getList("",JobResponse.class).size()).isEqualTo(4);
 	}
 
 	// TODO :: jobField 조회 api 추가.

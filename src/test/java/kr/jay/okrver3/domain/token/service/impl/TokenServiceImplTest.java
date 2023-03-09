@@ -16,7 +16,7 @@ import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.RefreshTokenRepository;
-import kr.jay.okrver3.domain.user.JobFieldDetail;
+import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
@@ -42,7 +42,7 @@ class TokenServiceImplTest {
 	void create_new_authTokenInfo() throws Exception {
 		UserInfo userInfo =
 			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
-				JobFieldDetail.WEB_SERVER_DEVELOPER);
+				JobField.WEB_SERVER_DEVELOPER);
 
 		AuthTokenInfo authTokenInfo = sut.generateTokenSet(userInfo);
 
@@ -56,7 +56,7 @@ class TokenServiceImplTest {
 		//given
 		UserInfo userInfo =
 			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
-				JobFieldDetail.WEB_SERVER_DEVELOPER);
+				JobField.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken("apple@apple.com", key, 259300000L);
 		refreshTokenRepository.save(new RefreshToken("apple@apple.com", UsableRefreshToken));
 
@@ -74,7 +74,7 @@ class TokenServiceImplTest {
 		//given
 		UserInfo userInfo =
 			new UserInfo(998L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
-				JobFieldDetail.WEB_SERVER_DEVELOPER);
+				JobField.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 100000L);
 		refreshTokenRepository.save(new RefreshToken("google@google.com", UsableRefreshToken));
 
