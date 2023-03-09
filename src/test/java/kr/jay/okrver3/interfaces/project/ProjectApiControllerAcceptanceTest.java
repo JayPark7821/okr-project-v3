@@ -606,6 +606,48 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
 
 	}
+
+	@Test
+	void 년월로_getInitiativeDates를_호출하면_기대하는_응답을_리턴한다() throws Exception {
+		String yearmonth = "2023-12";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/yearmonth/" + yearmonth).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		assertThat(response.getList("").size()).isEqualTo(1);
+
+	}
+
+	@Test
+	void 잘못된_년월_형식으로_getInitiativeDatesBy를_호출하면_기대하는_응답exception을_리턴한다() throws Exception {
+		String yearmonth = "2023-12";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/yearmonth/" + yearmonth).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
+
+	}
 }
 
 
