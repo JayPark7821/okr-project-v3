@@ -1,5 +1,6 @@
 package kr.jay.okrver3.application.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -7,8 +8,9 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.domain.guset.service.GuestService;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.TokenService;
-import kr.jay.okrver3.domain.user.service.LoginInfo;
-import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.domain.user.info.JobInfo;
+import kr.jay.okrver3.domain.user.info.LoginInfo;
+import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
@@ -49,6 +51,10 @@ public class UserFacade {
 
 	public AuthTokenInfo getNewAccessToken(String accessToken) {
 		return tokenService.getNewAccessToken(accessToken);
+	}
+
+	public List<JobInfo> getJobCategory() {
+		throw new UnsupportedOperationException("kr.jay.okrver3.application.user.UserFacade.getJobCategory())");
 	}
 }
 

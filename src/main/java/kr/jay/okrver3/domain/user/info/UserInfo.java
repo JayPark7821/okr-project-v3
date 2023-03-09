@@ -1,4 +1,4 @@
-package kr.jay.okrver3.domain.user.service;
+package kr.jay.okrver3.domain.user.info;
 
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.ProviderType;

@@ -24,7 +24,7 @@ import kr.jay.okrver3.common.utils.HeaderUtil;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
-import kr.jay.okrver3.domain.user.service.LoginInfo;
+import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
@@ -90,7 +90,10 @@ public class UserApiController {
 
 	@GetMapping("/job/category")
 	ResponseEntity<List<JobResponse>> getJobCategory() {
-		return null;
+		return Response.successOk(
+			userFacade.getJobCategory().stream()
+				.map(mapper::of).toList()
+		);
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
