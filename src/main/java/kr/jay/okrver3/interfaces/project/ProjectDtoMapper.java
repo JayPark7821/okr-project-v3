@@ -14,6 +14,7 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -24,6 +25,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -119,6 +121,19 @@ public class ProjectDtoMapper {
 			dto.opinion(),
 			dto.grade(),
 			dto.initiativeToken()
+		);
+	}
+
+	public InitiativeDetailResponse of(InitiativeDetailInfo info) {
+		return new InitiativeDetailResponse(
+			info.done(),
+			info.user(),
+			info.startDate(),
+			info.endDate(),
+			info.initiativeToken(),
+			info.initiativeName(),
+			info.initiativeDetail(),
+			info.myInitiative()
 		);
 	}
 

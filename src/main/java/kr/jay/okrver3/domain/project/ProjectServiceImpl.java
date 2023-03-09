@@ -23,6 +23,7 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -163,6 +164,13 @@ public class ProjectServiceImpl implements ProjectService {
 		);
 
 		return new FeedbackInfo(feedbackRepository.save(command.toEntity(initiative, requesterSeq)));
+	}
+
+	@Override
+	public InitiativeDetailInfo getInitiativeBy(String initiativeToken, Long userSeq) {
+		return initiativeRepository.findInitiativeDetailByInitiativeTokenAndUserSeq(initiativeToken, userSeq)
+			.map(initiative-> new InitiativeDetailInfo(initiative, userSeq))
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

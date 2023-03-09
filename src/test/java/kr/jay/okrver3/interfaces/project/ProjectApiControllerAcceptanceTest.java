@@ -39,6 +39,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
+import kr.jay.okrver3.domain.project.info.TeamMemberUserInfo;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
@@ -534,6 +535,32 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response).containsPattern(
 			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
 
+	}
+
+	@Test
+	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailResponse를_리턴한다() throws Exception {
+ 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/" + initiativeToken).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		assertThat(response.getString("done")).isEqualTo("true");
+		assertThat(response.getString("initiativeToken")).isEqualTo(initiativeToken);
+		assertThat(response.getString("initiativeName")).isEqualTo("ini name");
+		assertThat(response.getString("initiativeDetail")).isEqualTo("initiative detail1");
+		assertThat(response.getString("myInitiative")).isEqualTo("true");
+		TeamMemberUserInfo responseUser = response.getObject("user", TeamMemberUserInfo.class);
+		assertThat(responseUser.userEmail()).isEqualTo("apple@apple.com");
 	}
 }
 

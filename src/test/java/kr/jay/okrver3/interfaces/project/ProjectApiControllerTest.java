@@ -31,6 +31,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -316,6 +317,26 @@ class ProjectApiControllerTest {
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("feedback-[a-zA-Z0-9]{11}"));
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		ResponseEntity<InitiativeDetailResponse> response =
+			sut.getInitiativeBy(
+				initiativeToken,
+				getAuthenticationToken(3L)
+			);
+
+		assertThat(response.getBody().done()).isTrue();
+		assertThat(response.getBody().initiativeToken()).isEqualTo(initiativeToken);
+		assertThat(response.getBody().initiativeName()).isEqualTo("ini name");
+		assertThat(response.getBody().initiativeDetail()).isEqualTo("initiative detail1");
+		assertThat(response.getBody().myInitiative()).isTrue();
+		assertThat(response.getBody().user().userEmail()).isEqualTo("user1@naver.com");
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {

@@ -25,6 +25,7 @@ import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
@@ -32,6 +33,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -211,6 +213,21 @@ public class ProjectApiController {
 				mapper.of(requestDto),
 				getUserFromAuthentication(authentication)
 			)
+		);
+	}
+
+	@GetMapping("/initiative/{initiativeToken}")
+	ResponseEntity<InitiativeDetailResponse> getInitiativeBy(
+		@PathVariable("initiativeToken") String initiativeToken,
+		Authentication authentication
+	) {
+		InitiativeDetailInfo info = projectFacade.getInitiativeBy(
+			initiativeToken,
+			getUserFromAuthentication(authentication)
+		);
+
+		return Response.successOk(
+			mapper.of(info)
 		);
 	}
 

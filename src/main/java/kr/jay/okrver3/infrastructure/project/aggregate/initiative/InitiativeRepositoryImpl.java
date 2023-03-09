@@ -23,6 +23,11 @@ public class InitiativeRepositoryImpl implements InitiativeRepository {
 	}
 
 	@Override
+	public Optional<Initiative> findInitiativeDetailByInitiativeTokenAndUserSeq(String initiativeToken, Long userSeq) {
+		return initiativeJpaRepository.findInitiativeDetailByInitiativeTokenAndUserSeq(initiativeToken, userSeq);
+	}
+
+	@Override
 	public Page<Initiative> findInitiativeByKeyResultTokenAndUserSeq(
 		String keyResultToken,
 		Long userSeq,
