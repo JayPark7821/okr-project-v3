@@ -536,4 +536,17 @@ class ProjectServiceImplTest {
 		assertThat(response.get(0).startDate()).isEqualTo("2000-12-12");
 		assertThat(response.get(0).endDate()).isEqualTo("2023-12-14");
 	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size3_리턴한다() throws Exception {
+		LocalDate date = LocalDate.of(2022, 12, 01);
+
+		List<InitiativeForCalendarInfo> response =
+			sut.getInitiativeByDate(date, 15L);
+
+		assertThat(response.size()).isEqualTo(3);
+
+	}
 }
