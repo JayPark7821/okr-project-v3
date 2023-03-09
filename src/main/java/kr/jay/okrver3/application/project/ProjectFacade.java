@@ -132,6 +132,6 @@ public class ProjectFacade {
 	}
 
 	public InitiativeDetailInfo getInitiative(String initiativeToken, Long userSeq) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.getInitiative())");
+		return projectService.getInitiativeBy(initiativeToken, userSeq);
 	}
 }

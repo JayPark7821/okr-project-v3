@@ -538,7 +538,7 @@ public class ProjectApiControllerAcceptanceTest {
 	}
 
 	@Test
-	void 행동전략토큰으로_getInitiative호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
+	void 행동전략토큰으로_getInitiative호출시_기대하는_응답_InitiativeDetailResponse를_리턴한다() throws Exception {
  		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
 		final JsonPath response = RestAssured.
