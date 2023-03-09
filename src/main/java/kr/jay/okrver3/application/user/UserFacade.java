@@ -56,6 +56,10 @@ public class UserFacade {
 	public List<JobInfo> getJobCategory() {
 		return userService.getJobCategory();
 	}
+
+	public List<JobInfo> getJobField(String category) {
+		throw new UnsupportedOperationException("kr.jay.okrver3.application.user.UserFacade.getJobField())");
+	}
 }
 
 

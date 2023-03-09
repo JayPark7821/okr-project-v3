@@ -98,7 +98,10 @@ public class UserApiController {
 
 	@GetMapping("/job/{category}/field")
 	ResponseEntity<List<JobResponse>> getJobField(@PathVariable("category") String category) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.interfaces.user.UserApiController.getJobField())");
+		return Response.successOk(
+			userFacade.getJobField(category).stream()
+				.map(mapper::of).toList()
+		);
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
