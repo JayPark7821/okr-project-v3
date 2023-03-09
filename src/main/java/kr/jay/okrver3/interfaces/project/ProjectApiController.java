@@ -266,10 +266,8 @@ public class ProjectApiController {
 	}
 
 	//------------------ initiative 관련 api ------------------//
-
 	// TODO :: initiative update
 
-	// TODO :: 켈린더용 날짜 리스트 조회
 
 	//------------------ feedback 관련 api ------------------//
 	// TODO :: 전체 피드백 조회

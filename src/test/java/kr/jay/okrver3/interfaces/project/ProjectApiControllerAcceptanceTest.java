@@ -650,6 +650,26 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response).isEqualTo(ErrorCode.INVALID_YEARMONTH_FORMAT.getMessage());
 
 	}
+
+	@Test
+	void 행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/feedback/" + initiativeToken).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+
+	}
 }
 
 
