@@ -25,6 +25,7 @@ import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
@@ -220,7 +221,14 @@ public class ProjectApiController {
 		@PathVariable("initiativeToken") String initiativeToken,
 		Authentication authentication
 	) {
-		return null;
+		InitiativeDetailInfo info = projectFacade.getInitiative(
+			initiativeToken,
+			getUserFromAuthentication(authentication)
+		);
+
+		return Response.successCreated(
+			mapper.of(info)
+		);
 	}
 
 	//------------------ initiative 관련 api ------------------//

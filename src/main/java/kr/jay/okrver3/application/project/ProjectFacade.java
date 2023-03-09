@@ -17,6 +17,7 @@ import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -130,4 +131,7 @@ public class ProjectFacade {
 		return feedbackInfo.feedbackToken();
 	}
 
+	public InitiativeDetailInfo getInitiative(String initiativeToken, Long userSeq) {
+		throw new UnsupportedOperationException("kr.jay.okrver3.application.project.ProjectFacade.getInitiative())");
+	}
 }
