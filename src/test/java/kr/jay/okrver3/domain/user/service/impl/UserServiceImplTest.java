@@ -17,6 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
+import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
@@ -113,4 +114,12 @@ class UserServiceImplTest {
 		assertThat(response.size()).isEqualTo(6);
 	}
 
+
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		JobCategory category = JobCategory.BACK_END;
+		List<JobInfo> response = sut.getJobField(category);
+		assertThat(response.size()).isEqualTo(4);
+	}
 }
