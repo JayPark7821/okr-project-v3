@@ -45,6 +45,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -561,6 +562,28 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.getString("myInitiative")).isEqualTo("true");
 		TeamMemberUserInfo responseUser = response.getObject("user", TeamMemberUserInfo.class);
 		assertThat(responseUser.userEmail()).isEqualTo("apple@apple.com");
+	}
+
+	@Test
+	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_리턴한다() throws Exception {
+		String date = "20221201";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/date" + date).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		List<InitiativeForCalendarResponse> initiativeResponses = response.getList("", InitiativeForCalendarResponse.class);
+		assertThat(initiativeResponses.size()).isEqualTo(2);
+
 	}
 }
 
