@@ -57,7 +57,7 @@ public class UserApiController {
 	}
 
 	@PostMapping("/join")
-	public ResponseEntity<LoginResponse> join(
+	ResponseEntity<LoginResponse> join(
 		@RequestBody @Valid JoinRequest joinRequestDto
 	) {
 
@@ -67,7 +67,7 @@ public class UserApiController {
 	}
 
 	@GetMapping("/refresh")
-	public ResponseEntity<TokenResponse> getNewAccessToken(HttpServletRequest request) {
+	ResponseEntity<TokenResponse> getNewAccessToken(HttpServletRequest request) {
 
 		return Response.successOk(
 			mapper.of(userFacade.getNewAccessToken(HeaderUtil.getAccessToken(request)))
@@ -94,6 +94,11 @@ public class UserApiController {
 			userFacade.getJobCategory().stream()
 				.map(mapper::of).toList()
 		);
+	}
+
+	@GetMapping("/job/{category}/field")
+	ResponseEntity<List<JobResponse>> getJobField(@PathVariable("category") String category) {
+		throw new UnsupportedOperationException("kr.jay.okrver3.interfaces.user.UserApiController.getJobField())");
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {

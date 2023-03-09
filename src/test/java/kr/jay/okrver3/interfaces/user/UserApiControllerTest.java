@@ -164,6 +164,15 @@ class UserApiControllerTest {
 	}
 
 
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		String category = "BACK_END";
+		ResponseEntity<List<JobResponse>> response = sut.getJobField(category);
+		assertThat(response.getBody().size()).isEqualTo(4);
+	}
+
+
 	private static void assertGuestLoginResponse(LoginResponse body) {
 		assertThat(body.guestId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
