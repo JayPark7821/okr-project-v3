@@ -113,6 +113,11 @@ public class UserApiController {
 		);
 	}
 
+	@GetMapping("/job/field/{jobField}")
+	public ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
+		throw new UnsupportedOperationException("kr.jay.okrver3.interfaces.user.UserApiController.getJobCategoryBy())");
+	}
+
 	private Long getUserFromAuthentication(Authentication authentication) {
 		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED))

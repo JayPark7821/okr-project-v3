@@ -173,6 +173,14 @@ class UserApiControllerTest {
 	}
 
 
+	@Test
+	void getJobCategoryBy를_호출하면_기대하는_응답_JobCategory를_반환한다() throws Exception {
+
+		String jobField = "WEB_FRONT_END_DEVELOPER";
+		ResponseEntity<String> response = sut.getJobCategoryBy(jobField);
+		assertThat(response.getBody()).isEqualTo("FRONT_END");
+	}
+
 	private static void assertGuestLoginResponse(LoginResponse body) {
 		assertThat(body.guestId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
