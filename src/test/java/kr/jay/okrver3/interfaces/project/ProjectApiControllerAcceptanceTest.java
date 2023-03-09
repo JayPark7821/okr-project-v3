@@ -585,6 +585,27 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(initiativeResponses.size()).isEqualTo(2);
 
 	}
+
+	@Test
+	void 잘못된_날짜로_포멧으로_getInitiativeByDate를_호출하면_기대하는_응답_exception을_리턴한다() throws Exception {
+		String date = "2022-12-01";
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/date" + date).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().jsonPath();
+
+		assertThat(response.getString("")).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
+
+	}
 }
 
 
