@@ -3,7 +3,9 @@ package kr.jay.okrver3.interfaces.user;
 import org.springframework.stereotype.Component;
 
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
-import kr.jay.okrver3.domain.user.service.LoginInfo;
+import kr.jay.okrver3.domain.user.info.JobInfo;
+import kr.jay.okrver3.domain.user.info.LoginInfo;
+import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 
@@ -27,6 +29,13 @@ public class UserDtoMapper {
 		return new TokenResponse(
 			info.accessToken(),
 			info.refreshToken()
+		);
+	}
+
+	public JobResponse of(JobInfo info) {
+		return new JobResponse(
+			info.code(),
+			info.title()
 		);
 	}
 }

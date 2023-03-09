@@ -1,5 +1,7 @@
 package kr.jay.okrver3.domain.user.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -7,10 +9,12 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
-import kr.jay.okrver3.domain.user.JobFieldDetail;
+import kr.jay.okrver3.domain.user.JobCategory;
+import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.domain.user.info.JobInfo;
+import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserRepository;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
@@ -35,9 +39,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<UserInfo> findByEmail(String email) {
+	public UserInfo findUserInfoBy(String email) {
 		return userRepository.findByEmail(email)
-			.map(UserInfo::new);
+			.map(UserInfo::new)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
 	}
 
 	@Override
@@ -59,9 +64,23 @@ public class UserServiceImpl implements UserService {
 			.roleType(RoleType.USER)
 			.profileImage(guestInfo.profileImageUrl())
 			.providerType(guestInfo.providerType())
-			.jobField(JobFieldDetail.lookup(joinRequest.jobField()))
+			.jobField(JobField.of(joinRequest.jobField()))
 			.build();
 
 		return new UserInfo(userRepository.save(user));
+	}
+
+	@Override
+	public List<JobInfo> getJobCategory() {
+		return Arrays.stream(JobCategory.values())
+			.map(jobCategory -> new JobInfo(jobCategory.getCode(), jobCategory.getTitle()))
+			.toList();
+	}
+
+	@Override
+	public List<JobInfo> getJobField(JobCategory category){
+		return category.getDetailList().stream()
+			.map(jobField -> new JobInfo(jobField.getCode(), jobField.getTitle()))
+			.toList();
 	}
 }

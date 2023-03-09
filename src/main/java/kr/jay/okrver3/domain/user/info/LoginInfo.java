@@ -1,4 +1,4 @@
-package kr.jay.okrver3.domain.user.service;
+package kr.jay.okrver3.domain.user.info;
 
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
@@ -10,7 +10,7 @@ public record LoginInfo(String guestUuid, String email, String name, ProviderTyp
 
 	public LoginInfo(UserInfo userInfo, AuthTokenInfo authTokenInfo) {
 		this(null, userInfo.email(), userInfo.name(), userInfo.providerType(), userInfo.profileImageUrl(),
-			authTokenInfo.accessToken(), authTokenInfo.refreshToken(), userInfo.jobFieldDetail().getCode());
+			authTokenInfo.accessToken(), authTokenInfo.refreshToken(), userInfo.jobField().getCode());
 	}
 
 	public LoginInfo(GuestInfo guestInfo) {

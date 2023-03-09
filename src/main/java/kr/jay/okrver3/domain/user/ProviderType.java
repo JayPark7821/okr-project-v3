@@ -1,7 +1,7 @@
 package kr.jay.okrver3.domain.user;
 
-import java.util.Arrays;
-
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.utils.EnumLookUpUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,13 +11,10 @@ public enum ProviderType {
 	APPLE("APPLE"),
 	GOOGLE("GOOGLE");
 
-	private String name;
+	private final String name;
 
-	public static ProviderType of(String providerInString) {
-		return Arrays.stream(ProviderType.values())
-			.filter(provider -> provider.getName().equals(providerInString))
-			.findAny()
-			.orElseThrow(() -> new IllegalArgumentException("지원하지 않는 소셜 타입입니다."));
+	public static ProviderType of(String code) {
+		return EnumLookUpUtil.lookup(ProviderType.class, code, ErrorCode.UNSUPPORTED_SOCIAL_LOGIN);
 	}
 
 }

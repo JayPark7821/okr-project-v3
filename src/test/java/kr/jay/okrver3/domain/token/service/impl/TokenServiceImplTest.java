@@ -16,9 +16,9 @@ import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.RefreshTokenRepository;
-import kr.jay.okrver3.domain.user.JobFieldDetail;
+import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.ProviderType;
-import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 
 @DataJpaTest
@@ -41,8 +41,8 @@ class TokenServiceImplTest {
 	@DisplayName("email이 입력 되었을때 기대하는 응답(AuthTokenInfo)을 반환한다.")
 	void create_new_authTokenInfo() throws Exception {
 		UserInfo userInfo =
-			new UserInfo(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
-				JobFieldDetail.WEB_SERVER_DEVELOPER);
+			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
+				JobField.WEB_SERVER_DEVELOPER);
 
 		AuthTokenInfo authTokenInfo = sut.generateTokenSet(userInfo);
 
@@ -55,8 +55,8 @@ class TokenServiceImplTest {
 	void returns_old_refreshToken_when_expire_date_more_then_3days() throws Exception {
 		//given
 		UserInfo userInfo =
-			new UserInfo(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
-				JobFieldDetail.WEB_SERVER_DEVELOPER);
+			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
+				JobField.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken("apple@apple.com", key, 259300000L);
 		refreshTokenRepository.save(new RefreshToken("apple@apple.com", UsableRefreshToken));
 
@@ -73,8 +73,8 @@ class TokenServiceImplTest {
 	void returns_new_refreshToken_when_expire_date_less_then_3days() throws Exception {
 		//given
 		UserInfo userInfo =
-			new UserInfo(2L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
-				JobFieldDetail.WEB_SERVER_DEVELOPER);
+			new UserInfo(998L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
+				JobField.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 100000L);
 		refreshTokenRepository.save(new RefreshToken("google@google.com", UsableRefreshToken));
 
@@ -93,7 +93,10 @@ class TokenServiceImplTest {
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
 		em.persist(new RefreshToken("apple@apple.com",accessToken ));
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
-		assertThat(info.accessToken()).isNotEqualTo(accessToken);
+
+		assertThat(info.accessToken()).isNotNull();
+		assertThat(info.refreshToken()).isEqualTo(accessToken);
+
 	}
 
 

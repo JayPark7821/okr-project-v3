@@ -3,7 +3,6 @@ package kr.jay.okrver3.domain.token.service.impl;
 import static kr.jay.okrver3.common.utils.JwtTokenUtils.*;
 
 import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.RefreshTokenRepository;
 import kr.jay.okrver3.domain.token.service.TokenService;
-import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.domain.user.info.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

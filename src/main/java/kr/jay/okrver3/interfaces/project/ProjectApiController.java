@@ -124,19 +124,6 @@ public class ProjectApiController {
 		);
 	}
 
-	@GetMapping("/team/create-project/{email}")
-	ResponseEntity<String> validateEmailForCreateProject(
-		@PathVariable("email") String email,
-		Authentication authentication
-	) {
-		return Response.successOk(
-			projectFacade.validateEmailForCreateProject(
-				email,
-				getUserFromAuthentication(authentication)
-			)
-		);
-	}
-
 	@GetMapping("/project/{projectToken}/side")
 	ResponseEntity<ProjectSideMenuResponse> getProjectSideMenuDetails(
 		@PathVariable("projectToken") String projectToken,
@@ -226,6 +213,25 @@ public class ProjectApiController {
 			)
 		);
 	}
+
+	//------------------ initiative 관련 api ------------------//
+	// TODO :: initiative update
+	// TODO :: initiativeToken으로 initiative 단건 조회
+	// TODO :: date 로 initiative 조회
+	// TODO :: 켈린더용 날짜 리스트 조회
+
+
+	//------------------ feedback 관련 api ------------------//
+	// TODO :: 전체 피드백 조회
+	// TODO :: initiativeToken으로 feedback 조회
+	// TODO :: 피드백을 남겨야하는 count 조회
+	// TODO :: 피드백을 확인 api
+
+	//------------------ notification 관련 api ------------------//
+	// TODO :: notification 조회
+	// TODO :: notification 읽음 처리
+	// TODO :: notification 삭제 처리
+
 
 	private Long getUserFromAuthentication(Authentication authentication) {
 		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)

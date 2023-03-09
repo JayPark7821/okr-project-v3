@@ -4,6 +4,7 @@ import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,9 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 
@@ -128,7 +132,53 @@ class UserApiControllerTest {
 
 		ResponseEntity<TokenResponse> response = sut.getNewAccessToken(request);
 
-		assertThat(response.getBody().accessToken()).isNotEqualTo(accessToken);
+		assertThat(response.getBody().accessToken()).isNotNull();
+		assertThat(response.getBody().refreshToken()).isEqualTo(accessToken);
+	}
+
+
+
+	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<String> response = sut.validateEmail(memberEmail, auth);
+		assertThat(response.getBody()).isEqualTo(memberEmail);
+	}
+
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		ResponseEntity<List<JobResponse>> response = sut.getJobCategory();
+		assertThat(response.getBody().size()).isEqualTo(6);
+	}
+
+
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		String category = "BACK_END";
+		ResponseEntity<List<JobResponse>> response = sut.getJobField(category);
+		assertThat(response.getBody().size()).isEqualTo(4);
+	}
+
+
+	@Test
+	void getJobCategoryBy를_호출하면_기대하는_응답_JobCategory를_반환한다() throws Exception {
+
+		String jobField = "WEB_FRONT_END_DEVELOPER";
+		ResponseEntity<String> response = sut.getJobCategoryBy(jobField);
+		assertThat(response.getBody()).isEqualTo("FRONT_END");
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {

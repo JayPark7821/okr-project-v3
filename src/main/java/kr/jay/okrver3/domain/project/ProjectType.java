@@ -1,9 +1,7 @@
 package kr.jay.okrver3.domain.project;
 
-import java.util.Arrays;
-
 import kr.jay.okrver3.common.exception.ErrorCode;
-import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.EnumLookUpUtil;
 
 public enum ProjectType {
 
@@ -12,11 +10,8 @@ public enum ProjectType {
 	ALL,
 	;
 
-	public static ProjectType of(String projectTypeString) {
-		return Arrays.stream(ProjectType.values())
-			.filter(projectType -> projectType.name().equals(projectTypeString))
-			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TYPE));
+	public static ProjectType of(String code) {
+		return EnumLookUpUtil.lookup(ProjectType.class, code, ErrorCode.INVALID_PROJECT_TYPE);
 	}
 
 }

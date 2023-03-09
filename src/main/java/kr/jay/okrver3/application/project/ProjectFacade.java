@@ -2,14 +2,11 @@ package kr.jay.okrver3.application.project;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import kr.jay.okrver3.common.exception.ErrorCode;
-import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.notification.NotificationService;
 import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.project.ProjectService;
@@ -25,7 +22,7 @@ import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.domain.project.info.ProjectTeamMembersInfo;
-import kr.jay.okrver3.domain.user.service.UserInfo;
+import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +53,7 @@ public class ProjectFacade {
 
 	public String inviteTeamMember(TeamMemberInviteCommand command, Long inviterSeq) {
 
-		UserInfo invitedUser = getUserToInviteBy(command.email());
+		UserInfo invitedUser = userService.findUserInfoBy(command.email());
 
 		ProjectTeamMembersInfo projectTeamMembersInfo =
 			projectService.inviteTeamMember(
@@ -76,24 +73,15 @@ public class ProjectFacade {
 	}
 
 	public String validateEmailToInvite(String projectToken, String email, Long userSeq) {
-		UserInfo invitedUserInfo = getUserToInviteBy(email);
+		UserInfo invitedUserInfo = userService.findUserInfoBy(email);
 		projectService.validateUserToInvite(projectToken, invitedUserInfo.userSeq(), userSeq);
 		return email;
 	}
 
-	public String validateEmailForCreateProject(String email, Long userFromAuthentication) {
-		return getUserToInviteBy(email).email();
-	}
-
-	private UserInfo getUserToInviteBy(String email) {
-		return userService.findByEmail(email)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
-	}
-
 	private List<Long> getTeamUsersFromEmails(List<String> teamMembers) {
-		return teamMembers.stream().map(userService::findByEmail)
-			.filter(Optional::isPresent)
-			.map(user -> user.get().userSeq()).toList();
+		return teamMembers.stream().map(userService::findUserInfoBy)
+			.map(UserInfo::userSeq).toList();
+		// TODO
 	}
 
 	private List<Long> getTeamMemberToSendNoti(Long invitedUserSeq, List<Long> teamMemberUserSeq) {

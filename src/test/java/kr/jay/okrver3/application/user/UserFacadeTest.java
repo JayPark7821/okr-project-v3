@@ -4,6 +4,7 @@ import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -25,8 +26,11 @@ import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
+import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.ProviderType;
-import kr.jay.okrver3.domain.user.service.LoginInfo;
+import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.info.JobInfo;
+import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
@@ -163,7 +167,46 @@ class UserFacadeTest {
 
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
 
-		assertThat(info.accessToken()).isNotEqualTo(accessToken);
+		assertThat(info.accessToken()).isNotNull();
+		assertThat(info.refreshToken()).isEqualTo(accessToken);
+
 	}
 
+
+	@Test
+	@Sql({"classpath:insert-user.sql"})
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+
+		User user = getUser(999L);
+
+		final String response = sut.validateEmail(memberEmail, user.getUserSeq());
+
+		assertThat(response).isEqualTo(memberEmail);
+	}
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		List<JobInfo> response = sut.getJobCategory();
+		assertThat(response.size()).isEqualTo(6);
+	}
+
+
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		JobCategory category = JobCategory.BACK_END;
+		List<JobInfo> response = sut.getJobField(category);
+		assertThat(response.size()).isEqualTo(4);
+	}
+
+
+	private User getUser(Long seq) {
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", seq)
+			.getSingleResult();
+		return user;
+	}
 }

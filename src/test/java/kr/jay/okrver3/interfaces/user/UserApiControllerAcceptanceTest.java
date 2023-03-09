@@ -3,9 +3,8 @@ package kr.jay.okrver3.interfaces.user;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -31,10 +30,10 @@ import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.infrastructure.user.auth.TokenVerifier;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.response.JobResponse;
 
 @Import(TestConfig.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -49,25 +48,39 @@ public class UserApiControllerAcceptanceTest {
 	@Value("${app.auth.tokenSecret}")
 	private String key;
 
-	@PersistenceContext
-	EntityManager em;
+	@Value("${app.auth.refreshTokenRegenerationThreshold}")
+	private Long refreshTokenRegenerationThreshold;
 
 	@Autowired
 	DataSource dataSource;
-
 	@Autowired
 	private TokenVerifier tokenVerifier;
 	private static final String PROVIDER_APPLE = "APPLE";
-	private static final String NOT_MEMBER_ID_TOKEN = "notMemberIdToken";
-	private static final String ID_TOKEN = "appleToken";
-	private static final String DIF_ID_TOKEN = "googleToken";
-
+	private static final String NOT_MEMBER_APPLE_ID_TOKEN = "notMemberIdToken";
+	private static final String APPLE_ID_TOKEN = "appleToken";
+	private static final String GOOGLE_ID_TOKEN = "googleToken";
+	private String availAccessToken ;
+	private String expiredAccessToken ;
+	private static final String baseUrl = "/api/v1/user";
 
 
 
 	@BeforeAll
 	void setUpAll() {
+
 		try (Connection conn = dataSource.getConnection()) {
+
+			availAccessToken = JwtTokenUtils.generateToken("apple@apple.com", key, refreshTokenRegenerationThreshold + 10000000L);
+			expiredAccessToken = JwtTokenUtils.generateToken("fakeAppleEmail", key, refreshTokenRegenerationThreshold - 10000000L);
+			String sql = "insert into refresh_token (refresh_token_seq, user_email, refresh_token) "
+						+ "values ('9999', 'apple@apple.com', ?) ,"
+								+ "('9998', 'fakeAppleEmail', ? )";
+
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, availAccessToken);
+			statement.setString(2, expiredAccessToken);
+			statement.executeUpdate();
+
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-user.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
@@ -94,7 +107,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + NOT_MEMBER_ID_TOKEN).
+			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + NOT_MEMBER_APPLE_ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
@@ -113,7 +126,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + ID_TOKEN).
+			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + APPLE_ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
@@ -132,7 +145,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + DIF_ID_TOKEN).
+			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + GOOGLE_ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -204,18 +217,11 @@ public class UserApiControllerAcceptanceTest {
 	@Test
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
-		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		RefreshToken entity = new RefreshToken("apple@apple.com", accessToken);
-		em.persist(entity);
-
-		Long refreshTokenSeq = entity.getRefreshTokenSeq();
-		System.out.println("refreshTokenSeq = " + refreshTokenSeq);
-
 		final JsonPath response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + accessToken).
+			.header("Authorization", "Bearer " + availAccessToken).
 
 			when()
 			.get("/api/v1/user/refresh").
@@ -224,10 +230,145 @@ public class UserApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.OK.value())
 			.extract().jsonPath();
 
-		assertThat(response.getString("accessToken")).isNotEqualTo(accessToken);
+		assertThat(response.getString("accessToken")).isNotNull();
+		assertThat(response.getString("refreshToken")).isEqualTo(availAccessToken);
 	}
 
-	// TODO :: refresh token 3일 이하 남았을때 refresh token 재발급 테스트
+	@Test
+	void refreshToken이_기간이_설정값_이하일때_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + expiredAccessToken).
+
+			when()
+			.get("/api/v1/user/refresh").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().jsonPath();
+
+		assertThat(response.getString("accessToken")).isNotNull();
+		assertThat(response.getString("refreshToken")).isNotEqualTo(expiredAccessToken);
+	}
+
+	@Test
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + availAccessToken).
+
+			when()
+			.get(baseUrl + "/validate" + "/" + memberEmail).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(memberEmail);
+	}
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/category").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		assertThat(response.getList("",JobResponse.class).size()).isEqualTo(6);
+	}
+
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		String category = "BACK_END";
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/"+ category + "/fields").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		assertThat(response.getList("",JobResponse.class).size()).isEqualTo(4);
+	}
+
+	@Test
+	void 등록안된_jobCategory로_getJobField를_호출하면_기대하는_응답_exception_반환한다() throws Exception {
+
+		String category = "BACK_ENDDDD";
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/"+ category + "/fields").
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_JOB_CATEGORY.getMessage());
+	}
+
+	@Test
+	void getJobCategoryBy를_호출하면_기대하는_응답_JobCategory를_반환한다() throws Exception {
+
+		String jobField = "WEB_FRONT_END_DEVELOPER";
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/field/"+ jobField).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo("FRONT_END");
+	}
+
+
+	@Test
+	void 등록안된_jobField로_getJobCategoryBy를_호출하면_기대하는_응답_exception_반환한다() throws Exception {
+
+		String jobField = "WEB_FRONT_END_DEVELOPERRRRR";
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/field/"+ jobField).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_JOB_DETAIL_FIELD.getMessage());
+	}
+
 	private void assertLoginUser(JsonPath response) {
 		assertThat(response.getString("guestId")).isNull();
 		assertThat(response.getString("email")).isNotNull();

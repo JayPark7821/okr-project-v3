@@ -1,11 +1,13 @@
 package kr.jay.okrver3.interfaces.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.user.UserFacade;
 import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.common.utils.HeaderUtil;
+import kr.jay.okrver3.domain.user.JobCategory;
+import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
-import kr.jay.okrver3.domain.user.service.LoginInfo;
+import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +59,7 @@ public class UserApiController {
 	}
 
 	@PostMapping("/join")
-	public ResponseEntity<LoginResponse> join(
+	ResponseEntity<LoginResponse> join(
 		@RequestBody @Valid JoinRequest joinRequestDto
 	) {
 
@@ -60,10 +69,49 @@ public class UserApiController {
 	}
 
 	@GetMapping("/refresh")
-	public ResponseEntity<TokenResponse> getNewAccessToken(HttpServletRequest request) {
+	ResponseEntity<TokenResponse> getNewAccessToken(HttpServletRequest request) {
 
 		return Response.successOk(
 			mapper.of(userFacade.getNewAccessToken(HeaderUtil.getAccessToken(request)))
+		);
+	}
+
+
+	@GetMapping("/validate/{email}")
+	ResponseEntity<String> validateEmail(
+		@PathVariable("email") String email,
+		Authentication authentication
+	) {
+		return Response.successOk(
+			userFacade.validateEmail(
+				email,
+				getUserFromAuthentication(authentication)
+			)
+		);
+	}
+
+	@GetMapping("/job/category")
+	ResponseEntity<List<JobResponse>> getJobCategory() {
+		return Response.successOk(
+			userFacade.getJobCategory().stream()
+				.map(mapper::of).toList()
+		);
+	}
+
+	@GetMapping("/job/{category}/fields")
+	ResponseEntity<List<JobResponse>> getJobField(@PathVariable("category") String category) {
+
+		JobCategory jobCategory = JobCategory.of(category);
+		return Response.successOk(
+			userFacade.getJobField(jobCategory).stream()
+				.map(mapper::of).toList()
+		);
+	}
+
+	@GetMapping("/job/field/{jobField}")
+	public ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
+		return Response.successOk(
+			JobCategory.of(JobField.of(jobField).getJobCategory()).getCode()
 		);
 	}
 
@@ -71,6 +119,12 @@ public class UserApiController {
 		return Response.successOk(
 			mapper.of(loginInfo)
 		);
+	}
+
+	private Long getUserFromAuthentication(Authentication authentication) {
+		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED))
+			.getUserSeq();
 	}
 
 }

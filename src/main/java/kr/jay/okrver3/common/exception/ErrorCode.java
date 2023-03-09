@@ -14,7 +14,7 @@ public enum ErrorCode {
 	ALREADY_JOINED_USER(HttpStatus.BAD_REQUEST, "이미 가입된 회원입니다."),
 	MISS_MATCH_PROVIDER(HttpStatus.BAD_REQUEST, "소셜 provider 불일치"),
 	INVALID_JOB_DETAIL_FIELD(HttpStatus.BAD_REQUEST, "선택한 직업 정보가 정보가 없습니다."),
-	INVALID_JOB_FIELD(HttpStatus.BAD_REQUEST, "직업 카테고리 정보가 없습니다."),
+	INVALID_JOB_CATEGORY(HttpStatus.BAD_REQUEST, "직업 카테고리 정보가 없습니다."),
 	NOT_AVAIL_INVITE_MYSELF(HttpStatus.BAD_REQUEST, "자기 자신은 초대할 수 없습니다."),
 	INVALID_USER_EMAIL(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
 	USER_ALREADY_PROJECT_MEMBER(HttpStatus.BAD_REQUEST, "이미 해당 프로젝트 팀원 입니다."),
@@ -38,6 +38,7 @@ public enum ErrorCode {
 	FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST,"이미 완료된 행동전략 입니다." ),
 	NOT_FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST,"아직 완료되지 않은 행동전략 입니다." ),
 	MOT_AVAIL_FEEDBACK_SELF(HttpStatus.BAD_REQUEST,"자기 자신에게 피드백을 남길 수 없습니다." ),
+	UNSUPPORTED_SOCIAL_LOGIN(HttpStatus.BAD_REQUEST,"지원하지 않는 소셜 타입입니다." ),
 	INVALID_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 token입니다." );
 
 
