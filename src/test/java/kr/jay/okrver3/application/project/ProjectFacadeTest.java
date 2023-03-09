@@ -418,11 +418,12 @@ class ProjectFacadeTest {
 
 
 	@Test
-	void 행동전략토큰으로_getInitiative호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
 		InitiativeDetailInfo response =
-			sut.getInitiative(initiativeToken, 3L);
+			sut.getInitiativeBy(initiativeToken, 3L);
 
 		assertThat(response.done()).isTrue();
 		assertThat(response.initiativeToken()).isEqualTo(initiativeToken);

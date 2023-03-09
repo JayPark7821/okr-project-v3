@@ -34,6 +34,7 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -475,6 +476,22 @@ class ProjectServiceImplTest {
 		assertThatThrownBy(() -> sut.registerFeedback(command, 3L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_FINISHED_INITIATIVE.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		InitiativeDetailInfo response =
+			sut.getInitiativeBy(initiativeToken, 3L);
+
+		assertThat(response.done()).isTrue();
+		assertThat(response.initiativeToken()).isEqualTo(initiativeToken);
+		assertThat(response.initiativeName()).isEqualTo("ini name");
+		assertThat(response.initiativeDetail()).isEqualTo("initiative detail1");
+		assertThat(response.myInitiative()).isTrue();
+		assertThat(response.user().userEmail()).isEqualTo("user1@naver.com");
 	}
 
 }

@@ -33,4 +33,17 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 	Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequester(
 		@Param("initiativeToken") String initiativeToken,
 		@Param("requesterSeq") Long requesterSeq);
+
+	@Query("select i "
+		+ "from Initiative i "
+		+ "join fetch i.teamMember t "
+		+ "join fetch t.project p "
+		+ "join fetch t.user u "
+		+ "join p.teamMember pt "
+		+ "where i.initiativeToken =:initiativeToken "
+		+ "and pt.user.userSeq = :userSeq ")
+	Optional<Initiative> findInitiativeDetailByInitiativeTokenAndUserSeq(
+		@Param("initiativeToken") String initiativeToken,
+		@Param("userSeq") Long userSeq
+	);
 }

@@ -321,11 +321,12 @@ class ProjectApiControllerTest {
 
 
 	@Test
-	void 행동전략토큰으로_getInitiative호출시_기대하는_응답_InitiativeDetailResponse를_리턴한다() throws Exception {
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailResponse를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
 		ResponseEntity<InitiativeDetailResponse> response =
-			sut.getInitiative(
+			sut.getInitiativeBy(
 				initiativeToken,
 				getAuthenticationToken(3L)
 			);

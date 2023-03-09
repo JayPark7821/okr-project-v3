@@ -16,4 +16,5 @@ public interface InitiativeRepository {
 
 	Optional<Initiative> findInitiativeByInitiativeTokenAndUserSeq(String initiativeToken, Long userSeq);
 
+	Optional<Initiative> findInitiativeDetailByInitiativeTokenAndUserSeq(String initiativeToken, Long userSeq);
 }

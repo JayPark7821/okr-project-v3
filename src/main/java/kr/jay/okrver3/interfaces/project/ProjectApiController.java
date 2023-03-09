@@ -217,16 +217,16 @@ public class ProjectApiController {
 	}
 
 	@GetMapping("/initiative/{initiativeToken}")
-	ResponseEntity<InitiativeDetailResponse> getInitiative(
+	ResponseEntity<InitiativeDetailResponse> getInitiativeBy(
 		@PathVariable("initiativeToken") String initiativeToken,
 		Authentication authentication
 	) {
-		InitiativeDetailInfo info = projectFacade.getInitiative(
+		InitiativeDetailInfo info = projectFacade.getInitiativeBy(
 			initiativeToken,
 			getUserFromAuthentication(authentication)
 		);
 
-		return Response.successCreated(
+		return Response.successOk(
 			mapper.of(info)
 		);
 	}

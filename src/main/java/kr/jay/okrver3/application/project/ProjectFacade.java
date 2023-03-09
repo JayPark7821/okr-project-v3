@@ -131,7 +131,7 @@ public class ProjectFacade {
 		return feedbackInfo.feedbackToken();
 	}
 
-	public InitiativeDetailInfo getInitiative(String initiativeToken, Long userSeq) {
+	public InitiativeDetailInfo getInitiativeBy(String initiativeToken, Long userSeq) {
 		return projectService.getInitiativeBy(initiativeToken, userSeq);
 	}
 }
