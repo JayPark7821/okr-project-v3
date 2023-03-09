@@ -193,6 +193,15 @@ class UserFacadeTest {
 	}
 
 
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+
+		String category = "BACK_END";
+		List<JobInfo> response = sut.getJobField(category);
+		assertThat(response.size()).isEqualTo(4);
+	}
+
+
 	private User getUser(Long seq) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", seq)

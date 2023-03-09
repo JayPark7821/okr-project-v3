@@ -21,4 +21,5 @@ public interface UserService {
 
 	List<JobInfo> getJobCategory();
 
+	List<JobInfo> getJobField();
 }
