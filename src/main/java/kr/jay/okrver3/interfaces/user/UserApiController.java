@@ -97,7 +97,7 @@ public class UserApiController {
 		);
 	}
 
-	@GetMapping("/job/{category}/field")
+	@GetMapping("/job/{category}/fields")
 	ResponseEntity<List<JobResponse>> getJobField(@PathVariable("category") String category) {
 
 		JobCategory jobCategory = JobCategory.of(category);

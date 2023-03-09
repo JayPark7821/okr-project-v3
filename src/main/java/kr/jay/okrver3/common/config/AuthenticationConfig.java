@@ -27,7 +27,7 @@ public class AuthenticationConfig {
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return web -> web.ignoring().regexMatchers("^(?!/api/).*")
 			.antMatchers(HttpMethod.POST, "/api/*/user/login/**")
-			.antMatchers(HttpMethod.GET, "/api/*/user/job/category")
+			.antMatchers(HttpMethod.GET, "/api/*/user/job/**")
 			.antMatchers(HttpMethod.POST, "/api/*/user/join/**");
 	}
 

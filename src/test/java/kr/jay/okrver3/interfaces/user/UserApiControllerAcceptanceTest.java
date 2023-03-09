@@ -315,7 +315,7 @@ public class UserApiControllerAcceptanceTest {
 	void 등록안된_jobCategory로_getJobField를_호출하면_기대하는_응답_exception_반환한다() throws Exception {
 
 		String category = "BACK_ENDDDD";
-		final JsonPath response = RestAssured.
+		final String response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON).
@@ -325,9 +325,9 @@ public class UserApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().jsonPath();
+			.extract().body().asString();
 
-		assertThat(response.getString("")).isEqualTo(ErrorCode.INVALID_JOB_CATEGORY.getMessage());
+		assertThat(response).isEqualTo(ErrorCode.INVALID_JOB_CATEGORY.getMessage());
 	}
 
 	// TODO :: jobField 조회 api 추가.
