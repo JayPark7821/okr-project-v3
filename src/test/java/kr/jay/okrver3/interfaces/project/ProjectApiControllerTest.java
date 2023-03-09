@@ -16,11 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
@@ -372,6 +376,25 @@ class ProjectApiControllerTest {
 
 		assertThat(response.size()).isEqualTo(3);
 	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 년월로_getInitiativeDates를_호출하면_기대하는_응답을_리턴한다() throws Exception {
+		String yearmonth = "2023-12";
+
+		List<String> response =
+			sut.getInitiativeDatesBy(
+				yearmonth,
+				getAuthenticationToken(15L)
+			).getBody();
+
+		assertThat(response.size()).isEqualTo(14);
+		assertThat(response.get(0)).isEqualTo("2023-12-01");
+		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
+
+	}
+
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)

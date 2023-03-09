@@ -1,6 +1,7 @@
 package kr.jay.okrver3.interfaces.project;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -8,7 +9,9 @@ import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -249,22 +252,35 @@ public class ProjectApiController {
 		);
 	}
 
+	@GetMapping("/initiative/yearmonth/{yearmonth}")
+	public ResponseEntity<List<String>> getInitiativeDatesBy(
+		@PathVariable("yearmonth") String yearmonth,
+		Authentication authentication
+	) {
+		return Response.successOk(
+			projectFacade.getInitiativeDatesBy(
+				validateYearMonth(yearmonth),
+				getUserFromAuthentication(authentication)
+			)
+		);
+	}
+
 	//------------------ initiative 관련 api ------------------//
+
 	// TODO :: initiative update
 
-	// TODO :: date 로 initiative 조회
 	// TODO :: 켈린더용 날짜 리스트 조회
-
 
 	//------------------ feedback 관련 api ------------------//
 	// TODO :: 전체 피드백 조회
 	// TODO :: initiativeToken으로 feedback 조회
 	// TODO :: 피드백을 남겨야하는 count 조회
-	// TODO :: 피드백을 확인 api
 
+	// TODO :: 피드백을 확인 api
 	//------------------ notification 관련 api ------------------//
 	// TODO :: notification 조회
 	// TODO :: notification 읽음 처리
+
 	// TODO :: notification 삭제 처리
 
 
@@ -282,6 +298,15 @@ public class ProjectApiController {
 		throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_PROJECT_YN);
 	}
 
+
+	public static YearMonth validateYearMonth(String yearMonth) {
+		try {
+			return yearMonth == null ? YearMonth.now() :
+				YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("yyyy-MM"));
+		} catch (Exception e) {
+			throw new OkrApplicationException(ErrorCode.INVALID_YEARMONTH_FORMAT);
+		}
+	}
 
 	private  LocalDate validateDate(String date) {
 		try {

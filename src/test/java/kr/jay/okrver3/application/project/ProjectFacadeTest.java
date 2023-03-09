@@ -5,6 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -447,6 +448,21 @@ class ProjectFacadeTest {
 		assertThat(response.get(0).initiativeName()).isEqualTo("ini name876");
 		assertThat(response.get(0).startDate()).isEqualTo("2000-12-12");
 		assertThat(response.get(0).endDate()).isEqualTo("2023-12-14");
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 년월로_getInitiativeDates를_호출하면_기대하는_응답을_리턴한다() throws Exception {
+		YearMonth yearmonth = YearMonth.of(2023, 12);
+
+		List<String> response =
+			sut.getInitiativeDatesBy(yearmonth, 15L);
+
+		assertThat(response.size()).isEqualTo(14);
+		assertThat(response.get(0)).isEqualTo("2023-12-01");
+		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
+
 	}
 
 }

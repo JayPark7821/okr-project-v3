@@ -1,6 +1,7 @@
 package kr.jay.okrver3.application.project;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Objects;
 
@@ -139,5 +140,9 @@ public class ProjectFacade {
 
 	public List<InitiativeForCalendarInfo> getInitiativeByDate(LocalDate searchDate, Long userSeq) {
 		return projectService.getInitiativeByDate(searchDate, userSeq);
+	}
+
+	public List<String> getInitiativeDatesBy(YearMonth yearMonth, Long userSeq) {
+		return projectService.getInitiativeDatesBy(yearMonth, userSeq);
 	}
 }

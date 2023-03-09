@@ -606,6 +606,50 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response).isEqualTo(ErrorCode.INVALID_SEARCH_DATE_FORM.getMessage());
 
 	}
+
+	@Test
+	void 년월로_getInitiativeDatesBy를_호출하면_기대하는_응답을_리턴한다() throws Exception {
+		String yearmonth = "2023-12";
+
+		final List<String> response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/yearmonth/" + yearmonth).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath().getList("",String.class);
+
+		assertThat(response.size()).isEqualTo(14);
+		assertThat(response.get(0)).isEqualTo("2023-12-01");
+		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
+
+	}
+
+	@Test
+	void 잘못된_년월_형식으로_getInitiativeDatesBy를_호출하면_기대하는_응답exception을_리턴한다() throws Exception {
+		String yearmonth = "202312";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/yearmonth/" + yearmonth).
+
+			then()
+			.statusCode(HttpStatus.BAD_REQUEST.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(ErrorCode.INVALID_YEARMONTH_FORMAT.getMessage());
+
+	}
 }
 
 

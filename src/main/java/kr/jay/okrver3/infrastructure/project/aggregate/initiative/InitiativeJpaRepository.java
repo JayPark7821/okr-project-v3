@@ -61,4 +61,18 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 		@Param("searchDate") LocalDate searchDate,
 		@Param("userSeq")Long userSeq
 	);
+
+	@Query("SELECT i " +
+		"FROM Initiative i " +
+		"join i.teamMember t " +
+		"join t.user u " +
+		"where i.done = false " +
+		"and i.sdt <= :monthEdt " +
+		"and i.edt >= :monthSdt " +
+		"and u.userSeq =:userSeq")
+	List<Initiative> findInitiativeBySdtAndEdtAndUserSeq(
+		@Param("monthSdt") LocalDate monthSdt,
+		@Param("monthEdt") LocalDate monthEdt,
+		@Param("userSeq")Long userSeq
+	);
 }
