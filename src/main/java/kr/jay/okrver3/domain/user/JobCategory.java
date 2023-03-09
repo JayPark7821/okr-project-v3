@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
-import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.EnumLookUpUtil;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -77,9 +77,7 @@ public enum JobCategory implements JobType {
 	}
 
 	public static JobCategory of(String code) {
-		return Arrays.stream(JobCategory.values())
-			.filter(r -> r.getCode().equals(code))
-			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_JOB_CATEGORY));
+		return EnumLookUpUtil.lookup(JobCategory.class, code, ErrorCode.INVALID_JOB_CATEGORY);
 	}
+
 }

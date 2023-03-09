@@ -22,6 +22,7 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.common.utils.HeaderUtil;
 import kr.jay.okrver3.domain.user.JobCategory;
+import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
@@ -107,15 +108,17 @@ public class UserApiController {
 		);
 	}
 
+	@GetMapping("/job/field/{jobField}")
+	public ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
+		return Response.successOk(
+			JobCategory.of(JobField.of(jobField).getJobCategory()).getCode()
+		);
+	}
+
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
 		return Response.successOk(
 			mapper.of(loginInfo)
 		);
-	}
-
-	@GetMapping("/job/field/{jobField}")
-	public ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.interfaces.user.UserApiController.getJobCategoryBy())");
 	}
 
 	private Long getUserFromAuthentication(Authentication authentication) {

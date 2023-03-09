@@ -1,7 +1,7 @@
 package kr.jay.okrver3.domain.user;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
-import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.EnumLookUpUtil;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -51,11 +51,11 @@ public enum JobField implements JobType {
 	QA("QA", "ETC"),
 	ETC("기타", "ETC");
 
-	private String title;
-	private String jobField;
+	private final String title;
+	private final String jobCategory;
 
-	public String getJobField() {
-		return jobField;
+	public String getJobCategory() {
+		return jobCategory;
 	}
 
 	@Override
@@ -68,17 +68,9 @@ public enum JobField implements JobType {
 		return title;
 	}
 
-	public static JobField lookup(String id) {
-		return lookup(JobField.class, id);
+	public static JobField of(String id) {
+		return EnumLookUpUtil.lookup(JobField.class, id,ErrorCode.INVALID_JOB_DETAIL_FIELD);
 	}
 
-	private static <E extends Enum<E>> E lookup(Class<E> e, String id) {
-		E result;
-		try {
-			result = Enum.valueOf(e, id);
-		} catch (Exception exception) {
-			throw new OkrApplicationException(ErrorCode.INVALID_JOB_DETAIL_FIELD);
-		}
-		return result;
-	}
+
 }

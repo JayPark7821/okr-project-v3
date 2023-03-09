@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 			.roleType(RoleType.USER)
 			.profileImage(guestInfo.profileImageUrl())
 			.providerType(guestInfo.providerType())
-			.jobField(JobField.lookup(joinRequest.jobField()))
+			.jobField(JobField.of(joinRequest.jobField()))
 			.build();
 
 		return new UserInfo(userRepository.save(user));
