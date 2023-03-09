@@ -1,5 +1,6 @@
 package kr.jay.okrver3.interfaces.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -84,6 +86,11 @@ public class UserApiController {
 				getUserFromAuthentication(authentication)
 			)
 		);
+	}
+
+	@GetMapping("/job/category")
+	ResponseEntity<List<JobResponse>> getJobCategory() {
+		return null;
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {

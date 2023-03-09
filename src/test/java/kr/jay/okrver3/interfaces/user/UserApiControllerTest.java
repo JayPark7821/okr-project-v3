@@ -4,6 +4,7 @@ import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
@@ -29,6 +30,7 @@ import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 
@@ -151,6 +153,14 @@ class UserApiControllerTest {
 
 		ResponseEntity<String> response = sut.validateEmail(memberEmail, auth);
 		assertThat(response.getBody()).isEqualTo(memberEmail);
+	}
+
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
+
+		ResponseEntity<List<JobResponse>> response = sut.getJobCategory();
+		assertThat(response.getBody()).isEqualTo(6);
 	}
 
 
