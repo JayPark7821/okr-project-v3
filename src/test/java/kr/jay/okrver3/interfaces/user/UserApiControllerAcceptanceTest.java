@@ -5,8 +5,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +30,6 @@ import io.restassured.path.json.JsonPath;
 import kr.jay.okrver3.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.infrastructure.user.auth.TokenVerifier;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
@@ -50,19 +47,17 @@ public class UserApiControllerAcceptanceTest {
 	@Value("${app.auth.tokenSecret}")
 	private String key;
 
-	@PersistenceContext
-	EntityManager em;
-
 	@Autowired
 	DataSource dataSource;
-
 	@Autowired
 	private TokenVerifier tokenVerifier;
 	private static final String PROVIDER_APPLE = "APPLE";
-	private static final String NOT_MEMBER_ID_TOKEN = "notMemberIdToken";
-	private static final String ID_TOKEN = "appleToken";
-	private static final String DIF_ID_TOKEN = "googleToken";
+	private static final String NOT_MEMBER_APPLE_ID_TOKEN = "notMemberIdToken";
+	private static final String APPLE_ID_TOKEN = "appleToken";
+	private static final String GOOGLE_ID_TOKEN = "googleToken";
 	private String accessToken ;
+	private static final String baseUrl = "/api/v1/user";
+
 
 
 	@BeforeAll
@@ -72,7 +67,7 @@ public class UserApiControllerAcceptanceTest {
 
 			accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
 			String sql = "insert into refresh_token (refresh_token_seq, user_email, refresh_token) "
-				+ "values ('9999', 'apple@apple.com', ?)";
+						+ "values ('9999', 'apple@apple.com', ?)";
 
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setString(1, accessToken);
@@ -104,7 +99,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + NOT_MEMBER_ID_TOKEN).
+			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + NOT_MEMBER_APPLE_ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
@@ -123,7 +118,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + ID_TOKEN).
+			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + APPLE_ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
@@ -142,7 +137,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + DIF_ID_TOKEN).
+			.post("/api/v1/user/login/" + PROVIDER_APPLE + "/" + GOOGLE_ID_TOKEN).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -214,8 +209,6 @@ public class UserApiControllerAcceptanceTest {
 	@Test
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
-
-
 		final JsonPath response = RestAssured.
 
 			given()
@@ -231,8 +224,28 @@ public class UserApiControllerAcceptanceTest {
 
 		assertThat(response.getString("accessToken")).isNotEqualTo(accessToken);
 	}
-
 	// TODO :: refresh token 3일 이하 남았을때 refresh token 재발급 테스트
+
+	// TODO :: jobField 조회 api 추가.
+	@Test
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+		final String response = RestAssured.
+
+			given()
+			.header("Authorization", "Bearer " + accessToken).
+
+			when()
+			.get(baseUrl + "/validate" + "/" + memberEmail).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(memberEmail);
+	}
+
 	private void assertLoginUser(JsonPath response) {
 		assertThat(response.getString("guestId")).isNull();
 		assertThat(response.getString("email")).isNotNull();

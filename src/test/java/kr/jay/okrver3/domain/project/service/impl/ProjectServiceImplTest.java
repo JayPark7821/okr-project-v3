@@ -86,7 +86,7 @@ class ProjectServiceImplTest {
 
 		ProjectInfo projectInfo = sut.registerProject(
 			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
-				List.of("keyResult1", "keyResult2"), null), 1L, List.of());
+				List.of("keyResult1", "keyResult2"), null), 999L, List.of());
 
 		assertThat(projectInfo.projectToken()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
@@ -105,7 +105,7 @@ class ProjectServiceImplTest {
 
 		ProjectInfo projectInfo = sut.registerProject(
 			new ProjectSaveCommand("projectObjective", projectSdt, projectEdt,
-				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), 1L, List.of(4L));
+				List.of("keyResult1", "keyResult2"), List.of("guest@email.com")), 999L, List.of(4L));
 
 		assertThat(projectInfo.projectToken()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
@@ -119,7 +119,7 @@ class ProjectServiceImplTest {
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
 	void retrieve_project_with_project_token() throws Exception {
 
-		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", 1L);
+		ProjectInfo projectInfo = sut.getProjectInfoBy("project-fgFHxGWeIUQt", 999L);
 
 		assertThat(projectInfo.projectToken()).isEqualTo("project-fgFHxGWeIUQt");
 		assertThat(projectInfo.objective()).isEqualTo("projectObjective");
@@ -133,7 +133,7 @@ class ProjectServiceImplTest {
 	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
 	void invite_team_member() throws Exception {
 
-		ProjectTeamMembersInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", 2L, 1L);
+		ProjectTeamMembersInfo response = sut.inviteTeamMember("project-fgFHxGWeIUQt", 998L, 999L);
 
 		assertThat(response.teamMemberSeq().size()).isEqualTo(3);
 
@@ -144,7 +144,7 @@ class ProjectServiceImplTest {
 	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
 	void validate_email_address() throws Exception {
 
-		sut.validateUserToInvite("project-fgFHxGWeIUQt", 4L, 1L);
+		sut.validateUserToInvite("project-fgFHxGWeIUQt", 996L, 999L);
 
 	}
 
@@ -153,7 +153,7 @@ class ProjectServiceImplTest {
 	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
 
-		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 4L, 2L))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 996L, 998L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
@@ -164,7 +164,7 @@ class ProjectServiceImplTest {
 	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void when_member_validate_email_address_will_throw_exception() throws Exception {
 
-		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 4L, 3L))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 996L, 997L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
@@ -175,7 +175,7 @@ class ProjectServiceImplTest {
 	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
 	void validate_email_address_already_team_member() throws Exception {
 
-		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 3L, 1L))
+		assertThatThrownBy(() -> sut.validateUserToInvite("project-fgFHxGWeIUQt", 997L, 999L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 	}
@@ -331,7 +331,7 @@ class ProjectServiceImplTest {
 	// 	for (int i = 0; i < threadCount; i++) {
 	// 		executorService.submit(() -> {
 	// 			try {
-	// 				sut.registerInitiative(requestDto, getUser(3L));
+	// 				sut.registerInitiative(requestDto, getUser(997L));
 	// 			} finally {
 	// 				latch.countDown();
 	// 			}

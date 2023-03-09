@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
@@ -130,6 +132,26 @@ class UserApiControllerTest {
 
 		assertThat(response.getBody().accessToken()).isNotEqualTo(accessToken);
 	}
+
+
+
+	@Test
+	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<String> response = sut.validateEmail(memberEmail, auth);
+		assertThat(response.getBody()).isEqualTo(memberEmail);
+	}
+
 
 	private static void assertGuestLoginResponse(LoginResponse body) {
 		assertThat(body.guestId()).containsPattern(

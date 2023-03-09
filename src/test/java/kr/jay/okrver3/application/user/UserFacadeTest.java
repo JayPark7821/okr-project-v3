@@ -26,6 +26,7 @@ import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
@@ -166,4 +167,24 @@ class UserFacadeTest {
 		assertThat(info.accessToken()).isNotEqualTo(accessToken);
 	}
 
+
+	@Test
+	@Sql({"classpath:insert-user.sql"})
+	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
+	void validate_email_address_for_register_project() throws Exception {
+		String memberEmail = "guest@email.com";
+
+		User user = getUser(999L);
+
+		final String response = sut.validateEmail(memberEmail, user.getUserSeq());
+
+		assertThat(response).isEqualTo(memberEmail);
+	}
+
+	private User getUser(Long seq) {
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", seq)
+			.getSingleResult();
+		return user;
+	}
 }

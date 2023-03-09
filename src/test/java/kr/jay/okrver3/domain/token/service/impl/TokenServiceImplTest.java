@@ -41,7 +41,7 @@ class TokenServiceImplTest {
 	@DisplayName("email이 입력 되었을때 기대하는 응답(AuthTokenInfo)을 반환한다.")
 	void create_new_authTokenInfo() throws Exception {
 		UserInfo userInfo =
-			new UserInfo(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
+			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
 				JobFieldDetail.WEB_SERVER_DEVELOPER);
 
 		AuthTokenInfo authTokenInfo = sut.generateTokenSet(userInfo);
@@ -55,7 +55,7 @@ class TokenServiceImplTest {
 	void returns_old_refreshToken_when_expire_date_more_then_3days() throws Exception {
 		//given
 		UserInfo userInfo =
-			new UserInfo(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
+			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
 				JobFieldDetail.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken("apple@apple.com", key, 259300000L);
 		refreshTokenRepository.save(new RefreshToken("apple@apple.com", UsableRefreshToken));
@@ -73,7 +73,7 @@ class TokenServiceImplTest {
 	void returns_new_refreshToken_when_expire_date_less_then_3days() throws Exception {
 		//given
 		UserInfo userInfo =
-			new UserInfo(2L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
+			new UserInfo(998L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
 				JobFieldDetail.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 100000L);
 		refreshTokenRepository.save(new RefreshToken("google@google.com", UsableRefreshToken));

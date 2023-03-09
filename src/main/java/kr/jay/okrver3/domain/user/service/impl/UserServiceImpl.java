@@ -35,9 +35,10 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Optional<UserInfo> findByEmail(String email) {
+	public UserInfo findUserInfoBy(String email) {
 		return userRepository.findByEmail(email)
-			.map(UserInfo::new);
+			.map(UserInfo::new)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_EMAIL));
 	}
 
 	@Override

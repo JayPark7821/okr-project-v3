@@ -39,7 +39,7 @@ class NotificationServiceImplTest {
 	@DisplayName("notification저장에 성공")
 	void send_notification() throws Exception {
 
-		User user = new User(1L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
+		User user = new User(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
 			RoleType.ADMIN, "pass", JobFieldDetail.WEB_FRONT_END_DEVELOPER);
 
 		sut.sendInvitationNotification(Notifications.NEW_TEAM_MATE, List.of(user.getUserSeq()), "invitedUser", "프로젝트명");

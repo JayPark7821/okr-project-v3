@@ -43,6 +43,10 @@ public class UserFacade {
 		return new LoginInfo(userInfo, tokenService.generateTokenSet(userInfo));
 	}
 
+	public String validateEmail(String email, Long userFromAuthentication) {
+		return userService.findUserInfoBy(email).email();
+	}
+
 	public AuthTokenInfo getNewAccessToken(String accessToken) {
 		return tokenService.getNewAccessToken(accessToken);
 	}

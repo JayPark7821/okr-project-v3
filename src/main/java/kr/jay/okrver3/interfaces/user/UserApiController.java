@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.user.UserFacade;
 import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.common.exception.ErrorCode;
+import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.common.utils.HeaderUtil;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.service.LoginInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
@@ -67,10 +72,31 @@ public class UserApiController {
 		);
 	}
 
+
+	@GetMapping("/validate/{email}")
+	ResponseEntity<String> validateEmail(
+		@PathVariable("email") String email,
+		Authentication authentication
+	) {
+		return Response.successOk(
+			userFacade.validateEmail(
+				email,
+				getUserFromAuthentication(authentication)
+			)
+		);
+	}
+
+
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
 		return Response.successOk(
 			mapper.of(loginInfo)
 		);
+	}
+
+	private Long getUserFromAuthentication(Authentication authentication) {
+		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED))
+			.getUserSeq();
 	}
 
 }
