@@ -32,6 +32,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -212,6 +213,14 @@ public class ProjectApiController {
 				getUserFromAuthentication(authentication)
 			)
 		);
+	}
+
+	@GetMapping("/initiative/{initiativeToken}")
+	ResponseEntity<InitiativeDetailResponse> getInitiative(
+		@PathVariable("initiativeToken") String initiativeToken,
+		Authentication authentication
+	) {
+		return null;
 	}
 
 	//------------------ initiative 관련 api ------------------//
