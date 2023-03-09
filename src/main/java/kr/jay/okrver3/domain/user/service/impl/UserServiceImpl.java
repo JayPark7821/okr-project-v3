@@ -76,4 +76,9 @@ public class UserServiceImpl implements UserService {
 			.map(jobCategory -> new JobInfo(jobCategory.getCode(), jobCategory.getTitle()))
 			.toList();
 	}
+
+	@Override
+	public List<JobInfo> getJobField(JobCategory category){
+		return null;
+	}
 }

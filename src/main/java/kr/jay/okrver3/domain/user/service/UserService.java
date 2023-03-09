@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
+import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
@@ -21,5 +22,5 @@ public interface UserService {
 
 	List<JobInfo> getJobCategory();
 
-	List<JobInfo> getJobField();
+	List<JobInfo> getJobField(JobCategory category);
 }

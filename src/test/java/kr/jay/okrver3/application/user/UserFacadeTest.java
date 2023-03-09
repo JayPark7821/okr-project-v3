@@ -26,6 +26,7 @@ import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
+import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.info.JobInfo;
@@ -196,7 +197,7 @@ class UserFacadeTest {
 	@Test
 	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
-		String category = "BACK_END";
+		JobCategory category = JobCategory.BACK_END;
 		List<JobInfo> response = sut.getJobField(category);
 		assertThat(response.size()).isEqualTo(4);
 	}

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.domain.guset.service.GuestService;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.TokenService;
+import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
@@ -57,8 +58,8 @@ public class UserFacade {
 		return userService.getJobCategory();
 	}
 
-	public List<JobInfo> getJobField(String category) {
-		return userService.getJobField();
+	public List<JobInfo> getJobField(JobCategory category) {
+		return userService.getJobField(category);
 	}
 }
 

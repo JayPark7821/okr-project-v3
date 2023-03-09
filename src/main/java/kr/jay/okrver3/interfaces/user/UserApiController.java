@@ -21,6 +21,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.common.utils.HeaderUtil;
+import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
@@ -98,8 +99,10 @@ public class UserApiController {
 
 	@GetMapping("/job/{category}/field")
 	ResponseEntity<List<JobResponse>> getJobField(@PathVariable("category") String category) {
+
+		JobCategory jobCategory = JobCategory.of(category);
 		return Response.successOk(
-			userFacade.getJobField(category).stream()
+			userFacade.getJobField(jobCategory).stream()
 				.map(mapper::of).toList()
 		);
 	}

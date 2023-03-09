@@ -80,6 +80,6 @@ public enum JobCategory implements JobType {
 		return Arrays.stream(JobCategory.values())
 			.filter(r -> r.getCode().equals(code))
 			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_JOB_FIELD));
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_JOB_CATEGORY));
 	}
 }
