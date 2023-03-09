@@ -379,6 +379,7 @@ class ProjectApiControllerTest {
 
 
 	@Test
+	@Sql("classpath:insert-project-date.sql")
 	void 년월로_getInitiativeDates를_호출하면_기대하는_응답을_리턴한다() throws Exception {
 		String yearmonth = "2023-12";
 

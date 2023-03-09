@@ -142,8 +142,7 @@ public class ProjectFacade {
 		return projectService.getInitiativeByDate(searchDate, userSeq);
 	}
 
-	public List<String> getInitiativeDatesBy(YearMonth validateYearMonth, Long userFromAuthentication) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.application.project.ProjectFacade.getInitiativeDatesBy()");
+	public List<String> getInitiativeDatesBy(YearMonth yearMonth, Long userSeq) {
+		return projectService.getInitiativeDatesBy(yearMonth, userSeq);
 	}
 }
