@@ -1,8 +1,10 @@
 package kr.jay.okrver3.domain.user.service.impl;
 
 import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
@@ -101,6 +104,13 @@ class UserServiceImplTest {
 		assertThatThrownBy(() -> sut.registerNewUserFrom(guestInfo, joinRequest))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobCategoryResponse를_반환한다() throws Exception {
+
+		List<JobInfo> response = sut.getJobCategory();
+		assertThat(response.size()).isEqualTo(6);
 	}
 
 }

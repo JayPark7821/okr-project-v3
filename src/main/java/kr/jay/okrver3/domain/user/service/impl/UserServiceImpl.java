@@ -1,5 +1,7 @@
 package kr.jay.okrver3.domain.user.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -7,9 +9,11 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
+import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.JobFieldDetail;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserRepository;
 import kr.jay.okrver3.domain.user.service.UserService;
@@ -64,5 +68,12 @@ public class UserServiceImpl implements UserService {
 			.build();
 
 		return new UserInfo(userRepository.save(user));
+	}
+
+	@Override
+	public List<JobInfo> getJobCategory() {
+		return Arrays.stream(JobField.values())
+			.map(jobField -> new JobInfo(jobField.getCode(), jobField.getTitle()))
+			.toList();
 	}
 }
