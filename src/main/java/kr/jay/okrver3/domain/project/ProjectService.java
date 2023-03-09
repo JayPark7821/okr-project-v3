@@ -1,5 +1,6 @@
 package kr.jay.okrver3.domain.project;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -42,5 +44,7 @@ public interface ProjectService {
 	FeedbackInfo registerFeedback(FeedbackSaveCommand command, Long requesterSeq);
 
 	InitiativeDetailInfo getInitiativeBy(String initiativeToken, Long userSeq);
+
+	List<InitiativeForCalendarInfo> getInitiativeByDate(LocalDate searchDate, Long userSeq);
 }
 

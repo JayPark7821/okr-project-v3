@@ -137,8 +137,7 @@ public class ProjectFacade {
 		return projectService.getInitiativeBy(initiativeToken, userSeq);
 	}
 
-	public List<InitiativeForCalendarInfo> getInitiativeByDate(LocalDate searchDate, Long userFromAuthentication) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.application.project.ProjectFacade.getInitiativeByDate())");
+	public List<InitiativeForCalendarInfo> getInitiativeByDate(LocalDate searchDate, Long userSeq) {
+		return projectService.getInitiativeByDate(searchDate, userSeq);
 	}
 }
