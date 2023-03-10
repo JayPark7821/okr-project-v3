@@ -36,6 +36,7 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
@@ -564,6 +565,50 @@ class ProjectServiceImplTest {
 		assertThat(response.get(0)).isEqualTo("2023-12-01");
 		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
 
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 자신의_행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		IniFeedbackInfo response =
+			sut.getInitiativeFeedbacksBy(initiativeToken, 3L);
+
+		assertThat(response.myInitiative()).isTrue();
+		assertThat(response.wroteFeedback()).isFalse();
+		assertThat(response.feedback().size()).isEqualTo(2);
 
 	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 피드백X_팀원의_행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		IniFeedbackInfo response =
+			sut.getInitiativeFeedbacksBy(initiativeToken, 4L);
+
+		assertThat(response.myInitiative()).isFalse();
+		assertThat(response.wroteFeedback()).isFalse();
+		assertThat(response.feedback().size()).isEqualTo(2);
+
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 피드백을남긴_팀원의_행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		IniFeedbackInfo response =
+			sut.getInitiativeFeedbacksBy(initiativeToken, 2L);
+
+		assertThat(response.myInitiative()).isFalse();
+		assertThat(response.wroteFeedback()).isTrue();
+		assertThat(response.feedback().size()).isEqualTo(2);
+
+	}
+
+
 }
