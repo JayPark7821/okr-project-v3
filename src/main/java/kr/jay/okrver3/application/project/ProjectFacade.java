@@ -148,7 +148,7 @@ public class ProjectFacade {
 	}
 
 	public IniFeedbackInfo getInitiativeFeedbacksBy(String initiativeToken, Long userSeq) {
-		return null;
+		return projectService.getInitiativeFeedbacksBy(initiativeToken, userSeq);
 	}
 
 }

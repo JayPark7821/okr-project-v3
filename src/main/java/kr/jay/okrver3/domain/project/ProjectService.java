@@ -13,6 +13,7 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
@@ -49,5 +50,7 @@ public interface ProjectService {
 	List<InitiativeForCalendarInfo> getInitiativeByDate(LocalDate searchDate, Long userSeq);
 
 	List<String> getInitiativeDatesBy(YearMonth yearMonth, Long userSeq);
+
+	IniFeedbackInfo getInitiativeFeedbacksBy(String initiativeToken, Long userSeq);
 }
 

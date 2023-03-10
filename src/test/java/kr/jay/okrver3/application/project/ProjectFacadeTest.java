@@ -37,6 +37,7 @@ import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
@@ -60,6 +61,7 @@ import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
+import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
@@ -463,6 +465,22 @@ class ProjectFacadeTest {
 		assertThat(response.get(0)).isEqualTo("2023-12-01");
 		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
 
+	}
+
+
+
+	@Test
+	void 행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		IniFeedbackInfo response =
+			sut.getInitiativeFeedbacksBy(initiativeToken, 15L);
+
+		assertThat(response.myInitiative()).isTrue();
+		assertThat(response.wroteFeedback()).isFalse();
+		assertThat(response.feedback().size()).isEqualTo(0);
+		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
+		assertThat(response.feedback().get(0).grade()).isEqualTo("BEST_RESULT");
 	}
 
 }
