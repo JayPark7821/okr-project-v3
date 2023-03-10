@@ -9,9 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +27,7 @@ import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
@@ -271,7 +270,14 @@ public class ProjectApiController {
 		@PathVariable("initiativeToken") String initiativeToken,
 		Authentication authentication
 	) {
-		return null;
+		IniFeedbackInfo info = projectFacade.getInitiativeFeedbacksBy(
+			initiativeToken,
+			getUserFromAuthentication(authentication)
+		);
+
+		return Response.successOk(
+			mapper.of(info)
+		);
 	}
 
 	//------------------ initiative 관련 api ------------------//

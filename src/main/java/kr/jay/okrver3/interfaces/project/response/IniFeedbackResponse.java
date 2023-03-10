@@ -5,6 +5,6 @@ import java.util.List;
 public record IniFeedbackResponse(
 	boolean myInitiative,
 	boolean wroteFeedback,
-	List<FeedbackResponse> feedback
+	List<FeedbackDetailResponse> feedback
 ) {
 }

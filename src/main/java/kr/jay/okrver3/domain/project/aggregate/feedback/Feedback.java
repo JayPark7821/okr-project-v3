@@ -38,7 +38,7 @@ public class Feedback extends BaseEntity {
 
 	private String feedbackToken;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "project_initiative_id", updatable = false)
+	@JoinColumn(name = "initiative_id", updatable = false)
 	private Initiative initiative;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
