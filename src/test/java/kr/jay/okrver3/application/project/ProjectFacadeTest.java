@@ -468,17 +468,19 @@ class ProjectFacadeTest {
 	}
 
 	@Test
+	@Sql("classpath:insert-project-date.sql")
 	void 행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
 		IniFeedbackInfo response =
-			sut.getInitiativeFeedbacksBy(initiativeToken, 15L);
+			sut.getInitiativeFeedbacksBy(initiativeToken, 3L);
 
 		assertThat(response.myInitiative()).isTrue();
 		assertThat(response.wroteFeedback()).isFalse();
-		assertThat(response.feedback().size()).isEqualTo(0);
+		assertThat(response.feedback().size()).isEqualTo(2);
 		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
-		assertThat(response.feedback().get(0).grade()).isEqualTo("BEST_RESULT");
+		assertThat(response.feedback().get(1).feedbackToken()).isEqualTo("feedback_aaaaaagawe3rfwa3");;
+
 	}
 
 }

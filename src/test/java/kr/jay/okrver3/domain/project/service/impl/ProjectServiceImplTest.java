@@ -579,6 +579,8 @@ class ProjectServiceImplTest {
 		assertThat(response.myInitiative()).isTrue();
 		assertThat(response.wroteFeedback()).isFalse();
 		assertThat(response.feedback().size()).isEqualTo(2);
+		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
+		assertThat(response.feedback().get(1).feedbackToken()).isEqualTo("feedback_aaaaaagawe3rfwa3");
 
 	}
 
