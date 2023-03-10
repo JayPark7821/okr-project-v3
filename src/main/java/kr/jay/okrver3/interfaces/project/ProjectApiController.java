@@ -38,6 +38,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
@@ -265,9 +266,16 @@ public class ProjectApiController {
 		);
 	}
 
+	@GetMapping("/feedback/{initiativeToken}")
+	public ResponseEntity<IniFeedbackResponse> getInitiativeFeedbacksBy(
+		@PathVariable("initiativeToken") String initiativeToken,
+		Authentication authentication
+	) {
+		return null;
+	}
+
 	//------------------ initiative 관련 api ------------------//
 	// TODO :: initiative update
-
 
 	//------------------ feedback 관련 api ------------------//
 	// TODO :: 전체 피드백 조회
@@ -280,7 +288,6 @@ public class ProjectApiController {
 	// TODO :: notification 읽음 처리
 
 	// TODO :: notification 삭제 처리
-
 
 	private Long getUserFromAuthentication(Authentication authentication) {
 		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
@@ -296,7 +303,6 @@ public class ProjectApiController {
 		throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_PROJECT_YN);
 	}
 
-
 	public static YearMonth validateYearMonth(String yearMonth) {
 		try {
 			return yearMonth == null ? YearMonth.now() :
@@ -306,7 +312,7 @@ public class ProjectApiController {
 		}
 	}
 
-	private  LocalDate validateDate(String date) {
+	private LocalDate validateDate(String date) {
 		try {
 			return LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyyMMdd"));
 		} catch (Exception e) {

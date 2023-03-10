@@ -45,6 +45,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -79,6 +80,7 @@ public class ProjectApiControllerAcceptanceTest {
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-keyresult.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-initiative.sql"));
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-feedback.sql"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -655,7 +657,7 @@ public class ProjectApiControllerAcceptanceTest {
 	void 행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
-		final JsonPath response = RestAssured.
+		final IniFeedbackResponse response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
@@ -666,8 +668,14 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().jsonPath();
+			.extract().body().jsonPath()
+			.getObject("", IniFeedbackResponse.class);
 
+		assertThat(response.myInitiative()).isTrue();
+		assertThat(response.wroteFeedback()).isFalse();
+		assertThat(response.feedback().size()).isEqualTo(0);
+		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
+		assertThat(response.feedback().get(0).grade()).isEqualTo("BEST_RESULT");
 
 	}
 }

@@ -35,6 +35,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
@@ -393,6 +394,24 @@ class ProjectApiControllerTest {
 		assertThat(response.get(0)).isEqualTo("2023-12-01");
 		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
 
+	}
+
+
+	@Test
+	void 행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		IniFeedbackResponse response =
+			sut.getInitiativeFeedbacksBy(
+				initiativeToken,
+				getAuthenticationToken(15L)
+			).getBody();
+
+		assertThat(response.myInitiative()).isTrue();
+		assertThat(response.wroteFeedback()).isFalse();
+		assertThat(response.feedback().size()).isEqualTo(0);
+		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
+		assertThat(response.feedback().get(0).grade()).isEqualTo("BEST_RESULT");
 	}
 
 
