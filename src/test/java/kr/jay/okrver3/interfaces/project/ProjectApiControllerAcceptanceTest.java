@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
@@ -38,6 +39,7 @@ import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.info.TeamMemberUserInfo;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
@@ -673,9 +675,9 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response.myInitiative()).isTrue();
 		assertThat(response.wroteFeedback()).isFalse();
-		assertThat(response.feedback().size()).isEqualTo(0);
+		assertThat(response.feedback().size()).isEqualTo(1);
 		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
-		assertThat(response.feedback().get(0).grade()).isEqualTo("BEST_RESULT");
+		assertThat(response.feedback().get(0).grade()).isEqualTo(FeedbackType.BEST_RESULT);
 
 	}
 }
