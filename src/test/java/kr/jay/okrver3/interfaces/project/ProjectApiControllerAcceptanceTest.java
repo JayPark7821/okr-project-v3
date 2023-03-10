@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
@@ -38,6 +39,7 @@ import kr.jay.okrver3.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.info.TeamMemberUserInfo;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
@@ -45,6 +47,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -79,6 +82,7 @@ public class ProjectApiControllerAcceptanceTest {
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-team.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-keyresult.sql"));
 			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-initiative.sql"));
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-feedback.sql"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -648,6 +652,32 @@ public class ProjectApiControllerAcceptanceTest {
 			.extract().body().asString();
 
 		assertThat(response).isEqualTo(ErrorCode.INVALID_YEARMONTH_FORMAT.getMessage());
+
+	}
+
+	@Test
+	void 행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		final IniFeedbackResponse response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/feedback/" + initiativeToken).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath()
+			.getObject("", IniFeedbackResponse.class);
+
+		assertThat(response.myInitiative()).isTrue();
+		assertThat(response.wroteFeedback()).isFalse();
+		assertThat(response.feedback().size()).isEqualTo(1);
+		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
+		assertThat(response.feedback().get(0).grade()).isEqualTo(FeedbackType.BEST_RESULT);
 
 	}
 }

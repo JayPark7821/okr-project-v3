@@ -103,3 +103,12 @@ insert into initiative
 (99990, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', false, '2023-12-14', 'ini_ieaaaawef3awef2AH8', 99994, 'ini name', '2000-12-12', 88884, 7),
 (99989, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-15', 'ini_ieaaugywef3awef2AH8', 99994, 'ini name', '2000-12-12', 88884, 15)
 ;
+
+
+
+insert into feedback (feedback_id, created_date, last_modified_date, created_by, last_modified_by, feedback_token, grade_mark, initiative_id, checked, opinion, project_id, user_seq) values
+(9999, '2023-12-16', '2022-12-16', 'testUser2', 'testUser2', 'feedback_el6q34zazzSyWx9', 'BEST_RESULT', 99999, false, '정말 좋아요!!', 99998, 3),
+(9998, '2022-12-16', '2022-12-16', 'testUser2', 'testUser2', 'feedback_aaaaaagawe3rfwa3', 'BEST_RESULT', 99999, false, '정말 좋아요!!', 99998, 2)
+;
+
+

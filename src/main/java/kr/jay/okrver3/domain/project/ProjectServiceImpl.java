@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.domain.project.aggregate.feedback.Feedback;
 import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackRepository;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.aggregate.initiative.InitiativeRepository;
@@ -26,7 +27,9 @@ import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
+import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
@@ -201,6 +204,29 @@ public class ProjectServiceImpl implements ProjectService {
 			.flatMap(Collection::stream)
 			.distinct()
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public IniFeedbackInfo getInitiativeFeedbacksBy(String initiativeToken, Long userSeq) {
+		Initiative initiative =
+			initiativeRepository.findInitiativeForFeedbackByInitiativeTokenAndRequesterSeq(
+				initiativeToken, userSeq
+			).orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+
+		List<Feedback> feedbacks =
+			feedbackRepository.findInitiativeFeedbacksByInitiativeToken(initiativeToken);
+
+		boolean isRequestersFeedback = initiative.getTeamMember().getUserSeq().equals(userSeq);
+		boolean wroteFeedback = !isRequestersFeedback ?
+			feedbacks.stream().filter(f -> f.getTeamMember().getUserSeq().equals(userSeq)).findFirst().isPresent() : false;
+
+		return new IniFeedbackInfo(
+			isRequestersFeedback,
+			wroteFeedback,
+			feedbacks.stream()
+			.map(FeedbackDetailInfo::new)
+			.collect(Collectors.toList())
+		);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
