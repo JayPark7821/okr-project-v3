@@ -156,6 +156,7 @@ public class ProjectDtoMapper {
 		return new IniFeedbackResponse(
 			info.myInitiative(),
 			info.wroteFeedback(),
+			info.gradeCount(),
 			info.feedback().stream().map(this::of).toList()
 		);
 	}

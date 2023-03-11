@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -216,17 +217,7 @@ public class ProjectServiceImpl implements ProjectService {
 		List<Feedback> feedbacks =
 			feedbackRepository.findInitiativeFeedbacksByInitiativeToken(initiativeToken);
 
-		boolean isRequestersFeedback = initiative.getTeamMember().getUserSeq().equals(userSeq);
-		boolean wroteFeedback = !isRequestersFeedback ?
-			feedbacks.stream().filter(f -> f.getTeamMember().getUserSeq().equals(userSeq)).findFirst().isPresent() : false;
-
-		return new IniFeedbackInfo(
-			isRequestersFeedback,
-			wroteFeedback,
-			feedbacks.stream()
-			.map(FeedbackDetailInfo::new)
-			.collect(Collectors.toList())
-		);
+		return getIniFeedbackinfoFrom(userSeq, initiative, feedbacks);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -282,6 +273,22 @@ public class ProjectServiceImpl implements ProjectService {
 
 	private LocalDate getToDate(LocalDate monthEndDt, Initiative i) {
 		return (i.getEdt().isBefore(monthEndDt) ? i.getEdt() : monthEndDt).plusDays(1);
+	}
+
+	private IniFeedbackInfo getIniFeedbackinfoFrom(Long userSeq, Initiative initiative, List<Feedback> feedbacks) {
+		boolean isRequestersFeedback = initiative.getTeamMember().getUserSeq().equals(userSeq);
+		boolean wroteFeedback = !isRequestersFeedback ?
+			feedbacks.stream().filter(f -> f.getTeamMember().getUserSeq().equals(userSeq)).findFirst().isPresent() : false;
+
+		return new IniFeedbackInfo(
+			isRequestersFeedback,
+			wroteFeedback,
+			feedbacks.stream()
+				.collect(Collectors.groupingBy(Feedback::getGrade, Collectors.counting())),
+			feedbacks.stream()
+				.map(FeedbackDetailInfo::new)
+				.collect(Collectors.toList())
+		);
 	}
 
 }

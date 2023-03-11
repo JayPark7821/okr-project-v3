@@ -678,6 +678,7 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.feedback().size()).isEqualTo(1);
 		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
 		assertThat(response.feedback().get(0).grade()).isEqualTo(FeedbackType.BEST_RESULT);
+		assertThat(response.gradeCount().get(FeedbackType.BEST_RESULT).longValue()).isEqualTo(1L);
 
 	}
 }

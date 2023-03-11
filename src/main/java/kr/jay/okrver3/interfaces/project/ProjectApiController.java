@@ -285,7 +285,7 @@ public class ProjectApiController {
 
 	//------------------ feedback 관련 api ------------------//
 	// TODO :: 전체 피드백 조회
-	// TODO :: initiativeToken으로 feedback 조회
+	// TODO :: initiativeToken으로 feedback 조회 -> 피드백 grade count 추가
 	// TODO :: 피드백을 남겨야하는 count 조회
 
 	// TODO :: 피드백을 확인 api

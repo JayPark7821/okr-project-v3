@@ -29,6 +29,7 @@ import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
+import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
@@ -609,6 +610,10 @@ class ProjectServiceImplTest {
 		assertThat(response.myInitiative()).isFalse();
 		assertThat(response.wroteFeedback()).isTrue();
 		assertThat(response.feedback().size()).isEqualTo(2);
+		assertThat(response.gradeCount().get(FeedbackType.BEST_RESULT).longValue()).isEqualTo(1L);
+		assertThat(response.gradeCount().get(FeedbackType.BURNING_PASSION).longValue()).isEqualTo(1);
+		assertThat(response.gradeCount().get(FeedbackType.GOOD_IDEA).longValue()).isEqualTo(0);
+		assertThat(response.gradeCount().get(FeedbackType.COMMUNI_KING).longValue()).isEqualTo(0);
 
 	}
 
