@@ -4,6 +4,7 @@ import kr.jay.okrver3.domain.project.aggregate.feedback.Feedback;
 import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 
 public record FeedbackDetailInfo(
+	String initiativeToken,
 	String feedbackToken,
 	String opinion,
 	FeedbackType grade,
@@ -14,6 +15,7 @@ public record FeedbackDetailInfo(
 
 	public FeedbackDetailInfo(Feedback feedback) {
 		this(
+			feedback.getInitiative().getInitiativeToken(),
 			feedback.getFeedbackToken(),
 			feedback.getOpinion(),
 			feedback.getGrade(),
