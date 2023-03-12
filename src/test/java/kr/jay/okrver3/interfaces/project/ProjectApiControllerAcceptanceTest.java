@@ -678,8 +678,88 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.feedback().size()).isEqualTo(1);
 		assertThat(response.feedback().get(0).feedbackToken()).isEqualTo("feedback_el6q34zazzSyWx9");
 		assertThat(response.feedback().get(0).grade()).isEqualTo(FeedbackType.BEST_RESULT);
+		assertThat(response.gradeCount().get(FeedbackType.BEST_RESULT).longValue()).isEqualTo(1L);
+	}
+
+	@Test
+	void getCountOfInitiativeToGiveFeedback을_호출하면_아직_피드백을_남기지않은_팀원의_완료된_행동전략count를_리턴한다() throws Exception {
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/feedback/count"  ).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo("2");
+	}
+
+	@Test
+	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/feedback").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
 
 	}
+
+
+	@Test
+	void updateFeedbackStatus를_호춯하면_피드백의_상태를_update한다() throws Exception {
+		String feedbackToken = "feedback_el6q34zazzSyWx9";
+		final JsonPath response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.put(baseUrl + "/feedback/" + feedbackToken).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath();
+
+		assertThat(response.getString("")).isEqualTo("feedback_el6q34zazzSyWx9");
+	}
+
+
+
+	@Test
+	void updateInitative를_호출하여_행동전략을_수정한다() throws Exception {
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + authToken).
+
+			when()
+			.get(baseUrl + "/initiative/" + initiativeToken + "/done").
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo(initiativeToken);
+
+	}
+
+
 }
 
 

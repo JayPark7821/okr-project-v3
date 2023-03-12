@@ -156,12 +156,14 @@ public class ProjectDtoMapper {
 		return new IniFeedbackResponse(
 			info.myInitiative(),
 			info.wroteFeedback(),
+			info.gradeCount(),
 			info.feedback().stream().map(this::of).toList()
 		);
 	}
 
 	public FeedbackDetailResponse of(FeedbackDetailInfo info) {
 		return new FeedbackDetailResponse(
+			info.initiativeToken(),
 			info.feedbackToken(),
 			info.opinion(),
 			info.grade(),

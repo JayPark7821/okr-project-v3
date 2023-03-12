@@ -29,6 +29,7 @@ import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
+import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
@@ -609,8 +610,17 @@ class ProjectServiceImplTest {
 		assertThat(response.myInitiative()).isFalse();
 		assertThat(response.wroteFeedback()).isTrue();
 		assertThat(response.feedback().size()).isEqualTo(2);
+		assertThat(response.gradeCount().get(FeedbackType.BEST_RESULT).longValue()).isEqualTo(1L);
+		assertThat(response.gradeCount().get(FeedbackType.BURNING_PASSION).longValue()).isEqualTo(1);
 
 	}
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void getCountOfInitiativeToGiveFeedback을_호출하면_아직_피드백을_남기지않은_팀원의_완료된_행동전략count를_리턴한다() throws Exception {
 
+		Integer response = sut.getCountOfInitiativeToGiveFeedback(3L);
+
+		assertThat(response).isEqualTo(1);
+	}
 }

@@ -14,6 +14,7 @@ public interface FeedbackJpaRepository extends JpaRepository<Feedback, Long> {
 		"FROM Feedback f " +
 		"join fetch f.teamMember t " +
 		"join fetch t.user u " +
+		"join fetch f.initiative i " +
 		"where f.initiative.initiativeToken =:initiativeToken " +
 		"order by f.createdDate desc")
 	List<Feedback> findInitiativeFeedbacksByInitiativeToken(

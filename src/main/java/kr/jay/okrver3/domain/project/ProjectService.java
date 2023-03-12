@@ -52,5 +52,7 @@ public interface ProjectService {
 	List<String> getInitiativeDatesBy(YearMonth yearMonth, Long userSeq);
 
 	IniFeedbackInfo getInitiativeFeedbacksBy(String initiativeToken, Long userSeq);
+
+	Integer getCountOfInitiativeToGiveFeedback(Long userSeq);
 }
 

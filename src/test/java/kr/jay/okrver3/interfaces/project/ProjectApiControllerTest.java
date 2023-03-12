@@ -416,6 +416,17 @@ class ProjectApiControllerTest {
 	}
 
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void getCountOfInitiativeToGiveFeedback을_호출하면_아직_피드백을_남기지않은_팀원의_완료된_행동전략count를_리턴한다() throws Exception {
+
+		Integer response = sut.getCountOfInitiativeToGiveFeedback(
+			getAuthenticationToken(3L)
+		).getBody();
+
+		assertThat(response).isEqualTo(1);
+	}
+
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", value)

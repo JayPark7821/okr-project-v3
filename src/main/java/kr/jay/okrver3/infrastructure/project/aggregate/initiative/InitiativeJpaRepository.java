@@ -75,4 +75,24 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 		@Param("monthEdt") LocalDate monthEdt,
 		@Param("userSeq")Long userSeq
 	);
+
+
+	@Query("select i  " +
+		"from Initiative i " +
+		"join i.teamMember it " +
+		"join i.keyResult k " +
+		"join k.project p " +
+		"join p.teamMember t " +
+		"join t.user u " +
+		"where i.done = true " +
+		"and u.userSeq =:userSeq " +
+		"and it.userSeq != :userSeq " +
+		"and i.iniId not in (select f.initiative.iniId " +
+		"                    from Feedback f " +
+		"                    join f.teamMember fm " +
+		"                    join fm.user fu " +
+		"                    where fu.userSeq = :userSeq ) ")
+	List<Initiative> getCountOfInitiativeToGiveFeedback(
+		@Param("userSeq")Long userSeq
+	);
 }
