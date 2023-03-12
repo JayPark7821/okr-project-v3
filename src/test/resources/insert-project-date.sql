@@ -113,7 +113,7 @@ insert into feedback (feedback_id, created_date, last_modified_date, created_by,
 insert into notification (notification_id, created_date, last_modified_date, checked, message, notification_token, type, user_seq) values
 (9999, '2022-12-17', '2022-12-16', 'NEW', '<>님이 <> 팀원이 되셨습니다!👏👏', 'noti_111fey1SERx', 'NEW_TEAM_MATE', 3),
 (9998, '2022-12-16', '2022-12-16', 'DELETED', '<>님이 <> 팀원이 되셨습니다!👏👏', 'noti_e2222y1SERx', 'NEW_TEAM_MATE', 16),
-(9997, '2022-12-18', '2022-12-16', 'NEW', '<>님이 <> 팀원이 되셨습니다!👏👏', 'noti_aaaaaMoZey1SERx', 'NEW_TEAM_MATE', 15),
+(9997, '2022-12-18', '2022-12-16', 'NEW', '<>님이 <> 팀원이 되셨습니다!👏👏', 'noti_aaaaaMoZey1SERx', 'NEW_TEAM_MATE', 16),
 (9996, '2022-12-19', '2022-12-16', 'DELETED', '<>님이 <> 팀원이 되셨습니다!👏👏', 'noti_e3eeddoZey1SERx', 'NEW_TEAM_MATE', 16),
 (9995, '2022-12-20', '2022-12-16', 'CHECKED', '<>님이 <> 팀원이 되셨습니다!👏👏', 'noti_e144441Zey1SERx', 'NEW_TEAM_MATE', 16),
 (9994, '2022-12-21', '2022-12-16', 'NEW', '<>님이 <> 팀원이 되셨습니다!👏👏', 'noti_eK5555535ey1SERx', 'NEW_TEAM_MATE', 3),

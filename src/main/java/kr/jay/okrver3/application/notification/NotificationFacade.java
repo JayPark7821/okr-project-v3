@@ -4,8 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.google.common.io.Files;
-
 import kr.jay.okrver3.domain.notification.NotificationService;
 import kr.jay.okrver3.domain.notification.info.NotificationInfo;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +16,7 @@ public class NotificationFacade {
 
 	private final NotificationService notificationService;
 
-	public Page<NotificationInfo> getNotifications(Pageable pageable, Long userSeq){
+	public Page<NotificationInfo> getNotifications(Pageable pageable, Long userSeq) {
 		return notificationService.getNotifications(pageable, userSeq);
 	}
 }
