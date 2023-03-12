@@ -151,4 +151,7 @@ public class ProjectFacade {
 		return projectService.getInitiativeFeedbacksBy(initiativeToken, userSeq);
 	}
 
+	public Integer getCountOfInitiativeToGiveFeedback(Long userFromAuthentication) {
+		return null;
+	}
 }

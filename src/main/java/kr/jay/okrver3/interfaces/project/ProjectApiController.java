@@ -280,6 +280,21 @@ public class ProjectApiController {
 		);
 	}
 
+
+	@GetMapping("/feedback/count")
+	public ResponseEntity<Integer> getCountOfInitiativeToGiveFeedback(
+		Authentication authentication
+	) {
+		return Response.successOk(
+			projectFacade.getCountOfInitiativeToGiveFeedback(
+				getUserFromAuthentication(authentication)
+			)
+		);
+	}
+
+
+
+
 	//------------------ initiative 관련 api ------------------//
 	// TODO :: initiative update
 
