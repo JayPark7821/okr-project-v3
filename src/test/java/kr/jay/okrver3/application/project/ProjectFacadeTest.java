@@ -57,6 +57,7 @@ import kr.jay.okrver3.domain.project.validator.SelfFeedbackValidator;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
+import kr.jay.okrver3.infrastructure.notification.NotificationQueryDslRepository;
 import kr.jay.okrver3.infrastructure.notification.NotificationRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
@@ -64,8 +65,6 @@ import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
-import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
@@ -74,7 +73,7 @@ import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class,
 	InitiativeRepositoryImpl.class, FeedbackRepositoryImpl.class, InitiativeDoneValidator.class,
 	InitiativeQueryDslRepository.class, NotificationRepositoryImpl.class, SelfFeedbackValidator.class,
-	InitiativeInProgressValidator.class, FeedbackQueryDslRepository.class
+	InitiativeInProgressValidator.class, FeedbackQueryDslRepository.class, NotificationQueryDslRepository.class
 })
 class ProjectFacadeTest {
 
@@ -424,7 +423,6 @@ class ProjectFacadeTest {
 
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
@@ -456,7 +454,6 @@ class ProjectFacadeTest {
 		assertThat(response.get(0).endDate()).isEqualTo("2023-12-14");
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 년월로_getInitiativeDates를_호출하면_기대하는_응답을_리턴한다() throws Exception {
@@ -467,7 +464,7 @@ class ProjectFacadeTest {
 
 		assertThat(response.size()).isEqualTo(14);
 		assertThat(response.get(0)).isEqualTo("2023-12-01");
-		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
+		assertThat(response.get(response.size() - 1)).isEqualTo("2023-12-14");
 
 	}
 
@@ -499,7 +496,7 @@ class ProjectFacadeTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
-		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3","feedback_el6q34zazzSyWx9" );
+		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3", "feedback_el6q34zazzSyWx9");
 
 		SearchRange searchRange = SearchRange.ALL;
 		Page<FeedbackDetailInfo> response = sut.getRecievedFeedback(

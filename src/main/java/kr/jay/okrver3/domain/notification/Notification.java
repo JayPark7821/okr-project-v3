@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import kr.jay.okrver3.common.audit.BaseEntity;
 import kr.jay.okrver3.common.utils.TokenGenerator;
 import kr.jay.okrver3.domain.user.User;
 import lombok.AccessLevel;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "notification")
-public class Notification {
+public class Notification extends BaseEntity {
 
 	private static final String NOTIFICATION_PREFIX = "noti-";
 
@@ -45,6 +46,10 @@ public class Notification {
 
 	@Column(name = "message")
 	private String msg;
+
+	@Column(name = "checked")
+	@Enumerated(EnumType.STRING)
+	private NotificationCheckType status;
 
 	public Notification(Long userSeq, Notifications type, String... args) {
 		this.notificationToken = TokenGenerator.randomCharacterWithPrefix(NOTIFICATION_PREFIX);
