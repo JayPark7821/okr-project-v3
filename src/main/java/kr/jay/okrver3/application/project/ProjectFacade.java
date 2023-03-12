@@ -158,7 +158,6 @@ public class ProjectFacade {
 	}
 
 	public Page<FeedbackDetailInfo> getRecievedFeedback(SearchRange range, Long userSeq, Pageable pageable) {
-		throw new UnsupportedOperationException(
-			"kr.jay.okrver3.application.project.ProjectFacade.getRecievedFeedback()");
+		return projectService.getRecievedFeedback(range, userSeq, pageable);
 	}
 }

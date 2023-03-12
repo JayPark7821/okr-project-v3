@@ -31,12 +31,14 @@ import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
+import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
@@ -61,6 +63,7 @@ import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
+import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 
 @DataJpaTest
@@ -491,5 +494,24 @@ class ProjectFacadeTest {
 
 		assertThat(response).isEqualTo(1);
 	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
+		SearchRange searchRange = SearchRange.ALL;
+		Page<FeedbackDetailInfo> response = sut.getRecievedFeedback(
+			searchRange,
+			3L,
+			PageRequest.of(0, 5)
+		);
+
+		assertThat(response.getTotalElements()).isEqualTo(2);
+		List<FeedbackDetailInfo> content = response.getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+			FeedbackDetailInfo r = content.get(i);
+		}
+	}
+
 
 }
