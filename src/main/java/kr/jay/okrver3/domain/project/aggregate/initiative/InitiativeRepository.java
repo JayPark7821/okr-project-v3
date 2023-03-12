@@ -7,6 +7,10 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.google.common.io.Files;
+
+import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
+
 public interface InitiativeRepository {
 
 	Optional<Initiative> findInitiativeForFeedbackByInitiativeTokenAndRequesterSeq(String initiativeToken,
@@ -25,4 +29,5 @@ public interface InitiativeRepository {
 	List<Initiative> findInitiativeBySdtAndEdtAndUserSeq(LocalDate monthStDt, LocalDate monthEndDt, Long userSeq);
 
 	List<Initiative> getCountOfInitiativeToGiveFeedback(Long userSeq);
+
 }

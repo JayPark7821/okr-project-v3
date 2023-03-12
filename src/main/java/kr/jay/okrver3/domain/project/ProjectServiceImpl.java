@@ -19,6 +19,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.aggregate.feedback.Feedback;
 import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackRepository;
+import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.aggregate.initiative.InitiativeRepository;
 import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
@@ -225,6 +226,12 @@ public class ProjectServiceImpl implements ProjectService {
 		List<Initiative> countOfInitiativeToGiveFeedback =
 			initiativeRepository.getCountOfInitiativeToGiveFeedback(userSeq);
 		return countOfInitiativeToGiveFeedback.size();
+	}
+
+	@Override
+	public Page<FeedbackDetailInfo> getRecievedFeedback(SearchRange range, Long userSeq, Pageable pageable) {
+		return feedbackRepository.getRecievedFeedback(range, userSeq, pageable)
+			.map(FeedbackDetailInfo::new);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
