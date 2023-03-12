@@ -122,7 +122,7 @@ public class ProjectDtoMapper {
 
 	}
 
-	public FeedbackSaveCommand of(FeedbackSaveRequest dto) {
+	FeedbackSaveCommand of(FeedbackSaveRequest dto) {
 		return new FeedbackSaveCommand(
 			dto.opinion(),
 			dto.grade(),
@@ -130,7 +130,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	public InitiativeDetailResponse of(InitiativeDetailInfo info) {
+	InitiativeDetailResponse of(InitiativeDetailInfo info) {
 		return new InitiativeDetailResponse(
 			info.done(),
 			info.user(),
@@ -143,7 +143,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	public InitiativeForCalendarResponse of(InitiativeForCalendarInfo info) {
+	InitiativeForCalendarResponse of(InitiativeForCalendarInfo info) {
 		return new InitiativeForCalendarResponse(
 			info.initiativeToken(),
 			info.initiativeName(),
@@ -152,7 +152,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	public IniFeedbackResponse of(IniFeedbackInfo info) {
+	IniFeedbackResponse of(IniFeedbackInfo info) {
 		return new IniFeedbackResponse(
 			info.myInitiative(),
 			info.wroteFeedback(),
@@ -161,7 +161,7 @@ public class ProjectDtoMapper {
 		);
 	}
 
-	public FeedbackDetailResponse of(FeedbackDetailInfo info) {
+	FeedbackDetailResponse of(FeedbackDetailInfo info) {
 		return new FeedbackDetailResponse(
 			info.initiativeToken(),
 			info.feedbackToken(),
