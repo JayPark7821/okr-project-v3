@@ -318,7 +318,6 @@ public class ProjectApiController {
 	// TODO :: initiative update
 
 	//------------------ feedback 관련 api ------------------//
-	// TODO :: 전체 피드백 조회
 
 	// TODO :: 피드백을 확인 api
 	//------------------ notification 관련 api ------------------//
