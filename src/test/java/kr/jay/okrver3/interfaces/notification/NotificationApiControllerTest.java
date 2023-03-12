@@ -33,24 +33,29 @@ public class NotificationApiControllerTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void getNotifications을_호출화면_기대하는_응답을_리턴한다() throws Exception {
-
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 16L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		List<String> notificationTokens = List.of("noti_e144441Zey1SERx", "noti_e3eeddoZey1SERx", "noti_e2222y1SERx");
 
 		final ResponseEntity<Page<NotificationResponse>> response = sut.getNotifications(
-			auth, PageRequest.of(0, 5));
+			getAuthenticationToken(16L), PageRequest.of(0, 5)
+		);
 
-		assertThat(response.getBody().getTotalElements()).isEqualTo(2);
+		assertThat(response.getBody().getTotalElements()).isEqualTo(3);
 		List<NotificationResponse> content = response.getBody().getContent();
 
 		for (int i = 0; i < content.size(); i++) {
 			NotificationResponse r = content.get(i);
-
+			assertThat(r.notiToken()).isEqualTo(notificationTokens.get(i));
 		}
+	}
+
+	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", value)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+		return auth;
 	}
 }
 
