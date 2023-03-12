@@ -60,6 +60,7 @@ import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
 import kr.jay.okrver3.infrastructure.notification.NotificationRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
+import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
@@ -73,7 +74,7 @@ import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class,
 	InitiativeRepositoryImpl.class, FeedbackRepositoryImpl.class, InitiativeDoneValidator.class,
 	InitiativeQueryDslRepository.class, NotificationRepositoryImpl.class, SelfFeedbackValidator.class,
-	InitiativeInProgressValidator.class
+	InitiativeInProgressValidator.class, FeedbackQueryDslRepository.class
 })
 class ProjectFacadeTest {
 
@@ -498,6 +499,8 @@ class ProjectFacadeTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
+		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3","feedback_el6q34zazzSyWx9" );
+
 		SearchRange searchRange = SearchRange.ALL;
 		Page<FeedbackDetailInfo> response = sut.getRecievedFeedback(
 			searchRange,
@@ -510,8 +513,7 @@ class ProjectFacadeTest {
 
 		for (int i = 0; i < content.size(); i++) {
 			FeedbackDetailInfo r = content.get(i);
+			assertThat(r.feedbackToken()).isEqualTo(feedbackTokenList.get(i));
 		}
 	}
-
-
 }

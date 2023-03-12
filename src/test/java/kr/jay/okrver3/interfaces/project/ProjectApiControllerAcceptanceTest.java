@@ -701,6 +701,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
+		String searchRange = "ALL";
 		final JsonPath response = RestAssured.
 
 			given()
@@ -708,7 +709,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/feedback").
+			.get(baseUrl + "/feedback?searchRange="+searchRange).
 
 			then()
 			.statusCode(HttpStatus.OK.value())

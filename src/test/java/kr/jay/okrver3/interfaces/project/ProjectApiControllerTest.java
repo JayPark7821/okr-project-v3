@@ -431,6 +431,7 @@ class ProjectApiControllerTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
+		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3","feedback_el6q34zazzSyWx9" );
 		String searchRange = "ALL";
 		Page<FeedbackDetailResponse> response = sut.getRecievedFeedback(
 			searchRange,
@@ -444,6 +445,7 @@ class ProjectApiControllerTest {
 
 		for (int i = 0; i < content.size(); i++) {
 			FeedbackDetailResponse r = content.get(i);
+			assertThat(r.feedbackToken()).isEqualTo(feedbackTokenList.get(i));
 		}
 	}
 
