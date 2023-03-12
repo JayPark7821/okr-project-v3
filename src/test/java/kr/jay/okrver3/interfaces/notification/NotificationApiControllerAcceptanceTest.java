@@ -1,12 +1,6 @@
 package kr.jay.okrver3.interfaces.notification;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-
 import java.sql.Connection;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,7 +8,6 @@ import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -81,7 +74,7 @@ public class NotificationApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.post(baseUrl).
+			.get(baseUrl).
 
 			then()
 			.statusCode(HttpStatus.OK.value())

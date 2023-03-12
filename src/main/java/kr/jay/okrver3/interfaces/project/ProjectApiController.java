@@ -9,9 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -284,7 +282,6 @@ public class ProjectApiController {
 		);
 	}
 
-
 	@GetMapping("/feedback/count")
 	public ResponseEntity<Integer> getCountOfInitiativeToGiveFeedback(
 		Authentication authentication
@@ -295,7 +292,6 @@ public class ProjectApiController {
 			)
 		);
 	}
-
 
 	@GetMapping("/feedback")
 	public ResponseEntity<Page<FeedbackDetailResponse>> getRecievedFeedback(
@@ -313,17 +309,15 @@ public class ProjectApiController {
 		);
 	}
 
-
 	//------------------ initiative 관련 api ------------------//
 	// TODO :: initiative update
 
 	//------------------ feedback 관련 api ------------------//
 
-	// TODO :: 피드백을 확인 api
+	// TODO :: 피드백 확인 처리 api
 	//------------------ notification 관련 api ------------------//
-	// TODO :: notification 조회
-	// TODO :: notification 읽음 처리
 
+	// TODO :: notification 읽음 처리
 	// TODO :: notification 삭제 처리
 
 	private Long getUserFromAuthentication(Authentication authentication) {
