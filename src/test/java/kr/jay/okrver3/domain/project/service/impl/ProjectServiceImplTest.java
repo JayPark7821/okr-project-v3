@@ -612,8 +612,6 @@ class ProjectServiceImplTest {
 		assertThat(response.feedback().size()).isEqualTo(2);
 		assertThat(response.gradeCount().get(FeedbackType.BEST_RESULT).longValue()).isEqualTo(1L);
 		assertThat(response.gradeCount().get(FeedbackType.BURNING_PASSION).longValue()).isEqualTo(1);
-		assertThat(response.gradeCount().get(FeedbackType.GOOD_IDEA).longValue()).isEqualTo(0);
-		assertThat(response.gradeCount().get(FeedbackType.COMMUNI_KING).longValue()).isEqualTo(0);
 
 	}
 

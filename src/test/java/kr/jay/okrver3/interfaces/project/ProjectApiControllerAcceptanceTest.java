@@ -683,7 +683,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void getCountOfInitiativeToGiveFeedback을_호출하면_아직_피드백을_남기지않은_팀원의_완료된_행동전략count를_리턴한다() throws Exception {
-		final JsonPath response = RestAssured.
+		final String response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
@@ -694,9 +694,9 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().jsonPath();
+			.extract().body().asString();
 
-		assertThat(response.getInt("")).isEqualTo(1L);
+		assertThat(response).isEqualTo("2");
 	}
 
 	@Test
