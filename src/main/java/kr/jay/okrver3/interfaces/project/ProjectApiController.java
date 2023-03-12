@@ -9,7 +9,9 @@ import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,7 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.ClassUtils;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
+import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
@@ -37,6 +40,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
@@ -293,6 +297,21 @@ public class ProjectApiController {
 	}
 
 
+	@GetMapping("/feedback")
+	public ResponseEntity<Page<FeedbackDetailResponse>> getRecievedFeedback(
+		String searchRange,
+		Authentication authentication,
+		Pageable pageable
+	) {
+		SearchRange range = SearchRange.of(searchRange);
+		return Response.successOk(
+			projectFacade.getRecievedFeedback(
+				range,
+				getUserFromAuthentication(authentication),
+				pageable
+			).map(mapper::of)
+		);
+	}
 
 
 	//------------------ initiative 관련 api ------------------//
@@ -300,8 +319,6 @@ public class ProjectApiController {
 
 	//------------------ feedback 관련 api ------------------//
 	// TODO :: 전체 피드백 조회
-
-	// TODO :: 피드백을 남겨야하는 count 조회
 
 	// TODO :: 피드백을 확인 api
 	//------------------ notification 관련 api ------------------//
@@ -340,4 +357,5 @@ public class ProjectApiController {
 			throw new OkrApplicationException(ErrorCode.INVALID_SEARCH_DATE_FORM);
 		}
 	}
+
 }
