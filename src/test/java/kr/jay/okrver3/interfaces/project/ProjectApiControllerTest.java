@@ -35,6 +35,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
@@ -426,6 +427,31 @@ class ProjectApiControllerTest {
 
 		assertThat(response).isEqualTo(1);
 	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
+		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3","feedback_el6q34zazzSyWx9" );
+		String searchRange = "ALL";
+		Page<FeedbackDetailResponse> response = sut.getRecievedFeedback(
+			searchRange,
+			getAuthenticationToken(3L),
+			PageRequest.of(0, 5)
+		).getBody();
+
+
+		assertThat(response.getTotalElements()).isEqualTo(2);
+		List<FeedbackDetailResponse> content = response.getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+			FeedbackDetailResponse r = content.get(i);
+			assertThat(r.feedbackToken()).isEqualTo(feedbackTokenList.get(i));
+		}
+	}
+
+
+
+
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)

@@ -106,7 +106,7 @@ insert into initiative
 
 
 insert into feedback (feedback_id, created_date, last_modified_date, created_by, last_modified_by, feedback_token, grade_mark, initiative_id, checked, opinion, project_id, user_seq) values
-(9999, '2023-12-16', '2022-12-16', 'testUser2', 'testUser2', 'feedback_el6q34zazzSyWx9', 'BEST_RESULT', 99999, false, '정말 좋아요!!', 99998, 3),
+(9999, '2023-12-16', '2022-12-16', 'testUser2', 'testUser2', 'feedback_el6q34zazzSyWx9', 'BEST_RESULT', 99999, true, '정말 좋아요!!', 99998, 3),
 (9998, '2022-12-16', '2022-12-16', 'testUser2', 'testUser2', 'feedback_aaaaaagawe3rfwa3', 'BURNING_PASSION', 99999, false, '정말 좋아요!!', 99998, 2)
 ;
 

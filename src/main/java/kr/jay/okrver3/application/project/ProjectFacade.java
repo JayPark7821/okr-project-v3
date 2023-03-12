@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 import kr.jay.okrver3.domain.notification.NotificationService;
 import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.project.ProjectService;
+import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
 import kr.jay.okrver3.domain.project.command.TeamMemberInviteCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
@@ -153,5 +155,9 @@ public class ProjectFacade {
 
 	public Integer getCountOfInitiativeToGiveFeedback(Long userSeq) {
 		return projectService.getCountOfInitiativeToGiveFeedback(userSeq);
+	}
+
+	public Page<FeedbackDetailInfo> getRecievedFeedback(SearchRange range, Long userSeq, Pageable pageable) {
+		return projectService.getRecievedFeedback(range, userSeq, pageable);
 	}
 }

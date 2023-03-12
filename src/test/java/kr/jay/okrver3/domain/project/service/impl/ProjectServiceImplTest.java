@@ -30,12 +30,14 @@ import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
+import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectKeyResultSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectSaveCommand;
+import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
@@ -56,16 +58,18 @@ import kr.jay.okrver3.domain.project.validator.SelfFeedbackValidator;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
+import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
+import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
 
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class,
 	ProjectValidateProcessor.class, ProjectLeaderValidator.class, InitiativeRepositoryImpl.class,
 	FeedbackRepositoryImpl.class, ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class,
 	ProjectInitiativeDateValidator.class, InitiativeDoneValidator.class, InitiativeQueryDslRepository.class,
-	InitiativeInProgressValidator.class, SelfFeedbackValidator.class
+	InitiativeInProgressValidator.class, SelfFeedbackValidator.class, FeedbackQueryDslRepository.class
 })
 class ProjectServiceImplTest {
 
@@ -623,4 +627,26 @@ class ProjectServiceImplTest {
 
 		assertThat(response).isEqualTo(1);
 	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
+		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3","feedback_el6q34zazzSyWx9" );
+		SearchRange searchRange = SearchRange.ALL;
+		Page<FeedbackDetailInfo> response = sut.getRecievedFeedback(
+			searchRange,
+			3L,
+			PageRequest.of(0, 5)
+		);
+
+		assertThat(response.getTotalElements()).isEqualTo(2);
+		List<FeedbackDetailInfo> content = response.getContent();
+
+		for (int i = 0; i < content.size(); i++) {
+			FeedbackDetailInfo r = content.get(i);
+			assertThat(r.feedbackToken()).isEqualTo(feedbackTokenList.get(i));
+
+		}
+	}
+
 }

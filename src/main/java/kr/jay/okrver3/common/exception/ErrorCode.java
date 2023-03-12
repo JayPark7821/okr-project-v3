@@ -41,7 +41,9 @@ public enum ErrorCode {
 	UNSUPPORTED_SOCIAL_LOGIN(HttpStatus.BAD_REQUEST,"지원하지 않는 소셜 타입입니다." ),
 	INVALID_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 token입니다." ),
 	INVALID_SEARCH_DATE_FORM(HttpStatus.BAD_REQUEST,"날짜는 8자리의 yyyyMMdd 형식이어야 합니다." ),
-	INVALID_YEARMONTH_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 년월 형식입니다.");
+	INVALID_YEARMONTH_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 년월 형식입니다."),
+	INVALID_SEARCH_RANGE_TYPE(HttpStatus.BAD_REQUEST,"잘못된 검색 기간입니다."),
+	;
 
 
 	private HttpStatus status;
