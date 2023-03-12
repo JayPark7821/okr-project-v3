@@ -163,6 +163,7 @@ public class ProjectDtoMapper {
 
 	public FeedbackDetailResponse of(FeedbackDetailInfo info) {
 		return new FeedbackDetailResponse(
+			info.initiativeToken(),
 			info.feedbackToken(),
 			info.opinion(),
 			info.grade(),

@@ -23,4 +23,6 @@ public interface InitiativeRepository {
 	List<Initiative> findInitiativeByDate(LocalDate searchDate, Long userSeq);
 
 	List<Initiative> findInitiativeBySdtAndEdtAndUserSeq(LocalDate monthStDt, LocalDate monthEndDt, Long userSeq);
+
+	List<Initiative> getCountOfInitiativeToGiveFeedback(Long userSeq);
 }

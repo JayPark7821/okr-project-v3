@@ -44,6 +44,11 @@ public class InitiativeRepositoryImpl implements InitiativeRepository {
 	}
 
 	@Override
+	public List<Initiative> getCountOfInitiativeToGiveFeedback(Long userSeq) {
+		return initiativeJpaRepository.getCountOfInitiativeToGiveFeedback(userSeq);
+	}
+
+	@Override
 	public Page<Initiative> findInitiativeByKeyResultTokenAndUserSeq(
 		String keyResultToken,
 		Long userSeq,

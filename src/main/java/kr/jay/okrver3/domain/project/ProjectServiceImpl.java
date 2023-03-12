@@ -220,6 +220,13 @@ public class ProjectServiceImpl implements ProjectService {
 		return getIniFeedbackinfoFrom(userSeq, initiative, feedbacks);
 	}
 
+	@Override
+	public Integer getCountOfInitiativeToGiveFeedback(Long userSeq) {
+		List<Initiative> countOfInitiativeToGiveFeedback =
+			initiativeRepository.getCountOfInitiativeToGiveFeedback(userSeq);
+		return countOfInitiativeToGiveFeedback.size();
+	}
+
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	void updateProjectProgress(Long projectId) {
 		Project projectReference = projectRepository.findProjectForUpdateById(projectId)
