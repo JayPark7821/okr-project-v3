@@ -360,6 +360,12 @@ class ProjectFacadeTest {
 
 		String response = sut.initiativeFinished(initiativeToken, getUser(11L).getUserSeq());
 
+		List<Notification> notifications =
+			em.createQuery("select n from Notification n where n.msg =: msg", Notification.class)
+				.setParameter("msg", Notifications.INITIATIVE_ACHIEVED.getMsg("testUser2","ini name222"))
+				.getResultList();
+
+		assertThat(notifications.size()).isEqualTo(1);
 		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
 
