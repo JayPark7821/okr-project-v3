@@ -23,6 +23,7 @@ import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
@@ -69,7 +70,7 @@ public class ProjectFacade {
 				inviterSeq
 			);
 
-		notificationService.sendInvitationNotification(
+		notificationService.sendNotification(
 			Notifications.NEW_TEAM_MATE,
 			getTeamMemberToSendNoti(invitedUser.userSeq(), projectTeamMembersInfo.teamMemberSeq()),
 			invitedUser.name(),
@@ -115,7 +116,9 @@ public class ProjectFacade {
 	}
 
 	public String initiativeFinished(String initiativeToken, Long userSeq) {
-		return projectService.initiativeFinished(initiativeToken, userSeq);
+		InitiativeDoneInfo info = projectService.initiativeFinished(initiativeToken, userSeq);
+		notificationService.sendNotification(Notifications.INITIATIVE_ACHIEVED, info.teamMemberUserSeqs(), info.username(), info.initiativeName());
+		return info.initiativeToken();
 	}
 
 	public Page<InitiativeInfo> getInitiativeByKeyResultToken(

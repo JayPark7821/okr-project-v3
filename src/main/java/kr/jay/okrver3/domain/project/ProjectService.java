@@ -17,6 +17,7 @@ import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
@@ -41,7 +42,7 @@ public interface ProjectService {
 
 	String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq);
 
-	String initiativeFinished(String initiativeToken, Long userSeq);
+	InitiativeDoneInfo initiativeFinished(String initiativeToken, Long userSeq);
 
 	Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, Long userSeq, Pageable pageable);
 

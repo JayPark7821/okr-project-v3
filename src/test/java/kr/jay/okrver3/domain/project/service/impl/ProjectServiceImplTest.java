@@ -41,6 +41,7 @@ import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
@@ -367,14 +368,14 @@ class ProjectServiceImplTest {
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken, 11L);
+		InitiativeDoneInfo response = sut.initiativeFinished(initiativeToken, 11L);
 
 		Initiative initiative = em.createQuery(
 				"select i from Initiative i where i.id = :id", Initiative.class)
 			.setParameter("id", 99998L)
 			.getSingleResult();
 		assertThat(initiative.isDone()).isTrue();
-		assertThat(response).isEqualTo("ini_ixYjj5nODfeab3AH8");
+		assertThat(response.initiativeToken()).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
 
 	@Test
@@ -402,7 +403,7 @@ class ProjectServiceImplTest {
 	void 행동전략_완료시_프로젝트_진척도_update() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		String response = sut.initiativeFinished(initiativeToken, 11L);
+		InitiativeDoneInfo response = sut.initiativeFinished(initiativeToken, 11L);
 
 		Project project = em.createQuery(
 				"select p from Project p where p.id = :id", Project.class)

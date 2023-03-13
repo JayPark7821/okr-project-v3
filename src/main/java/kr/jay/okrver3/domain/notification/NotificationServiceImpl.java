@@ -18,13 +18,13 @@ public class NotificationServiceImpl implements NotificationService {
 	private final NotificationRepository notificationRepository;
 
 	@Override
-	public void sendInvitationNotification(
+	public void sendNotification(
 		Notifications notificationType,
-		List<Long> notiSendUserSeqs,
+		List<Long> notificationReceiveUserSeq,
 		String... args
 	) {
-		notificationRepository.bulkInsert(notiSendUserSeqs.stream()
-			.map(user -> new Notification(user, Notifications.NEW_TEAM_MATE, args)).toList());
+		notificationRepository.bulkInsert(notificationReceiveUserSeq.stream()
+			.map(user -> new Notification(user, notificationType, args)).toList());
 	}
 
 	@Override

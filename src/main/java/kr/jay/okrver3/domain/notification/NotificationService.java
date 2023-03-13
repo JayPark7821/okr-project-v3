@@ -8,9 +8,10 @@ import org.springframework.data.domain.Pageable;
 import kr.jay.okrver3.domain.notification.info.NotificationInfo;
 
 public interface NotificationService {
-	void sendInvitationNotification(Notifications notificationType, List<Long> notiSendUserSeqs, String... args);
+	void sendNotification(Notifications notificationType, List<Long> notificationReceiveUserSeq, String... args);
 
-	void sendNotification(Notifications newFeedback, Long userSeq, String... args);
+	void sendNotification(Notifications notificationType, Long notificationReceiveUserSeq, String... args);
 
 	Page<NotificationInfo> getNotifications(Pageable pageable, Long userSeq);
+
 }
