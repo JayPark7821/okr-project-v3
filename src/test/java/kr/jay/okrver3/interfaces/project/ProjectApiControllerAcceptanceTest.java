@@ -42,13 +42,17 @@ import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.info.TeamMemberUserInfo;
+import kr.jay.okrver3.interfaces.notification.response.NotificationResponse;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
+import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
+import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -191,7 +195,7 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response.getString("objective")).isEqualTo("projectObjective2");
 		assertThat(response.getString("startDate")).isEqualTo("2020-12-01");
 		assertThat(response.getString("endDate")).isEqualTo("3999-12-12");
-		assertThat(response.getString("projectType")).isEqualTo("SINGLE");
+		assertThat(response.getString("projectType")).isEqualTo("TEAM");
 
 	}
 
@@ -340,7 +344,8 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
-		final String response = RestAssured.
+		List<String> projectToken = List.of("project-fgFHxGWeIUFa", "project-fgFHxGfedUFa");
+		final List<ProjectDetailResponse> response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
@@ -352,8 +357,15 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().asString();
+			.extract().body().jsonPath()
+			.getList("content", ProjectDetailResponse.class);
 
+		assertThat(response.size()).isEqualTo(2);
+
+		for (int i = 0; i < response.size(); i++) {
+			ProjectDetailResponse r = response.get(i);
+			assertThat(r.projectToken()).isEqualTo(projectToken.get(i));
+		}
 	}
 
 	@Test
@@ -503,8 +515,8 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
 		String keyResultToken = "key_wV6MX15WQ3DTzQMs";
-
-		final String response = RestAssured.
+		List<String> initiativeTokens = List.of("ini_ixYjj5nODqtb3AH8");
+		final List<ProjectInitiativeResponse> response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
@@ -515,8 +527,15 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().asString();
+			.extract().body().jsonPath()
+			.getList("content", ProjectInitiativeResponse.class);
 
+		assertThat(response.size()).isEqualTo(1);
+
+		for (int i = 0; i < response.size(); i++) {
+			ProjectInitiativeResponse r = response.get(i);
+			assertThat(r.initiativeToken()).isEqualTo(initiativeTokens.get(i));
+		}
 	}
 
 	@Test
@@ -702,7 +721,8 @@ public class ProjectApiControllerAcceptanceTest {
 	@Test
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
 		String searchRange = "ALL";
-		final JsonPath response = RestAssured.
+		List<String> feedbackTokens = List.of("feedback_el6q34zazzSyWx9");
+		final List<FeedbackDetailResponse> response = RestAssured.
 
 			given()
 			.contentType(ContentType.JSON)
@@ -713,7 +733,15 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().jsonPath();
+			.extract().body().jsonPath()
+			.getList("content", FeedbackDetailResponse.class);
+
+		assertThat(response.size()).isEqualTo(1);
+
+		for (int i = 0; i < response.size(); i++) {
+			FeedbackDetailResponse r = response.get(i);
+			assertThat(r.feedbackToken()).isEqualTo(feedbackTokens.get(i));
+		}
 
 	}
 

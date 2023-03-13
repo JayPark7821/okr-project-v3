@@ -24,5 +24,4 @@ public interface ProjectRepository {
 	double getProjectProgress(Long projectId);
 
 	Optional<Project> findProjectForUpdateById(Long projectId);
-
 }
