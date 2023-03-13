@@ -33,6 +33,7 @@ import kr.jay.okrver3.domain.project.info.FeedbackDetailInfo;
 import kr.jay.okrver3.domain.project.info.FeedbackInfo;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
@@ -137,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public String initiativeFinished(String initiativeToken, Long userSeq) {
+	public InitiativeDoneInfo initiativeFinished(String initiativeToken, Long userSeq) {
 		Initiative initiative =
 			initiativeRepository.findInitiativeByInitiativeTokenAndUserSeq(initiativeToken, userSeq)
 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
@@ -149,9 +150,17 @@ public class ProjectServiceImpl implements ProjectService {
 		);
 
 		initiative.done();
+
 		updateProjectProgress(initiative.getProject().getId());
-		return initiative.getInitiativeToken();
+
+		return new InitiativeDoneInfo(
+			getTeamMemberUserSeqsToSendMsg(userSeq, initiative),
+			initiative.getInitiativeToken(),
+			initiative.getName(),
+			initiative.getTeamMember().getUser().getUsername()
+		);
 	}
+
 
 	@Override
 	public Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, Long userSeq, Pageable pageable) {
@@ -179,7 +188,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public InitiativeDetailInfo getInitiativeBy(String initiativeToken, Long userSeq) {
 		return initiativeRepository.findInitiativeDetailByInitiativeTokenAndUserSeq(initiativeToken, userSeq)
-			.map(initiative-> new InitiativeDetailInfo(initiative, userSeq))
+			.map(initiative -> new InitiativeDetailInfo(initiative, userSeq))
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 	}
 
@@ -289,10 +298,18 @@ public class ProjectServiceImpl implements ProjectService {
 		return (i.getEdt().isBefore(monthEndDt) ? i.getEdt() : monthEndDt).plusDays(1);
 	}
 
+	private List<Long> getTeamMemberUserSeqsToSendMsg(Long userSeq, Initiative initiative) {
+		return initiative.getProject().getTeamMember().stream()
+			.map(TeamMember::getUserSeq)
+			.filter(user -> !user.equals(userSeq))
+			.toList();
+	}
+
 	private IniFeedbackInfo getIniFeedbackinfoFrom(Long userSeq, Initiative initiative, List<Feedback> feedbacks) {
 		boolean isRequestersFeedback = initiative.getTeamMember().getUserSeq().equals(userSeq);
 		boolean wroteFeedback = !isRequestersFeedback ?
-			feedbacks.stream().filter(f -> f.getTeamMember().getUserSeq().equals(userSeq)).findFirst().isPresent() : false;
+			feedbacks.stream().filter(f -> f.getTeamMember().getUserSeq().equals(userSeq)).findFirst().isPresent() :
+			false;
 
 		return new IniFeedbackInfo(
 			isRequestersFeedback,

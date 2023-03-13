@@ -47,7 +47,7 @@ class NotificationServiceImplTest {
 		User user = new User(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
 			RoleType.ADMIN, "pass", JobField.WEB_FRONT_END_DEVELOPER);
 
-		sut.sendInvitationNotification(Notifications.NEW_TEAM_MATE, List.of(user.getUserSeq()), "invitedUser", "프로젝트명");
+		sut.sendNotification(Notifications.NEW_TEAM_MATE, List.of(user.getUserSeq()), "invitedUser", "프로젝트명");
 
 		List<Notification> result = em.createQuery("select n from Notification n", Notification.class)
 			.getResultList();

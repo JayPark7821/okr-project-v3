@@ -16,8 +16,10 @@ public interface InitiativeJpaRepository extends JpaRepository<Initiative, Long>
 		+ "from Initiative i "
 		+ "join fetch i.keyResult k "
 		+ "join fetch k.project p "
-		+ "join i.teamMember t "
-		+ "where t.user.userSeq = :userSeq "
+		+ "join fetch p.teamMember pt "
+		+ "join fetch i.teamMember t "
+		+ "join fetch t.user u "
+		+ "where u.userSeq = :userSeq "
 		+ "and i.initiativeToken =:initiativeToken ")
 	Optional<Initiative> findInitiativeByInitiativeTokenAndUserSeq(
 		@Param("initiativeToken") String initiativeToken,
