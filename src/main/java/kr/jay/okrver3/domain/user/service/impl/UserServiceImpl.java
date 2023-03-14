@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
@@ -13,6 +14,7 @@ import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.UserInfoUpdateCommand;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserRepository;
@@ -82,5 +84,16 @@ public class UserServiceImpl implements UserService {
 		return category.getDetailList().stream()
 			.map(jobField -> new JobInfo(jobField.getCode(), jobField.getTitle()))
 			.toList();
+	}
+
+	@Transactional
+	@Override
+	public void updateUserInfo(UserInfoUpdateCommand command, Long userSeq) {
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_INFO));
+
+		user.updateUserName(command.userName());
+		user.updateJobField(JobField.of(command.jobField()));
+		userRepository.save(user);
 	}
 }

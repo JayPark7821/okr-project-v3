@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -29,6 +31,7 @@ import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.UserInfoUpdateCommand;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
@@ -37,6 +40,7 @@ import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
 import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 
 @DataJpaTest
 @Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
@@ -202,6 +206,22 @@ class UserFacadeTest {
 		assertThat(response.size()).isEqualTo(4);
 	}
 
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void updateUserInfo를_호출하면_기대하는_응답을_반환한다() throws Exception {
+		String newUserName = "newName";
+		String newJobField = "LAW_LABOR";
+
+		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName,"profileImage",
+			newJobField), 999L);
+
+		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		assertThat(updatedUser.getUsername()).isEqualTo(newUserName);
+		assertThat(updatedUser.getJobField().getCode()).isEqualTo(newJobField);
+	}
 
 	private User getUser(Long seq) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
