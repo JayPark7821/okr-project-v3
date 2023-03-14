@@ -7,6 +7,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,8 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.ProviderType;
+import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.UserInfoUpdateCommand;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
@@ -31,6 +36,10 @@ class UserServiceImplTest {
 
 	@Autowired
 	private UserServiceImpl sut;
+
+
+	@PersistenceContext
+	EntityManager em;
 
 	@Test
 	@Sql("classpath:insert-different-social-google-user.sql")
@@ -121,5 +130,23 @@ class UserServiceImplTest {
 		JobCategory category = JobCategory.BACK_END;
 		List<JobInfo> response = sut.getJobField(category);
 		assertThat(response.size()).isEqualTo(4);
+	}
+
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void updateUserInfo를_호출하면_기대하는_응답을_반환한다() throws Exception {
+		String newUserName = "newName";
+		String newJobField = "LAW_LABOR";
+
+		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName,"profileImage",
+			newJobField), 999L);
+
+		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		assertThat(updatedUser.getUsername()).isEqualTo(newUserName);
+		assertThat(updatedUser.getJobField().getCode()).isEqualTo(newJobField);
 	}
 }

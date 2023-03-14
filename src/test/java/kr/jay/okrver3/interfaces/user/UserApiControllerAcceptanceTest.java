@@ -36,6 +36,7 @@ import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.infrastructure.user.auth.TokenVerifier;
 import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.UserInfoResponse;
 
@@ -397,11 +398,14 @@ public class UserApiControllerAcceptanceTest {
 
 	@Test
 	void updateUserInfo를_호출하면_기대하는_응답을_반환한다() throws Exception {
-
+		String newUserName = "newName";
+		String newJobField = "LAW_LABOR";
 		final String response = RestAssured.
 
 			given()
-			.contentType(ContentType.JSON).
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + availAccessToken)
+			.body(new UserInfoUpdateRequest(newUserName,"profileImage", newJobField)).
 
 			when()
 			.put(baseUrl).

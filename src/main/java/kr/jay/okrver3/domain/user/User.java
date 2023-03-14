@@ -113,4 +113,11 @@ public class User extends BaseTimeEntity implements UserDetails {
 		return Objects.hash(userSeq, userId, username, email, profileImage, providerType, roleType, password);
 	}
 
+	public void updateUserName(String username) {
+		this.username = username;
+	}
+
+	public void updateJobField(JobField jobField) {
+		this.jobField = jobField;
+	}
 }
