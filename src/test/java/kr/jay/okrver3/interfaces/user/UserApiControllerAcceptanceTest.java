@@ -24,6 +24,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.api.client.json.Json;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
@@ -32,8 +34,10 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.infrastructure.user.auth.TokenVerifier;
+import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
+import kr.jay.okrver3.interfaces.user.response.UserInfoResponse;
 
 @Import(TestConfig.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -367,6 +371,44 @@ public class UserApiControllerAcceptanceTest {
 			.extract().body().asString();
 
 		assertThat(response).isEqualTo(ErrorCode.INVALID_JOB_DETAIL_FIELD.getMessage());
+	}
+
+	@Test
+	void getUserInfo를_호출하면_기대하는_응답_UserInfoResponse를_반환한다() throws Exception {
+
+		final UserInfoResponse response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().jsonPath()
+			.getObject("", UserInfoResponse.class);
+
+		assertThat(response.email()).isEqualTo("");
+		assertThat(response.name()).isEqualTo("");
+	}
+
+	@Test
+	void updateUserInfo를_호출하면_기대하는_응답을_반환한다() throws Exception {
+
+		final String response = RestAssured.
+
+			given()
+			.contentType(ContentType.JSON).
+
+			when()
+			.put(baseUrl).
+
+			then()
+			.statusCode(HttpStatus.OK.value())
+			.extract().body().asString();
+
+		assertThat(response).isEqualTo("SUCCESS");
 	}
 
 
