@@ -3,6 +3,7 @@ package kr.jay.okrver3.interfaces.user;
 import org.springframework.stereotype.Component;
 
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
+import kr.jay.okrver3.domain.user.RoleType;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
@@ -18,6 +19,8 @@ public class UserDtoMapper {
 			info.email(),
 			info.name(),
 			info.providerType(),
+			RoleType.USER,
+			info.profileImageUrl(),
 			info.accessToken(),
 			info.refreshToken(),
 			info.jobFieldDetail()

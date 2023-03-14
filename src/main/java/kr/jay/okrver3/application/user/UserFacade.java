@@ -39,7 +39,7 @@ public class UserFacade {
 	public LoginInfo join(JoinRequest joinRequest) {
 
 		UserInfo userInfo = userService.registerNewUserFrom(
-			guestService.getGuestInfoFrom(joinRequest.guestTempId()),
+			guestService.getGuestInfoFrom(joinRequest.guestUserId()),
 			joinRequest
 		);
 

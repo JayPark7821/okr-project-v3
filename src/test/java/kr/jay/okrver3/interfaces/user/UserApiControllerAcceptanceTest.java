@@ -369,6 +369,7 @@ public class UserApiControllerAcceptanceTest {
 		assertThat(response).isEqualTo(ErrorCode.INVALID_JOB_DETAIL_FIELD.getMessage());
 	}
 
+
 	private void assertLoginUser(JsonPath response) {
 		assertThat(response.getString("guestId")).isNull();
 		assertThat(response.getString("email")).isNotNull();

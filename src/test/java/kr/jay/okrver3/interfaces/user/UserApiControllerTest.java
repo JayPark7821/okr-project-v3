@@ -87,7 +87,7 @@ class UserApiControllerTest {
 
 		ResponseEntity<LoginResponse> response = sut.join(joinRequestDto);
 
-		assertThat(response.getBody().guestId()).isNull();
+		assertThat(response.getBody().guestUserId()).isNull();
 		assertThat(response.getBody().name()).isEqualTo("guest");
 		assertThat(response.getBody().email()).isEqualTo("guest@email.com");
 		assertThat(response.getBody().providerType()).isEqualTo(ProviderType.GOOGLE);
@@ -182,7 +182,7 @@ class UserApiControllerTest {
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {
-		assertThat(body.guestId()).containsPattern(
+		assertThat(body.guestUserId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
 		);
 		assertThat(body.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
@@ -193,7 +193,7 @@ class UserApiControllerTest {
 	}
 
 	private static void assertUserLoginResponse(LoginResponse body) {
-		assertThat(body.guestId()).isNull();
+		assertThat(body.guestUserId()).isNull();
 		assertThat(body.name()).isEqualTo(AppleUserInfoFixture.NAME);
 		assertThat(body.email()).isEqualTo(AppleUserInfoFixture.EMAIL);
 		assertThat(body.providerType()).isEqualTo(AppleUserInfoFixture.PROVIDER_TYPE);
