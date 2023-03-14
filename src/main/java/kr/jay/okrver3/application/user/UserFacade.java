@@ -65,7 +65,7 @@ public class UserFacade {
 	}
 
 	public void updateUserInfo(UserInfoUpdateCommand command, Long userSeq) {
-		throw new UnsupportedOperationException("kr.jay.okrver3.application.user.UserFacade.updateUserInfo())");
+		userService.updateUserInfo(command, userSeq);
 	}
 }
 

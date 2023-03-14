@@ -6,6 +6,7 @@ import java.util.Optional;
 import kr.jay.okrver3.domain.guset.service.GuestInfo;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.User;
+import kr.jay.okrver3.domain.user.UserInfoUpdateCommand;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
@@ -23,4 +24,6 @@ public interface UserService {
 	List<JobInfo> getJobCategory();
 
 	List<JobInfo> getJobField(JobCategory category);
+
+	void updateUserInfo(UserInfoUpdateCommand command, Long userSeq);
 }
