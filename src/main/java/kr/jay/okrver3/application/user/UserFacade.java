@@ -9,12 +9,14 @@ import kr.jay.okrver3.domain.guset.service.GuestService;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.JobCategory;
+import kr.jay.okrver3.domain.user.UserInfoUpdateCommand;
 import kr.jay.okrver3.domain.user.info.JobInfo;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,6 +62,10 @@ public class UserFacade {
 
 	public List<JobInfo> getJobField(JobCategory category) {
 		return userService.getJobField(category);
+	}
+
+	public void updateUserInfo(UserInfoUpdateCommand command, Long userSeq) {
+		throw new UnsupportedOperationException("kr.jay.okrver3.application.user.UserFacade.updateUserInfo())");
 	}
 }
 

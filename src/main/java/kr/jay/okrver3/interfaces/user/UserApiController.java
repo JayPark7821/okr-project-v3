@@ -6,11 +6,13 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,7 @@ import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
@@ -125,6 +128,15 @@ public class UserApiController {
 		return Response.successOk(
 			mapper.of(user)
 		);
+	}
+
+	@PutMapping
+	public ResponseEntity<String> updateUserInfo(
+		@RequestBody @Valid UserInfoUpdateRequest request,
+		Authentication authentication
+	) {
+		userFacade.updateUserInfo(mapper.of(request), getUserFromAuthentication(authentication));
+		return Response.success(HttpStatus.OK);
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {

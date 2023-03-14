@@ -30,6 +30,7 @@ import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
@@ -196,6 +197,30 @@ class UserApiControllerTest {
 		ResponseEntity<UserInfoResponse> response = sut.getUserInfo(auth);
 		assertThat(response.getBody().name()).isEqualTo(user.getUsername());
 		assertThat(response.getBody().email()).isEqualTo(user.getEmail());
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void updateUserInfo를_호출하면_기대하는_응답을_반환한다() throws Exception {
+		String newUserName = "newName";
+		String newJobField = "LAW_LABOR";
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<String> response = sut.updateUserInfo(new UserInfoUpdateRequest(newUserName,"profileImage",
+			newJobField), auth);
+
+		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		assertThat(updatedUser.getUsername()).isEqualTo(newUserName);
+		assertThat(updatedUser.getJobField().getCode()).isEqualTo(newJobField);
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {
