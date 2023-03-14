@@ -33,6 +33,7 @@ import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
+import kr.jay.okrver3.interfaces.user.response.UserInfoResponse;
 
 @Import(TestConfig.class)
 @Transactional
@@ -179,6 +180,22 @@ class UserApiControllerTest {
 		String jobField = "WEB_FRONT_END_DEVELOPER";
 		ResponseEntity<String> response = sut.getJobCategoryBy(jobField);
 		assertThat(response.getBody()).isEqualTo("FRONT_END");
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void getUserInfo를_호출하면_기대하는_응답_UserInfoResponse를_반환한다() throws Exception {
+
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<UserInfoResponse> response = sut.getUserInfo(auth);
+		assertThat(response.getBody().name()).isEqualTo(user.getUsername());
+		assertThat(response.getBody().email()).isEqualTo(user.getEmail());
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {

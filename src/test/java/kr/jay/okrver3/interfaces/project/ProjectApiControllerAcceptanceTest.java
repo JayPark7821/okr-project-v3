@@ -747,7 +747,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 
 	@Test
-	void updateFeedbackStatus를_호춯하면_피드백의_상태를_update한다() throws Exception {
+	void updateFeedbackStatus를_호출하면_피드백의_상태를_update한다() throws Exception {
 		String feedbackToken = "feedback_el6q34zazzSyWx9";
 		final JsonPath response = RestAssured.
 

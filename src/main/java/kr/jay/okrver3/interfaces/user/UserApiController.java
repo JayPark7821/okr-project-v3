@@ -32,6 +32,7 @@ import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
+import kr.jay.okrver3.interfaces.user.response.UserInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -112,6 +113,17 @@ public class UserApiController {
 	public ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
 		return Response.successOk(
 			JobCategory.of(JobField.of(jobField).getJobCategory()).getCode()
+		);
+	}
+
+	@GetMapping
+	public ResponseEntity<UserInfoResponse> getUserInfo(Authentication authentication) {
+
+		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
+
+		return Response.successOk(
+			mapper.of(user)
 		);
 	}
 

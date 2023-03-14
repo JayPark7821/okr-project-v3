@@ -379,7 +379,9 @@ public class UserApiControllerAcceptanceTest {
 		final UserInfoResponse response = RestAssured.
 
 			given()
-			.contentType(ContentType.JSON).
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + availAccessToken).
+
 
 			when()
 			.get(baseUrl).
@@ -389,8 +391,8 @@ public class UserApiControllerAcceptanceTest {
 			.extract().body().jsonPath()
 			.getObject("", UserInfoResponse.class);
 
-		assertThat(response.email()).isEqualTo("");
-		assertThat(response.name()).isEqualTo("");
+		assertThat(response.email()).isEqualTo("apple@apple.com");
+		assertThat(response.name()).isEqualTo("appleUser");
 	}
 
 	@Test
@@ -426,7 +428,7 @@ public class UserApiControllerAcceptanceTest {
 
 		OAuth2UserInfo info = tokenVerifier.verifyIdToken(fixture);
 
-		assertThat(response.getString("guestId")).isNotNull();
+		assertThat(response.getString("guestUserId")).isNotNull();
 		assertThat(response.getString("email")).isEqualTo(info.email());
 		assertThat(response.getString("name")).isEqualTo(info.name());
 		assertThat(response.getString("providerType")).isEqualTo(info.providerType().name());
