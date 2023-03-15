@@ -9,6 +9,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 public class UserAcceptanceTestSteps {
 
@@ -28,5 +29,19 @@ public class UserAcceptanceTestSteps {
 			.extract();
 	}
 
+	public static ExtractableResponse<Response> 회원가입_요청(JoinRequest 회원가입_정보) {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.body(회원가입_정보 ).
+
+			when()
+			.post(baseUrl + "/join").
+
+			then()
+			.log().all()
+			.extract();
+	}
 
 }

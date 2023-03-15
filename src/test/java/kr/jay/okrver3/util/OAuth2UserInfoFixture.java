@@ -32,7 +32,7 @@ public final class OAuth2UserInfoFixture {
 	public static final class NotMemberInfoFixture {
 		public static final String ID = "notMemberId";
 		public static final String NAME = "notMemberName";
-		public static final String EMAIL = "notMemberEmail";
+		public static final String EMAIL = "notMemberEmail@email.com";
 		public static final String PIC = "notMemberPic";
 		public static final ProviderType PROVIDER_TYPE = ProviderType.APPLE;
 
