@@ -1,6 +1,6 @@
 package kr.jay.okrver3.interfaces.user;
 
-import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
+import static kr.jay.okrver3.util.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -22,7 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.jay.okrver3.TestConfig;
+import kr.jay.okrver3.util.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;

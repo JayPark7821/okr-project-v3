@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
@@ -35,14 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import kr.jay.okrver3.TestHelpUtils;
+import kr.jay.okrver3.util.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.info.TeamMemberUserInfo;
-import kr.jay.okrver3.interfaces.notification.response.NotificationResponse;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
