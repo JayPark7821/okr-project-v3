@@ -1,6 +1,6 @@
 package kr.jay.okrver3.application.user;
 
-import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
+import static kr.jay.okrver3.util.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -40,7 +38,6 @@ import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
 import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
-import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 
 @DataJpaTest
 @Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,

@@ -1,4 +1,4 @@
-package kr.jay.okrver3;
+package kr.jay.okrver3.util;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

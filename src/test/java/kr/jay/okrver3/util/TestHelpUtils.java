@@ -1,4 +1,4 @@
-package kr.jay.okrver3;
+package kr.jay.okrver3.util;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

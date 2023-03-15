@@ -1,6 +1,6 @@
 package kr.jay.okrver3.domain.user.service.impl;
 
-import static kr.jay.okrver3.OAuth2UserInfoFixture.*;
+import static kr.jay.okrver3.util.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

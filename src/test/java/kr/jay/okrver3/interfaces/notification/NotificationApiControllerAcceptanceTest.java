@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
@@ -28,13 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
-import kr.jay.okrver3.DatabaseCleanup;
-import kr.jay.okrver3.TestConfig;
+import kr.jay.okrver3.util.DatabaseCleanup;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.interfaces.notification.response.NotificationResponse;
-import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional

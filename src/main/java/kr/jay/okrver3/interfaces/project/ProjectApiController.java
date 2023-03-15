@@ -322,7 +322,7 @@ public class ProjectApiController {
 	//------------------ user 관련 api ------------------//
 	// TODO :: 회원가입탈퇴 api
 	// TODO :: apple login
-	// TODO :: 회원정보 변경 api
+
 
 	private Long getUserFromAuthentication(Authentication authentication) {
 		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)

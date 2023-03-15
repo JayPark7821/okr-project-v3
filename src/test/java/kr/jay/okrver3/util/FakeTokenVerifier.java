@@ -1,4 +1,4 @@
-package kr.jay.okrver3;
+package kr.jay.okrver3.util;
 
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
