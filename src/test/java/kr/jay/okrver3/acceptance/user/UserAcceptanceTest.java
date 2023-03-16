@@ -23,11 +23,9 @@ public class UserAcceptanceTest extends AcceptanceTest {
 	private static final String 회원가입된_애플_idToken = "appleToken";
 	private static final String 회원가입된_구글_idToken = "googleToken";
 
-
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
-
 	}
 
 	@Test
@@ -64,7 +62,7 @@ public class UserAcceptanceTest extends AcceptanceTest {
 
 	@Test
 	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
-	void join_after_guest_login() throws Exception{
+	void join_after_guest_login() throws Exception {
 		//given
 		var 게스트_정보_응답 = 소셜_idToken으로_로그인_요청(애플, 회원가입안된_애플_idToken);
 
@@ -88,7 +86,7 @@ public class UserAcceptanceTest extends AcceptanceTest {
 	void join_before_guest_login() {
 		//given 
 		var 회원가입_정보 =
-			회원가입_정보_생성("존재하지 않는 게스트_id", "존재하지않는게스트email@email.com","없는 게스트", "WEB_SERVER_DEVELOPER");
+			회원가입_정보_생성("존재하지 않는 게스트_id", "존재하지않는게스트email@email.com", "없는 게스트", "WEB_SERVER_DEVELOPER");
 
 		//when
 		var 응답 = 회원가입_요청(회원가입_정보);
@@ -99,7 +97,7 @@ public class UserAcceptanceTest extends AcceptanceTest {
 
 	@Test
 	@DisplayName("가입한 유저 정보가 있을 때 가입한 유저 정보로 join()을 호출하면 기대하는 예외를 던진다.")
-	void join_again_when_after_join() throws Exception{
+	void join_again_when_after_join() throws Exception {
 		//given
 		var 게스트_정보_응답 = 소셜_idToken으로_로그인_요청(애플, 회원가입안된_애플_idToken);
 
@@ -127,7 +125,7 @@ public class UserAcceptanceTest extends AcceptanceTest {
 		String 가입된_유저_이메일 = 사용자2.getEmail();
 
 		//when
-		var 응답 = 프로잭트_생성_전_email_검증_요청(가입된_유저_이메일, 로그인_유저);
+		var 응답 = 프로잭트_생성_전_email_검증_요청(가입된_유저_이메일, 사용자1_토큰);
 
 		//then
 		이메일_검증_응답_검증(응답, 가입된_유저_이메일);
@@ -157,29 +155,6 @@ public class UserAcceptanceTest extends AcceptanceTest {
 	}
 
 	@Test
-	@DisplayName("로그인한 유저의 유저 정보를 요청하면 기대하는 응답을 반환한다.")
-	void get_userInfo() throws Exception {
-		//when
-		var 응답 = 로그인_유저_정보_요청(로그인_유저);
-
-		//then
-		유저_정보_응답_검증(응답);
-	}
-
-	@Test
-	@DisplayName("로그인한 유저의 유저 정보를 수정한다.")
-	void udpate_userInfo() throws Exception {
-		//given
-		var 직업_웹_서버_개발자 = JobField.WEB_SERVER_DEVELOPER;
-
-		//when
-		var 응답 = 직업_으로_직업_카테고리_조회_요청(직업_웹_서버_개발자);
-
-		//then
-		직업_카테고리_응답_검증(응답);
-	}
-
-	@Test
 	@DisplayName("선택된 직업으로 직업 카테고리를 요청하면 기대하는 응답을 반환한다")
 	void get_jobCategory_by_jobField() throws Exception {
 		//given
@@ -192,11 +167,35 @@ public class UserAcceptanceTest extends AcceptanceTest {
 		직업_카테고리_응답_검증(응답);
 	}
 
+	@Test
+	@DisplayName("로그인한 유저의 유저 정보를 요청하면 기대하는 응답을 반환한다.")
+	void get_userInfo() throws Exception {
+		//when
+		var 응답 = 로그인_유저_정보_요청(사용자1_토큰);
+
+		//then
+		유저_정보_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("로그인한 유저의 유저 정보를 수정한다.")
+	void udpate_userInfo() throws Exception {
+		//given
+		var 수정할_사용자_명 = "수정된이름";
+		var 수정할_직업 = JobField.DB_BIG_DATA_DS;
+
+		//when
+		var 응답 = 로그인_유저_정보_수정_요청(수정할_사용자_명, 수정할_직업, 사용자1_토큰);
+
+		//then
+		사용자_정보_수정_응답_검증(응답);
+	}
+
 	private String 응답에서_데이터_추출(ExtractableResponse<Response> 게스트_정보_응답, String field) {
 		return 게스트_정보_응답.body().jsonPath().getString(field);
 	}
 
 	private JoinRequest 회원가입_정보_생성(String 게스트_id, String 게스트_email, String 사용자명, String 직무_포지션) {
-		return new JoinRequest(게스트_id, 사용자명, 게스트_email, 직무_포지션 );
+		return new JoinRequest(게스트_id, 사용자명, 게스트_email, 직무_포지션);
 	}
 }

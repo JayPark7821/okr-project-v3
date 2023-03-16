@@ -1,10 +1,7 @@
 package kr.jay.okrver3.acceptance;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
+import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestData.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,14 +38,13 @@ public class AcceptanceTest {
 	@Autowired
 	DataLoader dataLoader;
 
-	public static String 로그인_유저;
+	public static String 사용자1_토큰;
 
-	@BeforeEach
 	public void setUp() {
 		databaseCleanup.execute();
 		dataLoader.loadData();
 		RestAssured.port = port;
 
-		로그인_유저 = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
+		사용자1_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, accessExpiredTimeMs);
 	}
 }
