@@ -7,11 +7,12 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.Project;
 import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
 
-public record ProjectDetailInfo(String projectToken, boolean newProject, double progress, LocalDate sdt, LocalDate edt,
+public record ProjectDetailInfo(String objective, String projectToken, boolean newProject, double progress, LocalDate sdt, LocalDate edt,
 								int teamMemberCount, String projectType) {
 
 	public ProjectDetailInfo(Project project, Long userSeq) {
 		this(
+			project.getObjective(),
 			project.getProjectToken(),
 			project.getTeamMember().stream()
 				.filter(t -> t.getUser().getUserSeq().equals(userSeq))

@@ -20,7 +20,7 @@ public record ProjectSaveCommand(
 
 	public Project toEntity() {
 		LocalDate startDt = LocalDate.parse(this.sdt(), DateTimeFormatter.ISO_DATE);
-		LocalDate endDt = LocalDate.parse(this.sdt(), DateTimeFormatter.ISO_DATE);
+		LocalDate endDt = LocalDate.parse(this.edt(), DateTimeFormatter.ISO_DATE);
 
 		return Project.builder()
 			.startDate(startDt)
