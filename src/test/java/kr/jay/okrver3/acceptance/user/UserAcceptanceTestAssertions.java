@@ -13,6 +13,7 @@ import io.restassured.response.Response;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
+import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 import kr.jay.okrver3.interfaces.user.response.UserInfoResponse;
 
 public class UserAcceptanceTestAssertions {
@@ -113,6 +114,14 @@ public class UserAcceptanceTestAssertions {
 	static void 사용자_정보_수정_응답_검증(ExtractableResponse<Response> 응답) {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(응답.body().asString()).isEqualTo("SUCCESS");
+
+	}
+
+	static void 토큰_응답_검증(ExtractableResponse<Response> 응답, String accessToken, String refreshToken) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		TokenResponse response = 응답.body().jsonPath().getObject("", TokenResponse.class);
+		assertThat(response.refreshToken()).isEqualTo(refreshToken);
+		assertThat(response.accessToken()).isNotEqualTo(accessToken);
 
 	}
 

@@ -1,7 +1,5 @@
 package kr.jay.okrver3.acceptance.user;
 
-import org.junit.jupiter.api.Test;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -117,7 +115,6 @@ public class UserAcceptanceTestSteps {
 			.extract();
 	}
 
-	@Test
 	public static ExtractableResponse<Response> 로그인_유저_정보_수정_요청(String 수정할_이름, JobField 수정할_직업,
 		String 로그인_유저_인증_토큰) throws Exception {
 		return RestAssured.
@@ -133,6 +130,21 @@ public class UserAcceptanceTestSteps {
 			then()
 			.log().all()
 			.extract();
-
 	}
+
+	public static ExtractableResponse<Response> 새로운_인증_토큰_발급_요청(String 로그인_유저_인증_토큰) throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
+
+			when()
+			.put(baseUrl + "/refresh").
+
+			then()
+			.log().all()
+			.extract();
+	}
+
 }

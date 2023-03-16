@@ -27,10 +27,10 @@ public class AcceptanceTest {
 	int port;
 
 	@Value("${app.auth.tokenSecret}")
-	String key;
+	public String key;
 
 	@Value("${app.auth.tokenExpiry}")
-	Long accessExpiredTimeMs;
+	public Long accessExpiredTimeMs;
 
 	@Autowired
 	DatabaseCleanup databaseCleanup;

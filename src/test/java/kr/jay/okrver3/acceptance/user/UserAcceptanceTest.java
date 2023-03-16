@@ -4,13 +4,20 @@ import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestAssertions.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestData.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestSteps.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.jay.okrver3.acceptance.AcceptanceTest;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
+import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
@@ -22,10 +29,26 @@ public class UserAcceptanceTest extends AcceptanceTest {
 	private static final String 회원가입안된_애플_idToken = "notMemberIdToken";
 	private static final String 회원가입된_애플_idToken = "appleToken";
 	private static final String 회원가입된_구글_idToken = "googleToken";
+	private String 유효기간이_임계값_이상_남은_토큰;
+	private String 유효기간이_임계값_미만으로_남은_토큰;
+
+	@Value("${app.auth.refreshTokenRegenerationThreshold}")
+	private Long 토큰_유효기간_임계값;
+
+	@PersistenceContext
+	EntityManager em;
+
 
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
+
+		유효기간이_임계값_이상_남은_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, 토큰_유효기간_임계값 + 10000000L);
+		유효기간이_임계값_미만으로_남은_토큰 = JwtTokenUtils.generateToken("fakeAppleEmail", key, 토큰_유효기간_임계값 - 10000000L);
+
+		em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_이상_남은_토큰));
+		em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_미만으로_남은_토큰));
+
 	}
 
 	@Test
@@ -189,6 +212,15 @@ public class UserAcceptanceTest extends AcceptanceTest {
 
 		//then
 		사용자_정보_수정_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("토큰이 만료되면 refhreshToken으로 새로운 토큰을 요청하면 기대하는 응답을 반환한다.")
+	void request_new_accecssToken_with_refreshToken() throws Exception {
+		//when
+		var 응답 = 새로운_인증_토큰_발급_요청(유효기간이_임계값_이상_남은_토큰);
+		//then
+		토큰_응답_검증(응답, 사용자1_토큰, 유효기간이_임계값_이상_남은_토큰);
 	}
 
 	private String 응답에서_데이터_추출(ExtractableResponse<Response> 게스트_정보_응답, String field) {
