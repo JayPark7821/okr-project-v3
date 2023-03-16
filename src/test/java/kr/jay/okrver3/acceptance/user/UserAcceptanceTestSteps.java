@@ -14,6 +14,7 @@ import io.restassured.response.Response;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
 
 public class UserAcceptanceTestSteps {
@@ -106,4 +107,38 @@ public class UserAcceptanceTestSteps {
 			.extract();
 	}
 
+
+	public static ExtractableResponse<Response>  로그인_유저_정보_요청(String 로그인_유저_인증_토큰) throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
+
+
+			when()
+			.get(baseUrl).
+
+			then()
+			.log().all()
+			.extract();
+	}
+
+	@Test
+	public static ExtractableResponse<Response>  로그인_유저_정보_수정_요청(String 수정할_이름, JobField 수정할_직업, String 로그인_유저_인증_토큰) throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰)
+			.body(new UserInfoUpdateRequest(수정할_이름,"profileImage", 수정할_직업.getCode())).
+
+			when()
+			.put(baseUrl).
+
+			then()
+			.log().all()
+			.extract();
+
+	}
 }

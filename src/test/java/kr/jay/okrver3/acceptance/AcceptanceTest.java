@@ -35,11 +35,8 @@ public class AcceptanceTest {
 	@Value("${app.auth.tokenExpiry}")
 	Long accessExpiredTimeMs;
 
-	@PersistenceContext
-	EntityManager em;
-
 	@Autowired
-	private DatabaseCleanup databaseCleanup;
+	DatabaseCleanup databaseCleanup;
 
 	@Autowired
 	DataLoader dataLoader;

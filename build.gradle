@@ -52,6 +52,9 @@ dependencies {
     // rest-assured
     testImplementation "io.rest-assured:rest-assured"
 
+    // 테스트 lombok 의존성 추가
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
 }
 

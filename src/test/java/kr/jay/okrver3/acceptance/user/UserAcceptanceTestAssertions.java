@@ -11,8 +11,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.domain.user.JobCategory;
-import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
+import kr.jay.okrver3.interfaces.user.response.UserInfoResponse;
 
 public class UserAcceptanceTestAssertions {
 
@@ -21,12 +21,12 @@ public class UserAcceptanceTestAssertions {
 		assertThat(직업_목록.body().asString()).isEqualTo(JobCategory.BACK_END.getCode());
 	}
 
-	static void 직업_목록_검증(ExtractableResponse<Response> 직업_목록, JobCategory 카테고리) {
+	static void 직업_목록_응답_검증(ExtractableResponse<Response> 직업_목록, JobCategory 카테고리) {
 		assertThat(직업_목록.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(직업_목록.body().jsonPath().getList("", JobResponse.class))
 			.isEqualTo(카테고리.getDetailList().stream().map(j->new JobResponse(j.getCode(),j.getTitle())).toList());
 	}
-	static void 직업_카테고리_목록_검증(ExtractableResponse<Response> 직업_카테고리_목록) {
+	static void 직업_카테고리_목록_응답_검증(ExtractableResponse<Response> 직업_카테고리_목록) {
 		assertThat(직업_카테고리_목록.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(직업_카테고리_목록.body().jsonPath().getList("", JobResponse.class))
 			.isEqualTo(Arrays.stream(JobCategory.values()).map(j->new JobResponse(j.getCode(),j.getTitle())).toList());
@@ -93,5 +93,20 @@ public class UserAcceptanceTestAssertions {
 		assertThat(response.getString("refreshToken")).isNull();
 		assertThat(response.getString("jobFieldDetail")).isNull();
 	}
+
+	static void 유저_정보_응답_검증(ExtractableResponse<Response> 응답 ) {
+
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+		UserInfoResponse response = 응답.body().jsonPath().getObject("", UserInfoResponse.class);
+		// assertThat(response.email()).isEqualTo();
+		// assertThat(response.name()).isNotNull();
+		// assertThat(response.providerType()).isNotNull();
+		// assertThat(response.roleType()).isNotNull();
+		// assertThat(response.jobFieldDetail()).isNull();
+		// assertThat(response.profileImage()).isNull();
+	}
+
+
 
 }

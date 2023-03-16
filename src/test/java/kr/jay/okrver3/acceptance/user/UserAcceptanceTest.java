@@ -1,27 +1,19 @@
 package kr.jay.okrver3.acceptance.user;
 
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestAssertions.*;
+import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestData.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestSteps.*;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
-
-import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.jay.okrver3.acceptance.AcceptanceTest;
-import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
-import kr.jay.okrver3.interfaces.user.response.JobResponse;
 
 @DisplayName("User domain acceptance test")
 public class UserAcceptanceTest extends AcceptanceTest {
@@ -31,6 +23,12 @@ public class UserAcceptanceTest extends AcceptanceTest {
 	private static final String 회원가입된_애플_idToken = "appleToken";
 	private static final String 회원가입된_구글_idToken = "googleToken";
 
+
+	@BeforeEach
+	void beforeEach() {
+		super.setUp();
+
+	}
 
 	@Test
 	@DisplayName("가입한 유저 정보가 없을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Guest without token)을 반환한다.")
@@ -83,7 +81,6 @@ public class UserAcceptanceTest extends AcceptanceTest {
 
 		//then
 		회원가입_요청_성공_검증(응답);
-
 	}
 
 	@Test
@@ -123,19 +120,17 @@ public class UserAcceptanceTest extends AcceptanceTest {
 		이미_가입한_유저_회원가입_요청_실패_검증(응답);
 	}
 
-
 	@Test
 	@DisplayName("프로젝트 생성시 팀원을 추가하기 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
 	void validate_email_address_for_register_project() throws Exception {
 		//given
-		String 가입된_유저_이메일 = "guest@email.com";
+		String 가입된_유저_이메일 = 사용자2.getEmail();
 
 		//when
 		var 응답 = 프로잭트_생성_전_email_검증_요청(가입된_유저_이메일, 로그인_유저);
 
 		//then
 		이메일_검증_응답_검증(응답, 가입된_유저_이메일);
-
 	}
 
 	@Test
@@ -145,8 +140,7 @@ public class UserAcceptanceTest extends AcceptanceTest {
 		var 응답 = 직업_카테고리_조회_요청();
 
 		//then
-		직업_카테고리_목록_검증(응답);
-
+		직업_카테고리_목록_응답_검증(응답);
 	}
 
 	@Test
@@ -159,8 +153,30 @@ public class UserAcceptanceTest extends AcceptanceTest {
 		var 응답 = 직업_조회_요청(백엔드_카테고리);
 
 		//then
-		직업_목록_검증(응답, 백엔드_카테고리);
+		직업_목록_응답_검증(응답, 백엔드_카테고리);
+	}
 
+	@Test
+	@DisplayName("로그인한 유저의 유저 정보를 요청하면 기대하는 응답을 반환한다.")
+	void get_userInfo() throws Exception {
+		//when
+		var 응답 = 로그인_유저_정보_요청(로그인_유저);
+
+		//then
+		유저_정보_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("로그인한 유저의 유저 정보를 수정한다.")
+	void udpate_userInfo() throws Exception {
+		//given
+		var 직업_웹_서버_개발자 = JobField.WEB_SERVER_DEVELOPER;
+
+		//when
+		var 응답 = 직업_으로_직업_카테고리_조회_요청(직업_웹_서버_개발자);
+
+		//then
+		직업_카테고리_응답_검증(응답);
 	}
 
 	@Test
@@ -174,7 +190,6 @@ public class UserAcceptanceTest extends AcceptanceTest {
 
 		//then
 		직업_카테고리_응답_검증(응답);
-
 	}
 
 	private String 응답에서_데이터_추출(ExtractableResponse<Response> 게스트_정보_응답, String field) {
