@@ -15,6 +15,7 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
 	@Query("select p "
 		+ "from Project p "
+		+ "join fetch p.teamMember pt "
 		+ "join p.teamMember t "
 		+ "where t.user.userSeq = :userSeq "
 		+ "and p.projectToken =:projectToken ")
