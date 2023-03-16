@@ -1,5 +1,6 @@
 package kr.jay.okrver3.acceptance.user;
 
+import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestAssertions.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestSteps.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
@@ -176,90 +177,11 @@ public class UserAcceptanceTest extends AcceptanceTest {
 
 	}
 
-
-	private void 직업_카테고리_응답_검증(ExtractableResponse<Response> 직업_목록) {
-		assertThat(직업_목록.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(직업_목록.body().asString()).isEqualTo(JobCategory.BACK_END.getCode());
-	}
-
-	private void 직업_목록_검증(ExtractableResponse<Response> 직업_목록, JobCategory 카테고리) {
-		assertThat(직업_목록.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(직업_목록.body().jsonPath().getList("", JobResponse.class))
-			.isEqualTo(카테고리.getDetailList().stream().map(j->new JobResponse(j.getCode(),j.getTitle())).toList());
-	}
-	private void 직업_카테고리_목록_검증(ExtractableResponse<Response> 직업_카테고리_목록) {
-		assertThat(직업_카테고리_목록.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(직업_카테고리_목록.body().jsonPath().getList("", JobResponse.class))
-			.isEqualTo(Arrays.stream(JobCategory.values()).map(j->new JobResponse(j.getCode(),j.getTitle())).toList());
-	}
-
-	private void 이메일_검증_응답_검증(ExtractableResponse<Response> 응답, String 요청_이메일_주소) {
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(응답.body().asString()).isEqualTo(요청_이메일_주소);
-	}
-	private void 게스트_정보_없을_때_회원가입_요청_실패_검증(ExtractableResponse<Response> 응답) {
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(응답.body().asString()).contains(ErrorCode.INVALID_JOIN_INFO.getMessage());
-	}
-
-	private void 이미_가입한_유저_회원가입_요청_실패_검증(ExtractableResponse<Response> 응답) {
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(응답.body().asString()).contains(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	private String 응답에서_데이터_추출(ExtractableResponse<Response> 게스트_정보_응답, String field) {
+		return 게스트_정보_응답.body().jsonPath().getString(field);
 	}
 
 	private JoinRequest 회원가입_정보_생성(String 게스트_id, String 게스트_email, String 사용자명, String 직무_포지션) {
 		return new JoinRequest(게스트_id, 사용자명, 게스트_email, 직무_포지션 );
-	}
-
-	private void 로그인_실패_검증(ExtractableResponse<Response> 응답) {
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(응답.body().asString()).contains("소셜 provider 불일치,");
-	}
-
-	private void 회원가입_요청_성공_검증(ExtractableResponse<Response> 응답 ) {
-
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
-		JsonPath response = 응답.body().jsonPath();
-		assertThat(response.getString("guestUserId")).isNull();
-		assertThat(response.getString("email")).isNotNull();
-		assertThat(response.getString("name")).isNotNull();
-		assertThat(response.getString("providerType")).isNotNull();
-		assertThat(response.getString("accessToken")).isNotNull();
-		assertThat(response.getString("refreshToken")).isNotNull();
-		assertThat(response.getString("jobFieldDetail")).isNotNull();
-	}
-
-
-	private void 로그인_응답_검증_회원(ExtractableResponse<Response> 응답 ) {
-
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-		JsonPath response = 응답.body().jsonPath();
-		assertThat(response.getString("guestUserId")).isNull();
-		assertThat(response.getString("email")).isNotNull();
-		assertThat(response.getString("name")).isNotNull();
-		assertThat(response.getString("providerType")).isNotNull();
-		assertThat(response.getString("accessToken")).isNotNull();
-		assertThat(response.getString("refreshToken")).isNotNull();
-		assertThat(response.getString("jobFieldDetail")).isNotNull();
-	}
-
-	private void 로그인_응답_검증_게스트(ExtractableResponse<Response> 응답 ) {
-
-		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-		JsonPath response = 응답.body().jsonPath();
-		assertThat(response.getString("guestUserId")).isNotNull();
-		assertThat(response.getString("email")).isNotNull();
-		assertThat(response.getString("name")).isNotNull();
-		assertThat(response.getString("providerType")).isNotNull();
-		assertThat(response.getString("accessToken")).isNull();
-		assertThat(response.getString("refreshToken")).isNull();
-		assertThat(response.getString("jobFieldDetail")).isNull();
-	}
-
-	private String 응답에서_데이터_추출(ExtractableResponse<Response> 게스트_정보_응답, String field) {
-		return 게스트_정보_응답.body().jsonPath().getString(field);
 	}
 }
