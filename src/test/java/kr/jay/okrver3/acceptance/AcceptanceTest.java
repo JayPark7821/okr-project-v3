@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.restassured.RestAssured;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.util.DataLoader;
 import kr.jay.okrver3.util.DatabaseCleanup;
 import kr.jay.okrver3.util.TestConfig;
@@ -43,10 +44,14 @@ public class AcceptanceTest {
 	@Autowired
 	DataLoader dataLoader;
 
+	public static String 로그인_유저;
+
 	@BeforeEach
 	public void setUp() {
 		databaseCleanup.execute();
 		dataLoader.loadData();
 		RestAssured.port = port;
+
+		로그인_유저 = JwtTokenUtils.generateToken("apple@apple.com", key, accessExpiredTimeMs);
 	}
 }
