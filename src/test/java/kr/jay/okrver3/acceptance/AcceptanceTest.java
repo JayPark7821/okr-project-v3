@@ -1,10 +1,7 @@
 package kr.jay.okrver3.acceptance;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
+import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestData.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.restassured.RestAssured;
+import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.util.DataLoader;
 import kr.jay.okrver3.util.DatabaseCleanup;
 import kr.jay.okrver3.util.TestConfig;
@@ -29,24 +27,24 @@ public class AcceptanceTest {
 	int port;
 
 	@Value("${app.auth.tokenSecret}")
-	String key;
+	public String key;
 
 	@Value("${app.auth.tokenExpiry}")
-	Long accessExpiredTimeMs;
-
-	@PersistenceContext
-	EntityManager em;
+	public Long accessExpiredTimeMs;
 
 	@Autowired
-	private DatabaseCleanup databaseCleanup;
+	DatabaseCleanup databaseCleanup;
 
 	@Autowired
 	DataLoader dataLoader;
 
-	@BeforeEach
+	public static String 사용자1_토큰;
+
 	public void setUp() {
 		databaseCleanup.execute();
 		dataLoader.loadData();
 		RestAssured.port = port;
+
+		사용자1_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, accessExpiredTimeMs);
 	}
 }
