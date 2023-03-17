@@ -15,7 +15,8 @@ insert into user_table (user_seq, user_id,username, password, email, provider_ty
     ( 7,'testId7', 'testUser7','password','user5@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
     ( 8,'testId8', 'testUser8','password','user6@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
     ( 9,'testId9', 'testUser9','password','user7@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
-    ( 10,'testId10', 'testUser10','password','user2222@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' );
+    ( 10,'testId10', 'testUser10','password','user2222@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
+    ( 18,'testId11', 'testUser10','password','guest@email.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' );
 
 insert into project
 ( project_id, created_date, last_modified_date, created_by, last_modified_by, project_edt, project_objective, progress, project_token, project_sdt, project_type) values

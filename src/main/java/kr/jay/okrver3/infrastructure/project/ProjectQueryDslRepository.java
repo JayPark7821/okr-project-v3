@@ -89,18 +89,23 @@ public class ProjectQueryDslRepository {
 	}
 
 	public double getProjectProgress(Long projectId) {
-		return queryFactory
+		Double progress = queryFactory
 			.select(new CaseBuilder().when(initiative.count().eq(0L)).then(0D)
 				.otherwise(
-					(new CaseBuilder()
-						.when(initiative.done.isTrue()).then(1D)
-						.otherwise(0D)
-						.sum()).divide(initiative.count()).multiply(100)
+					(
+						new CaseBuilder()
+							.when(initiative.done.isTrue()).then(1D)
+							.otherwise(0D)
+							.sum()//.add(1)
+					).divide(initiative.count()).multiply(100)
 				))
 			.from(project)
-			.innerJoin(project.keyResults, keyResult)
-			.innerJoin(keyResult.initiative, initiative)
+			.leftJoin(project.keyResults, keyResult)
+			.leftJoin(keyResult.initiative, initiative)
 			.where(project.id.eq(projectId))
 			.fetchOne();
+
+		return progress == null ? 0.0d : progress;
+
 	}
 }

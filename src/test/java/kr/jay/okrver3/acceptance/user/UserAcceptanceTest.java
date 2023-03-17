@@ -4,26 +4,24 @@ import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestAssertions.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestData.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestSteps.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.jay.okrver3.acceptance.AcceptanceTest;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.JobCategory;
 import kr.jay.okrver3.domain.user.JobField;
+import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
+import kr.jay.okrver3.util.SpringBootTestReady;
 
 @DisplayName("User domain acceptance test")
-public class UserAcceptanceTest extends AcceptanceTest {
+public class UserAcceptanceTest extends SpringBootTestReady {
 
 	private static final String 애플 = "APPLE";
 	private static final String 회원가입안된_애플_idToken = "notMemberIdToken";
@@ -35,19 +33,24 @@ public class UserAcceptanceTest extends AcceptanceTest {
 	@Value("${app.auth.refreshTokenRegenerationThreshold}")
 	private Long 토큰_유효기간_임계값;
 
-	@PersistenceContext
-	EntityManager em;
+	@Value("${app.auth.tokenSecret}")
+	String key;
 
+	@Value("${app.auth.tokenExpiry}")
+	Long accessExpiredTimeMs;
+
+	String 사용자1_토큰;
 
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
-
+		dataLoader.loadData(Arrays.stream(values()).map(UserAcceptanceTestData::getUser).toList(), User.class);
+		사용자1_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, accessExpiredTimeMs);
 		유효기간이_임계값_이상_남은_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, 토큰_유효기간_임계값 + 10000000L);
 		유효기간이_임계값_미만으로_남은_토큰 = JwtTokenUtils.generateToken("fakeAppleEmail", key, 토큰_유효기간_임계값 - 10000000L);
 
-		em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_이상_남은_토큰));
-		em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_미만으로_남은_토큰));
+		// em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_이상_남은_토큰));
+		// em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_미만으로_남은_토큰));
 
 	}
 

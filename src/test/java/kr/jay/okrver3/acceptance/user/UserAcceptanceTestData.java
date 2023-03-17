@@ -1,12 +1,5 @@
 package kr.jay.okrver3.acceptance.user;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import kr.jay.okrver3.domain.user.JobField;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.RoleType;
@@ -18,7 +11,7 @@ import lombok.Getter;
 @Getter
 public enum UserAcceptanceTestData {
 
-	사용자1( "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE, RoleType.USER,
+	사용자1("appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE, RoleType.USER,
 		JobField.WEB_SERVER_DEVELOPER),
 	사용자2("fakeAppleId", "fakeAppleName", "fakeAppleEmail", "fakeApplePic", ProviderType.APPLE, RoleType.USER,
 		JobField.WEB_SERVER_DEVELOPER),
