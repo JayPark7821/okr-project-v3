@@ -9,7 +9,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -20,7 +19,7 @@ import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.util.SpringBootTestReady;
 
-@DisplayName("User domain acceptance test")
+@DisplayName("User 도메인 인수 테스트")
 public class UserAcceptanceTest extends SpringBootTestReady {
 
 	private static final String 애플 = "APPLE";
@@ -30,22 +29,13 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 	private String 유효기간이_임계값_이상_남은_토큰;
 	private String 유효기간이_임계값_미만으로_남은_토큰;
 
-	@Value("${app.auth.refreshTokenRegenerationThreshold}")
-	private Long 토큰_유효기간_임계값;
-
-	@Value("${app.auth.tokenSecret}")
-	String key;
-
-	@Value("${app.auth.tokenExpiry}")
-	Long accessExpiredTimeMs;
-
 	String 사용자1_토큰;
 
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
 		dataLoader.loadData(Arrays.stream(values()).map(UserAcceptanceTestData::getUser).toList(), User.class);
-		사용자1_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, accessExpiredTimeMs);
+		사용자1_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, 엑세스_토큰_유효기간_임계값);
 		유효기간이_임계값_이상_남은_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, 토큰_유효기간_임계값 + 10000000L);
 		유효기간이_임계값_미만으로_남은_토큰 = JwtTokenUtils.generateToken("fakeAppleEmail", key, 토큰_유효기간_임계값 - 10000000L);
 

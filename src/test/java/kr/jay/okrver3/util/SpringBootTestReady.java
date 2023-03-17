@@ -3,6 +3,7 @@ package kr.jay.okrver3.util;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
@@ -22,6 +23,15 @@ public class SpringBootTestReady {
 	DatabaseCleanup databaseCleanup;
 	@Autowired
 	public DataLoader dataLoader;
+
+	@Value("${app.auth.refreshTokenRegenerationThreshold}")
+	public Long 토큰_유효기간_임계값;
+
+	@Value("${app.auth.tokenSecret}")
+	public String key;
+
+	@Value("${app.auth.tokenExpiry}")
+	public Long 엑세스_토큰_유효기간_임계값;
 
 	public void setUp() {
 		databaseCleanup.execute();
