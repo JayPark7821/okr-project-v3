@@ -52,8 +52,8 @@ public class UserFacade {
 		return userService.findUserInfoBy(email).email();
 	}
 
-	public AuthTokenInfo getNewAccessToken(String accessToken) {
-		return tokenService.getNewAccessToken(accessToken);
+	public AuthTokenInfo getNewAccessToken(String refreshToken) {
+		return tokenService.getNewAccessToken(refreshToken);
 	}
 
 	public List<JobInfo> getJobCategory() {

@@ -4,11 +4,16 @@ import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestAssertions.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestData.*;
 import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestSteps.*;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Arrays;
+
+import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -31,17 +36,31 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 
 	String 사용자1_토큰;
 
+	@Autowired
+	DataSource dataSource;
+
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
 		dataLoader.loadData(Arrays.stream(values()).map(UserAcceptanceTestData::getUser).toList(), User.class);
 		사용자1_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, 엑세스_토큰_유효기간_임계값);
 		유효기간이_임계값_이상_남은_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, 토큰_유효기간_임계값 + 10000000L);
-		유효기간이_임계값_미만으로_남은_토큰 = JwtTokenUtils.generateToken("fakeAppleEmail", key, 토큰_유효기간_임계값 - 10000000L);
+		유효기간이_임계값_미만으로_남은_토큰 = JwtTokenUtils.generateToken(사용자2.getEmail(), key, 토큰_유효기간_임계값 - 10000000L);
 
-		// em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_이상_남은_토큰));
-		// em.persist(new RefreshToken(사용자1.getEmail(), 유효기간이_임계값_미만으로_남은_토큰));
+		try (Connection conn = dataSource.getConnection()) {
+			String sql = "insert into refresh_token (user_email, refresh_token) "
+				+ "values (?, ?) ,"
+				+ "(?, ? )";
 
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, 사용자1.getEmail());
+			statement.setString(2, 유효기간이_임계값_이상_남은_토큰);
+			statement.setString(3, 사용자2.getEmail());
+			statement.setString(4, 유효기간이_임계값_미만으로_남은_토큰);
+			statement.executeUpdate();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Test
