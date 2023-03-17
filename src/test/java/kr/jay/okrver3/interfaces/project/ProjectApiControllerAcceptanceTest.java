@@ -29,12 +29,12 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import kr.jay.okrver3.util.TestHelpUtils;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.project.Project;
@@ -51,6 +51,7 @@ import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
+import kr.jay.okrver3.util.TestHelpUtils;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -439,16 +440,31 @@ public class ProjectApiControllerAcceptanceTest {
 
 	}
 
+	/*
+	 * 최초 initiative 1 개
+	 *
+	 * tx1                tx2
+	 * initiative 추가
+	 *                   행동전략 추가 2
+	 * 진척도 update(1) 2
+	 *                   진척도 update(1) 2
+	 * commit
+	 *                   commit
+	 * */
+
 	@Test
+	@Commit
 	void 행동전략_추가시_프로젝트_진척도가_변경된다_동시성테스트() throws Exception {
 
-		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
-			"key_wV6MX15WQ3DTzQMs",
-			"행동전략",
-			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
-			TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
-			"행동전략 상세내용"
-		);
+		ProjectInitiativeSaveRequest requestDto =
+			new ProjectInitiativeSaveRequest
+				(
+					"key_wV6MX15WQ3DTzQMs",
+					"행동전략",
+					TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
+					TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
+					"행동전략 상세내용"
+				);
 
 		int threadCount = 99;
 		ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
@@ -561,7 +577,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailResponse를_리턴한다() throws Exception {
- 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
+		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
 		final JsonPath response = RestAssured.
 
@@ -602,7 +618,8 @@ public class ProjectApiControllerAcceptanceTest {
 			.statusCode(HttpStatus.OK.value())
 			.extract().body().jsonPath();
 
-		List<InitiativeForCalendarResponse> initiativeResponses = response.getList("", InitiativeForCalendarResponse.class);
+		List<InitiativeForCalendarResponse> initiativeResponses = response.getList("",
+			InitiativeForCalendarResponse.class);
 		assertThat(initiativeResponses.size()).isEqualTo(1);
 
 	}
@@ -643,11 +660,11 @@ public class ProjectApiControllerAcceptanceTest {
 
 			then()
 			.statusCode(HttpStatus.OK.value())
-			.extract().body().jsonPath().getList("",String.class);
+			.extract().body().jsonPath().getList("", String.class);
 
 		assertThat(response.size()).isEqualTo(14);
 		assertThat(response.get(0)).isEqualTo("2023-12-01");
-		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
+		assertThat(response.get(response.size() - 1)).isEqualTo("2023-12-14");
 
 	}
 
@@ -707,7 +724,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/feedback/count"  ).
+			.get(baseUrl + "/feedback/count").
 
 			then()
 			.statusCode(HttpStatus.OK.value())
@@ -727,7 +744,7 @@ public class ProjectApiControllerAcceptanceTest {
 			.header("Authorization", "Bearer " + authToken).
 
 			when()
-			.get(baseUrl + "/feedback?searchRange="+searchRange).
+			.get(baseUrl + "/feedback?searchRange=" + searchRange).
 
 			then()
 			.statusCode(HttpStatus.OK.value())
@@ -742,7 +759,6 @@ public class ProjectApiControllerAcceptanceTest {
 		}
 
 	}
-
 
 	@Test
 	void updateFeedbackStatus를_호출하면_피드백의_상태를_update한다() throws Exception {
@@ -762,8 +778,6 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response.getString("")).isEqualTo("feedback_el6q34zazzSyWx9");
 	}
-
-
 
 	@Test
 	void updateInitative를_호출하여_행동전략을_수정한다() throws Exception {
@@ -785,7 +799,6 @@ public class ProjectApiControllerAcceptanceTest {
 		assertThat(response).isEqualTo(initiativeToken);
 
 	}
-
 
 }
 

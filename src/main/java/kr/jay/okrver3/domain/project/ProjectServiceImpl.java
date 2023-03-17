@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -22,7 +21,6 @@ import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackRepository;
 import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.aggregate.initiative.InitiativeRepository;
-import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
@@ -128,10 +126,7 @@ public class ProjectServiceImpl implements ProjectService {
 			initiative
 		);
 
-		getKeyResult(command, project)
-			.addInitiative(
-				initiative
-			);
+		addInitiative(command, project, initiative);
 
 		updateProjectProgress(initiative.getProject().getId());
 		return initiative.getInitiativeToken();
@@ -160,7 +155,6 @@ public class ProjectServiceImpl implements ProjectService {
 			initiative.getTeamMember().getUser().getUsername()
 		);
 	}
-
 
 	@Override
 	public Page<InitiativeInfo> getInitiativeByKeyResultToken(String keyResultToken, Long userSeq, Pageable pageable) {
@@ -245,17 +239,18 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	void updateProjectProgress(Long projectId) {
-		Project projectReference = projectRepository.findProjectForUpdateById(projectId)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
-		projectReference.updateProgress(projectRepository.getProjectProgress(projectId));
+		projectRepository.findProjectForUpdateById(projectId)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN))
+			.updateProgress(projectRepository.getProjectProgress(projectId));
 	}
 
-	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
-		return project.getKeyResults()
+	private void addInitiative(ProjectInitiativeSaveCommand command, Project project, Initiative initiative) {
+		project.getKeyResults()
 			.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
 			.findFirst()
-			.orElseThrow();
+			.orElseThrow()
+			.addInitiative(initiative);
 	}
 
 	private TeamMember getTeamMember(Long userSeq, Project project) {

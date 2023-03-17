@@ -1,6 +1,4 @@
-package kr.jay.okrver3.acceptance;
-
-import static kr.jay.okrver3.acceptance.user.UserAcceptanceTestData.*;
+package kr.jay.okrver3.util;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -12,39 +10,31 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import io.restassured.RestAssured;
-import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.util.DataLoader;
-import kr.jay.okrver3.util.DatabaseCleanup;
-import kr.jay.okrver3.util.TestConfig;
 
 @Import(TestConfig.class)
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
+public class SpringBootTestReady {
 
 	@LocalServerPort
 	int port;
+	@Autowired
+	DatabaseCleanup databaseCleanup;
+	@Autowired
+	public DataLoader dataLoader;
+
+	@Value("${app.auth.refreshTokenRegenerationThreshold}")
+	public Long 토큰_유효기간_임계값;
 
 	@Value("${app.auth.tokenSecret}")
 	public String key;
 
 	@Value("${app.auth.tokenExpiry}")
-	public Long accessExpiredTimeMs;
-
-	@Autowired
-	DatabaseCleanup databaseCleanup;
-
-	@Autowired
-	DataLoader dataLoader;
-
-	public static String 사용자1_토큰;
+	public Long 엑세스_토큰_유효기간_임계값;
 
 	public void setUp() {
 		databaseCleanup.execute();
-		dataLoader.loadData();
 		RestAssured.port = port;
-
-		사용자1_토큰 = JwtTokenUtils.generateToken(사용자1.getEmail(), key, accessExpiredTimeMs);
 	}
 }

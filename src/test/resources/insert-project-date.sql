@@ -1,6 +1,6 @@
 insert into user_table (user_seq, user_id,username, password, email, provider_type, role_type, job_field, profile_image )values
-    ( 1,'testId1', 'testUser1','password','projectMasterTest@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
-    ( 2,'testId2', 'testUser2','password','teamMemberTest@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
+    ( 1,'testId1', 'testUser1','password','teamMemberTest@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
+    ( 2,'testId2', 'testUser2','password','projectMasterTest@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
     (11,'testId11', 'testUser2','password','keyResultTest@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
     (12,'testId12', 'testUser2','password','initiativeTest@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
     (13,'testId13', 'testUser2','password','projectMasterRetrieveTest@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
@@ -15,7 +15,8 @@ insert into user_table (user_seq, user_id,username, password, email, provider_ty
     ( 7,'testId7', 'testUser7','password','user5@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
     ( 8,'testId8', 'testUser8','password','user6@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
     ( 9,'testId9', 'testUser9','password','user7@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
-    ( 10,'testId10', 'testUser10','password','user2222@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' );
+    ( 10,'testId10', 'testUser10','password','user2222@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
+    ( 18,'testId11', 'testUser10','password','guest@email.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' );
 
 insert into project
 ( project_id, created_date, last_modified_date, created_by, last_modified_by, project_edt, project_objective, progress, project_token, project_sdt, project_type) values
@@ -52,8 +53,8 @@ insert into team_member
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99996, 3),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99996, 17),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'MEMBER', 99995, 13),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'LEADER', 99994, 13),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99994, 2),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'MEMBER', 99994, 13),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99994, 2),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99994, 3),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99993, 13),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'MEMBER', 99992, 13),
@@ -71,6 +72,7 @@ insert into team_member
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88887, 15),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88886, 15),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88885, 15),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88885, 2),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88884, 15),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88884, 7),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 17)

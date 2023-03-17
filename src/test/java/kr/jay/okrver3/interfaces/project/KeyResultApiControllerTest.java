@@ -1,8 +1,9 @@
-package kr.jay.okrver3.interfaces.notification;
+package kr.jay.okrver3.interfaces.project;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,19 +11,17 @@ import javax.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import kr.jay.okrver3.domain.user.User;
-import kr.jay.okrver3.interfaces.notification.response.NotificationResponse;
+import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.util.SpringBootTestReady;
 
-public class NotificationApiControllerTest extends SpringBootTestReady {
+class KeyResultApiControllerTest extends SpringBootTestReady {
 
 	@Autowired
-	private NotificationApiController sut;
+	private KeyResultApiController sut;
 
 	@PersistenceContext
 	EntityManager em;
@@ -34,20 +33,18 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 	}
 
 	@Test
-	void getNotifications을_호출화면_기대하는_응답을_리턴한다() throws Exception {
-		List<String> notificationTokens = List.of("noti_aaaaaMoZey1SERx", "noti_e144441Zey1SERx");
+	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
+		String projectToken = "mst_as3fg34tgg6421";
+		String keyResultName = "keyResult";
 
-		final ResponseEntity<Page<NotificationResponse>> response = sut.getNotifications(
-			getAuthenticationToken(16L), PageRequest.of(0, 5)
-		);
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
-		assertThat(response.getBody().getTotalElements()).isEqualTo(2);
-		List<NotificationResponse> content = response.getBody().getContent();
+		ResponseEntity<String> response = sut.registerKeyResult(
+			new ProjectKeyResultSaveRequest(projectToken, keyResultName), auth);
 
-		for (int i = 0; i < content.size(); i++) {
-			NotificationResponse r = content.get(i);
-			assertThat(r.notiToken()).isEqualTo(notificationTokens.get(i));
-		}
+		assertThat(response.getBody()).containsPattern(
+			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
+
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
@@ -60,4 +57,3 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 		return auth;
 	}
 }
-

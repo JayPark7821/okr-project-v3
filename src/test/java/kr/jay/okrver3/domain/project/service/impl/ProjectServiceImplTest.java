@@ -9,7 +9,6 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -63,7 +62,6 @@ import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
 
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class,
@@ -321,47 +319,6 @@ class ProjectServiceImplTest {
 
 		assertThat(project.getProgress()).isEqualTo(50.0);
 	}
-	//
-	// @Test
-	// @Sql("classpath:insert-project-date.sql")
-	// void 행동전략_추가시_프로젝트_진척도_변경된다_동시성테스트() throws Exception {
-	// 	//Given
-	// 	ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
-	// 		"key_wV6MX15WQ3DTzQMs",
-	// 		"행동전략",
-	// 		LocalDate.now().minusDays(10),
-	// 		LocalDate.now().plusDays(10),
-	// 		"행동전략 상세내용"
-	// 	);
-	//
-	// 	//When
-	// 	int threadCount = 99;
-	// 	ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
-	// 	CountDownLatch latch = new CountDownLatch(threadCount);
-	//
-	// 	for (int i = 0; i < threadCount; i++) {
-	// 		executorService.submit(() -> {
-	// 			try {
-	// 				sut.registerInitiative(requestDto, getUser(997L));
-	// 			} finally {
-	// 				latch.countDown();
-	// 			}
-	// 		});
-	// 	}
-	// 	latch.await();
-	//
-	// 	//Then
-	// 	KeyResult ke = em.createQuery("select k from KeyResult k where k.id = :id", KeyResult.class)
-	// 		.setParameter("id", 99999L)
-	// 		.getSingleResult();
-	// 	assertThat(ke.getInitiative().size()).isEqualTo(100);
-	//
-	// 	Project project = em.createQuery(
-	// 			"select p from Project p where p.id = :id", Project.class)
-	// 		.setParameter("id", 99998L)
-	// 		.getSingleResult();
-	// 	assertThat(project.getProgress()).isEqualTo(1.0);
-	// }
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -525,11 +482,10 @@ class ProjectServiceImplTest {
 	void 잘못된_행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nOfefeAH8";
 
-		assertThatThrownBy(()->sut.getInitiativeBy(initiativeToken, 3L))
+		assertThatThrownBy(() -> sut.getInitiativeBy(initiativeToken, 3L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_INITIATIVE_TOKEN.getMessage());
 	}
-
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -545,7 +501,6 @@ class ProjectServiceImplTest {
 		assertThat(response.get(0).startDate()).isEqualTo("2000-12-12");
 		assertThat(response.get(0).endDate()).isEqualTo("2023-12-14");
 	}
-
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -569,10 +524,9 @@ class ProjectServiceImplTest {
 
 		assertThat(response.size()).isEqualTo(14);
 		assertThat(response.get(0)).isEqualTo("2023-12-01");
-		assertThat(response.get(response.size()-1)).isEqualTo("2023-12-14");
+		assertThat(response.get(response.size() - 1)).isEqualTo("2023-12-14");
 
 	}
-
 
 	@Test
 	@Sql("classpath:insert-project-date.sql")
@@ -632,7 +586,7 @@ class ProjectServiceImplTest {
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
-		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3","feedback_el6q34zazzSyWx9" );
+		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3", "feedback_el6q34zazzSyWx9");
 		SearchRange searchRange = SearchRange.ALL;
 		Page<FeedbackDetailInfo> response = sut.getRecievedFeedback(
 			searchRange,
