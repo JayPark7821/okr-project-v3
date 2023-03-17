@@ -30,9 +30,9 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	@Test
 	@DisplayName("팀원 없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
-
 		//given
 		var 프로젝트_생성_요청_데이터 = 프로젝트_생성_요청_데이터_생성("프로젝트 목표", List.of("핵심결과 1", "핵심결과 2"), List.of());
+
 		//when
 		var 응답 = 프로젝트_생성_요청(프로젝트_생성_요청_데이터, 사용자_토큰);
 
@@ -64,6 +64,44 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 
 		//then
 		프로젝트_생성_요청_실패_응답_검증_가입하지_않은_유저(응답);
+	}
+
+	@Test
+	@DisplayName("핵심결과 추가 요청시 기대하는 응답(핵심결과 토큰)을 반환한다.")
+	void add_keyResult_to_project() throws Exception {
+		//given
+		var 프로젝트_토큰 = "mst_as3fg34tgg6421";
+		//when
+		var 응답 = 프로젝트_핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
+
+		//then
+		핵심결과_추가_요청_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("등록 가능한 모든 핵심결과가 등록되었을 때 핵심결과 추가 요청시 기대하는 응답(exception)을 반환한다.")
+	void add_keyResult_to_fully_added_keyResult_project() throws Exception {
+		//given
+		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
+		//when
+		var 응답 = 프로젝트_핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
+
+		//then
+		핵심결과_추가_요청_응답_검증_실패_핵심결과_갯수_초과(응답);
+	}
+
+	// TODO ::
+	@Test
+	@DisplayName("프로젝트 리더가 아닌 팀원이 핵심결과 추가 요청시 기대하는 응답(exception)을 반환한다.")
+	void member_add_keyResult_to_project() throws Exception {
+		//given
+		var 프로젝트_토큰 = "mst_qq2f4gbfffffe421";
+		//when
+		var 응답 = 프로젝트_핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
+
+		//then
+		핵심결과_추가_요청_응답_검증_실패_팀원(응답);
+
 	}
 
 	private ProjectSaveRequest 프로젝트_생성_요청_데이터_생성(String 목표, List<String> 핵심결과, List<String> 팀원) {
