@@ -235,6 +235,15 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		토큰_응답_검증(응답, 사용자1_토큰, 유효기간이_임계값_이상_남은_토큰);
 	}
 
+	@Test
+	@DisplayName("토큰이 만료되면 refhreshToken으로 새로운 토큰을 요청하면 기대하는 응답을 반환한다. 리프래쉬 토큰 임계값 이하")
+	void request_new_accecssToken_with_nearly_expired_refreshToken() throws Exception {
+		//when
+		var 응답 = 새로운_인증_토큰_발급_요청(유효기간이_임계값_미만으로_남은_토큰);
+		//then
+		토큰_응답_검증_새로운_refreshToken(응답, 사용자1_토큰, 유효기간이_임계값_미만으로_남은_토큰);
+	}
+
 	private String 응답에서_데이터_추출(ExtractableResponse<Response> 게스트_정보_응답, String field) {
 		return 게스트_정보_응답.body().jsonPath().getString(field);
 	}

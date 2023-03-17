@@ -125,4 +125,12 @@ public class UserAcceptanceTestAssertions {
 
 	}
 
+	static void 토큰_응답_검증_새로운_refreshToken(ExtractableResponse<Response> 응답, String accessToken, String refreshToken) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		TokenResponse response = 응답.body().jsonPath().getObject("", TokenResponse.class);
+		assertThat(response.refreshToken()).isNotEqualTo(refreshToken);
+		assertThat(response.accessToken()).isNotEqualTo(accessToken);
+
+	}
+
 }

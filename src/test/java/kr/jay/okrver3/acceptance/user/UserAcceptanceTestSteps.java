@@ -133,7 +133,7 @@ public class UserAcceptanceTestSteps {
 	}
 
 	public static ExtractableResponse<Response> 새로운_인증_토큰_발급_요청(String 로그인_유저_인증_토큰) throws Exception {
-		// Thread.sleep(1000L);
+		Thread.sleep(1000L);
 		return RestAssured.
 
 			given().log().all()
