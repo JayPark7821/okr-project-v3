@@ -21,7 +21,6 @@ import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackRepository;
 import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
 import kr.jay.okrver3.domain.project.aggregate.initiative.InitiativeRepository;
-import kr.jay.okrver3.domain.project.aggregate.keyresult.KeyResult;
 import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
@@ -127,7 +126,7 @@ public class ProjectServiceImpl implements ProjectService {
 			initiative
 		);
 
-		getKeyResult(command, project).addInitiative(initiative);
+		addInitiative(command, project, initiative);
 
 		updateProjectProgress(initiative.getProject().getId());
 		return initiative.getInitiativeToken();
@@ -245,12 +244,13 @@ public class ProjectServiceImpl implements ProjectService {
 			.updateProgress(projectRepository.getProjectProgress(projectId));
 	}
 
-	private KeyResult getKeyResult(ProjectInitiativeSaveCommand command, Project project) {
-		return project.getKeyResults()
+	private void addInitiative(ProjectInitiativeSaveCommand command, Project project, Initiative initiative) {
+		project.getKeyResults()
 			.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(command.keyResultToken()))
 			.findFirst()
-			.orElseThrow();
+			.orElseThrow()
+			.addInitiative(initiative);
 	}
 
 	private TeamMember getTeamMember(Long userSeq, Project project) {

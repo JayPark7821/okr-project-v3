@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 
@@ -28,7 +29,7 @@ public class ProjectAcceptanceTestSteps {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> 프로젝트_핵심결과_추가_요청(String 프로젝트_토큰, String 핵심결과, String 로그인_유저_인증_토큰) throws
+	public static ExtractableResponse<Response> 핵심결과_추가_요청(String 프로젝트_토큰, String 핵심결과, String 로그인_유저_인증_토큰) throws
 		Exception {
 		return RestAssured.
 
@@ -39,6 +40,23 @@ public class ProjectAcceptanceTestSteps {
 
 			when()
 			.post(baseUrl + "/keyresult").
+
+			then()
+			.log().all()
+			.extract();
+	}
+
+	public static ExtractableResponse<Response> 횅동전략_추가_요청(ProjectInitiativeSaveRequest 행동전략_생성_데이터,
+		String 로그인_유저_인증_토큰) {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰)
+			.body(행동전략_생성_데이터).
+
+			when()
+			.post(baseUrl + "/initiative").
 
 			then()
 			.log().all()

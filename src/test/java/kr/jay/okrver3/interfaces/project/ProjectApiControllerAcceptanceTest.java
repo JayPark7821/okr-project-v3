@@ -29,6 +29,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
@@ -439,7 +440,20 @@ public class ProjectApiControllerAcceptanceTest {
 
 	}
 
+	/*
+	 * 최초 initiative 1 개
+	 *
+	 * tx1                tx2
+	 * initiative 추가
+	 *                   행동전략 추가 2
+	 * 진척도 update(1) 2
+	 *                   진척도 update(1) 2
+	 * commit
+	 *                   commit
+	 * */
+
 	@Test
+	@Commit
 	void 행동전략_추가시_프로젝트_진척도가_변경된다_동시성테스트() throws Exception {
 
 		ProjectInitiativeSaveRequest requestDto =

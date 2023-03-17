@@ -45,4 +45,10 @@ public class ProjectAcceptanceTestAssertions {
 		assertThat(응답.body().asString()).isEqualTo(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 	}
 
+	static void 행동전략_추가_요청_응답_검증(ExtractableResponse<Response> 응답) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		assertThat(응답.body().asString()).containsPattern(
+			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+	}
+
 }
