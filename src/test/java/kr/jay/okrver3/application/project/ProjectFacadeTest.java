@@ -20,6 +20,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -43,6 +45,7 @@ import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
@@ -65,6 +68,7 @@ import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
@@ -518,5 +522,15 @@ class ProjectFacadeTest {
 			FeedbackDetailInfo r = content.get(i);
 			assertThat(r.feedbackToken()).isEqualTo(feedbackTokenList.get(i));
 		}
+	}
+
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
+
+		final List<ParticipateProjectInfo> response = sut.getParticipateProjects(3L);
+
+		assertThat(response.size()).isEqualTo(3);
 	}
 }

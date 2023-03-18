@@ -165,7 +165,7 @@ public class ProjectFacade {
 		return projectService.getRecievedFeedback(range, userSeq, pageable);
 	}
 
-	public List<ParticipateProjectInfo> getParticipateProject(final Long userSeq) {
-		throw new IllegalStateException("ProjectFacade::getParticipateProject not implemented yet");
+	public List<ParticipateProjectInfo> getParticipateProjects(final Long userSeq) {
+		return projectService.getParticipateProjects(userSeq);
 	}
 }

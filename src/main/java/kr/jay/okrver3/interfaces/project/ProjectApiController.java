@@ -109,7 +109,7 @@ public class ProjectApiController extends AbstractProjectController {
 	) {
 
 		List<ParticipateProjectInfo> info =
-			projectFacade.getParticipateProject(getUserFromAuthentication(authentication));
+			projectFacade.getParticipateProjects(getUserFromAuthentication(authentication));
 
 		return Response.successOk(
 			info.stream().map(mapper::of).toList()
