@@ -37,7 +37,7 @@ class KeyResultApiControllerTest extends SpringBootTestReady {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
-		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(2L);
 
 		ResponseEntity<String> response = sut.registerKeyResult(
 			new ProjectKeyResultSaveRequest(projectToken, keyResultName), auth);

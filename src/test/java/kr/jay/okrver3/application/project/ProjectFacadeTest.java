@@ -292,7 +292,7 @@ class ProjectFacadeTest {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
-		User user = getUser(13L);
+		User user = getUser(2L);
 
 		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName),
 			user.getUserSeq());

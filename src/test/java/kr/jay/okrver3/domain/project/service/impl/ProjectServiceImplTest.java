@@ -229,7 +229,7 @@ class ProjectServiceImplTest {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
-		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), 13L);
+		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), 2L);
 
 		assertThat(response).containsPattern(
 			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
