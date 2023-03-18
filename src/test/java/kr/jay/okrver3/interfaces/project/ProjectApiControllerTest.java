@@ -26,6 +26,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
+import kr.jay.okrver3.interfaces.user.response.ParticipateProjectResponse;
 import kr.jay.okrver3.util.SpringBootTestReady;
 
 @Transactional
@@ -134,6 +135,16 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 
 		assertThat(response.getBody().progress()).isEqualTo("60.0");
 		assertThat(response.getBody().teamMembers().size()).isEqualTo(3);
+
+	}
+
+	@Test
+	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(2L);
+
+		final ResponseEntity<List<ParticipateProjectResponse>> response = sut.getParticipateProjects(auth);
+
+		assertThat(response.getBody().size()).isEqualTo(3);
 
 	}
 

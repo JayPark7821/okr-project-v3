@@ -1,10 +1,13 @@
 package kr.jay.okrver3.interfaces.project;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +28,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
+import kr.jay.okrver3.interfaces.user.response.ParticipateProjectResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -99,6 +103,13 @@ public class ProjectApiController extends AbstractProjectController {
 		);
 	}
 
+	@GetMapping("/participate")
+	ResponseEntity<List<ParticipateProjectResponse>> getParticipateProjects(
+		final Authentication authentication
+	) {
+		throw new IllegalStateException("ProjectApiController::getParticipateProjects not implemented yet");
+	}
+
 	//------------------ initiative 관련 api ------------------//
 	// TODO :: initiative update
 
@@ -120,5 +131,7 @@ public class ProjectApiController extends AbstractProjectController {
 
 		throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_PROJECT_YN);
 	}
+
+
 
 }
