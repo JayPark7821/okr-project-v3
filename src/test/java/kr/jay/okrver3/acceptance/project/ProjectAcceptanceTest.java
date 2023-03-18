@@ -125,6 +125,16 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 		행동전략_추가_요청_응답_검증(응답);
 	}
 
+	@Test
+	@DisplayName("회원 탈퇴전 참여중인 프로젝트 리스트를 조회하면 기대하는 응답(ParticipateProjectResponse)를 반환한다.")
+	void get_participate_project_list() throws Exception {
+		//when
+		var 응답 = 회원탈퇴_요청전_참여중인_프로젝트_조회(사용자_토큰);
+
+		//then
+		참여중인_프로젝트_리스트_응답_검증(응답);
+	}
+
 	private ProjectSaveRequest 프로젝트_생성_요청_데이터_생성(String 목표, List<String> 핵심결과, List<String> 팀원) {
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
