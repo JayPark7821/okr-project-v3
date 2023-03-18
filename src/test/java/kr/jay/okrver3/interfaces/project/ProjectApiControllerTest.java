@@ -26,7 +26,7 @@ import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
-import kr.jay.okrver3.interfaces.user.response.ParticipateProjectResponse;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 import kr.jay.okrver3.util.SpringBootTestReady;
 
 @Transactional

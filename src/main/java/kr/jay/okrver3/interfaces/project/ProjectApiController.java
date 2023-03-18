@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +22,13 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
-import kr.jay.okrver3.interfaces.user.response.ParticipateProjectResponse;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,7 +107,13 @@ public class ProjectApiController extends AbstractProjectController {
 	ResponseEntity<List<ParticipateProjectResponse>> getParticipateProjects(
 		final Authentication authentication
 	) {
-		throw new IllegalStateException("ProjectApiController::getParticipateProjects not implemented yet");
+
+		List<ParticipateProjectInfo> info =
+			projectFacade.getParticipateProject(getUserFromAuthentication(authentication));
+
+		return Response.successOk(
+			info.stream().map(mapper::of).toList()
+		);
 	}
 
 	//------------------ initiative 관련 api ------------------//

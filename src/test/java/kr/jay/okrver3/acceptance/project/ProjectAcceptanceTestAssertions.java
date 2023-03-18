@@ -1,7 +1,6 @@
 package kr.jay.okrver3.acceptance.project;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.regex.Pattern;
 
@@ -11,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.jay.okrver3.common.exception.ErrorCode;
-import kr.jay.okrver3.interfaces.user.response.ParticipateProjectResponse;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 
 public class ProjectAcceptanceTestAssertions {
 

@@ -1,4 +1,4 @@
-package kr.jay.okrver3.interfaces.user.response;
+package kr.jay.okrver3.interfaces.project.response;
 
 import kr.jay.okrver3.domain.user.RoleType;
 

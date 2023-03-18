@@ -26,6 +26,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
@@ -162,5 +163,9 @@ public class ProjectFacade {
 
 	public Page<FeedbackDetailInfo> getRecievedFeedback(SearchRange range, Long userSeq, Pageable pageable) {
 		return projectService.getRecievedFeedback(range, userSeq, pageable);
+	}
+
+	public List<ParticipateProjectInfo> getParticipateProject(final Long userSeq) {
+		throw new IllegalStateException("ProjectFacade::getParticipateProject not implemented yet");
 	}
 }
