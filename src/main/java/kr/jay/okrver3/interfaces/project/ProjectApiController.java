@@ -1,5 +1,7 @@
 package kr.jay.okrver3.interfaces.project;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -20,11 +22,13 @@ import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -99,6 +103,19 @@ public class ProjectApiController extends AbstractProjectController {
 		);
 	}
 
+	@GetMapping("/participate")
+	ResponseEntity<List<ParticipateProjectResponse>> getParticipateProjects(
+		final Authentication authentication
+	) {
+
+		List<ParticipateProjectInfo> info =
+			projectFacade.getParticipateProjects(getUserFromAuthentication(authentication));
+
+		return Response.successOk(
+			info.stream().map(mapper::of).toList()
+		);
+	}
+
 	//------------------ initiative 관련 api ------------------//
 	// TODO :: initiative update
 
@@ -120,5 +137,7 @@ public class ProjectApiController extends AbstractProjectController {
 
 		throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_PROJECT_YN);
 	}
+
+
 
 }

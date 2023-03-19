@@ -63,4 +63,19 @@ public class ProjectAcceptanceTestSteps {
 			.extract();
 	}
 
+	public static ExtractableResponse<Response> 회원탈퇴_요청전_참여중인_프로젝트_조회(String 로그인_유저_인증_토큰) {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
+
+			when()
+			.get(baseUrl + "/project/participate").
+
+			then()
+			.log().all()
+			.extract();
+	}
+
 }

@@ -31,6 +31,7 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.aggregate.feedback.FeedbackType;
 import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
+import kr.jay.okrver3.domain.project.aggregate.team.ProjectRoleType;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
@@ -43,6 +44,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
@@ -604,4 +606,18 @@ class ProjectServiceImplTest {
 		}
 	}
 
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
+
+		final List<ParticipateProjectInfo> response = sut.getParticipateProjects(3L);
+
+		assertThat(response.size()).isEqualTo(6);
+		assertThat(
+			response.stream()
+				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
+				.toList()
+				.size()
+		).isEqualTo(2);
+	}
 }

@@ -20,6 +20,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
@@ -59,5 +60,7 @@ public interface ProjectService {
 	Integer getCountOfInitiativeToGiveFeedback(Long userSeq);
 
 	Page<FeedbackDetailInfo> getRecievedFeedback(SearchRange range, Long userSeq, Pageable pageable);
+
+	List<ParticipateProjectInfo> getParticipateProjects(Long userSeq);
 }
 

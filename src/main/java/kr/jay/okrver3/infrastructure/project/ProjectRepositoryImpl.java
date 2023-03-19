@@ -1,5 +1,6 @@
 package kr.jay.okrver3.infrastructure.project;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -60,5 +61,10 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	@Override
 	public Optional<Project> findProjectForUpdateById(Long projectId) {
 		return projectJpaRepository.findProjectForUpdateById(projectId);
+	}
+
+	@Override
+	public List<Project> findParticipateProjectByUserSeq(final Long userSeq) {
+		return projectJpaRepository.findParticipateProjectByUserSeq(userSeq);
 	}
 }

@@ -21,8 +21,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.domain.project.ProjectType;
+import kr.jay.okrver3.domain.project.aggregate.team.ProjectRoleType;
 import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
@@ -135,6 +137,21 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 		assertThat(response.getBody().progress()).isEqualTo("60.0");
 		assertThat(response.getBody().teamMembers().size()).isEqualTo(3);
 
+	}
+
+	@Test
+	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(3L);
+
+		final List<ParticipateProjectResponse> response = sut.getParticipateProjects(auth).getBody();
+
+		assertThat(response.size()).isEqualTo(6);
+		assertThat(
+			response.stream()
+				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
+				.toList()
+				.size()
+		).isEqualTo(2);
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {

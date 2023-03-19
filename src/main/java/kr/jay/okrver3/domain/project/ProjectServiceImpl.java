@@ -34,6 +34,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
@@ -235,6 +236,15 @@ public class ProjectServiceImpl implements ProjectService {
 	public Page<FeedbackDetailInfo> getRecievedFeedback(SearchRange range, Long userSeq, Pageable pageable) {
 		return feedbackRepository.getRecievedFeedback(range, userSeq, pageable)
 			.map(FeedbackDetailInfo::new);
+	}
+
+	@Override
+	public List<ParticipateProjectInfo> getParticipateProjects(final Long userSeq) {
+		return projectRepository.findParticipateProjectByUserSeq(
+			userSeq)
+			.stream()
+			.map(project -> new ParticipateProjectInfo(project, userSeq))
+			.toList();
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW)

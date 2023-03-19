@@ -20,6 +20,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
 import kr.jay.okrver3.domain.project.info.KeyResultInfo;
+import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
@@ -34,6 +35,7 @@ import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
 import kr.jay.okrver3.interfaces.project.response.KeyResultResponse;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInitiativeResponse;
@@ -64,6 +66,7 @@ public class ProjectDtoMapper {
 			info.teamMembersCount()
 		);
 	}
+
 	KeyResultResponse of(KeyResultInfo info) {
 		return new KeyResultResponse(info.name(), info.keyResultToken(), info.keyResultIndex());
 	}
@@ -178,6 +181,15 @@ public class ProjectDtoMapper {
 			info.writerName(),
 			info.writerJob(),
 			info.profileImage()
+		);
+	}
+
+	ParticipateProjectResponse of(ParticipateProjectInfo info) {
+		return new ParticipateProjectResponse(
+			info.projectToken(),
+			info.objective(),
+			info.projectType(),
+			info.roleType()
 		);
 	}
 }
