@@ -58,7 +58,7 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 			statement.setString(3, 사용자2.getEmail());
 			statement.setString(4, 유효기간이_임계값_미만으로_남은_토큰);
 			statement.executeUpdate();
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -242,6 +242,15 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		var 응답 = 새로운_인증_토큰_발급_요청(유효기간이_임계값_미만으로_남은_토큰);
 		//then
 		토큰_응답_검증_새로운_refreshToken(응답, 사용자1_토큰, 유효기간이_임계값_미만으로_남은_토큰);
+	}
+
+	@Test
+	@DisplayName("회원 가입 탈퇴를 요청하면 기대하는 응답을 반환한다.")
+	void request_unregistration() throws Exception {
+		//when
+		var 응답 = 회원_탈퇴_요청(사용자1_토큰);
+		//then
+		회원_탈퇴_요청_검증(응답);
 	}
 
 	private String 응답에서_데이터_추출(ExtractableResponse<Response> 게스트_정보_응답, String field) {
