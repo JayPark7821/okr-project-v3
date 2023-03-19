@@ -20,8 +20,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -34,6 +32,7 @@ import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
+import kr.jay.okrver3.domain.project.aggregate.team.ProjectRoleType;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.command.ProjectInitiativeSaveCommand;
@@ -68,7 +67,6 @@ import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
-import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,
@@ -366,7 +364,7 @@ class ProjectFacadeTest {
 
 		List<Notification> notifications =
 			em.createQuery("select n from Notification n where n.msg =: msg", Notification.class)
-				.setParameter("msg", Notifications.INITIATIVE_ACHIEVED.getMsg("testUser2","ini name222"))
+				.setParameter("msg", Notifications.INITIATIVE_ACHIEVED.getMsg("testUser2", "ini name222"))
 				.getResultList();
 
 		assertThat(notifications.size()).isEqualTo(1);
@@ -524,13 +522,18 @@ class ProjectFacadeTest {
 		}
 	}
 
-
 	@Test
 	@Sql("classpath:insert-project-date.sql")
 	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
 
 		final List<ParticipateProjectInfo> response = sut.getParticipateProjects(3L);
 
-		assertThat(response.size()).isEqualTo(3);
+		assertThat(response.size()).isEqualTo(6);
+		assertThat(
+			response.stream()
+				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
+				.toList()
+				.size()
+		).isEqualTo(2);
 	}
 }
