@@ -38,7 +38,11 @@ insert into project
 (  88887, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 2',  100.0, 'mst_qsdzcxbffrgg6421', '2022-01-12', 'TEAM'),
 (  88886, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  100.0, 'mst_qq2aaaaaaagg6421', '2022-01-12', 'TEAM'),
 (  88885, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 4',  100.0, 'mst_qq2f4gbfffffe421', '2022-01-12', 'TEAM'),
-(  88884, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 5',  100.0, 'mst_qq2f4gaawdeg6421', '2022-01-12', 'TEAM')
+(  88884, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 5',  100.0, 'mst_qq2f4gaawdeg6421', '2022-01-12', 'TEAM'),
+(  88883, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qq2f4gaawdeg64fef', '2022-01-12', 'SINGLE'),
+(  88882, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qfeeffeaawdeg64fef', '2022-01-12', 'TEAM')
+
+
 ;
 
 
@@ -75,7 +79,10 @@ insert into team_member
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88885, 2),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88884, 15),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88884, 7),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 17)
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 17),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 88883, 3),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88882, 17),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 88882, 3)
 ;
 
 

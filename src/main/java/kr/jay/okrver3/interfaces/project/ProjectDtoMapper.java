@@ -66,6 +66,7 @@ public class ProjectDtoMapper {
 			info.teamMembersCount()
 		);
 	}
+
 	KeyResultResponse of(KeyResultInfo info) {
 		return new KeyResultResponse(info.name(), info.keyResultToken(), info.keyResultIndex());
 	}
@@ -186,9 +187,9 @@ public class ProjectDtoMapper {
 	ParticipateProjectResponse of(ParticipateProjectInfo info) {
 		return new ParticipateProjectResponse(
 			info.projectToken(),
-			info.projectName(),
-			info.roleType(),
-			info.nextLeaderEmail()
+			info.objective(),
+			info.projectType(),
+			info.roleType()
 		);
 	}
 }

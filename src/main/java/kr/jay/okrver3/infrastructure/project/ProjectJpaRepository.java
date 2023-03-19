@@ -1,5 +1,6 @@
 package kr.jay.okrver3.infrastructure.project;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.LockModeType;
@@ -72,4 +73,10 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	Optional<Project> findProjectForUpdateById(Long projectId);
 
+	@Query("select distinct p "
+		+ "from Project p "
+		+ "join fetch p.teamMember t "
+		+ "join fetch t.user u "
+		+ "where u.userSeq = :userSeq")
+	List<Project> findParticipateProjectByUserSeq(@Param("userSeq") Long userSeq);
 }
