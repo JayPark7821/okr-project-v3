@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.interfaces.AbstractController;
 import kr.jay.okrver3.interfaces.project.request.ProjectKeyResultSaveRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/keyresult")
-public class KeyResultApiController extends AbstractProjectController {
+public class KeyResultApiController extends AbstractController {
 
 	private final ProjectFacade projectFacade;
 	private final ProjectDtoMapper mapper;
@@ -33,7 +34,7 @@ public class KeyResultApiController extends AbstractProjectController {
 		return Response.successCreated(
 			projectFacade.registerKeyResult(
 				mapper.of(requestDto),
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}

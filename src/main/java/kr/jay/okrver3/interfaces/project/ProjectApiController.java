@@ -24,11 +24,12 @@ import kr.jay.okrver3.domain.project.SortType;
 import kr.jay.okrver3.domain.project.command.ProjectDetailRetrieveCommand;
 import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectSideMenuInfo;
+import kr.jay.okrver3.interfaces.AbstractController;
 import kr.jay.okrver3.interfaces.project.request.ProjectSaveRequest;
+import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectInfoResponse;
 import kr.jay.okrver3.interfaces.project.response.ProjectSideMenuResponse;
-import kr.jay.okrver3.interfaces.project.response.ParticipateProjectResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/project")
-public class ProjectApiController extends AbstractProjectController {
+public class ProjectApiController extends AbstractController {
 
 	private final ProjectFacade projectFacade;
 	private final ProjectDtoMapper mapper;
@@ -48,7 +49,7 @@ public class ProjectApiController extends AbstractProjectController {
 	) {
 
 		return Response.successCreated(
-			projectFacade.registerProject(mapper.of(requestDto), getUserFromAuthentication(authentication))
+			projectFacade.registerProject(mapper.of(requestDto), getUserSeqFromAuthentication(authentication))
 		);
 	}
 
@@ -59,7 +60,7 @@ public class ProjectApiController extends AbstractProjectController {
 	) {
 
 		return Response.successCreated(
-			mapper.of(projectFacade.getProjectInfoBy(projectToken, getUserFromAuthentication(authentication)))
+			mapper.of(projectFacade.getProjectInfoBy(projectToken, getUserSeqFromAuthentication(authentication)))
 		);
 	}
 
@@ -81,7 +82,7 @@ public class ProjectApiController extends AbstractProjectController {
 		return Response.successOk(
 			projectFacade.getDetailProjectList(
 				command,
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			).map(mapper::of)
 		);
 
@@ -95,7 +96,7 @@ public class ProjectApiController extends AbstractProjectController {
 
 		ProjectSideMenuInfo info = projectFacade.getProjectSideMenuDetails(
 			projectToken,
-			getUserFromAuthentication(authentication)
+			getUserSeqFromAuthentication(authentication)
 		);
 
 		return Response.successOk(
@@ -109,7 +110,7 @@ public class ProjectApiController extends AbstractProjectController {
 	) {
 
 		List<ParticipateProjectInfo> info =
-			projectFacade.getParticipateProjects(getUserFromAuthentication(authentication));
+			projectFacade.getParticipateProjects(getUserSeqFromAuthentication(authentication));
 
 		return Response.successOk(
 			info.stream().map(mapper::of).toList()
@@ -137,7 +138,5 @@ public class ProjectApiController extends AbstractProjectController {
 
 		throw new OkrApplicationException(ErrorCode.INVALID_FINISHED_PROJECT_YN);
 	}
-
-
 
 }

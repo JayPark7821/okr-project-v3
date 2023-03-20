@@ -31,6 +31,7 @@ import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.interfaces.AbstractController;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
@@ -44,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
-public class UserApiController {
+public class UserApiController extends AbstractController {
 
 	private final TokenVerifyProcessor tokenVerifyProcessor;
 	private final UserFacade userFacade;
@@ -89,7 +90,7 @@ public class UserApiController {
 		return Response.successOk(
 			userFacade.validateEmail(
 				email,
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}
@@ -135,25 +136,23 @@ public class UserApiController {
 		@RequestBody @Valid UserInfoUpdateRequest request,
 		Authentication authentication
 	) {
-		userFacade.updateUserInfo(mapper.of(request), getUserFromAuthentication(authentication));
+		userFacade.updateUserInfo(
+			mapper.of(request),
+			getUserSeqFromAuthentication(authentication)
+		);
 		return Response.success(HttpStatus.OK);
 	}
 
 	@DeleteMapping
 	public ResponseEntity<String> unRegisterUser(final Authentication auth) {
-		throw new IllegalStateException("UserApiController::unRegisterUser not implemented yet");
+		userFacade.unRegisterUser(getUserSeqFromAuthentication(auth));
+		return Response.success(HttpStatus.OK);
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
 		return Response.successOk(
 			mapper.of(loginInfo)
 		);
-	}
-
-	private Long getUserFromAuthentication(Authentication authentication) {
-		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED))
-			.getUserSeq();
 	}
 
 }

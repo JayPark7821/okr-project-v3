@@ -16,7 +16,6 @@ import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
-import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,6 +66,11 @@ public class UserFacade {
 	public void updateUserInfo(UserInfoUpdateCommand command, Long userSeq) {
 		userService.updateUserInfo(command, userSeq);
 	}
+
+	public void unRegisterUser(final Long userSeq) {
+		throw new IllegalStateException("UserFacade::unRegisterUser not implemented yet");
+	}
 }
+
 
 
