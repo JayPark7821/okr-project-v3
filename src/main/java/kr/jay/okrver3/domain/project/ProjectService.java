@@ -20,6 +20,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeSavedInfo;
 import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -41,7 +42,7 @@ public interface ProjectService {
 
 	String registerKeyResult(ProjectKeyResultSaveCommand command, Long userSeq);
 
-	String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq);
+	InitiativeSavedInfo registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq);
 
 	InitiativeDoneInfo initiativeFinished(String initiativeToken, Long userSeq);
 
