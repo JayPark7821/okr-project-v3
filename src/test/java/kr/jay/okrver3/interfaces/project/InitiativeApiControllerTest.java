@@ -35,7 +35,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
-		dataLoader.loadData(List.of("/insert-project-date.sql"));
+		dataLoader.loadData(List.of("/insert-project-data.sql"));
 	}
 
 	@Test

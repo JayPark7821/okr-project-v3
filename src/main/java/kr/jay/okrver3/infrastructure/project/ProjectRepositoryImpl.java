@@ -72,4 +72,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	public void saveAndFlush(final Project project) {
 		projectJpaRepository.saveAndFlush(project);
 	}
+
+	@Override
+	public void delete(final Project project) {
+		projectJpaRepository.delete(project);
+	}
 }

@@ -135,7 +135,7 @@ public class UserAcceptanceTestAssertions {
 
 	static void 회원_탈퇴_요청_검증(ExtractableResponse<Response> 응답) {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(응답.body().asString()).isNotEqualTo("SUCCESS");
+		assertThat(응답.body().asString()).isEqualTo("SUCCESS");
 
 	}
 
