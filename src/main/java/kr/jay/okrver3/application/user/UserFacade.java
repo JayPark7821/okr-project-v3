@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.domain.guset.service.GuestService;
+import kr.jay.okrver3.domain.project.ProjectService;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.JobCategory;
@@ -27,6 +28,7 @@ public class UserFacade {
 	private final UserService userService;
 	private final GuestService guestService;
 	private final TokenService tokenService;
+	private final ProjectService projectService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(OAuth2UserInfo oAuth2UserInfo) {
 		return userService.getUserInfoFrom(oAuth2UserInfo)
@@ -68,7 +70,8 @@ public class UserFacade {
 	}
 
 	public void unRegisterUser(final Long userSeq) {
-		throw new IllegalStateException("UserFacade::unRegisterUser not implemented yet");
+		userService.makeUserAsUnknownUser(userSeq);
+		projectService.deleteSingleProjectBy(userSeq);
 	}
 }
 
