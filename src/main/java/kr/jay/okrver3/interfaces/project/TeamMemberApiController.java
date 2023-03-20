@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.Response;
+import kr.jay.okrver3.interfaces.AbstractController;
 import kr.jay.okrver3.interfaces.project.request.TeamMemberInviteRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/team")
-public class TeamMemberApiController extends AbstractProjectController {
+public class TeamMemberApiController extends AbstractController {
 
 	private final ProjectFacade projectFacade;
 	private final ProjectDtoMapper mapper;
@@ -35,7 +36,7 @@ public class TeamMemberApiController extends AbstractProjectController {
 		return Response.successCreated(
 			projectFacade.inviteTeamMember(
 				mapper.of(requestDto),
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}
@@ -51,7 +52,7 @@ public class TeamMemberApiController extends AbstractProjectController {
 			projectFacade.validateEmailToInvite(
 				projectToken,
 				email,
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}

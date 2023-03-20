@@ -26,4 +26,6 @@ public interface UserService {
 	List<JobInfo> getJobField(JobCategory category);
 
 	void updateUserInfo(UserInfoUpdateCommand command, Long userSeq);
+
+	void makeUserAsUnknownUser(Long userSeq);
 }

@@ -30,7 +30,7 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
-		dataLoader.loadData(List.of("/insert-project-date.sql"));
+		dataLoader.loadData(List.of("/insert-project-data.sql"));
 		사용자_토큰 = JwtTokenUtils.generateToken("projectMasterTest@naver.com", key, 엑세스_토큰_유효기간_임계값);
 	}
 

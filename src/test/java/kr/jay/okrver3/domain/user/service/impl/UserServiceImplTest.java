@@ -37,7 +37,6 @@ class UserServiceImplTest {
 	@Autowired
 	private UserServiceImpl sut;
 
-
 	@PersistenceContext
 	EntityManager em;
 
@@ -123,7 +122,6 @@ class UserServiceImplTest {
 		assertThat(response.size()).isEqualTo(6);
 	}
 
-
 	@Test
 	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
@@ -132,14 +130,13 @@ class UserServiceImplTest {
 		assertThat(response.size()).isEqualTo(4);
 	}
 
-
 	@Test
 	@Sql("classpath:insert-user.sql")
 	void updateUserInfo를_호출하면_기대하는_응답을_반환한다() throws Exception {
 		String newUserName = "newName";
 		String newJobField = "LAW_LABOR";
 
-		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName,"profileImage",
+		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName, "profileImage",
 			newJobField), 999L);
 
 		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
@@ -148,5 +145,20 @@ class UserServiceImplTest {
 
 		assertThat(updatedUser.getUsername()).isEqualTo(newUserName);
 		assertThat(updatedUser.getJobField().getCode()).isEqualTo(newJobField);
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void makeUserAsUnknownUser를_호출하면_유저정보를_Unknown으로_변경한다() throws Exception {
+
+		sut.makeUserAsUnknownUser(999L);
+
+		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		assertThat(updatedUser.getUsername()).isEqualTo("Unknown");
+		assertThat(updatedUser.getEmail()).contains("@unknown.com");
+		assertThat(updatedUser.getProfileImage()).isEqualTo("");
 	}
 }

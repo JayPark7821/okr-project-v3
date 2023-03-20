@@ -195,16 +195,18 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_미포함_팀프로젝트() throws Exception {
 
-		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
+		List<String> recentlyCreatedSortProject =
+			List.of("mst_K4g4tfdaergg6421", "mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
+		;
 
 		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
 			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N",
 				PageRequest.of(0, 5)), 13L);
 
-		assertThat(result.getTotalElements()).isEqualTo(2);
+		assertThat(result.getTotalElements()).isEqualTo(3L);
 		List<ProjectDetailInfo> content = result.getContent();
 
 		for (int i = 0; i < content.size(); i++) {
@@ -217,7 +219,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
 		String projectToken = "mst_K4g4tfdaergg6421";
 
@@ -229,7 +231,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
@@ -242,7 +244,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 프로젝트_기간_종료후_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
 		String projectToken = "mst_K4e8a5s7d6lb6421";
 		String keyResultName = "keyResult";
@@ -255,7 +257,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 팀원이_프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
@@ -267,7 +269,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 프로젝트에_핵심결과_3개_이상_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
 		String projectToken = "mst_Kiwqnp1Nq6lbTNn0";
 		String keyResultName = "keyResult";
@@ -280,7 +282,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
 		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
@@ -302,7 +304,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
@@ -317,7 +319,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 종료된_프로젝트의_행동전략_완료시_기대하는_응답Exception을_리턴한다() throws Exception {
 		String initiativeToken = "ini_iefefawef3fdab3AH8";
 
@@ -327,7 +329,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 이미_종료된_행동전략_완료_요청시_기대하는_응답Exception을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5aaafeab3AH8";
 
@@ -337,7 +339,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략_완료시_프로젝트_진척도_update() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
@@ -351,7 +353,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
 		String keyResultToken = "key_wV6f45vWQaaazQaa";
 		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
@@ -370,7 +372,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
 
 		FeedbackSaveCommand command =
@@ -388,7 +390,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 종료된_프로젝트의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
 
 		FeedbackSaveCommand command =
@@ -401,7 +403,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 자신의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
 
 		FeedbackSaveCommand command =
@@ -414,7 +416,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 완료전의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다_exception() throws Exception {
 
 		FeedbackSaveCommand command =
@@ -427,7 +429,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
@@ -443,7 +445,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 다른팀원의_행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
@@ -459,7 +461,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 잘못된_행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nOfefeAH8";
 
@@ -469,7 +471,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size1_리턴한다() throws Exception {
 		LocalDate date = LocalDate.of(2022, 12, 01);
 
@@ -484,7 +486,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size3_리턴한다() throws Exception {
 		LocalDate date = LocalDate.of(2022, 12, 01);
 
@@ -496,7 +498,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 년월로_getInitiativeDates를_호출하면_기대하는_응답을_리턴한다() throws Exception {
 		YearMonth yearmonth = YearMonth.of(2023, 12);
 
@@ -510,7 +512,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 자신의_행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
@@ -526,7 +528,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 피드백X_팀원의_행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
@@ -540,7 +542,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 피드백을남긴_팀원의_행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
@@ -556,7 +558,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void getCountOfInitiativeToGiveFeedback을_호출하면_아직_피드백을_남기지않은_팀원의_완료된_행동전략count를_리턴한다() throws Exception {
 
 		Integer response = sut.getCountOfInitiativeToGiveFeedback(3L);
@@ -565,7 +567,7 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
 		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3", "feedback_el6q34zazzSyWx9");
 		SearchRange searchRange = SearchRange.ALL;
@@ -586,17 +588,37 @@ class ProjectServiceImplTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
 
 		final List<ParticipateProjectInfo> response = sut.getParticipateProjects(3L);
 
-		assertThat(response.size()).isEqualTo(6);
+		assertThat(response.size()).isEqualTo(7);
 		assertThat(
 			response.stream()
 				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
 				.toList()
 				.size()
-		).isEqualTo(2);
+		).isEqualTo(3);
 	}
+
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void deleteSingleProjectBy를_호출하면_참여중인_SINGLE_타입의_프로젝트는_모두_삭제된다() throws Exception {
+
+		final List<Project> beforeSingleProject = em.createQuery("select p from Project p where p.type = :type ",
+				Project.class)
+			.setParameter("type", ProjectType.SINGLE)
+			.getResultList();
+
+		sut.deleteSingleProjectBy(3L);
+
+		final List<Project> singleProject = em.createQuery("select p from Project p where p.type = :type ",
+				Project.class)
+			.setParameter("type", ProjectType.SINGLE)
+			.getResultList();
+
+		assertThat(singleProject.size()).isEqualTo(0L);
+	}
+
 }

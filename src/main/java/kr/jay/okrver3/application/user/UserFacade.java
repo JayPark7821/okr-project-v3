@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.domain.guset.service.GuestService;
+import kr.jay.okrver3.domain.project.ProjectService;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.TokenService;
 import kr.jay.okrver3.domain.user.JobCategory;
@@ -16,7 +17,6 @@ import kr.jay.okrver3.domain.user.info.UserInfo;
 import kr.jay.okrver3.domain.user.service.UserService;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
-import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +28,7 @@ public class UserFacade {
 	private final UserService userService;
 	private final GuestService guestService;
 	private final TokenService tokenService;
+	private final ProjectService projectService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(OAuth2UserInfo oAuth2UserInfo) {
 		return userService.getUserInfoFrom(oAuth2UserInfo)
@@ -67,6 +68,12 @@ public class UserFacade {
 	public void updateUserInfo(UserInfoUpdateCommand command, Long userSeq) {
 		userService.updateUserInfo(command, userSeq);
 	}
+
+	public void unRegisterUser(final Long userSeq) {
+		userService.makeUserAsUnknownUser(userSeq);
+		projectService.deleteSingleProjectBy(userSeq);
+	}
 }
+
 
 

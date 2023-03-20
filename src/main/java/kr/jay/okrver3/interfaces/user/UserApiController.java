@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ import kr.jay.okrver3.domain.user.User;
 import kr.jay.okrver3.domain.user.auth.TokenVerifyProcessor;
 import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
+import kr.jay.okrver3.interfaces.AbstractController;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 import kr.jay.okrver3.interfaces.user.request.UserInfoUpdateRequest;
 import kr.jay.okrver3.interfaces.user.response.JobResponse;
@@ -43,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
-public class UserApiController {
+public class UserApiController extends AbstractController {
 
 	private final TokenVerifyProcessor tokenVerifyProcessor;
 	private final UserFacade userFacade;
@@ -80,7 +82,6 @@ public class UserApiController {
 		);
 	}
 
-
 	@GetMapping("/validate/{email}")
 	ResponseEntity<String> validateEmail(
 		@PathVariable("email") String email,
@@ -89,7 +90,7 @@ public class UserApiController {
 		return Response.successOk(
 			userFacade.validateEmail(
 				email,
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}
@@ -113,14 +114,14 @@ public class UserApiController {
 	}
 
 	@GetMapping("/job/field/{jobField}")
-	public ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
+	ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
 		return Response.successOk(
 			JobCategory.of(JobField.of(jobField).getJobCategory()).getCode()
 		);
 	}
 
 	@GetMapping
-	public ResponseEntity<UserInfoResponse> getUserInfo(Authentication authentication) {
+	ResponseEntity<UserInfoResponse> getUserInfo(Authentication authentication) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
@@ -131,11 +132,20 @@ public class UserApiController {
 	}
 
 	@PutMapping
-	public ResponseEntity<String> updateUserInfo(
+	ResponseEntity<String> updateUserInfo(
 		@RequestBody @Valid UserInfoUpdateRequest request,
 		Authentication authentication
 	) {
-		userFacade.updateUserInfo(mapper.of(request), getUserFromAuthentication(authentication));
+		userFacade.updateUserInfo(
+			mapper.of(request),
+			getUserSeqFromAuthentication(authentication)
+		);
+		return Response.success(HttpStatus.OK);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<String> unRegisterUser(final Authentication auth) {
+		userFacade.unRegisterUser(getUserSeqFromAuthentication(auth));
 		return Response.success(HttpStatus.OK);
 	}
 
@@ -143,12 +153,6 @@ public class UserApiController {
 		return Response.successOk(
 			mapper.of(loginInfo)
 		);
-	}
-
-	private Long getUserFromAuthentication(Authentication authentication) {
-		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED))
-			.getUserSeq();
 	}
 
 }

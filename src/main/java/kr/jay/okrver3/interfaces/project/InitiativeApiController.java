@@ -25,6 +25,7 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
+import kr.jay.okrver3.interfaces.AbstractController;
 import kr.jay.okrver3.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.jay.okrver3.interfaces.project.response.InitiativeDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.InitiativeForCalendarResponse;
@@ -36,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/initiative")
-public class InitiativeApiController extends AbstractProjectController {
+public class InitiativeApiController extends AbstractController {
 
 	private final ProjectFacade projectFacade;
 	private final ProjectDtoMapper mapper;
@@ -52,7 +53,7 @@ public class InitiativeApiController extends AbstractProjectController {
 		return Response.successCreated(
 			projectFacade.registerInitiative(
 				mapper.of(requestDto),
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}
@@ -66,7 +67,7 @@ public class InitiativeApiController extends AbstractProjectController {
 		return Response.successOk(
 			projectFacade.initiativeFinished(
 				initiativeToken,
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}
@@ -81,7 +82,7 @@ public class InitiativeApiController extends AbstractProjectController {
 		return Response.successOk(
 			projectFacade.getInitiativeByKeyResultToken(
 				keyResultToken,
-				getUserFromAuthentication(authentication),
+				getUserSeqFromAuthentication(authentication),
 				pageable
 			).map(mapper::of)
 		);
@@ -95,7 +96,7 @@ public class InitiativeApiController extends AbstractProjectController {
 	) {
 		InitiativeDetailInfo info = projectFacade.getInitiativeBy(
 			initiativeToken,
-			getUserFromAuthentication(authentication)
+			getUserSeqFromAuthentication(authentication)
 		);
 
 		return Response.successOk(
@@ -110,7 +111,7 @@ public class InitiativeApiController extends AbstractProjectController {
 
 		List<InitiativeForCalendarInfo> info = projectFacade.getInitiativeByDate(
 			validateDate(date),
-			getUserFromAuthentication(authentication)
+			getUserSeqFromAuthentication(authentication)
 		);
 
 		return Response.successOk(
@@ -126,7 +127,7 @@ public class InitiativeApiController extends AbstractProjectController {
 		return Response.successOk(
 			projectFacade.getInitiativeDatesBy(
 				validateYearMonth(yearmonth),
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}

@@ -148,4 +148,19 @@ public class UserAcceptanceTestSteps {
 			.extract();
 	}
 
+	public static ExtractableResponse<Response> 회원_탈퇴_요청(String 로그인_유저_인증_토큰) throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
+
+			when()
+			.delete(baseUrl).
+
+			then()
+			.log().all()
+			.extract();
+	}
+
 }

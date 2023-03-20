@@ -29,4 +29,6 @@ public interface ProjectRepository {
 	List<Project> findParticipateProjectByUserSeq(Long userSeq);
 
 	void saveAndFlush(Project project);
+
+	void delete(Project project);
 }

@@ -255,17 +255,19 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_미포함_팀프로젝트() throws Exception {
 
-		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
+		List<String> recentlyCreatedSortProject =
+			List.of("mst_K4g4tfdaergg6421", "mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
+		;
 		User user = getUser(13L);
 
 		Page<ProjectDetailInfo> result = sut.getDetailProjectList(
 			new ProjectDetailRetrieveCommand(SortType.RECENTLY_CREATE, ProjectType.TEAM, "N",
 				PageRequest.of(0, 5)), user.getUserSeq());
 
-		assertThat(result.getTotalElements()).isEqualTo(2);
+		assertThat(result.getTotalElements()).isEqualTo(3);
 		List<ProjectDetailInfo> content = result.getContent();
 
 		for (int i = 0; i < content.size(); i++) {
@@ -278,7 +280,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
 		String projectToken = "mst_K4g4tfdaergg6421";
 		User user = getUser(13L);
@@ -291,7 +293,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
@@ -307,7 +309,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 팀원이_프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
 		String projectToken = "mst_K4g4tfdaergg6421";
 		String keyResultName = "keyResult";
@@ -322,7 +324,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 프로젝트에_핵심결과_3개_이상_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
 		String projectToken = "mst_Kiwqnp1Nq6lbTNn0";
 		String keyResultName = "keyResult";
@@ -338,7 +340,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
 
 		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
@@ -358,7 +360,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략_추가시_프로젝트_진척도_변경된다() throws Exception {
 		//Given
 		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
@@ -385,7 +387,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
@@ -401,7 +403,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 핵심결과토큰으로_행동전략_리스트_조회시_기대하는_응답을_리턴한다() throws Exception {
 		String keyResultToken = "key_wV6f45vWQaaazQaa";
 		List<String> savedInitiativeTokenRecentlyCreatedOrder = List.of("ini_ixYjj5nODfeab3AH8",
@@ -420,7 +422,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 팀원의_행동전략에_피드백을_추가하면_기대하는_응답을_리턴한다() throws Exception {
 
 		FeedbackSaveCommand command =
@@ -438,7 +440,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 팀원의_행동전략에_피드백을_추가하면_행동전략을_작성한_팀원에게_알림이_전송된다() throws Exception {
 
 		FeedbackSaveCommand command =
@@ -461,7 +463,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략토큰으로_getInitiativeBy호출시_기대하는_응답_InitiativeDetailInfo를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
@@ -477,7 +479,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 날짜로_getInitiativeByDate를_호출하면_기대하는_응답InitiativeForCalendarResponse를_size1_리턴한다() throws Exception {
 		LocalDate date = LocalDate.of(2023, 12, 01);
 
@@ -492,7 +494,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 년월로_getInitiativeDates를_호출하면_기대하는_응답을_리턴한다() throws Exception {
 		YearMonth yearmonth = YearMonth.of(2023, 12);
 
@@ -506,7 +508,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 행동전략토큰으로_getInitiativeFeedbacksBy를_호출하면_기대하는_응답IniFeedbackResponse를_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODqtb3AH8";
 
@@ -522,7 +524,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void getCountOfInitiativeToGiveFeedback을_호출하면_아직_피드백을_남기지않은_팀원의_완료된_행동전략count를_리턴한다() throws Exception {
 
 		Integer response = sut.getCountOfInitiativeToGiveFeedback(3L);
@@ -531,7 +533,7 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void getRecievedFeedback을_호출하면_기대한는_응답page_FeedbackDetailResponse를_리턴한다() throws Exception {
 		List<String> feedbackTokenList = List.of("feedback_aaaaaagawe3rfwa3", "feedback_el6q34zazzSyWx9");
 
@@ -552,17 +554,17 @@ class ProjectFacadeTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
 
 		final List<ParticipateProjectInfo> response = sut.getParticipateProjects(3L);
 
-		assertThat(response.size()).isEqualTo(6);
+		assertThat(response.size()).isEqualTo(7);
 		assertThat(
 			response.stream()
 				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
 				.toList()
 				.size()
-		).isEqualTo(2);
+		).isEqualTo(3);
 	}
 }

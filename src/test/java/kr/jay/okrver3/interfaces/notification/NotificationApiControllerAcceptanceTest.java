@@ -27,9 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import kr.jay.okrver3.util.DatabaseCleanup;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.interfaces.notification.response.NotificationResponse;
+import kr.jay.okrver3.util.DatabaseCleanup;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @Transactional
@@ -61,7 +61,7 @@ public class NotificationApiControllerAcceptanceTest {
 	void setUpAll() {
 		try (Connection conn = dataSource.getConnection()) {
 			authToken = JwtTokenUtils.generateToken("notificationTest@naver.com", key, accessExpiredTimeMs);
-			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project-date.sql"));
+			ScriptUtils.executeSqlScript(conn, new ClassPathResource("/insert-project-data.sql"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -71,6 +71,7 @@ public class NotificationApiControllerAcceptanceTest {
 	void afterAll() {
 		databaseCleanup.execute();
 	}
+
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;

@@ -63,5 +63,7 @@ public interface ProjectService {
 	Page<FeedbackDetailInfo> getRecievedFeedback(SearchRange range, Long userSeq, Pageable pageable);
 
 	List<ParticipateProjectInfo> getParticipateProjects(Long userSeq);
+
+	void deleteSingleProjectBy(Long userSeq);
 }
 

@@ -42,7 +42,7 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
-		dataLoader.loadData(List.of("/insert-project-date.sql"));
+		dataLoader.loadData(List.of("/insert-project-data.sql"));
 	}
 
 	@Test
@@ -101,13 +101,14 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 		assertThat(response.getBody().objective()).isEqualTo("팀 맴버 테스트용 프로젝트");
 		assertThat(response.getBody().startDate()).isEqualTo("2022-12-07");
 		assertThat(response.getBody().endDate()).isEqualTo("3999-12-14");
-		assertThat(response.getBody().projectType()).isEqualTo("SINGLE");
+		assertThat(response.getBody().projectType()).isEqualTo("TEAM");
 	}
 
 	@Test
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_미포함_팀프로젝트() throws Exception {
 
-		List<String> recentlyCreatedSortProject = List.of("mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
+		List<String> recentlyCreatedSortProject =
+			List.of("mst_K4g4tfdaergg6421", "mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
 		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
 		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N",
@@ -115,7 +116,7 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 			auth,
 			PageRequest.of(0, 5));
 
-		assertThat(response.getBody().getTotalElements()).isEqualTo(2);
+		assertThat(response.getBody().getTotalElements()).isEqualTo(3L);
 		List<ProjectDetailResponse> content = response.getBody().getContent();
 
 		for (int i = 0; i < content.size(); i++) {
@@ -145,13 +146,13 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 
 		final List<ParticipateProjectResponse> response = sut.getParticipateProjects(auth).getBody();
 
-		assertThat(response.size()).isEqualTo(6);
+		assertThat(response.size()).isEqualTo(7);
 		assertThat(
 			response.stream()
 				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
 				.toList()
 				.size()
-		).isEqualTo(2);
+		).isEqualTo(3);
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {

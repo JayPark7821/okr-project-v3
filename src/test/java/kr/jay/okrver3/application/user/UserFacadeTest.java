@@ -19,10 +19,25 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
+import kr.jay.okrver3.domain.notification.NotificationServiceImpl;
+import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.ProjectAsyncService;
+import kr.jay.okrver3.domain.project.ProjectServiceImpl;
+import kr.jay.okrver3.domain.project.ProjectType;
+import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
+import kr.jay.okrver3.domain.project.validator.InitiativeDoneValidator;
+import kr.jay.okrver3.domain.project.validator.InitiativeInProgressValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectInitiativeDateValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectKeyResultCountValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectLeaderValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectPeriodValidator;
+import kr.jay.okrver3.domain.project.validator.ProjectValidateProcessor;
+import kr.jay.okrver3.domain.project.validator.SelfFeedbackValidator;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
@@ -35,13 +50,29 @@ import kr.jay.okrver3.domain.user.info.LoginInfo;
 import kr.jay.okrver3.domain.user.service.impl.UserServiceImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestReaderImpl;
 import kr.jay.okrver3.infrastructure.guest.GuestStoreImpl;
+import kr.jay.okrver3.infrastructure.notification.NotificationJDBCRepository;
+import kr.jay.okrver3.infrastructure.notification.NotificationQueryDslRepository;
+import kr.jay.okrver3.infrastructure.notification.NotificationRepositoryImpl;
+import kr.jay.okrver3.infrastructure.project.ProjectQueryDslRepository;
+import kr.jay.okrver3.infrastructure.project.ProjectRepositoryImpl;
+import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackQueryDslRepository;
+import kr.jay.okrver3.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
+import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
+import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
 import kr.jay.okrver3.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.jay.okrver3.infrastructure.user.auth.OAuth2UserInfo;
 import kr.jay.okrver3.interfaces.user.request.JoinRequest;
 
 @DataJpaTest
-@Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class,
-	GuestReaderImpl.class, TokenServiceImpl.class, RefreshTokenRepositoryImpl.class})
+@Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class, GuestReaderImpl.class,
+	TokenServiceImpl.class, RefreshTokenRepositoryImpl.class, ProjectFacade.class, ProjectServiceImpl.class,
+	UserServiceImpl.class, NotificationServiceImpl.class, NotificationJDBCRepository.class, ProjectRepositoryImpl.class,
+	ProjectQueryDslRepository.class, ProjectValidateProcessor.class, ProjectLeaderValidator.class,
+	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class,
+	InitiativeRepositoryImpl.class, FeedbackRepositoryImpl.class, InitiativeDoneValidator.class,
+	InitiativeQueryDslRepository.class, NotificationRepositoryImpl.class, SelfFeedbackValidator.class,
+	InitiativeInProgressValidator.class, FeedbackQueryDslRepository.class, NotificationQueryDslRepository.class,
+	ProjectAsyncService.class})
 class UserFacadeTest {
 
 	@PersistenceContext
@@ -69,8 +100,7 @@ class UserFacadeTest {
 	void login_With_different_social_IdToken() throws Exception {
 		OAuth2UserInfo info = DiffAppleUserInfoFixture.build();
 
-		assertThatThrownBy(() -> sut.getLoginInfoFrom(info))
-			.isExactlyInstanceOf(OkrApplicationException.class)
+		assertThatThrownBy(() -> sut.getLoginInfoFrom(info)).isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage("소셜 provider 불일치, " + ProviderType.GOOGLE.getName() + "(으)로 가입한 계정이 있습니다.");
 
 	}
@@ -101,9 +131,7 @@ class UserFacadeTest {
 
 		LoginInfo guestInfo = sut.createGuestInfoFrom(info);
 
-		assertThat(guestInfo.guestUuid()).containsPattern(
-			Pattern.compile("guest-[a-zA-Z0-9]{14}")
-		);
+		assertThat(guestInfo.guestUuid()).containsPattern(Pattern.compile("guest-[a-zA-Z0-9]{14}"));
 		assertThat(guestInfo.email()).isEqualTo(DiffAppleUserInfoFixture.EMAIL);
 		assertThat(guestInfo.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
 		assertThat(guestInfo.profileImageUrl()).isEqualTo(DiffAppleUserInfoFixture.PIC);
@@ -117,8 +145,7 @@ class UserFacadeTest {
 
 		String guestNameFromUser = "newGuestName";
 		String registeredGuestEmail = "guest@email.com";
-		JoinRequest joinRequest = new JoinRequest("guest-rkmZUIUNWkSMX3", guestNameFromUser,
-			registeredGuestEmail,
+		JoinRequest joinRequest = new JoinRequest("guest-rkmZUIUNWkSMX3", guestNameFromUser, registeredGuestEmail,
 			"WEB_SERVER_DEVELOPER");
 
 		LoginInfo loginInfo = sut.join(joinRequest);
@@ -137,11 +164,9 @@ class UserFacadeTest {
 	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_before_guest_login() {
 
-		JoinRequest joinRequest = new JoinRequest("not-registered-guest-id", "guest", "guest@email.com",
-			"Developer");
+		JoinRequest joinRequest = new JoinRequest("not-registered-guest-id", "guest", "guest@email.com", "Developer");
 
-		assertThatThrownBy(() -> sut.join(joinRequest))
-			.isExactlyInstanceOf(OkrApplicationException.class)
+		assertThatThrownBy(() -> sut.join(joinRequest)).isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
 	}
 
@@ -150,11 +175,9 @@ class UserFacadeTest {
 	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
 	void join_again_when_after_join() {
 
-		JoinRequest joinRequest = new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com",
-			"Developer");
+		JoinRequest joinRequest = new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "guest@email.com", "Developer");
 
-		assertThatThrownBy(() -> sut.join(joinRequest))
-			.isExactlyInstanceOf(OkrApplicationException.class)
+		assertThatThrownBy(() -> sut.join(joinRequest)).isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
 
 	}
@@ -164,7 +187,7 @@ class UserFacadeTest {
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		em.persist(new RefreshToken("apple@apple.com",accessToken ));
+		em.persist(new RefreshToken("apple@apple.com", accessToken));
 
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
 
@@ -172,7 +195,6 @@ class UserFacadeTest {
 		assertThat(info.refreshToken()).isEqualTo(accessToken);
 
 	}
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql"})
@@ -194,7 +216,6 @@ class UserFacadeTest {
 		assertThat(response.size()).isEqualTo(6);
 	}
 
-
 	@Test
 	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
@@ -209,8 +230,7 @@ class UserFacadeTest {
 		String newUserName = "newName";
 		String newJobField = "LAW_LABOR";
 
-		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName,"profileImage",
-			newJobField), 999L);
+		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName, "profileImage", newJobField), 999L);
 
 		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", 999L)
@@ -218,6 +238,30 @@ class UserFacadeTest {
 
 		assertThat(updatedUser.getUsername()).isEqualTo(newUserName);
 		assertThat(updatedUser.getJobField().getCode()).isEqualTo(newJobField);
+	}
+
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void unRegisterUser를_호출하면_SINGLE_프로젝트는_삭제_TEAM_프로젝트는_탈퇴한유저로_변경됨() throws Exception {
+
+		sut.unRegisterUser(3L);
+
+		final List<User> userList = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 3L)
+			.getResultList();
+		final List<Project> projectList = em.createQuery(
+			"select p from Project p join p.teamMember t where p.type = :type and t.user.id = :userSeq",
+			Project.class).setParameter("type", ProjectType.SINGLE).setParameter("userSeq", 3L).getResultList();
+		final List<Initiative> initiativeList = em.createQuery(
+				"select i from Initiative i where i.teamMember.userSeq = :userSeq", Initiative.class)
+			.setParameter("userSeq", 3L)
+			.getResultList();
+
+		assertThat(userList.size()).isEqualTo(1);
+		assertThat(userList.get(0).getUsername()).isEqualTo("Unknown");
+		assertThat(projectList.size()).isEqualTo(0);
+		assertThat(initiativeList.size()).isEqualTo(2);
+		assertThat(initiativeList.get(0).getTeamMember().getUser().getUsername()).isEqualTo("Unknown");
 	}
 
 	private User getUser(Long seq) {

@@ -22,7 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.jay.okrver3.util.TestConfig;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
@@ -35,6 +34,7 @@ import kr.jay.okrver3.interfaces.user.response.JobResponse;
 import kr.jay.okrver3.interfaces.user.response.LoginResponse;
 import kr.jay.okrver3.interfaces.user.response.TokenResponse;
 import kr.jay.okrver3.interfaces.user.response.UserInfoResponse;
+import kr.jay.okrver3.util.TestConfig;
 
 @Import(TestConfig.class)
 @Transactional
@@ -49,7 +49,6 @@ class UserApiControllerTest {
 
 	@PersistenceContext
 	EntityManager em;
-
 
 	@Test
 	@DisplayName("가입한 유저 정보가 없을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Guest)을 반환한다.")
@@ -127,7 +126,7 @@ class UserApiControllerTest {
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		em.persist(new RefreshToken("apple@apple.com",accessToken ));
+		em.persist(new RefreshToken("apple@apple.com", accessToken));
 
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader("Authorization", "Bearer " + accessToken);
@@ -137,8 +136,6 @@ class UserApiControllerTest {
 		assertThat(response.getBody().accessToken()).isNotNull();
 		assertThat(response.getBody().refreshToken()).isEqualTo(accessToken);
 	}
-
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql", "classpath:insert-project.sql", "classpath:insert-team.sql"})
@@ -157,14 +154,12 @@ class UserApiControllerTest {
 		assertThat(response.getBody()).isEqualTo(memberEmail);
 	}
 
-
 	@Test
 	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
 		ResponseEntity<List<JobResponse>> response = sut.getJobCategory();
 		assertThat(response.getBody().size()).isEqualTo(6);
 	}
-
 
 	@Test
 	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
@@ -173,7 +168,6 @@ class UserApiControllerTest {
 		ResponseEntity<List<JobResponse>> response = sut.getJobField(category);
 		assertThat(response.getBody().size()).isEqualTo(4);
 	}
-
 
 	@Test
 	void getJobCategoryBy를_호출하면_기대하는_응답_JobCategory를_반환한다() throws Exception {
@@ -212,7 +206,7 @@ class UserApiControllerTest {
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
 			user, null, user.getAuthorities());
 
-		ResponseEntity<String> response = sut.updateUserInfo(new UserInfoUpdateRequest(newUserName,"profileImage",
+		ResponseEntity<String> response = sut.updateUserInfo(new UserInfoUpdateRequest(newUserName, "profileImage",
 			newJobField), auth);
 
 		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
@@ -221,6 +215,21 @@ class UserApiControllerTest {
 
 		assertThat(updatedUser.getUsername()).isEqualTo(newUserName);
 		assertThat(updatedUser.getJobField().getCode()).isEqualTo(newJobField);
+	}
+
+	@Test
+	@Sql("classpath:insert-user.sql")
+	void unRegisterUser를_호출하면_기대하는_응답을_반환한다() throws Exception {
+		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 999L)
+			.getSingleResult();
+
+		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+			user, null, user.getAuthorities());
+
+		ResponseEntity<String> response = sut.unRegisterUser(auth);
+
+		assertThat(response.getBody()).isEqualTo("SUCCESS");
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {

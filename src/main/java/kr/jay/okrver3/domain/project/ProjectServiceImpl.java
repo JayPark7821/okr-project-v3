@@ -242,11 +242,18 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public List<ParticipateProjectInfo> getParticipateProjects(final Long userSeq) {
-		return projectRepository.findParticipateProjectByUserSeq(
-				userSeq)
+		return projectRepository.findParticipateProjectByUserSeq(userSeq)
 			.stream()
 			.map(project -> new ParticipateProjectInfo(project, userSeq))
 			.toList();
+	}
+
+	@Transactional
+	@Override
+	public void deleteSingleProjectBy(final Long userSeq) {
+		projectRepository.findParticipateProjectByUserSeq(userSeq)
+			.stream().filter(project -> project.getType() == ProjectType.SINGLE)
+			.forEach(projectRepository::delete);
 	}
 
 	private void addInitiative(ProjectInitiativeSaveCommand command, Project project, Initiative initiative) {

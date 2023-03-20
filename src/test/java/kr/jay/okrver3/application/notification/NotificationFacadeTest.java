@@ -27,7 +27,7 @@ class NotificationFacadeTest {
 	private NotificationFacade sut;
 
 	@Test
-	@Sql("classpath:insert-project-date.sql")
+	@Sql("classpath:insert-project-data.sql")
 	void getNotifications을_호출화면_기대하는_응답을_리턴한다() throws Exception {
 		List<String> notificationTokens = List.of("noti_aaaaaMoZey1SERx", "noti_e144441Zey1SERx");
 		final Page<NotificationInfo> response = sut.getNotifications(

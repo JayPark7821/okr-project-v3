@@ -17,6 +17,7 @@ import kr.jay.okrver3.application.project.ProjectFacade;
 import kr.jay.okrver3.common.Response;
 import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.info.IniFeedbackInfo;
+import kr.jay.okrver3.interfaces.AbstractController;
 import kr.jay.okrver3.interfaces.project.request.FeedbackSaveRequest;
 import kr.jay.okrver3.interfaces.project.response.FeedbackDetailResponse;
 import kr.jay.okrver3.interfaces.project.response.IniFeedbackResponse;
@@ -27,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/feedback")
-public class FeedbackApiController extends AbstractProjectController {
+public class FeedbackApiController extends AbstractController {
 
 	private final ProjectFacade projectFacade;
 	private final ProjectDtoMapper mapper;
@@ -40,7 +41,7 @@ public class FeedbackApiController extends AbstractProjectController {
 		return Response.successCreated(
 			projectFacade.registerFeedback(
 				mapper.of(requestDto),
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}
@@ -52,7 +53,7 @@ public class FeedbackApiController extends AbstractProjectController {
 	) {
 		IniFeedbackInfo info = projectFacade.getInitiativeFeedbacksBy(
 			initiativeToken,
-			getUserFromAuthentication(authentication)
+			getUserSeqFromAuthentication(authentication)
 		);
 
 		return Response.successOk(
@@ -66,7 +67,7 @@ public class FeedbackApiController extends AbstractProjectController {
 	) {
 		return Response.successOk(
 			projectFacade.getCountOfInitiativeToGiveFeedback(
-				getUserFromAuthentication(authentication)
+				getUserSeqFromAuthentication(authentication)
 			)
 		);
 	}
@@ -81,7 +82,7 @@ public class FeedbackApiController extends AbstractProjectController {
 		return Response.successOk(
 			projectFacade.getRecievedFeedback(
 				range,
-				getUserFromAuthentication(authentication),
+				getUserSeqFromAuthentication(authentication),
 				pageable
 			).map(mapper::of)
 		);
