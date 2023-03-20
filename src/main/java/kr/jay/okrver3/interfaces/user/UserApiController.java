@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -80,7 +81,6 @@ public class UserApiController {
 		);
 	}
 
-
 	@GetMapping("/validate/{email}")
 	ResponseEntity<String> validateEmail(
 		@PathVariable("email") String email,
@@ -113,14 +113,14 @@ public class UserApiController {
 	}
 
 	@GetMapping("/job/field/{jobField}")
-	public ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
+	ResponseEntity<String> getJobCategoryBy(@PathVariable("jobField") String jobField) {
 		return Response.successOk(
 			JobCategory.of(JobField.of(jobField).getJobCategory()).getCode()
 		);
 	}
 
 	@GetMapping
-	public ResponseEntity<UserInfoResponse> getUserInfo(Authentication authentication) {
+	ResponseEntity<UserInfoResponse> getUserInfo(Authentication authentication) {
 
 		User user = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.CASTING_FAILED));
@@ -131,12 +131,17 @@ public class UserApiController {
 	}
 
 	@PutMapping
-	public ResponseEntity<String> updateUserInfo(
+	ResponseEntity<String> updateUserInfo(
 		@RequestBody @Valid UserInfoUpdateRequest request,
 		Authentication authentication
 	) {
 		userFacade.updateUserInfo(mapper.of(request), getUserFromAuthentication(authentication));
 		return Response.success(HttpStatus.OK);
+	}
+
+	@DeleteMapping
+	public ResponseEntity<String> unRegisterUser(final Authentication auth) {
+		throw new IllegalStateException("UserApiController::unRegisterUser not implemented yet");
 	}
 
 	private ResponseEntity<LoginResponse> getLoginResponseFrom(LoginInfo loginInfo) {
