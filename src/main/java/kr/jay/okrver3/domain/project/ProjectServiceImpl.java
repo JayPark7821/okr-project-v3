@@ -240,8 +240,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public List<ParticipateProjectInfo> getParticipateProjects(final Long userSeq) {
-		return projectRepository.findParticipateProjectByUserSeq(
-			userSeq)
+		return projectRepository.findParticipateProjectByUserSeq(userSeq)
 			.stream()
 			.map(project -> new ParticipateProjectInfo(project, userSeq))
 			.toList();

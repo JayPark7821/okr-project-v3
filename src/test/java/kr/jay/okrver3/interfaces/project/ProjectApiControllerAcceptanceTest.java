@@ -29,7 +29,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
@@ -453,8 +452,7 @@ public class ProjectApiControllerAcceptanceTest {
 	 * */
 
 	@Test
-	@Commit
-	void 행동전략_추가시_프로젝트_진척도가_변경된다_동시성테스트() throws Exception {
+	void 행동전략_추가시_프로젝트_진척도가_변경된다_성테스트() throws Exception {
 
 		ProjectInitiativeSaveRequest requestDto =
 			new ProjectInitiativeSaveRequest
@@ -504,6 +502,10 @@ public class ProjectApiControllerAcceptanceTest {
 			.getSingleResult();
 
 		assertThat(keyResult.getInitiative().size()).isEqualTo(100);
+		assertThat(keyResult.getInitiative()
+			.stream()
+			.filter(ini -> ini.isDone() == false)
+			.count()).isEqualTo(99);
 		assertThat(project.getProgress()).isEqualTo(1.0);
 	}
 

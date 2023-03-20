@@ -3,10 +3,7 @@ package kr.jay.okrver3.infrastructure.project;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.LockModeType;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -58,6 +55,7 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 		@Param("userSeq") Long userSeq
 	);
 
+	// @Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query("select p "
 		+ "from Project p "
 		+ "join fetch p.teamMember t "
@@ -70,7 +68,7 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 		@Param("userSeq") Long userSeq
 	);
 
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	// @Lock(LockModeType.PESSIMISTIC_WRITE)
 	Optional<Project> findProjectForUpdateById(Long projectId);
 
 	@Query("select distinct p "
