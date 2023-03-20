@@ -23,6 +23,8 @@ import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
 import kr.jay.okrver3.domain.guset.service.impl.GuestServiceImpl;
+import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
+import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.token.service.AuthTokenInfo;
 import kr.jay.okrver3.domain.token.service.impl.TokenServiceImpl;
@@ -164,7 +166,7 @@ class UserFacadeTest {
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		em.persist(new RefreshToken("apple@apple.com",accessToken ));
+		em.persist(new RefreshToken("apple@apple.com", accessToken));
 
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
 
@@ -172,7 +174,6 @@ class UserFacadeTest {
 		assertThat(info.refreshToken()).isEqualTo(accessToken);
 
 	}
-
 
 	@Test
 	@Sql({"classpath:insert-user.sql"})
@@ -194,7 +195,6 @@ class UserFacadeTest {
 		assertThat(response.size()).isEqualTo(6);
 	}
 
-
 	@Test
 	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
 
@@ -209,7 +209,7 @@ class UserFacadeTest {
 		String newUserName = "newName";
 		String newJobField = "LAW_LABOR";
 
-		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName,"profileImage",
+		sut.updateUserInfo(new UserInfoUpdateCommand(newUserName, "profileImage",
 			newJobField), 999L);
 
 		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
@@ -218,6 +218,26 @@ class UserFacadeTest {
 
 		assertThat(updatedUser.getUsername()).isEqualTo(newUserName);
 		assertThat(updatedUser.getJobField().getCode()).isEqualTo(newJobField);
+	}
+
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void unRegisterUser를_호출하면_SINGLE_프로젝트는_삭제_TEAM_프로젝트는_탈퇴한유저로_변경됨() throws Exception {
+
+		sut.unRegisterUser(3L);
+
+		final List<User> userList = em.createQuery("select u from User u where u.id = :userSeq", User.class)
+			.setParameter("userSeq", 3L).getResultList();
+		final List<TeamMember> teamMemberList = em.createQuery("select t from TeamMember t where t.userSeq = :userSeq",
+				TeamMember.class)
+			.setParameter("userSeq", 3L).getResultList();
+		final List<Initiative> initiativeList = em.createQuery(
+				"select i from Initiative i where i.teamMember.userSeq = :userSeq", Initiative.class)
+			.setParameter("userSeq", 3L).getResultList();
+
+		assertThat(userList.size()).isEqualTo(0);
+		assertThat(teamMemberList.size()).isEqualTo(0);
+		assertThat(initiativeList.size()).isEqualTo(0);
 	}
 
 	private User getUser(Long seq) {

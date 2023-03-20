@@ -25,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.common.utils.JwtTokenUtils;
-import kr.jay.okrver3.domain.project.aggregate.initiative.Initiative;
-import kr.jay.okrver3.domain.project.aggregate.team.TeamMember;
 import kr.jay.okrver3.domain.token.RefreshToken;
 import kr.jay.okrver3.domain.user.ProviderType;
 import kr.jay.okrver3.domain.user.User;
@@ -220,10 +218,10 @@ class UserApiControllerTest {
 	}
 
 	@Test
-	@Sql("classpath:insert-project-data.sql")
+	@Sql("classpath:insert-user.sql")
 	void unRegisterUser를_호출하면_기대하는_응답을_반환한다() throws Exception {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 3L)
+			.setParameter("userSeq", 999L)
 			.getSingleResult();
 
 		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
@@ -231,18 +229,7 @@ class UserApiControllerTest {
 
 		ResponseEntity<String> response = sut.unRegisterUser(auth);
 
-		final List<User> userList = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 3L).getResultList();
-		final List<TeamMember> teamMemberList = em.createQuery("select t from TeamMember t where t.userSeq = :userSeq",
-				TeamMember.class)
-			.setParameter("userSeq", 3L).getResultList();
-		final List<Initiative> initiativeList = em.createQuery(
-				"select i from Initiative i where i.teamMember.userSeq = :userSeq", Initiative.class)
-			.setParameter("userSeq", 3L).getResultList();
-
-		assertThat(userList.size()).isEqualTo(0);
-		assertThat(teamMemberList.size()).isEqualTo(0);
-		assertThat(initiativeList.size()).isEqualTo(0);
+		assertThat(response.getBody()).isEqualTo("SUCCESS");
 	}
 
 	private static void assertGuestLoginResponse(LoginResponse body) {
