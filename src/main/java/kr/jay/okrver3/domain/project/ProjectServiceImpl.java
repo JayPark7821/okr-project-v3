@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.jay.okrver3.common.exception.ErrorCode;
@@ -34,6 +33,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeSavedInfo;
 import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -53,6 +53,7 @@ public class ProjectServiceImpl implements ProjectService {
 	private final InitiativeRepository initiativeRepository;
 	private final FeedbackRepository feedbackRepository;
 	private final ProjectValidateProcessor validateProcessor;
+	private final ProjectAsyncService projectAsyncService;
 
 	@Override
 	public ProjectInfo registerProject(ProjectSaveCommand command, Long userSeq, List<Long> teamMemberUserSeqs) {
@@ -114,7 +115,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq) {
+	public InitiativeSavedInfo registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq) {
 
 		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), userSeq)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
@@ -128,9 +129,10 @@ public class ProjectServiceImpl implements ProjectService {
 		);
 
 		addInitiative(command, project, initiative);
+		// projectRepository.saveAndFlush(project);
+		log.info("============ update progress call");
 
-		updateProjectProgress(initiative.getProject().getId());
-		return initiative.getInitiativeToken();
+		return new InitiativeSavedInfo(initiative.getInitiativeToken(), project.getId());
 	}
 
 	@Override
@@ -147,7 +149,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 		initiative.done();
 
-		updateProjectProgress(initiative.getProject().getId());
+		projectAsyncService.updateProjectProgress(initiative.getProject().getId());
 
 		return new InitiativeDoneInfo(
 			getTeamMemberUserSeqsToSendMsg(userSeq, initiative),
@@ -241,17 +243,10 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public List<ParticipateProjectInfo> getParticipateProjects(final Long userSeq) {
 		return projectRepository.findParticipateProjectByUserSeq(
-			userSeq)
+				userSeq)
 			.stream()
 			.map(project -> new ParticipateProjectInfo(project, userSeq))
 			.toList();
-	}
-
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	void updateProjectProgress(Long projectId) {
-		projectRepository.findProjectForUpdateById(projectId)
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN))
-			.updateProgress(projectRepository.getProjectProgress(projectId));
 	}
 
 	private void addInitiative(ProjectInitiativeSaveCommand command, Project project, Initiative initiative) {

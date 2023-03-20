@@ -25,6 +25,7 @@ import org.springframework.test.context.jdbc.Sql;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.ProjectAsyncService;
 import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
@@ -44,6 +45,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeSavedInfo;
 import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -70,7 +72,8 @@ import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepo
 	ProjectValidateProcessor.class, ProjectLeaderValidator.class, InitiativeRepositoryImpl.class,
 	FeedbackRepositoryImpl.class, ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class,
 	ProjectInitiativeDateValidator.class, InitiativeDoneValidator.class, InitiativeQueryDslRepository.class,
-	InitiativeInProgressValidator.class, SelfFeedbackValidator.class, FeedbackQueryDslRepository.class
+	InitiativeInProgressValidator.class, SelfFeedbackValidator.class, FeedbackQueryDslRepository.class,
+	ProjectAsyncService.class
 })
 class ProjectServiceImplTest {
 
@@ -288,38 +291,14 @@ class ProjectServiceImplTest {
 			"행동전략 상세내용"
 		);
 
-		String response = sut.registerInitiative(requestDto, 3L);
+		InitiativeSavedInfo response = sut.registerInitiative(requestDto, 3L);
 
 		Initiative initiativeToken = em.createQuery(
 				"select i from Initiative i where i.initiativeToken = :initiativeToken", Initiative.class)
-			.setParameter("initiativeToken", response)
+			.setParameter("initiativeToken", response.initiativeToken())
 			.getSingleResult();
 		assertThat(initiativeToken.getInitiativeToken()).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
-	}
-
-	@Test
-	@Sql("classpath:insert-project-date.sql")
-	void 행동전략_추가시_프로젝트_진척도_변경된다() throws Exception {
-		//Given
-		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
-			"key_wV6MX15WQ3DTzQMs",
-			"행동전략",
-			LocalDate.now().minusDays(10),
-			LocalDate.now().plusDays(10),
-			"행동전략 상세내용"
-		);
-
-		//When
-		String response = sut.registerInitiative(requestDto, 3L);
-
-		//Then
-		Project project = em.createQuery(
-				"select p from Project p where p.id = :id", Project.class)
-			.setParameter("id", 99998L)
-			.getSingleResult();
-
-		assertThat(project.getProgress()).isEqualTo(50.0);
 	}
 
 	@Test

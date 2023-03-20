@@ -492,7 +492,7 @@ public class ProjectApiControllerAcceptanceTest {
 			});
 		}
 		latch.await();
-
+		Thread.sleep(100L);
 		Project project = em.createQuery(
 				"select p from Project p where p.id = :id", Project.class)
 			.setParameter("id", 9999L)

@@ -67,4 +67,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 	public List<Project> findParticipateProjectByUserSeq(final Long userSeq) {
 		return projectJpaRepository.findParticipateProjectByUserSeq(userSeq);
 	}
+
+	@Override
+	public void saveAndFlush(final Project project) {
+		projectJpaRepository.saveAndFlush(project);
+	}
 }

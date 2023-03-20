@@ -28,6 +28,7 @@ import kr.jay.okrver3.domain.notification.Notification;
 import kr.jay.okrver3.domain.notification.NotificationServiceImpl;
 import kr.jay.okrver3.domain.notification.Notifications;
 import kr.jay.okrver3.domain.project.Project;
+import kr.jay.okrver3.domain.project.ProjectAsyncService;
 import kr.jay.okrver3.domain.project.ProjectServiceImpl;
 import kr.jay.okrver3.domain.project.ProjectType;
 import kr.jay.okrver3.domain.project.SortType;
@@ -75,7 +76,8 @@ import kr.jay.okrver3.infrastructure.project.aggregate.initiative.InitiativeRepo
 	ProjectKeyResultCountValidator.class, ProjectPeriodValidator.class, ProjectInitiativeDateValidator.class,
 	InitiativeRepositoryImpl.class, FeedbackRepositoryImpl.class, InitiativeDoneValidator.class,
 	InitiativeQueryDslRepository.class, NotificationRepositoryImpl.class, SelfFeedbackValidator.class,
-	InitiativeInProgressValidator.class, FeedbackQueryDslRepository.class, NotificationQueryDslRepository.class
+	InitiativeInProgressValidator.class, FeedbackQueryDslRepository.class, NotificationQueryDslRepository.class,
+	ProjectAsyncService.class
 })
 class ProjectFacadeTest {
 
@@ -353,6 +355,33 @@ class ProjectFacadeTest {
 
 		assertThat(response).containsPattern(
 			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
+	}
+
+	@Test
+	@Sql("classpath:insert-project-date.sql")
+	void 행동전략_추가시_프로젝트_진척도_변경된다() throws Exception {
+		//Given
+		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+			"key_wV6MX15WQ3DTzQMs",
+			"행동전략",
+			LocalDate.now().minusDays(10),
+			LocalDate.now().plusDays(10),
+			"행동전략 상세내용"
+		);
+
+		User user = getUser(3L);
+
+		//When
+		String response = sut.registerInitiative(requestDto, user.getUserSeq());
+
+		//Then
+		Project project = em.createQuery(
+				"select p from Project p where p.id = :id", Project.class)
+			.setParameter("id", 99998L)
+			.getSingleResult();
+		Thread.sleep(100L);
+
+		assertThat(project.getProgress()).isEqualTo(50.0);
 	}
 
 	@Test
