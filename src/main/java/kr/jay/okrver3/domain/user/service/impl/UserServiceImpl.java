@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<JobInfo> getJobField(JobCategory category){
+	public List<JobInfo> getJobField(JobCategory category) {
 		return category.getDetailList().stream()
 			.map(jobField -> new JobInfo(jobField.getCode(), jobField.getTitle()))
 			.toList();
@@ -95,5 +95,14 @@ public class UserServiceImpl implements UserService {
 		user.updateUserName(command.userName());
 		user.updateJobField(JobField.of(command.jobField()));
 		userRepository.save(user);
+	}
+
+	@Transactional
+	@Override
+	public void makeUserAsUnknownUser(final Long userSeq) {
+		User user = userRepository.findById(userSeq)
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_USER_INFO));
+
+		user.makeAsUnknownUser();
 	}
 }

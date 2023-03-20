@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import kr.jay.okrver3.common.audit.BaseTimeEntity;
 import kr.jay.okrver3.common.exception.ErrorCode;
 import kr.jay.okrver3.common.exception.OkrApplicationException;
+import kr.jay.okrver3.common.utils.TokenGenerator;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +32,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user_table")
 public class User extends BaseTimeEntity implements UserDetails {
 
+	private static final String UNKNOWN_PREFIX = "Unknown-";
 	@Id
 	@Column(name = "user_seq")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -119,5 +121,11 @@ public class User extends BaseTimeEntity implements UserDetails {
 
 	public void updateJobField(JobField jobField) {
 		this.jobField = jobField;
+	}
+
+	public void makeAsUnknownUser() {
+		this.username = "Unknown";
+		this.email = TokenGenerator.randomCharacterWithPrefix(UNKNOWN_PREFIX) + "@unknown.com";
+		this.profileImage = "";
 	}
 }

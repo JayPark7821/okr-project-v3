@@ -249,6 +249,11 @@ public class ProjectServiceImpl implements ProjectService {
 			.toList();
 	}
 
+	@Override
+	public void deleteSingleProjectBy(final Long userSeq) {
+
+	}
+
 	private void addInitiative(ProjectInitiativeSaveCommand command, Project project, Initiative initiative) {
 		project.getKeyResults()
 			.stream()
