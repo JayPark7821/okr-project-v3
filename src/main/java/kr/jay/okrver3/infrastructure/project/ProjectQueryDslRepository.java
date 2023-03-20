@@ -96,7 +96,7 @@ public class ProjectQueryDslRepository {
 						new CaseBuilder()
 							.when(initiative.done.isTrue()).then(1D)
 							.otherwise(0D)
-							.sum()//.add(1)
+							.sum()
 					).divide(initiative.count()).multiply(100)
 				))
 			.from(project)

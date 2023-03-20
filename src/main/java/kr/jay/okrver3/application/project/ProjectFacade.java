@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import kr.jay.okrver3.domain.notification.NotificationService;
 import kr.jay.okrver3.domain.notification.Notifications;
+import kr.jay.okrver3.domain.project.ProjectAsyncService;
 import kr.jay.okrver3.domain.project.ProjectService;
 import kr.jay.okrver3.domain.project.aggregate.feedback.SearchRange;
 import kr.jay.okrver3.domain.project.command.FeedbackSaveCommand;
@@ -26,6 +27,7 @@ import kr.jay.okrver3.domain.project.info.InitiativeDetailInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeDoneInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeForCalendarInfo;
 import kr.jay.okrver3.domain.project.info.InitiativeInfo;
+import kr.jay.okrver3.domain.project.info.InitiativeSavedInfo;
 import kr.jay.okrver3.domain.project.info.ParticipateProjectInfo;
 import kr.jay.okrver3.domain.project.info.ProjectDetailInfo;
 import kr.jay.okrver3.domain.project.info.ProjectInfo;
@@ -44,10 +46,12 @@ public class ProjectFacade {
 	private final ProjectService projectService;
 	private final UserService userService;
 	private final NotificationService notificationService;
+	private final ProjectAsyncService projectAsyncService;
 
 	public String registerProject(ProjectSaveCommand command, Long userSeq) {
 
-		List<Long> invitedUserSeq = command.teamMembers() != null ? getTeamUsersFromEmails(command.teamMembers()) : List.of();
+		List<Long> invitedUserSeq =
+			command.teamMembers() != null ? getTeamUsersFromEmails(command.teamMembers()) : List.of();
 
 		return projectService.registerProject(
 			command,
@@ -113,12 +117,16 @@ public class ProjectFacade {
 	}
 
 	public String registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq) {
-		return projectService.registerInitiative(command, userSeq);
+		final InitiativeSavedInfo savedInfo = projectService.registerInitiative(command, userSeq);
+		log.info("============ update progress end");
+		projectAsyncService.updateProjectProgress(savedInfo.projectId());
+		return savedInfo.initiativeToken();
 	}
 
 	public String initiativeFinished(String initiativeToken, Long userSeq) {
 		InitiativeDoneInfo info = projectService.initiativeFinished(initiativeToken, userSeq);
-		notificationService.sendNotification(Notifications.INITIATIVE_ACHIEVED, info.teamMemberUserSeqs(), info.username(), info.initiativeName());
+		notificationService.sendNotification(Notifications.INITIATIVE_ACHIEVED, info.teamMemberUserSeqs(),
+			info.username(), info.initiativeName());
 		return info.initiativeToken();
 	}
 
