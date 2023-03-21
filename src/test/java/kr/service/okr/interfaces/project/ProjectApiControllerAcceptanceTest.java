@@ -439,7 +439,7 @@ public class ProjectApiControllerAcceptanceTest {
 
 	@Test
 	@Commit
-	void 행동전략_추가시_프로젝트_진척도가_변경된다_성테스트() throws Exception {
+	void 행동전략_추가시_프로젝트_진척도가_변경된다_동시성테스트() throws Exception {
 
 		ProjectInitiativeSaveRequest requestDto =
 			new ProjectInitiativeSaveRequest

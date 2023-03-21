@@ -29,6 +29,8 @@ public class AsyncConfig {
 		executor.setQueueCapacity(queueCapacity);
 		executor.setRejectedExecutionHandler(new RejectedExecutionHandlerImpl());
 		executor.setThreadNamePrefix("ASYNC-");
+		executor.setWaitForTasksToCompleteOnShutdown(true);
+		executor.setAwaitTerminationSeconds(60);
 		return executor;
 	}
 }
