@@ -129,8 +129,6 @@ public class ProjectServiceImpl implements ProjectService {
 		);
 
 		addInitiative(command, project, initiative);
-		// projectRepository.saveAndFlush(project);
-		log.info("============ update progress call");
 
 		return new InitiativeSavedInfo(initiative.getInitiativeToken(), project.getId());
 	}

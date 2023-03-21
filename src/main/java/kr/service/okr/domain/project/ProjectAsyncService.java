@@ -19,15 +19,8 @@ public class ProjectAsyncService {
 	@Async("asyncTaskExecutor")
 	@Transactional
 	public void updateProjectProgress(Long projectId) {
-		log.info("============ update progress start");
-		// try {
-		// 	Thread.sleep(10000L);
-		// } catch (InterruptedException e) {
-		// 	throw new RuntimeException(e);
-		// }
 		projectRepository.findProjectForUpdateById(projectId)
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN))
 			.updateProgress(projectRepository.getProjectProgress(projectId));
-		log.info("============ update progress inside end");
 	}
 }

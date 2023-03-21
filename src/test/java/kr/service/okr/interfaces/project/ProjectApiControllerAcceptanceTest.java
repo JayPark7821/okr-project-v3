@@ -437,21 +437,9 @@ public class ProjectApiControllerAcceptanceTest {
 
 	}
 
-	/*
-	 * 최초 initiative 1 개
-	 *
-	 * tx1                tx2
-	 * initiative 추가
-	 *                   행동전략 추가 2
-	 * 진척도 update(1) 2
-	 *                   진척도 update(1) 2
-	 * commit
-	 *                   commit
-	 * */
-
 	@Test
 	@Commit
-	void 행동전략_추가시_프로젝트_진척도가_변경된다_동시성테스트() throws Exception {
+	void 행동전략_추가시_프로젝트_진척도가_변경된다_성테스트() throws Exception {
 
 		ProjectInitiativeSaveRequest requestDto =
 			new ProjectInitiativeSaveRequest

@@ -24,3 +24,8 @@ spring:
   output:
     ansi:
       enabled: always
+
+task-executor:
+  core-pool-size: 1
+  max-pool-size: 1
+  queue-capacity: 1
