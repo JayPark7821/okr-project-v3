@@ -13,7 +13,7 @@ spring:
     defer-datasource-initialization: true
     open-in-view: false
     properties:
-      hibername:
+      hibernate:
         format_sql: true
         use_sql_comments: true
         show_sql: true
@@ -24,3 +24,8 @@ spring:
   output:
     ansi:
       enabled: always
+
+task-executor:
+  core-pool-size: 1
+  max-pool-size: 1
+  queue-capacity: 1
