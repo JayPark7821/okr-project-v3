@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.util.SpringBootTestReady;
 
+@DisplayName("TeamMember(팀) 도메인 인수 테스트")
 public class TeamMemberAcceptanceTest extends SpringBootTestReady {
 
 	@PersistenceContext
