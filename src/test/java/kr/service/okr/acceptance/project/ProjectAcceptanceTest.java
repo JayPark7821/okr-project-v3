@@ -98,7 +98,7 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
 	void retrieve_project_with_project_token() throws Exception {
 		//given
-		var 프로젝트_토큰 = "";
+		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
 
 		//when
 		var 응답 = 프로젝트_조회_요청(프로젝트_토큰, 사용자_토큰);
@@ -114,9 +114,10 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 		var 정렬순서 = "RECENTLY_CREATE";
 		var 종료된_프로젝트_포함여부 = "N";
 		var 팀_타입 = "TEAM";
+		var 프로젝트_조회_사용자_토큰 = JwtTokenUtils.generateToken("projectMasterRetrieveTest@naver.com", key, 엑세스_토큰_유효기간_임계값);
 
 		//when
-		var 응답 = 메인_페이지_프로젝트_조회_요청(정렬순서, 종료된_프로젝트_포함여부, 팀_타입, 사용자_토큰);
+		var 응답 = 메인_페이지_프로젝트_조회_요청(정렬순서, 종료된_프로젝트_포함여부, 팀_타입, 프로젝트_조회_사용자_토큰);
 
 		//then
 		메인_페이지_프로젝트_조회_응답_검증(응답);
@@ -126,10 +127,11 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	@DisplayName("프로젝트 사이드 메뉴 조회시 기대하는 응답을 리턴한다")
 	void retrieve_project_side_menu() throws Exception {
 		//given
-		var 프로젝트_토큰 = "";
+		var 프로젝트_토큰 = "mst_K4g4tfdaergg6421";
+		var 프로젝트_조회_사용자_토큰 = JwtTokenUtils.generateToken("projectMasterRetrieveTest@naver.com", key, 엑세스_토큰_유효기간_임계값);
 
 		//when
-		var 응답 = 프로젝트_사이드_메뉴_조회_요청(프로젝트_토큰, 사용자_토큰);
+		var 응답 = 프로젝트_사이드_메뉴_조회_요청(프로젝트_토큰, 프로젝트_조회_사용자_토큰);
 
 		//then
 		프로젝트_사이드_메뉴_조회_응답_검증(응답);

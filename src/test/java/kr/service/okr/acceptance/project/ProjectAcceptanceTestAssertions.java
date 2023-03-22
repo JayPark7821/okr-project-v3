@@ -52,10 +52,10 @@ public class ProjectAcceptanceTestAssertions {
 	static void 프로젝트_조회_응답_검증(ExtractableResponse<Response> 응답) {
 		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 		final ProjectInfoResponse response = 응답.body().jsonPath().getObject("", ProjectInfoResponse.class);
-		assertThat(response.projectToken()).isEqualTo("project-fgFHxGWeIUFa");
-		assertThat(response.objective()).isEqualTo("projectObjective2");
-		assertThat(response.startDate()).isEqualTo("2020-12-01");
-		assertThat(response.endDate()).isEqualTo("3999-12-12");
+		assertThat(response.projectToken()).isEqualTo("mst_Kiwqnp1Nq6lbTNn0");
+		assertThat(response.objective()).isEqualTo("팀 맴버 테스트용 프로젝트");
+		assertThat(response.startDate()).isEqualTo("2022-12-07");
+		assertThat(response.endDate()).isEqualTo("3999-12-14");
 		assertThat(response.projectType()).isEqualTo("TEAM");
 	}
 
@@ -64,18 +64,13 @@ public class ProjectAcceptanceTestAssertions {
 		final List<ProjectDetailResponse> response = 응답.body()
 			.jsonPath()
 			.getList("content", ProjectDetailResponse.class);
-		assertThat(response.size()).isEqualTo(2);
-
-		for (int i = 0; i < response.size(); i++) {
-			ProjectDetailResponse r = response.get(i);
-
-		}
+		assertThat(response.size()).isEqualTo(3);
 	}
 
 	static void 프로젝트_사이드_메뉴_조회_응답_검증(ExtractableResponse<Response> 응답) {
 		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(응답.body().jsonPath().getString("progress")).isEqualTo("100.0");
-		assertThat(응답.body().jsonPath().getList("teamMembers").size()).isEqualTo(2);
+		assertThat(응답.body().jsonPath().getString("progress")).isEqualTo("60.0");
+		assertThat(응답.body().jsonPath().getList("teamMembers").size()).isEqualTo(3);
 	}
 
 }
