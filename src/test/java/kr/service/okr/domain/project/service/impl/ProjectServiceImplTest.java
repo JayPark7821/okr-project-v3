@@ -316,9 +316,9 @@ class ProjectServiceImplTest {
 	@Test
 	@Sql("classpath:insert-project-data.sql")
 	void 종료된_프로젝트의_행동전략_완료시_기대하는_응답Exception을_리턴한다() throws Exception {
-		String initiativeToken = "ini_iefefawef3fdab3AH8";
+		String initiativeToken = "ini_iergrffef3awf2AH8";
 
-		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, 15L))
+		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, 2L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
@@ -390,9 +390,9 @@ class ProjectServiceImplTest {
 
 		FeedbackSaveCommand command =
 			new FeedbackSaveCommand("피드백 작성", "GOOD_IDEA",
-				"ini_iefefena3fdab3AH8");
+				"ini_ieefeffef3awef2AH8");
 
-		assertThatThrownBy(() -> sut.registerFeedback(command, 7L))
+		assertThatThrownBy(() -> sut.registerFeedback(command, 15L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}

@@ -81,6 +81,61 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 		참여중인_프로젝트_리스트_응답_검증(응답);
 	}
 
+	@Test
+	@DisplayName("팀원을 추가하여 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_team_members() throws Exception {
+		//given
+		var 프로젝트_생성_요청_데이터 = 프로젝트_생성_요청_데이터_생성("프로젝트 목표", List.of("user7@naver.com"));
+
+		//when
+		var 응답 = 프로젝트_생성_요청(프로젝트_생성_요청_데이터, 사용자_토큰);
+
+		//then
+		프로젝트_생성_요청_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
+	void retrieve_project_with_project_token() throws Exception {
+		//given
+		var 프로젝트_토큰 = "";
+
+		//when
+		var 응답 = 프로젝트_조회_요청(프로젝트_토큰, 사용자_토큰);
+
+		//then
+		프로젝트_조회_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("메인 페이지 프로젝트 조회시 조건에 따라 기대하는 응답을 반환한다 ( 최근 생성순, 종료된 프로젝트 포함, 팀 프로젝트 )")
+	void retrieve_projects_for_main_page() throws Exception {
+		//given
+		var 정렬순서 = "RECENTLY_CREATE";
+		var 종료된_프로젝트_포함여부 = "N";
+		var 팀_타입 = "TEAM";
+
+		//when
+		var 응답 = 메인_페이지_프로젝트_조회_요청(정렬순서, 종료된_프로젝트_포함여부, 팀_타입, 사용자_토큰);
+
+		//then
+		메인_페이지_프로젝트_조회_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("프로젝트 사이드 메뉴 조회시 기대하는 응답을 리턴한다")
+	void retrieve_project_side_menu() throws Exception {
+		//given
+		var 프로젝트_토큰 = "";
+
+		//when
+		var 응답 = 프로젝트_사이드_메뉴_조회_요청(프로젝트_토큰, 사용자_토큰);
+
+		//then
+		프로젝트_사이드_메뉴_조회_응답_검증(응답);
+
+	}
+
 	private ProjectSaveRequest 프로젝트_생성_요청_데이터_생성(String 목표, List<String> 팀원) {
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
