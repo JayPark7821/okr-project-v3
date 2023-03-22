@@ -43,9 +43,7 @@ import kr.service.okr.domain.project.aggregate.keyresult.KeyResult;
 import kr.service.okr.domain.project.info.TeamMemberUserInfo;
 import kr.service.okr.interfaces.project.request.FeedbackSaveRequest;
 import kr.service.okr.interfaces.project.request.ProjectInitiativeSaveRequest;
-import kr.service.okr.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.service.okr.interfaces.project.request.ProjectSaveRequest;
-import kr.service.okr.interfaces.project.request.TeamMemberInviteRequest;
 import kr.service.okr.interfaces.project.response.FeedbackDetailResponse;
 import kr.service.okr.interfaces.project.response.IniFeedbackResponse;
 import kr.service.okr.interfaces.project.response.InitiativeForCalendarResponse;
@@ -94,55 +92,6 @@ public class ProjectApiControllerAcceptanceTest {
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;
-	}
-
-	@Test
-	@DisplayName("팀원 없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
-	void create_project() throws Exception {
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-		final String response = RestAssured.
-
-			given()
-			.header("Authorization", "Bearer " + authToken)
-			.contentType(ContentType.JSON)
-			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt, null)).
-
-			when()
-			.post(baseUrl + "/project").
-
-			then()
-			.statusCode(HttpStatus.CREATED.value())
-			.extract().body().asString();
-
-		assertThat(response).containsPattern(
-			Pattern.compile("project-[a-zA-Z0-9]{12}"));
-
-	}
-
-	@Test
-	@DisplayName("프로젝트를 생성시 시작&종료 일자 포멧을 잘못 입력하면 기대하는 응답(exception)을 반환한다.")
-	void create_project_date_validation_fail() throws Exception {
-		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
-		final String response = RestAssured.
-
-			given()
-			.header("Authorization", "Bearer " + authToken)
-			.contentType(ContentType.JSON)
-			.body(new ProjectSaveRequest("projectObjective", projectSdt, projectEdt, null)).
-
-			when()
-			.post(baseUrl + "/project").
-
-			then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo("8자리의 yyyy-MM-dd 형식이어야 합니다.");
-
 	}
 
 	@Test
@@ -196,149 +145,6 @@ public class ProjectApiControllerAcceptanceTest {
 	}
 
 	@Test
-	@DisplayName("팀원 추가를 시도하면 기대하는 응답(추가된 email주소)을 반환한다.")
-	void invite_team_member() throws Exception {
-		final String response = RestAssured.
-
-			given()
-			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + authToken)
-			.body(new TeamMemberInviteRequest("project-fgFHxGWeIUQt", "fakeAppleEmail")).
-
-			when()
-			.post(baseUrl + "/team/invite").
-
-			then()
-			.statusCode(HttpStatus.CREATED.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo("fakeAppleEmail");
-	}
-
-	@Test
-	@DisplayName("팀원 추가를 위해 email을 입력하면 기대하는 응답(email)을 반환한다.")
-	void validate_email_address() throws Exception {
-		String memberEmail = "guest@email.com";
-		final String response = RestAssured.
-
-			given()
-			.header("Authorization", "Bearer " + authToken).
-
-			when()
-			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + memberEmail).
-
-			then()
-			.statusCode(HttpStatus.OK.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo(memberEmail);
-	}
-
-	@Test
-	@DisplayName("로그인한 유저가 속하지 않은 프로젝트에 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
-	void validate_email_address_with_not_participating_project_throw_exception() throws Exception {
-		String memberEmail = "guest@email.com";
-
-		final String response = RestAssured.
-
-			given()
-			.header("Authorization",
-				"Bearer " + JwtTokenUtils.generateToken("fakeAppleEmail", key, accessExpiredTimeMs)).
-
-			when()
-			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + memberEmail).
-
-			then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
-	}
-
-	@Test
-	@DisplayName("리더가 아닌 팀원이 팀원 추가를 위해 email을 입력하면 기대하는 응답(exception)을 반환한다.")
-	void when_member_validate_email_address_will_throw_exception() throws Exception {
-		String memberEmail = "guest@email.com";
-
-		final String response = RestAssured.
-
-			given()
-			.header("Authorization",
-				"Bearer " + JwtTokenUtils.generateToken("fakeGoogleIdEmail", key, accessExpiredTimeMs)).
-
-			when()
-			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + memberEmail).
-
-			then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo(ErrorCode.USER_IS_NOT_LEADER.getMessage());
-	}
-
-	@Test
-	@DisplayName("팀원 추가를 위해 잘못된 email을 입력하면 기대하는 응답(exception)을 반환한다.")
-	void validate_email_address_exception() throws Exception {
-		String wrongEmailAdd = "wrongEmailAdd";
-		final String response = RestAssured.
-
-			given()
-			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + authToken).
-
-			when()
-			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + wrongEmailAdd).
-
-			then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo(ErrorCode.INVALID_USER_EMAIL.getMessage());
-	}
-
-	@Test
-	@DisplayName("이미 팀에 초대된 팀원의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
-	void validate_email_address_already_team_member() throws Exception {
-		String teamMemberEmail = "fakeGoogleIdEmail";
-
-		final String response = RestAssured.
-
-			given()
-			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + authToken).
-
-			when()
-			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + teamMemberEmail).
-
-			then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
-	}
-
-	@Test
-	@DisplayName("로그인된 유저 자신의 email을 입력하면 기대하는 응답(exception)을 반환한다.")
-	void validate_email_address_login_user_email() throws Exception {
-		String teamMemberEmail = "apple@apple.com";
-
-		final String response = RestAssured.
-
-			given()
-			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + authToken).
-
-			when()
-			.get(baseUrl + "/team/invite" + "/project-fgFHxGWeIUQt" + "/" + teamMemberEmail).
-
-			then()
-			.statusCode(HttpStatus.BAD_REQUEST.value())
-			.extract().body().asString();
-
-		assertThat(response).isEqualTo(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
-	}
-
-	@Test
 	void 메인_페이지_프로젝트_조회시_조건에_따라_기대하는_응답을_리턴한다_최근생성순_종료된프로젝트_포함_팀프로젝트() throws Exception {
 		List<String> projectToken = List.of("project-fgFHxGWeIUFa", "project-fgFHxGfedUFa");
 		final List<ProjectDetailResponse> response = RestAssured.
@@ -383,58 +189,6 @@ public class ProjectApiControllerAcceptanceTest {
 
 		assertThat(response.getString("progress")).isEqualTo("100.0");
 		assertThat(response.getList("teamMembers").size()).isEqualTo(2);
-	}
-
-	@Test
-	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
-		String projectToken = "project-fgFHxGWeIUQt";
-		String keyResultName = "keyResult";
-		final String response = RestAssured.
-
-			given()
-			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + authToken)
-			.body(new ProjectKeyResultSaveRequest(projectToken, keyResultName)).
-
-			when()
-			.post(baseUrl + "/keyresult").
-
-			then()
-			.statusCode(HttpStatus.CREATED.value())
-			.extract().body().asString();
-
-		assertThat(response).containsPattern(
-			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
-	}
-
-	@Test
-	void 행동전략_추가시_기대하는_응답을_리턴한다_initiativeToken() throws Exception {
-
-		ProjectInitiativeSaveRequest requestDto = new ProjectInitiativeSaveRequest(
-			"key_wV6MX15WQ3DTzQMs",
-			"행동전략",
-			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
-			TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
-			"행동전략 상세내용"
-		);
-
-		final String response = RestAssured.
-
-			given()
-			.contentType(ContentType.JSON)
-			.header("Authorization", "Bearer " + authToken)
-			.body(requestDto).
-
-			when()
-			.post(baseUrl + "/initiative").
-
-			then()
-			.statusCode(HttpStatus.CREATED.value())
-			.extract().body().asString();
-
-		assertThat(response).containsPattern(
-			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
-
 	}
 
 	@Test

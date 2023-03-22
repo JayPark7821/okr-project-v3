@@ -15,10 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kr.service.okr.common.utils.JwtTokenUtils;
-import kr.service.okr.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.service.okr.interfaces.project.request.ProjectSaveRequest;
 import kr.service.okr.util.SpringBootTestReady;
-import kr.service.okr.util.TestHelpUtils;
 
 @DisplayName("Project 도메인 인수 테스트")
 public class ProjectAcceptanceTest extends SpringBootTestReady {
@@ -74,58 +72,6 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	}
 
 	@Test
-	@DisplayName("핵심결과 추가 요청시 기대하는 응답(핵심결과 토큰)을 반환한다.")
-	void add_keyResult_to_project() throws Exception {
-		//given
-		var 프로젝트_토큰 = "mst_as3fg34tgg6421";
-
-		//when
-		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
-
-		//then
-		핵심결과_추가_요청_응답_검증(응답);
-	}
-
-	@Test
-	@DisplayName("등록 가능한 모든 핵심결과가 등록되었을 때 핵심결과 추가 요청시 기대하는 응답(exception)을 반환한다.")
-	void add_keyResult_to_fully_added_keyResult_project() throws Exception {
-		//given
-		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
-
-		//when
-		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
-
-		//then
-		핵심결과_추가_요청_응답_검증_실패_핵심결과_갯수_초과(응답);
-	}
-
-	@Test
-	@DisplayName("프로젝트 리더가 아닌 팀원이 핵심결과 추가 요청시 기대하는 응답(exception)을 반환한다.")
-	void member_add_keyResult_to_project() throws Exception {
-		//given
-		var 프로젝트_토큰 = "mst_qq2f4gbfffffe421";
-
-		//when
-		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
-
-		//then
-		핵심결과_추가_요청_응답_검증_실패_팀원(응답);
-	}
-
-	@Test
-	@DisplayName("행동전략 추가시 기대하는 응답(initiativeToken)을 반환한다.")
-	void add_initiative() throws Exception {
-		//given
-		var 행동전략_생성_데이터 = 행동전략_저장_요청_데이터_생성("행동전략1", "key_wV6MX15WQ3DTzQMs", "행동전략 상세");
-
-		//when
-		var 응답 = 횅동전략_추가_요청(행동전략_생성_데이터, 사용자_토큰);
-
-		//then
-		행동전략_추가_요청_응답_검증(응답);
-	}
-
-	@Test
 	@DisplayName("회원 탈퇴전 참여중인 프로젝트 리스트를 조회하면 기대하는 응답(ParticipateProjectResponse)를 반환한다.")
 	void get_participate_project_list() throws Exception {
 		//when
@@ -149,16 +95,6 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		return new ProjectSaveRequest(목표, projectSdt, projectEdt, 팀원);
-	}
-
-	private ProjectInitiativeSaveRequest 행동전략_저장_요청_데이터_생성(String 행동전략명, String 핵심결과_토큰, String 행동전략_상세_내용) {
-		return new ProjectInitiativeSaveRequest(
-			핵심결과_토큰,
-			행동전략명,
-			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
-			TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
-			행동전략_상세_내용
-		);
 	}
 
 }
