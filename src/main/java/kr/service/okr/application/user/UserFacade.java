@@ -71,7 +71,7 @@ public class UserFacade {
 
 	public void unRegisterUser(final Long userSeq) {
 		userService.makeUserAsUnknownUser(userSeq);
-		projectService.deleteSingleProjectBy(userSeq);
+		projectService.promoteNextProjectLeader(userSeq);
 	}
 }
 

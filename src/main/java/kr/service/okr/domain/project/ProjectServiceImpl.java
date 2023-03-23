@@ -248,7 +248,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional
 	@Override
-	public void deleteSingleProjectBy(final Long userSeq) {
+	public void promoteNextProjectLeader(final Long userSeq) {
 		projectRepository.findParticipateProjectByUserSeq(userSeq)
 			.stream().filter(project -> project.getType() == ProjectType.SINGLE)
 			.forEach(projectRepository::delete);
