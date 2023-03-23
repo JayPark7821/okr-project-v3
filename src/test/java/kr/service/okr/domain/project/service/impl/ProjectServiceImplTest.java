@@ -613,4 +613,16 @@ class ProjectServiceImplTest {
 		assertThat(singleProject.size()).isEqualTo(0L);
 	}
 
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void deleteSingleProjectBy를_호출하면_자신이_리더로_참여중인_프로젝트에_새로운_리더가_임명된다() throws Exception {
+
+	}
+
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void deleteSingleProjectBy를_호출하면_리더로_참여중인_프로젝트의_임명될_사용자가_없으면_해당_프로젝트_관련_데이터는_삭제_된다() throws Exception {
+
+	}
+
 }
