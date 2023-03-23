@@ -601,16 +601,13 @@ class ProjectServiceImplTest {
 	@Sql("classpath:insert-project-data.sql")
 	void deleteSingleProjectBy를_호출하면_참여중인_SINGLE_타입의_프로젝트는_모두_삭제된다() throws Exception {
 
-		final List<Project> beforeSingleProject = em.createQuery("select p from Project p where p.type = :type ",
-				Project.class)
-			.setParameter("type", ProjectType.SINGLE)
-			.getResultList();
-
 		sut.deleteSingleProjectBy(3L);
 
-		final List<Project> singleProject = em.createQuery("select p from Project p where p.type = :type ",
+		final List<Project> singleProject = em.createQuery(
+				"select p from Project p join p.teamMember t where p.type = :type and t.userSeq = :userSeq",
 				Project.class)
 			.setParameter("type", ProjectType.SINGLE)
+			.setParameter("userSeq", 3L)
 			.getResultList();
 
 		assertThat(singleProject.size()).isEqualTo(0L);
