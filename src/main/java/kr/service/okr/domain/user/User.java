@@ -116,11 +116,11 @@ public class User extends BaseTimeEntity implements UserDetails {
 	}
 
 	public void updateUserName(String username) {
-		this.username = username;
+		this.username = username != null ? username : this.username;
 	}
 
 	public void updateJobField(JobField jobField) {
-		this.jobField = jobField;
+		this.jobField = jobField != null ? jobField : this.jobField;
 	}
 
 	public void makeAsUnknownUser() {

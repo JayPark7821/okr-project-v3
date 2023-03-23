@@ -59,7 +59,7 @@ public class ProjectApiController extends AbstractController {
 		Authentication authentication
 	) {
 
-		return Response.successCreated(
+		return Response.successOk(
 			mapper.of(projectFacade.getProjectInfoBy(projectToken, getUserSeqFromAuthentication(authentication)))
 		);
 	}

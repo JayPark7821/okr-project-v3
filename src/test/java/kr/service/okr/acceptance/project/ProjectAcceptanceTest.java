@@ -15,10 +15,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kr.service.okr.common.utils.JwtTokenUtils;
-import kr.service.okr.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.service.okr.interfaces.project.request.ProjectSaveRequest;
 import kr.service.okr.util.SpringBootTestReady;
-import kr.service.okr.util.TestHelpUtils;
 
 @DisplayName("Project 도메인 인수 테스트")
 public class ProjectAcceptanceTest extends SpringBootTestReady {
@@ -74,58 +72,6 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	}
 
 	@Test
-	@DisplayName("핵심결과 추가 요청시 기대하는 응답(핵심결과 토큰)을 반환한다.")
-	void add_keyResult_to_project() throws Exception {
-		//given
-		var 프로젝트_토큰 = "mst_as3fg34tgg6421";
-
-		//when
-		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
-
-		//then
-		핵심결과_추가_요청_응답_검증(응답);
-	}
-
-	@Test
-	@DisplayName("등록 가능한 모든 핵심결과가 등록되었을 때 핵심결과 추가 요청시 기대하는 응답(exception)을 반환한다.")
-	void add_keyResult_to_fully_added_keyResult_project() throws Exception {
-		//given
-		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
-
-		//when
-		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
-
-		//then
-		핵심결과_추가_요청_응답_검증_실패_핵심결과_갯수_초과(응답);
-	}
-
-	@Test
-	@DisplayName("프로젝트 리더가 아닌 팀원이 핵심결과 추가 요청시 기대하는 응답(exception)을 반환한다.")
-	void member_add_keyResult_to_project() throws Exception {
-		//given
-		var 프로젝트_토큰 = "mst_qq2f4gbfffffe421";
-
-		//when
-		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
-
-		//then
-		핵심결과_추가_요청_응답_검증_실패_팀원(응답);
-	}
-
-	@Test
-	@DisplayName("행동전략 추가시 기대하는 응답(initiativeToken)을 반환한다.")
-	void add_initiative() throws Exception {
-		//given
-		var 행동전략_생성_데이터 = 행동전략_저장_요청_데이터_생성("행동전략1", "key_wV6MX15WQ3DTzQMs", "행동전략 상세");
-
-		//when
-		var 응답 = 횅동전략_추가_요청(행동전략_생성_데이터, 사용자_토큰);
-
-		//then
-		행동전략_추가_요청_응답_검증(응답);
-	}
-
-	@Test
 	@DisplayName("회원 탈퇴전 참여중인 프로젝트 리스트를 조회하면 기대하는 응답(ParticipateProjectResponse)를 반환한다.")
 	void get_participate_project_list() throws Exception {
 		//when
@@ -133,6 +79,63 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 
 		//then
 		참여중인_프로젝트_리스트_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("팀원을 추가하여 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_team_members() throws Exception {
+		//given
+		var 프로젝트_생성_요청_데이터 = 프로젝트_생성_요청_데이터_생성("프로젝트 목표", List.of("user7@naver.com"));
+
+		//when
+		var 응답 = 프로젝트_생성_요청(프로젝트_생성_요청_데이터, 사용자_토큰);
+
+		//then
+		프로젝트_생성_요청_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
+	void retrieve_project_with_project_token() throws Exception {
+		//given
+		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
+
+		//when
+		var 응답 = 프로젝트_조회_요청(프로젝트_토큰, 사용자_토큰);
+
+		//then
+		프로젝트_조회_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("메인 페이지 프로젝트 조회시 조건에 따라 기대하는 응답을 반환한다 ( 최근 생성순, 종료된 프로젝트 포함, 팀 프로젝트 )")
+	void retrieve_projects_for_main_page() throws Exception {
+		//given
+		var 정렬순서 = "RECENTLY_CREATE";
+		var 종료된_프로젝트_포함여부 = "N";
+		var 팀_타입 = "TEAM";
+		var 프로젝트_조회_사용자_토큰 = JwtTokenUtils.generateToken("projectMasterRetrieveTest@naver.com", key, 엑세스_토큰_유효기간_임계값);
+
+		//when
+		var 응답 = 메인_페이지_프로젝트_조회_요청(정렬순서, 종료된_프로젝트_포함여부, 팀_타입, 프로젝트_조회_사용자_토큰);
+
+		//then
+		메인_페이지_프로젝트_조회_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("프로젝트 사이드 메뉴 조회시 기대하는 응답을 리턴한다")
+	void retrieve_project_side_menu() throws Exception {
+		//given
+		var 프로젝트_토큰 = "mst_K4g4tfdaergg6421";
+		var 프로젝트_조회_사용자_토큰 = JwtTokenUtils.generateToken("projectMasterRetrieveTest@naver.com", key, 엑세스_토큰_유효기간_임계값);
+
+		//when
+		var 응답 = 프로젝트_사이드_메뉴_조회_요청(프로젝트_토큰, 프로젝트_조회_사용자_토큰);
+
+		//then
+		프로젝트_사이드_메뉴_조회_응답_검증(응답);
+
 	}
 
 	private ProjectSaveRequest 프로젝트_생성_요청_데이터_생성(String 목표, List<String> 팀원) {
@@ -149,16 +152,6 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
 		return new ProjectSaveRequest(목표, projectSdt, projectEdt, 팀원);
-	}
-
-	private ProjectInitiativeSaveRequest 행동전략_저장_요청_데이터_생성(String 행동전략명, String 핵심결과_토큰, String 행동전략_상세_내용) {
-		return new ProjectInitiativeSaveRequest(
-			핵심결과_토큰,
-			행동전략명,
-			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
-			TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
-			행동전략_상세_내용
-		);
 	}
 
 }

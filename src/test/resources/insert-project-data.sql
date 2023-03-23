@@ -38,7 +38,7 @@ insert into project
 (  88887, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 2',  100.0, 'mst_qsdzcxbffrgg6421', '2022-01-12', 'TEAM'),
 (  88886, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  100.0, 'mst_qq2aaaaaaagg6421', '2022-01-12', 'TEAM'),
 (  88885, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 4',  100.0, 'mst_qq2f4gbfffffe421', '2022-01-12', 'TEAM'),
-(  88884, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 5',  100.0, 'mst_qq2f4gaawdeg6421', '2022-01-12', 'TEAM'),
+(  88884, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2322-01-12', '프로젝트 for initiative 5',  100.0, 'mst_qq2f4gaawdeg6421', '2022-01-12', 'TEAM'),
 (  88883, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qq2f4gaawdeg64fef', '2022-01-12', 'SINGLE'),
 (  88882, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qfeeffeaawdeg64fef', '2022-01-12', 'TEAM')
 
@@ -96,7 +96,8 @@ insert into key_result
 (99996, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6f45vWQaaazQaa', 'testKeyResult 3', 99997),
 (99995, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaaDTzQaa', 'testKeyResult 3', 99988),
 (99994, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaaDTzQ22', 'testKeyResult 3', 88884),
-(99993, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaafw4ef3', 'testKeyResult 3', 88883)
+(99993, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaafw4ef3', 'testKeyResult 3', 88883),
+(99992, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6eeeeeeaafw4ef3', 'testKeyResult 3', 88885)
 ;
 
 
@@ -113,7 +114,9 @@ insert into initiative
 (99991, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', false, '2023-12-14', 'ini_iefefawef3awef2AH8', 99994, 'ini name', '2000-12-12', 88884, 15),
 (99990, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', false, '2023-12-14', 'ini_ieaaaawef3awef2AH8', 99994, 'ini name', '2000-12-12', 88884, 7),
 (99989, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-15', 'ini_ieaaugywef3awef2AH8', 99994, 'ini name', '2000-12-12', 88884, 15),
-(99988, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-15', 'ini_ieefefwef3awef2AH8', 99993, 'ini name', '2000-12-12', 88883, 3)
+(99988, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-15', 'ini_ieefefwef3awef2AH8', 99993, 'ini name', '2000-12-12', 88883, 3),
+(99987, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', true, '2023-12-15', 'ini_ieefeffef3awef2AH8', 99992, 'ini name', '2000-12-12', 88885, 2),
+(99986, '2022-12-14', '2022-12-14', 'testUser2', 'testUser2', 'initiative detail1', false, '2023-12-15', 'ini_iergrffef3awf2AH8', 99992, 'ini name', '2000-12-12', 88885, 2)
 ;
 
 

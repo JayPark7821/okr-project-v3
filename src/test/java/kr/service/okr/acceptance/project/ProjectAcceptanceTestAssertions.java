@@ -13,6 +13,8 @@ import io.restassured.response.Response;
 import kr.service.okr.common.exception.ErrorCode;
 import kr.service.okr.domain.project.aggregate.team.ProjectRoleType;
 import kr.service.okr.interfaces.project.response.ParticipateProjectResponse;
+import kr.service.okr.interfaces.project.response.ProjectDetailResponse;
+import kr.service.okr.interfaces.project.response.ProjectInfoResponse;
 
 public class ProjectAcceptanceTestAssertions {
 
@@ -33,29 +35,6 @@ public class ProjectAcceptanceTestAssertions {
 		AssertionsForClassTypes.assertThat(응답.body().asString()).isEqualTo(ErrorCode.INVALID_USER_EMAIL.getMessage());
 	}
 
-	static void 핵심결과_추가_요청_응답_검증(ExtractableResponse<Response> 응답) {
-		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		AssertionsForClassTypes.assertThat(응답.body().asString()).containsPattern(
-			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
-	}
-
-	static void 핵심결과_추가_요청_응답_검증_실패_핵심결과_갯수_초과(ExtractableResponse<Response> 응답) {
-		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		AssertionsForClassTypes.assertThat(응답.body().asString())
-			.isEqualTo(ErrorCode.KEYRESULT_LIMIT_EXCEED.getMessage());
-	}
-
-	static void 핵심결과_추가_요청_응답_검증_실패_팀원(ExtractableResponse<Response> 응답) {
-		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		AssertionsForClassTypes.assertThat(응답.body().asString()).isEqualTo(ErrorCode.USER_IS_NOT_LEADER.getMessage());
-	}
-
-	static void 행동전략_추가_요청_응답_검증(ExtractableResponse<Response> 응답) {
-		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		AssertionsForClassTypes.assertThat(응답.body().asString()).containsPattern(
-			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
-	}
-
 	static void 참여중인_프로젝트_리스트_응답_검증(ExtractableResponse<Response> 응답) {
 		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 		final List<ParticipateProjectResponse> response = 응답.body()
@@ -68,6 +47,30 @@ public class ProjectAcceptanceTestAssertions {
 				.toList()
 				.size()
 		).isEqualTo(2);
+	}
+
+	static void 프로젝트_조회_응답_검증(ExtractableResponse<Response> 응답) {
+		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		final ProjectInfoResponse response = 응답.body().jsonPath().getObject("", ProjectInfoResponse.class);
+		assertThat(response.projectToken()).isEqualTo("mst_Kiwqnp1Nq6lbTNn0");
+		assertThat(response.objective()).isEqualTo("팀 맴버 테스트용 프로젝트");
+		assertThat(response.startDate()).isEqualTo("2022-12-07");
+		assertThat(response.endDate()).isEqualTo("3999-12-14");
+		assertThat(response.projectType()).isEqualTo("TEAM");
+	}
+
+	static void 메인_페이지_프로젝트_조회_응답_검증(ExtractableResponse<Response> 응답) {
+		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		final List<ProjectDetailResponse> response = 응답.body()
+			.jsonPath()
+			.getList("content", ProjectDetailResponse.class);
+		assertThat(response.size()).isEqualTo(3);
+	}
+
+	static void 프로젝트_사이드_메뉴_조회_응답_검증(ExtractableResponse<Response> 응답) {
+		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(응답.body().jsonPath().getString("progress")).isEqualTo("60.0");
+		assertThat(응답.body().jsonPath().getList("teamMembers").size()).isEqualTo(3);
 	}
 
 }
