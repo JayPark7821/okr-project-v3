@@ -159,6 +159,8 @@ class UserServiceImplTest {
 
 		assertThat(updatedUser.getUsername()).isEqualTo("Unknown");
 		assertThat(updatedUser.getEmail()).contains("@unknown.com");
-		assertThat(updatedUser.getProfileImage()).isEqualTo("");
+		assertThat(updatedUser.getProfileImage()).isNull();
+		assertThat(updatedUser.getJobField()).isNull();
+		assertThat(updatedUser.getProviderType()).isNull();
 	}
 }

@@ -17,7 +17,7 @@ insert into user_table (user_seq, user_id,username, password, email, provider_ty
 ( 9,'testId9', 'testUser9','password','user7@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
 ( 10,'testId10', 'testUser10','password','user2222@naver.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
 ( 18,'testId11', 'testUser10','password','guest@email.com','GOOGLE','USER','PRODUCER_CP','profile_image_url' ),
-( 19,'effefee23', 'Unknown','password','guest@unknown.com','UNREGISTERED','UNREGISTERED',null,null )
+( 19,'effefee23', 'Unknown','password','guest@unknown.com',null,null,null,null )
 ;
 
 insert into project
@@ -88,7 +88,7 @@ insert into team_member
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 88882, 3, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99999, 3, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 77777, 3, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'UNREGISTERED', 77777, 19, false)
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, null, 77777, 19, false)
 ;
 
 

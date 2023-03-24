@@ -588,20 +588,20 @@ class ProjectServiceImplTest {
 
 		final List<ParticipateProjectInfo> response = sut.getParticipateProjects(3L);
 
-		assertThat(response.size()).isEqualTo(7);
+		assertThat(response.size()).isEqualTo(8);
 		assertThat(
 			response.stream()
 				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
 				.toList()
 				.size()
-		).isEqualTo(3);
+		).isEqualTo(4);
 	}
 
 	@Test
 	@Sql("classpath:insert-project-data.sql")
 	void deleteSingleProjectBy를_호출하면_참여중인_SINGLE_타입의_프로젝트는_모두_삭제된다() throws Exception {
 
-		sut.promoteNextProjectLeader(3L);
+		sut.promoteNextProjectLeaderOrDeleteProject(3L);
 
 		final List<Project> singleProject = em.createQuery(
 				"select p from Project p join p.teamMember t where p.type = :type and t.userSeq = :userSeq",
@@ -616,7 +616,7 @@ class ProjectServiceImplTest {
 	@Test
 	@Sql("classpath:insert-project-data.sql")
 	void deleteSingleProjectBy를_호출하면_자신이_리더로_참여중인_프로젝트에_새로운_리더가_임명된다() throws Exception {
-		sut.promoteNextProjectLeader(3L);
+		sut.promoteNextProjectLeaderOrDeleteProject(3L);
 
 		final List<Project> singleProject = em.createQuery(
 				"select p from Project p join p.teamMember t where p.type = :type and t.userSeq = :userSeq and t.projectRoleType = :roleType",
@@ -632,10 +632,10 @@ class ProjectServiceImplTest {
 	@Test
 	@Sql("classpath:insert-project-data.sql")
 	void deleteSingleProjectBy를_호출하면_리더로_참여중인_프로젝트의_임명될_사용자가_없으면_해당_프로젝트_관련_데이터는_삭제_된다() throws Exception {
-		sut.promoteNextProjectLeader(3L);
+		sut.promoteNextProjectLeaderOrDeleteProject(3L);
 
 		final List<Project> singleProject = em.createQuery(
-				"select p from Project p join p.teamMember t where p.id = :id",
+				"select p from Project p where p.id = :id",
 				Project.class)
 			.setParameter("id", 77777L)
 			.getResultList();

@@ -64,6 +64,6 @@ public interface ProjectService {
 
 	List<ParticipateProjectInfo> getParticipateProjects(Long userSeq);
 
-	void promoteNextProjectLeader(Long userSeq);
+	void promoteNextProjectLeaderOrDeleteProject(Long userSeq);
 }
 
