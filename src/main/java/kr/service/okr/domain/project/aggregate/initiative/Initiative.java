@@ -19,6 +19,9 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import kr.service.okr.common.audit.BaseEntity;
 import kr.service.okr.common.utils.TokenGenerator;
 import kr.service.okr.domain.project.Project;
@@ -33,6 +36,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE initiative SET deleted = true WHERE initiative_id = ?")
+@Where(clause = "deleted = false")
 public class Initiative extends BaseEntity {
 
 	private static final String PROJECT_INITIATIVE_PREFIX = "initiative-";
@@ -79,6 +84,9 @@ public class Initiative extends BaseEntity {
 
 	@OneToMany(mappedBy = "initiative")
 	private List<Feedback> feedback = new ArrayList<>();
+
+	@Column(nullable = false)
+	private boolean deleted = Boolean.FALSE;
 
 	@Builder
 	public Initiative(TeamMember teamMember, String name, LocalDate edt, LocalDate sdt,
