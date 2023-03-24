@@ -558,12 +558,12 @@ class ProjectFacadeTest {
 
 		final List<ParticipateProjectInfo> response = sut.getParticipateProjects(3L);
 
-		assertThat(response.size()).isEqualTo(7);
+		assertThat(response.size()).isEqualTo(8);
 		assertThat(
 			response.stream()
 				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
 				.toList()
 				.size()
-		).isEqualTo(3);
+		).isEqualTo(4);
 	}
 }

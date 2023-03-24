@@ -3,6 +3,7 @@ package kr.service.okr.domain.project;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +18,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import kr.service.okr.common.audit.BaseEntity;
 import kr.service.okr.common.exception.ErrorCode;
@@ -33,6 +37,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE project SET deleted = true WHERE project_id = ?")
+@Where(clause = "deleted = false")
 @Table(name = "project", indexes = @Index(name = "idx_project_token", columnList = "projectToken"))
 public class Project extends BaseEntity {
 
@@ -67,6 +73,9 @@ public class Project extends BaseEntity {
 	private String objective;
 
 	private double progress;
+
+	@Column(nullable = false)
+	private boolean deleted = Boolean.FALSE;
 
 	@Builder
 	public Project(LocalDate startDate, LocalDate endDate, String objective,
@@ -139,5 +148,15 @@ public class Project extends BaseEntity {
 
 	public void updateProgress(double progress) {
 		this.progress = progress;
+	}
+
+	public Optional<TeamMember> getNextProjectLeader() {
+		return this.teamMember.stream()
+			.filter(tm -> tm.getProjectRoleType() == ProjectRoleType.MEMBER)
+			.min((tm1, tm2) -> tm1.getCreatedDate().compareTo(tm2.getCreatedDate()));
+	}
+
+	public void deleteProject() {
+		this.deleted = true;
 	}
 }

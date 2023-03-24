@@ -144,13 +144,13 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 
 		final List<ParticipateProjectResponse> response = sut.getParticipateProjects(auth).getBody();
 
-		assertThat(response.size()).isEqualTo(7);
+		assertThat(response.size()).isEqualTo(8);
 		assertThat(
 			response.stream()
 				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
 				.toList()
 				.size()
-		).isEqualTo(3);
+		).isEqualTo(4);
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {

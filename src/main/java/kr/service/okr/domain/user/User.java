@@ -126,6 +126,9 @@ public class User extends BaseTimeEntity implements UserDetails {
 	public void makeAsUnknownUser() {
 		this.username = "Unknown";
 		this.email = TokenGenerator.randomCharacterWithPrefix(UNKNOWN_PREFIX) + "@unknown.com";
-		this.profileImage = "";
+		this.profileImage = null;
+		this.jobField = null;
+		this.providerType = null;
+		this.userId = TokenGenerator.randomCharacterWithPrefix(UNKNOWN_PREFIX);
 	}
 }
