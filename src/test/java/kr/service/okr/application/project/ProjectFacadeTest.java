@@ -566,4 +566,11 @@ class ProjectFacadeTest {
 				.size()
 		).isEqualTo(4);
 	}
+
+	@Test
+	void getRequiredFeedbackInitiative을_호출하면_기대한는_응답_ProjectInitiativeResponse를_리턴한다() throws Exception {
+		final List<InitiativeInfo> response = sut.getRequiredFeedbackInitiative(3L);
+
+		assertThat(response.size()).isEqualTo(3);
+	}
 }

@@ -178,6 +178,6 @@ public class ProjectFacade {
 	}
 
 	public List<InitiativeInfo> getRequiredFeedbackInitiative(final Long userSeq) {
-		throw new UnsupportedOperationException();
+		return projectService.getRequiredFeedbackInitiative(userSeq);
 	}
 }
