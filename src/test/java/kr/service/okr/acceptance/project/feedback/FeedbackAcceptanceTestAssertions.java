@@ -11,6 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.service.okr.interfaces.project.response.FeedbackDetailResponse;
 import kr.service.okr.interfaces.project.response.IniFeedbackResponse;
+import kr.service.okr.interfaces.project.response.ProjectInitiativeResponse;
 
 public class FeedbackAcceptanceTestAssertions {
 
@@ -49,6 +50,12 @@ public class FeedbackAcceptanceTestAssertions {
 	static void 피드백_상태_업데이트_응답_검증(ExtractableResponse<Response> 응답) {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(응답.body().asString()).isEqualTo("feedback_el6q34zazzSyWx9");
+	}
+
+	static void 피드백을_남겨야_하는_행동전략_응답_검증(ExtractableResponse<Response> 응답) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(응답.body().jsonPath().getList("", ProjectInitiativeResponse.class).size())
+			.isEqualTo(3);
 	}
 
 }

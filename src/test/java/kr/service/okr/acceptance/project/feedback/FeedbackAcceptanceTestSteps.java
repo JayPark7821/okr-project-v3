@@ -92,4 +92,20 @@ public class FeedbackAcceptanceTestSteps {
 			.extract();
 	}
 
+	static ExtractableResponse<Response> 피드백을_남겨야_하는_행동전략_조회_요청(String 로그인_유저_인증_토큰) throws
+		Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
+
+			when()
+			.get(baseUrl + "/required").
+
+			then()
+			.log().all()
+			.extract();
+	}
+
 }

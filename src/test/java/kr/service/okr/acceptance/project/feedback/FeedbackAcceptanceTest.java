@@ -97,4 +97,14 @@ public class FeedbackAcceptanceTest extends SpringBootTestReady {
 		// 피드백_상태_업데이트_응답_검증(응답);
 	}
 
+	@Test
+	@DisplayName("피드백을 남겨야 하는 행동전략 정보를 요청하면 기대하는 응답을 리턴한다.")
+	void get_initiative_info_for_feedback() throws Exception {
+		//when
+		var 응답 = 피드백을_남겨야_하는_행동전략_조회_요청(사용자_토큰);
+
+		//then
+		피드백을_남겨야_하는_행동전략_응답_검증(응답);
+	}
+
 }
