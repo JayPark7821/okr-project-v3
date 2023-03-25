@@ -643,4 +643,12 @@ class ProjectServiceImplTest {
 		assertThat(singleProject.size()).isEqualTo(0L);
 	}
 
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void getRequiredFeedbackInitiative을_호출하면_기대한는_응답_ProjectInitiativeResponse를_리턴한다() throws Exception {
+		final List<InitiativeInfo> response = sut.getRequiredFeedbackInitiative(3L);
+
+		assertThat(response.size()).isEqualTo(1);
+		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5aaafeab3AH8");
+	}
 }
