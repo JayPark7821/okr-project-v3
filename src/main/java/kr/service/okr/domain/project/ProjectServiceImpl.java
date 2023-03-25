@@ -263,6 +263,13 @@ public class ProjectServiceImpl implements ProjectService {
 		});
 	}
 
+	@Override
+	public List<InitiativeInfo> getRequiredFeedbackInitiative(final Long userSeq) {
+		return initiativeRepository.getCountOfInitiativeToGiveFeedback(userSeq).stream()
+			.map(InitiativeInfo::new)
+			.toList();
+	}
+
 	private void processPromoteNewLeaderOrDelete(final Project project, final TeamMember teamMember) {
 		project.getNextProjectLeader()
 			.ifPresentOrElse(
