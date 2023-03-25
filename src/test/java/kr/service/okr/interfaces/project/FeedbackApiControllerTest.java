@@ -104,8 +104,8 @@ class FeedbackApiControllerTest extends SpringBootTestReady {
 		final List<ProjectInitiativeResponse> response =
 			sut.getRequiredFeedbackInitiative(getAuthenticationToken(3L)).getBody();
 
-		assertThat(response.size()).isEqualTo(3);
-
+		assertThat(response.size()).isEqualTo(1);
+		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5aaafeab3AH8");
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
