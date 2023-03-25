@@ -10,7 +10,12 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import kr.service.okr.common.audit.BaseEntity;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 import kr.service.okr.domain.project.Project;
 import kr.service.okr.domain.user.User;
 import lombok.AccessLevel;
@@ -22,6 +27,8 @@ import lombok.NoArgsConstructor;
 @IdClass(TeamMemberId.class)
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE team_member SET deleted = true WHERE user_seq = ? AND project_id = ?")
+@Where(clause = "deleted = false")
 public class TeamMember extends BaseEntity {
 	@Id
 	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
@@ -43,11 +50,25 @@ public class TeamMember extends BaseEntity {
 	@Column(name = "is_new")
 	private boolean isNew;
 
+	@Column(nullable = false)
+	private boolean deleted = Boolean.FALSE;
+
 	@Builder
 	public TeamMember(Long userSeq, Project project, ProjectRoleType projectRoleType, boolean isNew) {
 		this.userSeq = userSeq;
 		this.project = project;
 		this.projectRoleType = projectRoleType;
 		this.isNew = isNew;
+	}
+
+	public void makeMemberAsProjectLeader() {
+		this.projectRoleType = ProjectRoleType.LEADER;
+	}
+
+	public void changeLeaderRoleToMember() {
+		if (this.projectRoleType != ProjectRoleType.LEADER) {
+			throw new OkrApplicationException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
+		this.projectRoleType = ProjectRoleType.MEMBER;
 	}
 }

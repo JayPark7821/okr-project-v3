@@ -15,6 +15,9 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import kr.service.okr.common.audit.BaseEntity;
 import kr.service.okr.common.utils.TokenGenerator;
 import kr.service.okr.domain.project.aggregate.initiative.Initiative;
@@ -27,6 +30,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE feedback SET deleted = true WHERE feedback_id = ?")
+@Where(clause = "deleted = false")
 public class Feedback extends BaseEntity {
 
 	private static final String FEEDBACK_PREFIX = "feedback-";
@@ -60,6 +65,9 @@ public class Feedback extends BaseEntity {
 	@NotNull
 	@Column(name = "checked")
 	private boolean isChecked;
+
+	@Column(nullable = false)
+	private boolean deleted = Boolean.FALSE;
 
 	@Builder
 	public Feedback(Initiative initiative, TeamMember teamMember, FeedbackType grade, String opinion) {

@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -248,10 +249,37 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Transactional
 	@Override
-	public void deleteSingleProjectBy(final Long userSeq) {
-		projectRepository.findParticipateProjectByUserSeq(userSeq)
-			.stream().filter(project -> project.getType() == ProjectType.SINGLE)
-			.forEach(projectRepository::delete);
+	public void promoteNextProjectLeaderOrDeleteProject(final Long userSeq) {
+		final List<Project> participateProjectList = projectRepository.findParticipateProjectByUserSeq(userSeq);
+
+		participateProjectList.forEach(project -> {
+			if (project.getType() == ProjectType.SINGLE) {
+				projectRepository.delete(project);
+			} else {
+				getLeaderWhenRequesterIsLeader(userSeq, project).ifPresent(
+					teamMember -> processPromoteNewLeaderOrDelete(project, teamMember)
+				);
+			}
+		});
+	}
+
+	private void processPromoteNewLeaderOrDelete(final Project project, final TeamMember teamMember) {
+		project.getNextProjectLeader()
+			.ifPresentOrElse(
+				nextProjectLeader -> {
+					nextProjectLeader.makeMemberAsProjectLeader();
+					teamMember.changeLeaderRoleToMember();
+				},
+				() -> projectRepository.delete(project)
+			);
+	}
+
+	private static Optional<TeamMember> getLeaderWhenRequesterIsLeader(final Long userSeq, final Project project) {
+		final Optional<TeamMember> leaderUser = project.getTeamMember()
+			.stream()
+			.filter(tm -> tm.getUserSeq().equals(userSeq))
+			.findFirst();
+		return leaderUser;
 	}
 
 	private void addInitiative(ProjectInitiativeSaveCommand command, Project project, Initiative initiative) {

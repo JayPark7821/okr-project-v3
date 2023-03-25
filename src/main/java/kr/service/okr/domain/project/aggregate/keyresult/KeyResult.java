@@ -14,6 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import kr.service.okr.common.audit.BaseEntity;
 import kr.service.okr.common.utils.TokenGenerator;
 import kr.service.okr.domain.project.Project;
@@ -26,6 +29,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
+@SQLDelete(sql = "UPDATE key_result SET deleted = true WHERE key_result_id = ?")
+@Where(clause = "deleted = false")
 public class KeyResult extends BaseEntity {
 
 	private static final String PROJECT_KEYRESULT_PREFIX = "keyResult-";
@@ -46,6 +51,9 @@ public class KeyResult extends BaseEntity {
 
 	@OneToMany(mappedBy = "keyResult", cascade = CascadeType.ALL)
 	private List<Initiative> initiative = new ArrayList<>();
+
+	@Column(nullable = false)
+	private boolean deleted = Boolean.FALSE;
 
 	@Builder
 	public KeyResult(Project project, String name, Integer index) {
