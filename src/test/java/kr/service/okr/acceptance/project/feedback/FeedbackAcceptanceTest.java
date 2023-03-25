@@ -100,8 +100,10 @@ public class FeedbackAcceptanceTest extends SpringBootTestReady {
 	@Test
 	@DisplayName("피드백을 남겨야 하는 행동전략 정보를 요청하면 기대하는 응답을 리턴한다.")
 	void get_initiative_info_for_feedback() throws Exception {
+		//given
+		var 피드백_행동전략_조회_사용자_인증_토큰 = JwtTokenUtils.generateToken("user1@naver.com", key, 엑세스_토큰_유효기간_임계값);
 		//when
-		var 응답 = 피드백을_남겨야_하는_행동전략_조회_요청(사용자_토큰);
+		var 응답 = 피드백을_남겨야_하는_행동전략_조회_요청(피드백_행동전략_조회_사용자_인증_토큰);
 
 		//then
 		피드백을_남겨야_하는_행동전략_응답_검증(응답);

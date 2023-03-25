@@ -54,8 +54,11 @@ public class FeedbackAcceptanceTestAssertions {
 
 	static void 피드백을_남겨야_하는_행동전략_응답_검증(ExtractableResponse<Response> 응답) {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(응답.body().jsonPath().getList("", ProjectInitiativeResponse.class).size())
-			.isEqualTo(3);
+		final List<ProjectInitiativeResponse> response = 응답.body()
+			.jsonPath()
+			.getList("", ProjectInitiativeResponse.class);
+		assertThat(response.size()).isEqualTo(1);
+		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5aaafeab3AH8");
 	}
 
 }
