@@ -20,6 +20,7 @@ import kr.service.okr.domain.user.User;
 import kr.service.okr.interfaces.project.request.FeedbackSaveRequest;
 import kr.service.okr.interfaces.project.response.FeedbackDetailResponse;
 import kr.service.okr.interfaces.project.response.IniFeedbackResponse;
+import kr.service.okr.interfaces.project.response.ProjectInitiativeResponse;
 import kr.service.okr.util.SpringBootTestReady;
 
 class FeedbackApiControllerTest extends SpringBootTestReady {
@@ -96,6 +97,15 @@ class FeedbackApiControllerTest extends SpringBootTestReady {
 			FeedbackDetailResponse r = content.get(i);
 			assertThat(r.feedbackToken()).isEqualTo(feedbackTokenList.get(i));
 		}
+	}
+
+	@Test
+	void getRequiredFeedbackInitiative을_호출하면_기대한는_응답_ProjectInitiativeResponse를_리턴한다() throws Exception {
+		final List<ProjectInitiativeResponse> response =
+			sut.getRequiredFeedbackInitiative(getAuthenticationToken(3L)).getBody();
+
+		assertThat(response.size()).isEqualTo(3);
+
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {

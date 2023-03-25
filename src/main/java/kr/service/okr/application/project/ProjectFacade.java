@@ -176,4 +176,8 @@ public class ProjectFacade {
 	public List<ParticipateProjectInfo> getParticipateProjects(final Long userSeq) {
 		return projectService.getParticipateProjects(userSeq);
 	}
+
+	public List<InitiativeInfo> getRequiredFeedbackInitiative(final Long userSeq) {
+		throw new UnsupportedOperationException();
+	}
 }

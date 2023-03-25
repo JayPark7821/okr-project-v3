@@ -1,5 +1,7 @@
 package kr.service.okr.interfaces.project;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import kr.service.okr.interfaces.AbstractController;
 import kr.service.okr.interfaces.project.request.FeedbackSaveRequest;
 import kr.service.okr.interfaces.project.response.FeedbackDetailResponse;
 import kr.service.okr.interfaces.project.response.IniFeedbackResponse;
+import kr.service.okr.interfaces.project.response.ProjectInitiativeResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,4 +91,14 @@ public class FeedbackApiController extends AbstractController {
 		);
 	}
 
+	@GetMapping("/required")
+	public ResponseEntity<List<ProjectInitiativeResponse>> getRequiredFeedbackInitiative(
+		Authentication authentication
+	) {
+		return Response.successOk(
+			projectFacade.getRequiredFeedbackInitiative(
+				getUserSeqFromAuthentication(authentication)
+			).stream().map(mapper::of).toList()
+		);
+	}
 }
