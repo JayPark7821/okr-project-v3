@@ -42,12 +42,12 @@ public class NotificationApiController {
 
 	}
 
-	@PutMapping("/{token}")
+	@PutMapping("/{notificationToken}")
 	public ResponseEntity<String> checkNotification(
-		@PathVariable("token") String token,
+		@PathVariable("notificationToken") String notificationToken,
 		Authentication authentication
 	) {
-		notificationFacade.checkNotification(token, getUserFromAuthentication(authentication));
+		notificationFacade.checkNotification(notificationToken, getUserFromAuthentication(authentication));
 		return Response.success(HttpStatus.OK);
 	}
 

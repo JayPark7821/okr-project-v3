@@ -4,6 +4,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
+import kr.service.okr.domain.notification.Notification;
 import kr.service.okr.domain.notification.NotificationServiceImpl;
 import kr.service.okr.domain.notification.info.NotificationInfo;
 import kr.service.okr.infrastructure.notification.NotificationJDBCRepository;
@@ -25,6 +29,9 @@ class NotificationFacadeTest {
 
 	@Autowired
 	private NotificationFacade sut;
+
+	@PersistenceContext
+	EntityManager em;
 
 	@Test
 	@Sql("classpath:insert-project-data.sql")
@@ -43,4 +50,21 @@ class NotificationFacadeTest {
 
 		}
 	}
+
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void checkNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
+		String notificationToken = "noti_111fey1SERx";
+
+		sut.checkNotification(notificationToken, 3L);
+
+		final Notification notification = em.createQuery(
+				"select n from Notification n where n.notificationToken = :token",
+				Notification.class)
+			.setParameter("token", notificationToken)
+			.getSingleResult();
+
+		assertThat(notification.isChecked()).isTrue();
+	}
+
 }

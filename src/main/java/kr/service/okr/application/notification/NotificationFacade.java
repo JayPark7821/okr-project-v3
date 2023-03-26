@@ -20,7 +20,7 @@ public class NotificationFacade {
 		return notificationService.getNotifications(pageable, userSeq);
 	}
 
-	public void checkNotification(final String token, final Long userSeq) {
-		throw new IllegalStateException("NotificationFacade::checkNotification not implemented yet");
+	public void checkNotification(final String notificationToken, final Long userSeq) {
+		notificationService.checkNotification(notificationToken, userSeq);
 	}
 }
