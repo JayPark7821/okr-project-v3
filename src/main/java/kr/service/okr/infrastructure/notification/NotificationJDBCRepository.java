@@ -21,8 +21,8 @@ public class NotificationJDBCRepository {
 	public void bulkInsert(List<Notification> notifications) {
 
 		String sql = String.format("""
-				INSERT INTO `%s` (message, notification_token, user_seq)
-				VALUES (:message, :notificationToken, :user )
+				INSERT INTO `%s` (message, notification_token, user_seq, checked ,deleted)
+				VALUES (:message, :notificationToken, :user, false, false)
 			""", TABLE);
 
 		SqlParameterSource[] params = notifications.stream()

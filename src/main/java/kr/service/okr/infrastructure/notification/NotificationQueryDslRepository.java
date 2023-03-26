@@ -32,18 +32,16 @@ public class NotificationQueryDslRepository {
 			queryFactory
 				.select(notification)
 				.from(notification)
-				.where(notification.status.ne(kr.service.okr.domain.notification.NotificationCheckType.DELETED)
-					.and(notification.userSeq.eq(userSeq)))
+				.where(notification.userSeq.eq(userSeq))
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
-				.orderBy(notification.status.desc(), notification.createdDate.desc())
+				.orderBy(notification.isChecked.asc(), notification.createdDate.desc())
 				.fetch();
 
 		JPAQuery<Long> countQuery = queryFactory
 			.select(notification.id)
 			.from(notification)
-			.where(notification.status.ne(kr.service.okr.domain.notification.NotificationCheckType.DELETED)
-				.and(notification.userSeq.eq(userSeq)));
+			.where(notification.userSeq.eq(userSeq));
 
 		return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetch().size());
 	}

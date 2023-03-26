@@ -42,7 +42,7 @@ public class NotificationAcceptanceTest extends SpringBootTestReady {
 	@DisplayName("알림을 확인하면 기대하는 응답을 반환한다")
 	void check_notification() throws Exception {
 		//given
-		var 확인_요청_알림_토큰 = "noti_111fey1SERx";
+		var 확인_요청_알림_토큰 = "noti_e2222y1SERx";
 		//when
 		var 응답 = 알림_확인_요청(확인_요청_알림_토큰, 사용자_토큰);
 		//then

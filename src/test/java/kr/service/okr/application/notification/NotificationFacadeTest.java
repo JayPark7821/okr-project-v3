@@ -36,12 +36,13 @@ class NotificationFacadeTest {
 	@Test
 	@Sql("classpath:insert-project-data.sql")
 	void getNotifications을_호출화면_기대하는_응답을_리턴한다() throws Exception {
-		List<String> notificationTokens = List.of("noti_aaaaaMoZey1SERx", "noti_e144441Zey1SERx");
+		List<String> notificationTokens = List.of("noti_e144441Zey1SERx", "noti_e3eeddoZey1SERx",
+			"noti_aaaaaMoZey1SERx", "noti_e2222y1SERx");
 		final Page<NotificationInfo> response = sut.getNotifications(
 			PageRequest.of(0, 5), 16L
 		);
 
-		assertThat(response.getTotalElements()).isEqualTo(2);
+		assertThat(response.getTotalElements()).isEqualTo(4);
 		List<NotificationInfo> content = response.getContent();
 
 		for (int i = 0; i < content.size(); i++) {

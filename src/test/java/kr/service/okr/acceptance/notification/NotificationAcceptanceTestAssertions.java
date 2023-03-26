@@ -19,7 +19,7 @@ public class NotificationAcceptanceTestAssertions {
 		final List<NotificationResponse> response = 응답.body()
 			.jsonPath()
 			.getList("content", NotificationResponse.class);
-		assertThat(response.size()).isEqualTo(2);
+		assertThat(response.size()).isEqualTo(4);
 	}
 
 	static void 알림_확인_요청_응답_검증(ExtractableResponse<Response> 응답) {

@@ -56,7 +56,7 @@ public class Notification extends BaseEntity {
 	private boolean isChecked = false;
 
 	@Column(nullable = false)
-	private boolean deleted = Boolean.FALSE;
+	private boolean deleted = false;
 
 	public Notification(Long userSeq, Notifications type, String... args) {
 		this.notificationToken = TokenGenerator.randomCharacterWithPrefix(NOTIFICATION_PREFIX);
