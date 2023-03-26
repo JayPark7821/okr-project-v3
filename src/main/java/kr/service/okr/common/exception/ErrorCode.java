@@ -44,7 +44,7 @@ public enum ErrorCode {
 	INVALID_YEARMONTH_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 년월 형식입니다."),
 	INVALID_SEARCH_RANGE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 검색 기간입니다."),
 	INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청 입니다."),
-	;
+	INVALID_NOTIFICATION_TOKEN(HttpStatus.BAD_REQUEST, "잘못된 알림 토큰 입니다.");
 
 	private HttpStatus status;
 	private String message;
