@@ -15,4 +15,6 @@ public interface NotificationService {
 	Page<NotificationInfo> getNotifications(Pageable pageable, Long userSeq);
 
 	void checkNotification(String notificationToken, Long userSeq);
+
+	void deleteNotification(String notificationToken, Long userSeq);
 }

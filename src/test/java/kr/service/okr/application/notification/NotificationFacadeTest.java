@@ -68,4 +68,20 @@ class NotificationFacadeTest {
 		assertThat(notification.isChecked()).isTrue();
 	}
 
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void deleteNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
+		String notificationToken = "noti_111fey1SERx";
+
+		sut.deleteNotification(notificationToken, 3L);
+
+		final Notification notification = em.createQuery(
+				"select n from Notification n where n.notificationToken = :token",
+				Notification.class)
+			.setParameter("token", notificationToken)
+			.getSingleResult();
+
+		assertThat(notification.isDeleted()).isTrue();
+	}
+
 }

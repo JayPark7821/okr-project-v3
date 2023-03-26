@@ -25,6 +25,6 @@ public class NotificationFacade {
 	}
 
 	public void deleteNotification(final String notificationToken, final Long userSeq) {
-		throw new IllegalStateException("NotificationFacade::deleteNotification not implemented yet");
+		notificationService.deleteNotification(notificationToken, userSeq);
 	}
 }
