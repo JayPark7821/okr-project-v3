@@ -67,6 +67,21 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 		assertThat(notification.isChecked()).isTrue();
 	}
 
+	@Test
+	void deleteNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
+		String notificationToken = "noti_111fey1SERx";
+		final ResponseEntity<String> response =
+			sut.checkNotification(notificationToken, getAuthenticationToken(3L));
+
+		final Notification notification = em.createQuery(
+				"select n from Notification n where n.notificationToken = :token",
+				Notification.class)
+			.setParameter("token", notificationToken)
+			.getSingleResult();
+
+		assertThat(notification.isDeleted()).isTrue();
+	}
+
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
 		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", value)
