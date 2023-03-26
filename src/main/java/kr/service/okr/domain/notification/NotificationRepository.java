@@ -14,4 +14,6 @@ public interface NotificationRepository {
 	Page<Notification> findNotificationByUserSeq(Pageable pageable, Long userSeq);
 
 	Optional<Notification> findByNotificationTokenAndUserSeq(String notificationToken, Long userSeq);
+
+	void delete(Notification notification);
 }

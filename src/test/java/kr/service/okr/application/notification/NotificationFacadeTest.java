@@ -75,13 +75,13 @@ class NotificationFacadeTest {
 
 		sut.deleteNotification(notificationToken, 3L);
 
-		final Notification notification = em.createQuery(
-				"select n from Notification n where n.notificationToken = :token",
-				Notification.class)
+		final Long notificationCount = em.createQuery(
+				"select count(n) from Notification n where n.notificationToken = :token and n.deleted = true",
+				Long.class)
 			.setParameter("token", notificationToken)
 			.getSingleResult();
 
-		assertThat(notification.isDeleted()).isTrue();
+		assertThat(notificationCount).isEqualTo(0L);
 	}
 
 }

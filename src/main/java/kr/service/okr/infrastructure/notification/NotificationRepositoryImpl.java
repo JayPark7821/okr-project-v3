@@ -39,4 +39,9 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 		final Long userSeq) {
 		return notificationJpaRepository.findByNotificationTokenAndUserSeq(notificationToken, userSeq);
 	}
+
+	@Override
+	public void delete(final Notification notification) {
+		notificationJpaRepository.delete(notification);
+	}
 }

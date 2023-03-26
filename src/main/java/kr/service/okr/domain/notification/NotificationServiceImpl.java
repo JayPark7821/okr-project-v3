@@ -50,4 +50,13 @@ public class NotificationServiceImpl implements NotificationService {
 
 		notification.checkNotification();
 	}
+
+	@Transactional
+	@Override
+	public void deleteNotification(final String notificationToken, final Long userSeq) {
+		Notification notification =
+			notificationRepository.findByNotificationTokenAndUserSeq(notificationToken, userSeq)
+				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_NOTIFICATION_TOKEN));
+		notificationRepository.delete(notification);
+	}
 }

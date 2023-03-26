@@ -90,4 +90,18 @@ class NotificationServiceImplTest {
 		assertThat(notification.isChecked()).isTrue();
 	}
 
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void deleteNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
+		String notificationToken = "noti_111fey1SERx";
+
+		sut.checkNotification(notificationToken, 3L);
+		final Long notificationCount = em.createQuery(
+				"select count(n) from Notification n where n.notificationToken = :token and n.deleted = true",
+				Long.class)
+			.setParameter("token", notificationToken)
+			.getSingleResult();
+
+		assertThat(notificationCount).isEqualTo(0L);
+	}
 }
