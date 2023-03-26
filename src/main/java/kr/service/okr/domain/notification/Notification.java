@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import kr.service.okr.common.audit.BaseEntity;
 import kr.service.okr.common.utils.TokenGenerator;
 import kr.service.okr.domain.user.User;
@@ -22,6 +25,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@SQLDelete(sql = "UPDATE notification SET deleted = true WHERE notification_id = ?")
+@Where(clause = "deleted = false")
 @Table(name = "notification")
 public class Notification extends BaseEntity {
 
@@ -48,13 +53,19 @@ public class Notification extends BaseEntity {
 	private String msg;
 
 	@Column(name = "checked")
-	@Enumerated(EnumType.STRING)
-	private NotificationCheckType status;
+	private boolean isChecked = false;
+
+	@Column(nullable = false)
+	private boolean deleted = false;
 
 	public Notification(Long userSeq, Notifications type, String... args) {
 		this.notificationToken = TokenGenerator.randomCharacterWithPrefix(NOTIFICATION_PREFIX);
 		this.userSeq = userSeq;
 		this.type = type;
 		this.msg = type.getMsg(args);
+	}
+
+	public void checkNotification() {
+		this.isChecked = true;
 	}
 }

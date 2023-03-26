@@ -1,6 +1,7 @@
 package kr.service.okr.infrastructure.notification;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +17,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
 	private final NotificationJDBCRepository notificationJDBCRepository;
 	private final NotificationJpaRepository notificationJpaRepository;
-	private final NotificationQueryDslRepository NotificationQueryDslRepository;
+	private final NotificationQueryDslRepository notificationQueryDslRepository;
 
 	@Override
 	public void bulkInsert(List<Notification> notificationStream) {
@@ -30,6 +31,17 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
 	@Override
 	public Page<Notification> findNotificationByUserSeq(Pageable pageable, Long userSeq) {
-		return NotificationQueryDslRepository.findNotificationByUserSeq(pageable, userSeq);
+		return notificationQueryDslRepository.findNotificationByUserSeq(pageable, userSeq);
+	}
+
+	@Override
+	public Optional<Notification> findByNotificationTokenAndUserSeq(final String notificationToken,
+		final Long userSeq) {
+		return notificationJpaRepository.findByNotificationTokenAndUserSeq(notificationToken, userSeq);
+	}
+
+	@Override
+	public void delete(final Notification notification) {
+		notificationJpaRepository.delete(notification);
 	}
 }

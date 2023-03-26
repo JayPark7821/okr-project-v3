@@ -17,7 +17,7 @@ public record NotificationInfo(
 			notification.getNotificationToken(),
 			notification.getType(),
 			notification.getMsg(),
-			notification.getStatus(),
+			notification.isChecked() ? NotificationCheckType.CHECKED : NotificationCheckType.NEW,
 			notification.getCreatedDate().toString()
 		);
 	}

@@ -19,4 +19,12 @@ public class NotificationFacade {
 	public Page<NotificationInfo> getNotifications(Pageable pageable, Long userSeq) {
 		return notificationService.getNotifications(pageable, userSeq);
 	}
+
+	public void checkNotification(final String notificationToken, final Long userSeq) {
+		notificationService.checkNotification(notificationToken, userSeq);
+	}
+
+	public void deleteNotification(final String notificationToken, final Long userSeq) {
+		notificationService.deleteNotification(notificationToken, userSeq);
+	}
 }

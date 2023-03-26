@@ -28,23 +28,23 @@ public enum ErrorCode {
 	INVALID_USER_INFO(HttpStatus.BAD_REQUEST, "잘못된 사용자 정보 입니다."),
 	KEYRESULT_LIMIT_EXCEED(HttpStatus.BAD_REQUEST, "핵심 결과는 최대 3개까지 등록 가능합니다."),
 	NOT_UNDER_PROJECT_DURATION(HttpStatus.BAD_REQUEST, "프로젝트 기간이 아닙니다"),
-	UNSUPPORTED_VALIDATOR(HttpStatus.INTERNAL_SERVER_ERROR, "Unsupport validator" ),
-	INVALID_KEYRESULT_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 핵심 결과 토큰 입니다."), 
-	INVALID_FEEDBACK_TYPE(HttpStatus.BAD_REQUEST,"잘못된 피드백 타입 입니다."),
-	INITIATIVE_END_DATE_SHOULD_AFTER_TODAY(HttpStatus.BAD_REQUEST,"행동전략 마감일은 오늘 이후여야 합니다."),
+	UNSUPPORTED_VALIDATOR(HttpStatus.INTERNAL_SERVER_ERROR, "Unsupport validator"),
+	INVALID_KEYRESULT_TOKEN(HttpStatus.BAD_REQUEST, "잘못된 핵심 결과 토큰 입니다."),
+	INVALID_FEEDBACK_TYPE(HttpStatus.BAD_REQUEST, "잘못된 피드백 타입 입니다."),
+	INITIATIVE_END_DATE_SHOULD_AFTER_TODAY(HttpStatus.BAD_REQUEST, "행동전략 마감일은 오늘 이후여야 합니다."),
 	INVALID_INITIATIVE_DATE(HttpStatus.BAD_REQUEST, "행동전략의 시작, 종료일은 목표 기간 안에서만 등록할 수 있습니다."),
-	INVALID_INITIATIVE_TOKEN(HttpStatus.BAD_REQUEST,"잘못된 행동적략 토큰 입니다." ),
-	FINISHED_PROJECT(HttpStatus.BAD_REQUEST,"이미 종료된 프로젝트 입니다." ),
-	FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST,"이미 완료된 행동전략 입니다." ),
-	NOT_FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST,"아직 완료되지 않은 행동전략 입니다." ),
-	MOT_AVAIL_FEEDBACK_SELF(HttpStatus.BAD_REQUEST,"자기 자신에게 피드백을 남길 수 없습니다." ),
-	UNSUPPORTED_SOCIAL_LOGIN(HttpStatus.BAD_REQUEST,"지원하지 않는 소셜 타입입니다." ),
+	INVALID_INITIATIVE_TOKEN(HttpStatus.BAD_REQUEST, "잘못된 행동적략 토큰 입니다."),
+	FINISHED_PROJECT(HttpStatus.BAD_REQUEST, "이미 종료된 프로젝트 입니다."),
+	FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST, "이미 완료된 행동전략 입니다."),
+	NOT_FINISHED_INITIATIVE(HttpStatus.BAD_REQUEST, "아직 완료되지 않은 행동전략 입니다."),
+	MOT_AVAIL_FEEDBACK_SELF(HttpStatus.BAD_REQUEST, "자기 자신에게 피드백을 남길 수 없습니다."),
+	UNSUPPORTED_SOCIAL_LOGIN(HttpStatus.BAD_REQUEST, "지원하지 않는 소셜 타입입니다."),
 	INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 token입니다."),
-	INVALID_SEARCH_DATE_FORM(HttpStatus.BAD_REQUEST,"날짜는 8자리의 yyyyMMdd 형식이어야 합니다." ),
+	INVALID_SEARCH_DATE_FORM(HttpStatus.BAD_REQUEST, "날짜는 8자리의 yyyyMMdd 형식이어야 합니다."),
 	INVALID_YEARMONTH_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 년월 형식입니다."),
-	INVALID_SEARCH_RANGE_TYPE(HttpStatus.BAD_REQUEST,"잘못된 검색 기간입니다."),
-	;
-
+	INVALID_SEARCH_RANGE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 검색 기간입니다."),
+	INVALID_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청 입니다."),
+	INVALID_NOTIFICATION_TOKEN(HttpStatus.BAD_REQUEST, "잘못된 알림 토큰 입니다.");
 
 	private HttpStatus status;
 	private String message;

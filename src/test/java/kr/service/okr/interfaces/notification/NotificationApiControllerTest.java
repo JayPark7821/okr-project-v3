@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import kr.service.okr.domain.notification.Notification;
 import kr.service.okr.domain.user.User;
 import kr.service.okr.interfaces.notification.response.NotificationResponse;
 import kr.service.okr.util.SpringBootTestReady;
@@ -35,19 +36,50 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 
 	@Test
 	void getNotifications을_호출화면_기대하는_응답을_리턴한다() throws Exception {
-		List<String> notificationTokens = List.of("noti_aaaaaMoZey1SERx", "noti_e144441Zey1SERx");
+		List<String> notificationTokens = List.of("noti_e144441Zey1SERx", "noti_e3eeddoZey1SERx",
+			"noti_aaaaaMoZey1SERx", "noti_e2222y1SERx");
 
 		final ResponseEntity<Page<NotificationResponse>> response = sut.getNotifications(
 			getAuthenticationToken(16L), PageRequest.of(0, 5)
 		);
 
-		assertThat(response.getBody().getTotalElements()).isEqualTo(2);
+		assertThat(response.getBody().getTotalElements()).isEqualTo(4);
 		List<NotificationResponse> content = response.getBody().getContent();
 
 		for (int i = 0; i < content.size(); i++) {
 			NotificationResponse r = content.get(i);
 			assertThat(r.notiToken()).isEqualTo(notificationTokens.get(i));
 		}
+	}
+
+	@Test
+	void checkNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
+		String notificationToken = "noti_111fey1SERx";
+		final ResponseEntity<String> response =
+			sut.checkNotification(notificationToken, getAuthenticationToken(3L));
+
+		final Notification notification = em.createQuery(
+				"select n from Notification n where n.notificationToken = :token",
+				Notification.class)
+			.setParameter("token", notificationToken)
+			.getSingleResult();
+
+		assertThat(notification.isChecked()).isTrue();
+	}
+
+	@Test
+	void deleteNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
+		String notificationToken = "noti_111fey1SERx";
+		final ResponseEntity<String> response =
+			sut.deleteNotification(notificationToken, getAuthenticationToken(3L));
+
+		final Long notificationCount = em.createQuery(
+				"select count(n) from Notification n where n.notificationToken = :token and n.deleted = true",
+				Long.class)
+			.setParameter("token", notificationToken)
+			.getSingleResult();
+
+		assertThat(notificationCount).isEqualTo(0L);
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
