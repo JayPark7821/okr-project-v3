@@ -32,7 +32,7 @@ public class NotificationAcceptanceTestAssertions {
 
 	static void 알림_삭제_요청_응답_검증_실패(ExtractableResponse<Response> 응답) {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(응답.body().asString()).isEqualTo(ErrorCode.INVALID_REQUEST.getMessage());
+		assertThat(응답.body().asString()).isEqualTo(ErrorCode.INVALID_NOTIFICATION_TOKEN.getMessage());
 	}
 
 }
