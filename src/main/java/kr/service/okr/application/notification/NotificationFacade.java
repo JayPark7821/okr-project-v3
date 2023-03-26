@@ -19,4 +19,8 @@ public class NotificationFacade {
 	public Page<NotificationInfo> getNotifications(Pageable pageable, Long userSeq) {
 		return notificationService.getNotifications(pageable, userSeq);
 	}
+
+	public void checkNotification(final String token, final Long userSeq) {
+		throw new IllegalStateException("NotificationFacade::checkNotification not implemented yet");
+	}
 }

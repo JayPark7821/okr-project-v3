@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import kr.service.okr.domain.notification.Notification;
 import kr.service.okr.domain.user.User;
 import kr.service.okr.interfaces.notification.response.NotificationResponse;
 import kr.service.okr.util.SpringBootTestReady;
@@ -48,6 +49,21 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 			NotificationResponse r = content.get(i);
 			assertThat(r.notiToken()).isEqualTo(notificationTokens.get(i));
 		}
+	}
+
+	@Test
+	void checkNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
+		String notificationToken = "noti_111fey1SERx";
+		final ResponseEntity<String> response =
+			sut.checkNotification(notificationToken, getAuthenticationToken(3L));
+
+		final Notification notification = em.createQuery(
+				"select n from Notification n where n.notificationToken = :token",
+				Notification.class)
+			.setParameter("token", notificationToken)
+			.getSingleResult();
+
+		assertThat(notification.isChecked()).isTrue();
 	}
 
 	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
