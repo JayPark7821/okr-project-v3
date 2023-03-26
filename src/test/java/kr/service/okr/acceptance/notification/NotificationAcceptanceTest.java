@@ -34,9 +34,42 @@ public class NotificationAcceptanceTest extends SpringBootTestReady {
 	void get_notifications_list() throws Exception {
 		//when
 		var 응답 = 알림_조회_요청(사용자_토큰);
-
 		//then
 		알림_조회_요청_응답_검증(응답);
 	}
+
+	@Test
+	@DisplayName("알림을 확인하면 기대하는 응답을 반환한다")
+	void check_notification() throws Exception {
+		//given
+		var 확인_요청_알림_토큰 = "noti_111fey1SERx";
+		//when
+		var 응답 = 알림_확인_요청(확인_요청_알림_토큰, 사용자_토큰);
+		//then
+		알림_확인_요청_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("알림을 삭제하면 기대하는 응답을 반환한다")
+	void delete_notification() throws Exception {
+		//given
+		var 삭제_요청_알림_토큰 = "noti_111fey1SERx";
+		//when
+		var 응답 = 알림_삭제_요청(삭제_요청_알림_토큰, 사용자_토큰);
+		//then
+		알림_삭제_요청_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("다른 사용자의 알림 삭제를 요청하면 기대하는 응답을 반환한다")
+	void throw_exception_when_delete_other_users_notification() throws Exception {
+		//given
+		var 삭제_요청_알림_토큰 = "noti_111fey1SERx";
+		//when
+		var 응답 = 알림_삭제_요청(삭제_요청_알림_토큰, 사용자_토큰);
+		//then
+		알림_삭제_요청_응답_검증_실패(응답);
+	}
+
 }
 

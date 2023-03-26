@@ -24,4 +24,34 @@ public class NotificationAcceptanceTestSteps {
 			.extract();
 	}
 
+	static ExtractableResponse<Response> 알림_확인_요청(String 확인_요청_알림_토큰, String 로그인_유저_인증_토큰) throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
+
+			when()
+			.put(baseUrl + "/" + 확인_요청_알림_토큰).
+
+			then()
+			.log().all()
+			.extract();
+	}
+
+	static ExtractableResponse<Response> 알림_삭제_요청(String 삭제_요청_알림_토큰, String 로그인_유저_인증_토큰) throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
+
+			when()
+			.delete(baseUrl + "/" + 삭제_요청_알림_토큰).
+
+			then()
+			.log().all()
+			.extract();
+	}
+
 }
