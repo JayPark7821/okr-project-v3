@@ -123,14 +123,6 @@ public class ProjectApiController extends AbstractController {
 	//------------------ feedback 관련 api ------------------//
 	// TODO :: 피드백 확인 처리 api
 
-	//------------------ notification 관련 api ------------------//
-	// TODO :: notification 읽음 처리
-	// TODO :: notification 삭제 처리
-
-	//------------------ user 관련 api ------------------//
-	// TODO :: 회원가입탈퇴 api
-	// TODO :: apple login
-
 	private String validateIncludeFinishedProjectYN(String includeFinishedProjectYN) {
 		String finishedProjectYN = includeFinishedProjectYN == null ? "N" : includeFinishedProjectYN.toUpperCase();
 		if (finishedProjectYN.matches("[YN]"))

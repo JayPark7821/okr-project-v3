@@ -94,7 +94,6 @@ public class ProjectFacade {
 	private List<Long> getTeamUsersFromEmails(List<String> teamMembers) {
 		return teamMembers.stream().map(userService::findUserInfoBy)
 			.map(UserInfo::userSeq).toList();
-		// TODO
 	}
 
 	private List<Long> getTeamMemberToSendNoti(Long invitedUserSeq, List<Long> teamMemberUserSeq) {
