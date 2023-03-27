@@ -3,8 +3,8 @@ package kr.service.okr.util;
 import java.sql.Connection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Profile;

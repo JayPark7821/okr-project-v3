@@ -24,6 +24,9 @@ spring:
   output:
     ansi:
       enabled: always
+  cloud:
+    discovery:
+      enabled: false
 
 task-executor:
   core-pool-size: 1

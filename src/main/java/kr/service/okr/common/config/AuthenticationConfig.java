@@ -25,18 +25,20 @@ public class AuthenticationConfig {
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return web -> web.ignoring().regexMatchers("^(?!/api/).*")
-			.antMatchers(HttpMethod.POST, "/api/*/user/login/**")
-			.antMatchers(HttpMethod.GET, "/api/*/user/job/**")
-			.antMatchers(HttpMethod.POST, "/api/*/user/join/**");
+		return web -> web.ignoring()
+			.requestMatchers(HttpMethod.POST, "/api/*/user/login/**")
+			.requestMatchers(HttpMethod.GET, "/api/*/user/job/**")
+			.requestMatchers(HttpMethod.POST, "/api/*/user/join/**");
+
 	}
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.csrf().disable()
-			.headers().frameOptions().disable().and()
-			.authorizeRequests()
-			.antMatchers("/api/**").authenticated()
+			.headers().frameOptions().disable().and().authorizeHttpRequests()
+			.requestMatchers("/api/**")
+			.authenticated()
+
 			.and()
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

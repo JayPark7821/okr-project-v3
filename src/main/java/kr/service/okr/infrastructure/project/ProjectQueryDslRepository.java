@@ -9,7 +9,7 @@ import static kr.service.okr.domain.user.QUser.*;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.support.PageableExecutionUtils;

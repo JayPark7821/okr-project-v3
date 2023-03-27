@@ -1,6 +1,6 @@
 package kr.service.okr.interfaces.project;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

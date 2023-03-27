@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import org.springframework.http.HttpStatus;
 

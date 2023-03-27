@@ -70,7 +70,7 @@ public class ProjectAcceptanceTestSteps {
 			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰).
 
 			when()
-			.get(baseUrl + "/" + "?" + "sortType=" + 정렬순서 + "&" + "includeFinishedProjectYN=" + 종료된_프로젝트_포함여부 + "&"
+			.get(baseUrl  + "?" + "sortType=" + 정렬순서 + "&" + "includeFinishedProjectYN=" + 종료된_프로젝트_포함여부 + "&"
 				+ "projectType=" + 팀_타입).
 
 			then()

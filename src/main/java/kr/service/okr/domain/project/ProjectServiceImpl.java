@@ -213,6 +213,7 @@ public class ProjectServiceImpl implements ProjectService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	@Override
 	public IniFeedbackInfo getInitiativeFeedbacksBy(String initiativeToken, Long userSeq) {
 		Initiative initiative =
@@ -347,9 +348,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	private IniFeedbackInfo getIniFeedbackinfoFrom(Long userSeq, Initiative initiative, List<Feedback> feedbacks) {
 		boolean isRequestersFeedback = initiative.getTeamMember().getUserSeq().equals(userSeq);
-		boolean wroteFeedback = !isRequestersFeedback ?
-			feedbacks.stream().filter(f -> f.getTeamMember().getUserSeq().equals(userSeq)).findFirst().isPresent() :
-			false;
+		boolean wroteFeedback = !isRequestersFeedback && feedbacks.stream().anyMatch(f -> f.getTeamMember().getUserSeq().equals(userSeq));
 
 		return new IniFeedbackInfo(
 			isRequestersFeedback,

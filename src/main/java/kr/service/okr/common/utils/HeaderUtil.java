@@ -1,6 +1,6 @@
 package kr.service.okr.common.utils;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class HeaderUtil {
 

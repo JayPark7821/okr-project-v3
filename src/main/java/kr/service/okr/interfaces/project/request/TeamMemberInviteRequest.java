@@ -1,6 +1,6 @@
 package kr.service.okr.interfaces.project.request;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public record TeamMemberInviteRequest(
 	@NotNull(message = "프로젝트 token은 필수 값입니다.")
