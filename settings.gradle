@@ -2,3 +2,4 @@ rootProject.name = 'okr-ver3'
 
 include 'okr'
 include 'okr-discovery-service'
+include 'okr-common'
