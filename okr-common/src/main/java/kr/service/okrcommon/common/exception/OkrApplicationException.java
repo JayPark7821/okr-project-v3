@@ -1,8 +1,5 @@
-package kr.service.okr.common.exception;
+package kr.service.okrcommon.common.exception;
 
-import lombok.Getter;
-
-@Getter
 public class OkrApplicationException extends RuntimeException {
 
 	private final ErrorCode errorCode;
@@ -29,5 +26,9 @@ public class OkrApplicationException extends RuntimeException {
 	@Override
 	public synchronized Throwable fillInStackTrace() {
 		return this;
+	}
+
+	public ErrorCode getErrorCode() {
+		return errorCode;
 	}
 }

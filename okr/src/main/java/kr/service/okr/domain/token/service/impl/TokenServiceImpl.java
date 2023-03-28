@@ -1,15 +1,15 @@
 package kr.service.okr.domain.token.service.impl;
 
-import static kr.service.okr.common.utils.JwtTokenUtils.*;
+import static kr.service.okrcommon.common.utils.JwtTokenUtils.*;
 
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.token.service.AuthTokenInfo;
 import kr.service.okr.domain.token.service.RefreshTokenRepository;

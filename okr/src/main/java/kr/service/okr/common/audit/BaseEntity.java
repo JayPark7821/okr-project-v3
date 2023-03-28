@@ -7,11 +7,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Getter;
 
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-@Getter
 public class BaseEntity extends BaseTimeEntity {
 
 	@CreatedBy
@@ -20,4 +18,12 @@ public class BaseEntity extends BaseTimeEntity {
 
 	@LastModifiedBy
 	public String lastModifiedBy;
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
 }

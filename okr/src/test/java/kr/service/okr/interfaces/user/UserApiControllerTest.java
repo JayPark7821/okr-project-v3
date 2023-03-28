@@ -22,9 +22,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.user.ProviderType;
 import kr.service.okr.domain.user.User;

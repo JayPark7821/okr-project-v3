@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import kr.service.okr.application.project.ProjectFacade;
-import kr.service.okr.common.Response;
+import kr.service.okrcommon.common.Response;
 import kr.service.okr.domain.project.aggregate.feedback.SearchRange;
 import kr.service.okr.domain.project.info.IniFeedbackInfo;
 import kr.service.okr.interfaces.AbstractController;

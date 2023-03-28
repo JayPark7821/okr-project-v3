@@ -4,9 +4,9 @@ import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
-import kr.service.okr.common.utils.ClassUtils;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.ClassUtils;
 import kr.service.okr.domain.project.Project;
 import kr.service.okr.domain.project.aggregate.initiative.Initiative;
 

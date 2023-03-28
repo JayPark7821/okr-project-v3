@@ -13,7 +13,7 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.common.utils.ClassUtils;
+import kr.service.okrcommon.common.utils.ClassUtils;
 
 @Transactional
 @Profile("test")

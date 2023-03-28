@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.ErrorCode;
 import kr.service.okr.interfaces.notification.response.NotificationResponse;
 
 public class NotificationAcceptanceTestAssertions {

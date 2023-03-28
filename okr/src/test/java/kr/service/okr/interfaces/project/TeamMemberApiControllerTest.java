@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 import kr.service.okr.domain.user.User;
 import kr.service.okr.interfaces.project.request.TeamMemberInviteRequest;
 import kr.service.okr.util.SpringBootTestReady;

@@ -17,8 +17,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 import kr.service.okr.domain.guset.service.GuestInfo;
 import kr.service.okr.domain.user.JobCategory;
 import kr.service.okr.domain.user.ProviderType;

@@ -1,7 +1,7 @@
 package kr.service.okr.domain.project.info;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 import kr.service.okr.domain.project.Project;
 import kr.service.okr.domain.project.ProjectType;
 import kr.service.okr.domain.project.aggregate.team.ProjectRoleType;

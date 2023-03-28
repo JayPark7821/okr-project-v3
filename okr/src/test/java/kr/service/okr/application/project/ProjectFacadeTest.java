@@ -10,9 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.domain.notification.Notification;
 import kr.service.okr.domain.notification.NotificationServiceImpl;
 import kr.service.okr.domain.notification.Notifications;
@@ -68,6 +65,8 @@ import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 
 @DataJpaTest
 @Import({ProjectFacade.class, ProjectServiceImpl.class, UserServiceImpl.class,

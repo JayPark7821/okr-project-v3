@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.token.service.AuthTokenInfo;
 import kr.service.okr.domain.token.service.RefreshTokenRepository;

@@ -1,4 +1,4 @@
-package kr.service.okr.common.utils;
+package kr.service.okrcommon.common.utils;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

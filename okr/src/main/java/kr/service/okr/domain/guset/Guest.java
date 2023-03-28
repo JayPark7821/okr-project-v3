@@ -7,7 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import kr.service.okr.common.utils.TokenGenerator;
+import kr.service.okrcommon.common.utils.TokenGenerator;
 import kr.service.okr.domain.user.ProviderType;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -2,7 +2,7 @@ package kr.service.okr.interfaces.project.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kr.service.okr.common.utils.DateValid;
+import kr.service.okrcommon.common.utils.DateValid;
 
 public record ProjectInitiativeSaveRequest(
 	@NotNull(message = "KR token은 필수 값입니다.")

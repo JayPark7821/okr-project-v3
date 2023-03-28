@@ -27,8 +27,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import kr.service.okr.util.TestConfig;
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.infrastructure.user.auth.TokenVerifier;
 
 @Import(TestConfig.class)

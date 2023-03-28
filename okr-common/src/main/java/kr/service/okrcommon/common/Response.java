@@ -1,14 +1,10 @@
-package kr.service.okr.common;
+package kr.service.okrcommon.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import kr.service.okr.common.exception.ErrorCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import kr.service.okrcommon.common.exception.ErrorCode;
 
-@Getter
-@AllArgsConstructor
 public class Response<T> {
 
 	public static ResponseEntity<String> error(HttpStatus status, String message) {
@@ -35,5 +31,5 @@ public class Response<T> {
 		return ResponseEntity.status(status)
 			.body("SUCCESS");
 	}
-
+ 
 }

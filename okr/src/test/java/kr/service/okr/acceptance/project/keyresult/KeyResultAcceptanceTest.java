@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.util.SpringBootTestReady;
 
 @DisplayName("KeyResult(핵심결과) 도메인 인수 테스트")

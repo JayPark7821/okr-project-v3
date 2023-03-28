@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.ErrorCode;
 import kr.service.okr.domain.user.JobCategory;
 import kr.service.okr.interfaces.user.response.JobResponse;
 import kr.service.okr.interfaces.user.response.TokenResponse;

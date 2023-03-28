@@ -1,12 +1,7 @@
-package kr.service.okr.common.exception;
+package kr.service.okrcommon.common.exception;
 
 import org.springframework.http.HttpStatus;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
 public enum ErrorCode {
 
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error"),
@@ -49,4 +44,16 @@ public enum ErrorCode {
 	private HttpStatus status;
 	private String message;
 
+	ErrorCode(final HttpStatus status, final String message) {
+		this.status = status;
+		this.message = message;
+	}
+
+	public HttpStatus getStatus() {
+		return status;
+	}
+
+	public String getMessage() {
+		return message;
+	}
 }

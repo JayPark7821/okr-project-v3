@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.service.okr.util.SpringBootTestReady;
 import kr.service.okr.util.TestHelpUtils;

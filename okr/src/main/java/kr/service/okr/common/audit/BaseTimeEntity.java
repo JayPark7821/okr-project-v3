@@ -9,11 +9,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import lombok.Getter;
 
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-@Getter
 public class BaseTimeEntity {
 
 	@CreatedDate
@@ -22,4 +20,11 @@ public class BaseTimeEntity {
 	@LastModifiedDate
 	public LocalDateTime lastModifiedDate;
 
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+	public LocalDateTime getLastModifiedDate() {
+		return lastModifiedDate;
+	}
 }

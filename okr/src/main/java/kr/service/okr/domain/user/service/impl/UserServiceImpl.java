@@ -7,8 +7,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 import kr.service.okr.domain.guset.service.GuestInfo;
 import kr.service.okr.domain.user.JobCategory;
 import kr.service.okr.domain.user.JobField;

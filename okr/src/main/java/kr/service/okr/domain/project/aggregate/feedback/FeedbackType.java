@@ -2,8 +2,8 @@ package kr.service.okr.domain.project.aggregate.feedback;
 
 import java.util.Arrays;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

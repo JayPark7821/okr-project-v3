@@ -20,9 +20,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import kr.service.okr.application.project.ProjectFacade;
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.guset.service.impl.GuestServiceImpl;
 import kr.service.okr.domain.notification.NotificationServiceImpl;
 import kr.service.okr.domain.project.Project;

@@ -1,7 +1,7 @@
 package kr.service.okr.domain.project;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.utils.EnumLookUpUtil;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.utils.EnumLookUpUtil;
 
 public enum ProjectType {
 

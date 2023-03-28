@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okr.common.utils.JwtTokenUtils;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.user.JobCategory;
 import kr.service.okr.domain.user.JobField;
 import kr.service.okr.domain.user.User;

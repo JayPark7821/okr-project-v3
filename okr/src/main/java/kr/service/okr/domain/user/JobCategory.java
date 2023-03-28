@@ -3,8 +3,8 @@ package kr.service.okr.domain.user;
 import java.util.Arrays;
 import java.util.List;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.utils.EnumLookUpUtil;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.utils.EnumLookUpUtil;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

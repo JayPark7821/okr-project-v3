@@ -4,7 +4,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import kr.service.okr.common.utils.DateValid;
+import kr.service.okrcommon.common.utils.DateValid;
 
 public record ProjectSaveRequest(
 

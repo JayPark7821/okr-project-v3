@@ -3,8 +3,8 @@ package kr.service.okr.domain.project.aggregate.feedback;
 import java.time.LocalDate;
 import java.util.Map;
 
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.utils.EnumLookUpUtil;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.utils.EnumLookUpUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

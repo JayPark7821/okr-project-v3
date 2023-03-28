@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import kr.service.okr.application.project.ProjectFacade;
-import kr.service.okr.common.Response;
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.Response;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 import kr.service.okr.domain.project.ProjectType;
 import kr.service.okr.domain.project.SortType;
 import kr.service.okr.domain.project.command.ProjectDetailRetrieveCommand;

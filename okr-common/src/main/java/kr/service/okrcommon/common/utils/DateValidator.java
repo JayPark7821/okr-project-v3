@@ -1,4 +1,4 @@
-package kr.service.okr.common.utils;
+package kr.service.okrcommon.common.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -6,11 +6,9 @@ import java.time.format.DateTimeParseException;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import kr.service.okr.common.exception.ErrorCode;
-import kr.service.okr.common.exception.OkrApplicationException;
-import lombok.extern.slf4j.Slf4j;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 
-@Slf4j
 public class DateValidator implements ConstraintValidator<DateValid, String> {
 
 	private String pattern;
@@ -29,7 +27,6 @@ public class DateValidator implements ConstraintValidator<DateValid, String> {
 			}
 			LocalDate.from(LocalDate.parse(value, DateTimeFormatter.ofPattern(this.pattern)));
 		} catch (DateTimeParseException e) {
-			log.error("DateValidator : {}", e);
 			return false;
 		}
 		return true;
