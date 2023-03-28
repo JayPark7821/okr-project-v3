@@ -1,11 +1,17 @@
 server:
-  port: 8000
+  port: 80
 
 spring:
   application:
     name: okr-gateway-service
   cloud:
     gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
       routes:
         - id: okr-service
           uri: lb://OKR-SERVICE
@@ -13,9 +19,9 @@ spring:
             - Path=/api/**
 
 eureka:
-    client:
-        register-with-eureka: true
-        fetch-registry: true
-        service-url:
-          defaultZone: http://localhost:8761/eureka
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://okr-discovery:8761/eureka
 
