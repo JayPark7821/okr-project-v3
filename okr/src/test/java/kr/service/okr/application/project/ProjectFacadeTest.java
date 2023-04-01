@@ -23,7 +23,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.service.okr.domain.notification.Notification;
 import kr.service.okr.domain.notification.NotificationServiceImpl;
-import kr.service.okr.domain.notification.Notifications;
 import kr.service.okr.domain.project.Project;
 import kr.service.okr.domain.project.ProjectAsyncService;
 import kr.service.okr.domain.project.ProjectServiceImpl;
@@ -65,6 +64,7 @@ import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
+import kr.service.okrcommon.common.enums.Notifications;
 import kr.service.okrcommon.common.exception.ErrorCode;
 import kr.service.okrcommon.common.exception.OkrApplicationException;
 

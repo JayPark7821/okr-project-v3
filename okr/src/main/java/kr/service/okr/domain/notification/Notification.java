@@ -5,8 +5,6 @@ import org.hibernate.annotations.Where;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kr.service.okr.common.audit.BaseEntity;
 import kr.service.okr.domain.user.User;
+import kr.service.okrcommon.common.enums.Notifications;
 import kr.service.okrcommon.common.utils.TokenGenerator;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -44,10 +43,6 @@ public class Notification extends BaseEntity {
 	@Column(name = "user_seq")
 	private Long userSeq;
 
-	@Column(name = "type")
-	@Enumerated(EnumType.STRING)
-	private Notifications type;
-
 	@Column(name = "message")
 	private String msg;
 
@@ -60,7 +55,6 @@ public class Notification extends BaseEntity {
 	public Notification(Long userSeq, Notifications type, String... args) {
 		this.notificationToken = TokenGenerator.randomCharacterWithPrefix(NOTIFICATION_PREFIX);
 		this.userSeq = userSeq;
-		this.type = type;
 		this.msg = type.getMsg(args);
 	}
 
