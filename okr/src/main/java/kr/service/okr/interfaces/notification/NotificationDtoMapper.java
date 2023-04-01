@@ -11,7 +11,6 @@ public class NotificationDtoMapper {
 	NotificationResponse of(NotificationInfo info) {
 		return new NotificationResponse(
 			info.notiToken(),
-			info.notiType().name(),
 			info.msg(),
 			info.status().name(),
 			info.createdDate()

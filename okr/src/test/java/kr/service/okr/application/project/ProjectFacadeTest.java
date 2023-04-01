@@ -456,7 +456,7 @@ class ProjectFacadeTest {
 				.setParameter("userId", 11L)
 				.getSingleResult();
 
-		assertThat(result.getType()).isEqualTo(Notifications.NEW_FEEDBACK);
+		assertThat(result.getMsg()).contains(Notifications.NEW_FEEDBACK.getMsg("testUser3", "ini name333"));
 
 	}
 
