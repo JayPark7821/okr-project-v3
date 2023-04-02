@@ -10,9 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.domain.project.Project;
 import kr.service.okr.domain.project.ProjectAsyncService;
 import kr.service.okr.domain.project.ProjectServiceImpl;
@@ -66,6 +63,8 @@ import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
 
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class,
@@ -253,6 +252,19 @@ class ProjectServiceImplTest {
 
 	@Test
 	@Sql("classpath:insert-project-data.sql")
+	void 프로젝트_시작전_핵심결과_추가시_기대하는_응답을_리턴한다() throws Exception {
+		String projectToken = "mst_qfeeffea223fef";
+		String keyResultName = "keyResult";
+
+		String response = sut.registerKeyResult(new ProjectKeyResultSaveCommand(projectToken, keyResultName), 2L);
+
+		assertThat(response).containsPattern(
+			Pattern.compile("keyResult-[a-zA-Z0-9]{10}"));
+
+	}
+
+	@Test
+	@Sql("classpath:insert-project-data.sql")
 	void 팀원이_프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_exception() throws Exception {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
@@ -321,6 +333,28 @@ class ProjectServiceImplTest {
 		assertThatThrownBy(() -> sut.initiativeFinished(initiativeToken, 2L))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
+	}
+
+	@Test
+	@Sql("classpath:insert-project-data.sql")
+	void 시작전_프로젝트의_행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
+
+		ProjectInitiativeSaveCommand requestDto = new ProjectInitiativeSaveCommand(
+			"key_wfefeefefeafw4ef3",
+			"행동전략",
+			LocalDate.of(3333, 1, 12),
+			LocalDate.of(3333, 1, 13),
+			"행동전략 상세내용"
+		);
+
+		InitiativeSavedInfo response = sut.registerInitiative(requestDto, 2L);
+
+		Initiative initiativeToken = em.createQuery(
+				"select i from Initiative i where i.initiativeToken = :initiativeToken", Initiative.class)
+			.setParameter("initiativeToken", response.initiativeToken())
+			.getSingleResult();
+		assertThat(initiativeToken.getInitiativeToken()).containsPattern(
+			Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 	}
 
 	@Test

@@ -125,8 +125,7 @@ public class Project extends BaseEntity {
 	}
 
 	public boolean isValidUntilToday() {
-		return this.endDate.isAfter(LocalDate.now()) &&
-			(this.startDate.isEqual(LocalDate.now()) || this.startDate.isBefore(LocalDate.now()));
+		return this.endDate.isAfter(LocalDate.now());
 	}
 
 	public boolean isKeyResultAddable() {

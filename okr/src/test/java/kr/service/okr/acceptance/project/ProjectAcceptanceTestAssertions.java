@@ -10,11 +10,11 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okrcommon.common.exception.ErrorCode;
 import kr.service.okr.domain.project.aggregate.team.ProjectRoleType;
 import kr.service.okr.interfaces.project.response.ParticipateProjectResponse;
 import kr.service.okr.interfaces.project.response.ProjectDetailResponse;
 import kr.service.okr.interfaces.project.response.ProjectInfoResponse;
+import kr.service.okrcommon.common.exception.ErrorCode;
 
 public class ProjectAcceptanceTestAssertions {
 
@@ -40,13 +40,13 @@ public class ProjectAcceptanceTestAssertions {
 		final List<ParticipateProjectResponse> response = 응답.body()
 			.jsonPath()
 			.getList("", ParticipateProjectResponse.class);
-		assertThat(response.size()).isEqualTo(3);
+		assertThat(response.size()).isEqualTo(4);
 		assertThat(
 			response.stream()
 				.filter(t -> t.roleType().equals(ProjectRoleType.LEADER))
 				.toList()
 				.size()
-		).isEqualTo(2);
+		).isEqualTo(3);
 	}
 
 	static void 프로젝트_조회_응답_검증(ExtractableResponse<Response> 응답) {
