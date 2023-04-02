@@ -1,4 +1,4 @@
-package kr.service.okr.domain.notification;
+package kr.service.okrcommon.common.enums;
 
 import lombok.AllArgsConstructor;
 

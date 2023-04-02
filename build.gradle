@@ -22,3 +22,4 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+//./gradlew clean :okr:buildNeeded --stacktrace --info --refresh-dependencies -x test

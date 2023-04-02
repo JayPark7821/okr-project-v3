@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.service.okr.domain.notification.NotificationService;
-import kr.service.okr.domain.notification.Notifications;
 import kr.service.okr.domain.project.ProjectAsyncService;
 import kr.service.okr.domain.project.ProjectService;
 import kr.service.okr.domain.project.aggregate.feedback.SearchRange;
@@ -35,6 +34,7 @@ import kr.service.okr.domain.project.info.ProjectSideMenuInfo;
 import kr.service.okr.domain.project.info.ProjectTeamMembersInfo;
 import kr.service.okr.domain.user.info.UserInfo;
 import kr.service.okr.domain.user.service.UserService;
+import kr.service.okrcommon.common.enums.Notifications;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
