@@ -43,15 +43,15 @@ insert into project
 (  88884, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2322-01-12', '프로젝트 for initiative 5',  100.0, 'mst_qq2f4gaawdeg6421', '2022-01-12', 'TEAM', false),
 (  88883, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qq2f4gaawdeg64fef', '2022-01-12', 'SINGLE', false),
 (  88882, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qfeeffeaawdeg64fef', '2022-01-12', 'TEAM', false),
-(  77777, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qfeeffefe64fef', '2022-01-12', 'TEAM', false);
+(  77777, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '2022-01-12', '프로젝트 for initiative 3',  0.0, 'mst_qfeeffefe64fef', '2022-01-12', 'TEAM', false),
+(  77778, '2004-12-12', '2023-12-12', 'testUser1', 'testUser1', '3333-01-15', '프로젝트 for initiative 3',  0.0, 'mst_qfeeffea223fef', '3333-01-12', 'TEAM', false);
 
-
-;
 
 
 insert into team_member
 (created_date, last_modified_date, created_by, last_modified_by, is_new, project_role_type, project_id, user_seq, deleted) values
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99998, 2, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 77778, 2, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99998, 3, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99998, 4, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99997, 3, false),
@@ -103,7 +103,8 @@ insert into key_result
 (99994, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaaDTzQ22', 'testKeyResult 3', 88884, false),
 (99993, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaafw4ef3', 'testKeyResult 3', 88883, false),
 (99992, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6eeeeeeaafw4ef3', 'testKeyResult 3', 88885, false),
-(77777, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_w11113ㄹeaafw4ef3', 'testKeyResult 3', 77777, false)
+(77777, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_w11113ㄹeaafw4ef3', 'testKeyResult 3', 77777, false),
+(77778, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wfefeefefeafw4ef3', 'testKeyResult 3', 77778, false)
 ;
 
 
