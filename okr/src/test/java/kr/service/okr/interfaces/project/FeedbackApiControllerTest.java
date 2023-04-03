@@ -1,5 +1,6 @@
 package kr.service.okr.interfaces.project;
 
+import static kr.service.okr.util.TestHelpUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.List;
@@ -46,7 +47,7 @@ class FeedbackApiControllerTest extends SpringBootTestReady {
 		ResponseEntity<String> response =
 			sut.registerFeedback(
 				requestDto,
-				getAuthenticationToken(3L)
+				getAuthenticationToken(em, 3L)
 			);
 
 		assertThat(response.getBody()).containsPattern(
@@ -60,7 +61,7 @@ class FeedbackApiControllerTest extends SpringBootTestReady {
 		IniFeedbackResponse response =
 			sut.getInitiativeFeedbacksBy(
 				initiativeToken,
-				getAuthenticationToken(3L)
+				getAuthenticationToken(em, 3L)
 			).getBody();
 
 		assertThat(response.myInitiative()).isTrue();
@@ -74,7 +75,7 @@ class FeedbackApiControllerTest extends SpringBootTestReady {
 	void getCountOfInitiativeToGiveFeedback을_호출하면_아직_피드백을_남기지않은_팀원의_완료된_행동전략count를_리턴한다() throws Exception {
 
 		Integer response = sut.getCountOfInitiativeToGiveFeedback(
-			getAuthenticationToken(3L)
+			getAuthenticationToken(em, 3L)
 		).getBody();
 
 		assertThat(response).isEqualTo(1);
@@ -86,7 +87,7 @@ class FeedbackApiControllerTest extends SpringBootTestReady {
 		String searchRange = "ALL";
 		Page<FeedbackDetailResponse> response = sut.getRecievedFeedback(
 			searchRange,
-			getAuthenticationToken(3L),
+			getAuthenticationToken(em, 3L),
 			PageRequest.of(0, 5)
 		).getBody();
 
@@ -102,19 +103,9 @@ class FeedbackApiControllerTest extends SpringBootTestReady {
 	@Test
 	void getRequiredFeedbackInitiative을_호출하면_기대한는_응답_ProjectInitiativeResponse를_리턴한다() throws Exception {
 		final List<ProjectInitiativeResponse> response =
-			sut.getRequiredFeedbackInitiative(getAuthenticationToken(3L)).getBody();
+			sut.getRequiredFeedbackInitiative(getAuthenticationToken(em, 3L)).getBody();
 
 		assertThat(response.size()).isEqualTo(1);
 		assertThat(response.get(0).initiativeToken()).isEqualTo("ini_ixYjj5aaafeab3AH8");
-	}
-
-	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", value)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-		return auth;
 	}
 }

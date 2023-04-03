@@ -1,4 +1,4 @@
-package kr.service.okrgatewayservice;
+package kr.service.okrgatewayservice.filter;
 
 import java.util.UUID;
 
@@ -16,9 +16,9 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
-public class GlobalFilter extends AbstractGatewayFilterFactory<GlobalFilter.Config> {
+public class GlobalLogFilter extends AbstractGatewayFilterFactory<GlobalLogFilter.Config> {
 
-	public GlobalFilter() {
+	public GlobalLogFilter() {
 		super(Config.class);
 	}
 

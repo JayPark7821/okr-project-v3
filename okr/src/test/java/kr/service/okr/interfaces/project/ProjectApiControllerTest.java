@@ -1,14 +1,12 @@
 package kr.service.okr.interfaces.project;
 
+import static kr.service.okr.util.TestHelpUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,12 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.domain.project.ProjectType;
 import kr.service.okr.domain.project.aggregate.team.ProjectRoleType;
-import kr.service.okr.domain.user.User;
 import kr.service.okr.interfaces.project.request.ProjectSaveRequest;
 import kr.service.okr.interfaces.project.response.ParticipateProjectResponse;
 import kr.service.okr.interfaces.project.response.ProjectDetailResponse;
@@ -48,19 +46,12 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 	@Test
 	@DisplayName("프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project() throws Exception {
-
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")), auth);
+			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")),
+			getAuthenticationToken(em, 1L));
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
@@ -70,18 +61,12 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 	@DisplayName("프로젝트를 생성시 팀원을 같이 입력하면 기대하는 응답(projectToken)을 반환한다.")
 	void create_project_with_team_members() throws Exception {
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 1L)
-			.getSingleResult();
-
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-
 		final ResponseEntity<String> response = sut.registerProject(
-			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")), auth);
+			new ProjectSaveRequest("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")),
+			getAuthenticationToken(em, 1L));
 
 		assertThat(response.getBody()).containsPattern(
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
@@ -90,10 +75,8 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 	@Test
 	@DisplayName("projectToken으로 조회하면 기대하는 응답(ProjectResponse)을 반환한다.")
 	void retrieve_project_with_project_token() throws Exception {
-
-		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(2L);
-
-		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("mst_Kiwqnp1Nq6lbTNn0", auth);
+		ResponseEntity<ProjectInfoResponse> response = sut.getProjectInfoBy("mst_Kiwqnp1Nq6lbTNn0",
+			getAuthenticationToken(em, 2L));
 
 		assertThat(response.getBody().projectToken()).isEqualTo("mst_Kiwqnp1Nq6lbTNn0");
 		assertThat(response.getBody().objective()).isEqualTo("팀 맴버 테스트용 프로젝트");
@@ -107,12 +90,14 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 
 		List<String> recentlyCreatedSortProject =
 			List.of("mst_K4g4tfdaergg6421", "mst_3gbyy554frgg6421", "mst_K4232g4g5rgg6421");
-		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
-		ResponseEntity<Page<ProjectDetailResponse>> response = sut.getDetailProjectList("RECENTLY_CREATE", "N",
-			"TEAM",
-			auth,
-			PageRequest.of(0, 5));
+		ResponseEntity<Page<ProjectDetailResponse>> response =
+			sut.getDetailProjectList(
+				"RECENTLY_CREATE",
+				"N",
+				"TEAM",
+				getAuthenticationToken(em, 13L),
+				PageRequest.of(0, 5));
 
 		assertThat(response.getBody().getTotalElements()).isEqualTo(3L);
 		List<ProjectDetailResponse> content = response.getBody().getContent();
@@ -129,9 +114,9 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 	@Test
 	void 프로젝트_사이드_메뉴_조회시_기대하는_응답을_리턴한다_progress_team_members() throws Exception {
 		String projectToken = "mst_K4g4tfdaergg6421";
-		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(13L);
 
-		ResponseEntity<ProjectSideMenuResponse> response = sut.getProjectSideMenuDetails(projectToken, auth);
+		ResponseEntity<ProjectSideMenuResponse> response = sut.getProjectSideMenuDetails(projectToken,
+			getAuthenticationToken(em, 13L));
 
 		assertThat(response.getBody().progress()).isEqualTo("60.0");
 		assertThat(response.getBody().teamMembers().size()).isEqualTo(3);
@@ -140,9 +125,8 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 
 	@Test
 	void 회원가입_탈퇴전_참여중인_프로젝트_리스트를_요청하면_기대하는_응답을_리턴한다_ParticipateProjectResponse() throws Exception {
-		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(3L);
-
-		final List<ParticipateProjectResponse> response = sut.getParticipateProjects(auth).getBody();
+		final List<ParticipateProjectResponse> response = sut.getParticipateProjects(getAuthenticationToken(em, 3L))
+			.getBody();
 
 		assertThat(response.size()).isEqualTo(8);
 		assertThat(
@@ -151,15 +135,5 @@ class ProjectApiControllerTest extends SpringBootTestReady {
 				.toList()
 				.size()
 		).isEqualTo(4);
-	}
-
-	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", value)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-		return auth;
 	}
 }

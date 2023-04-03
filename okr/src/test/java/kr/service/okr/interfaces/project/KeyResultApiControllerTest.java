@@ -1,12 +1,10 @@
 package kr.service.okr.interfaces.project;
 
+import static kr.service.okr.util.TestHelpUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import kr.service.okr.domain.user.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.interfaces.project.request.ProjectKeyResultSaveRequest;
 import kr.service.okr.util.SpringBootTestReady;
 
@@ -37,7 +36,7 @@ class KeyResultApiControllerTest extends SpringBootTestReady {
 		String projectToken = "mst_as3fg34tgg6421";
 		String keyResultName = "keyResult";
 
-		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(2L);
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(em, 2L);
 
 		ResponseEntity<String> response = sut.registerKeyResult(
 			new ProjectKeyResultSaveRequest(projectToken, keyResultName), auth);
@@ -47,13 +46,4 @@ class KeyResultApiControllerTest extends SpringBootTestReady {
 
 	}
 
-	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", value)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-		return auth;
-	}
 }

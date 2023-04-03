@@ -1,12 +1,10 @@
 package kr.service.okr.interfaces.project;
 
+import static kr.service.okr.util.TestHelpUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import kr.service.okr.domain.user.User;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.service.okr.interfaces.project.response.InitiativeDetailResponse;
 import kr.service.okr.interfaces.project.response.InitiativeForCalendarResponse;
@@ -49,7 +48,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 			"행동전략 상세내용"
 		);
 
-		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(3L);
+		UsernamePasswordAuthenticationToken auth = getAuthenticationToken(em, 3L);
 
 		ResponseEntity<String> response = sut.registerInitiative(requestDto, auth);
 
@@ -61,7 +60,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 	void 행동전략_완료시_기대하는_응답을_리턴한다() throws Exception {
 		String initiativeToken = "ini_ixYjj5nODfeab3AH8";
 
-		ResponseEntity<String> response = sut.initiativeFinished(initiativeToken, getAuthenticationToken(11L));
+		ResponseEntity<String> response = sut.initiativeFinished(initiativeToken, getAuthenticationToken(em, 11L));
 
 		assertThat(response.getBody()).isEqualTo("ini_ixYjj5nODfeab3AH8");
 	}
@@ -73,7 +72,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 			"ini_ixYjj5aaafeab3AH8", "ini_ixYjjnnnafeab3AH8");
 
 		ResponseEntity<Page<ProjectInitiativeResponse>> response =
-			sut.getInitiativeByKeyResultToken(keyResultToken, getAuthenticationToken(11L), PageRequest.of(0, 5));
+			sut.getInitiativeByKeyResultToken(keyResultToken, getAuthenticationToken(em, 11L), PageRequest.of(0, 5));
 
 		assertThat(response.getBody().getTotalElements()).isEqualTo(3);
 		List<ProjectInitiativeResponse> content = response.getBody().getContent();
@@ -91,7 +90,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 		ResponseEntity<InitiativeDetailResponse> response =
 			sut.getInitiativeBy(
 				initiativeToken,
-				getAuthenticationToken(3L)
+				getAuthenticationToken(em, 3L)
 			);
 
 		assertThat(response.getBody().done()).isTrue();
@@ -109,7 +108,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 		List<InitiativeForCalendarResponse> response =
 			sut.getInitiativeByDate(
 				date,
-				getAuthenticationToken(14L)
+				getAuthenticationToken(em, 14L)
 			).getBody();
 
 		assertThat(response.size()).isEqualTo(1);
@@ -126,7 +125,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 		List<InitiativeForCalendarResponse> response =
 			sut.getInitiativeByDate(
 				date,
-				getAuthenticationToken(15L)
+				getAuthenticationToken(em, 15L)
 			).getBody();
 
 		assertThat(response.size()).isEqualTo(3);
@@ -139,7 +138,7 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 		List<String> response =
 			sut.getInitiativeDatesBy(
 				yearmonth,
-				getAuthenticationToken(15L)
+				getAuthenticationToken(em, 15L)
 			).getBody();
 
 		assertThat(response.size()).isEqualTo(14);
@@ -148,13 +147,4 @@ class InitiativeApiControllerTest extends SpringBootTestReady {
 
 	}
 
-	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", value)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-		return auth;
-	}
 }

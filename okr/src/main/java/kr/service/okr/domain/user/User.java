@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "user_table")
-public class User extends BaseTimeEntity implements UserDetails {
+public class User extends BaseTimeEntity  {
 
 	private static final String UNKNOWN_PREFIX = "Unknown-";
 	@Id
@@ -69,31 +69,6 @@ public class User extends BaseTimeEntity implements UserDetails {
 			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER,
 				this.providerType.getName() + "(으)로 가입한 계정이 있습니다.");
 		}
-	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority(this.getRoleType().getValue()));
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
 	}
 
 	@Override

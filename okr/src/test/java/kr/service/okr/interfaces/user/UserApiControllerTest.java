@@ -1,14 +1,12 @@
 package kr.service.okr.interfaces.user;
 
 import static kr.service.okr.util.OAuth2UserInfoFixture.*;
+import static kr.service.okr.util.TestHelpUtils.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,9 +20,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.user.ProviderType;
 import kr.service.okr.domain.user.User;
@@ -35,6 +32,9 @@ import kr.service.okr.interfaces.user.response.LoginResponse;
 import kr.service.okr.interfaces.user.response.TokenResponse;
 import kr.service.okr.interfaces.user.response.UserInfoResponse;
 import kr.service.okr.util.TestConfig;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @Import(TestConfig.class)
 @Transactional
@@ -143,14 +143,7 @@ class UserApiControllerTest {
 	void validate_email_address_for_register_project() throws Exception {
 		String memberEmail = "guest@email.com";
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 999L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-
-		ResponseEntity<String> response = sut.validateEmail(memberEmail, auth);
+		ResponseEntity<String> response = sut.validateEmail(memberEmail, getAuthenticationToken(em, 999L));
 		assertThat(response.getBody()).isEqualTo(memberEmail);
 	}
 
@@ -181,12 +174,8 @@ class UserApiControllerTest {
 	@Sql("classpath:insert-user.sql")
 	void getUserInfo를_호출하면_기대하는_응답_UserInfoResponse를_반환한다() throws Exception {
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 999L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
+		final UsernamePasswordAuthenticationToken auth = getAuthenticationToken(em, 999L);
+		final User user = (User)auth.getPrincipal();
 
 		ResponseEntity<UserInfoResponse> response = sut.getUserInfo(auth);
 		assertThat(response.getBody().name()).isEqualTo(user.getUsername());
@@ -199,15 +188,8 @@ class UserApiControllerTest {
 		String newUserName = "newName";
 		String newJobField = "LAW_LABOR";
 
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 999L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-
 		ResponseEntity<String> response = sut.updateUserInfo(new UserInfoUpdateRequest(newUserName, "profileImage",
-			newJobField), auth);
+			newJobField), getAuthenticationToken(em, 999L));
 
 		User updatedUser = em.createQuery("select u from User u where u.id = :userSeq", User.class)
 			.setParameter("userSeq", 999L)
@@ -220,14 +202,7 @@ class UserApiControllerTest {
 	@Test
 	@Sql("classpath:insert-user.sql")
 	void unRegisterUser를_호출하면_기대하는_응답을_반환한다() throws Exception {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", 999L)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-
-		ResponseEntity<String> response = sut.unRegisterUser(auth);
+		ResponseEntity<String> response = sut.unRegisterUser(getAuthenticationToken(em, 999L));
 
 		assertThat(response.getBody()).isEqualTo("SUCCESS");
 	}

@@ -1,5 +1,6 @@
 package kr.service.okr.interfaces.notification;
 
+import static kr.service.okr.util.TestHelpUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 			"noti_aaaaaMoZey1SERx", "noti_e2222y1SERx");
 
 		final ResponseEntity<Page<NotificationResponse>> response = sut.getNotifications(
-			getAuthenticationToken(16L), PageRequest.of(0, 5)
+			getAuthenticationToken(em,16L), PageRequest.of(0, 5)
 		);
 
 		assertThat(response.getBody().getTotalElements()).isEqualTo(4);
@@ -56,7 +57,7 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 	void checkNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
 		String notificationToken = "noti_111fey1SERx";
 		final ResponseEntity<String> response =
-			sut.checkNotification(notificationToken, getAuthenticationToken(3L));
+			sut.checkNotification(notificationToken, getAuthenticationToken(em,3L));
 
 		final Notification notification = em.createQuery(
 				"select n from Notification n where n.notificationToken = :token",
@@ -71,7 +72,7 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 	void deleteNotification을_호출화면_기대하는_응답을_리턴한다() throws Exception {
 		String notificationToken = "noti_111fey1SERx";
 		final ResponseEntity<String> response =
-			sut.deleteNotification(notificationToken, getAuthenticationToken(3L));
+			sut.deleteNotification(notificationToken, getAuthenticationToken(em,3L));
 
 		final Long notificationCount = em.createQuery(
 				"select count(n) from Notification n where n.notificationToken = :token and n.deleted = true",
@@ -82,14 +83,5 @@ public class NotificationApiControllerTest extends SpringBootTestReady {
 		assertThat(notificationCount).isEqualTo(0L);
 	}
 
-	private UsernamePasswordAuthenticationToken getAuthenticationToken(long value) {
-		User user = em.createQuery("select u from User u where u.id = :userSeq", User.class)
-			.setParameter("userSeq", value)
-			.getSingleResult();
-
-		UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-			user, null, user.getAuthorities());
-		return auth;
-	}
 }
 
