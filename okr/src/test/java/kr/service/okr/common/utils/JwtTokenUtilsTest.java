@@ -15,13 +15,13 @@ class JwtTokenUtilsTest {
 	private static final Long EXPIRE_TIME = 10000000000L;
 
 	@Test
-	void generateToken_and_verify () throws Exception {
+	void generateToken_and_verify() throws Exception {
 		String jwt = JwtTokenUtils.generateToken(EAMIL, SECRET_KEY, EXPIRE_TIME);
 		assertThat(JwtTokenUtils.getEmail(jwt, SECRET_KEY)).isEqualTo(EAMIL);
 	}
 
 	@Test
-	void throw_exception_when_token_has_expired () throws Exception {
+	void throw_exception_when_token_has_expired() throws Exception {
 		String jwt = JwtTokenUtils.generateToken(EAMIL, SECRET_KEY, 0L);
 		Thread.sleep(100L);
 		assertThatThrownBy(() -> JwtTokenUtils.getEmail(jwt, SECRET_KEY))
@@ -29,7 +29,7 @@ class JwtTokenUtilsTest {
 	}
 
 	@Test
-	void throw_exception_when_try_decrypt_with_wrong_key () throws Exception {
+	void throw_exception_when_try_decrypt_with_wrong_key() throws Exception {
 		String jwt = JwtTokenUtils.generateToken(EAMIL, SECRET_KEY, 0L);
 		Thread.sleep(100L);
 		assertThatThrownBy(() -> JwtTokenUtils.getEmail(jwt, "test-wrong-key-okr-project-jwt-token"))

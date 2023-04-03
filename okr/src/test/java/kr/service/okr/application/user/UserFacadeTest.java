@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +16,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.application.project.ProjectFacade;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.guset.service.impl.GuestServiceImpl;
 import kr.service.okr.domain.notification.NotificationServiceImpl;
 import kr.service.okr.domain.project.Project;
@@ -62,6 +58,9 @@ import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeRepo
 import kr.service.okr.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.service.okr.infrastructure.user.auth.OAuth2UserInfo;
 import kr.service.okr.interfaces.user.request.JoinRequest;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DataJpaTest
 @Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class, GuestReaderImpl.class,

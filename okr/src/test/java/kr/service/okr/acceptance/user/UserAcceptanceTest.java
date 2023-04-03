@@ -17,12 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.user.JobCategory;
 import kr.service.okr.domain.user.JobField;
 import kr.service.okr.domain.user.User;
 import kr.service.okr.interfaces.user.request.JoinRequest;
 import kr.service.okr.util.SpringBootTestReady;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DisplayName("User 도메인 인수 테스트")
 public class UserAcceptanceTest extends SpringBootTestReady {

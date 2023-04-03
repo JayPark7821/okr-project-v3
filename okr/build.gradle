@@ -49,7 +49,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    implementation project(':okr-common')
+    implementation project(':okr-common') 
 
 }
 

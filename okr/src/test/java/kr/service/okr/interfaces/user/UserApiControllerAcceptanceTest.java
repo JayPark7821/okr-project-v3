@@ -26,10 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
+import kr.service.okr.infrastructure.user.auth.TokenVerifier;
 import kr.service.okr.util.TestConfig;
 import kr.service.okrcommon.common.exception.ErrorCode;
 import kr.service.okrcommon.common.utils.JwtTokenUtils;
-import kr.service.okr.infrastructure.user.auth.TokenVerifier;
 
 @Import(TestConfig.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -55,22 +55,22 @@ public class UserApiControllerAcceptanceTest {
 	private static final String NOT_MEMBER_APPLE_ID_TOKEN = "notMemberIdToken";
 	private static final String APPLE_ID_TOKEN = "appleToken";
 	private static final String GOOGLE_ID_TOKEN = "googleToken";
-	private String availAccessToken ;
-	private String expiredAccessToken ;
+	private String availAccessToken;
+	private String expiredAccessToken;
 	private static final String baseUrl = "/api/v1/user";
-
-
 
 	@BeforeAll
 	void setUpAll() {
 
 		try (Connection conn = dataSource.getConnection()) {
 
-			availAccessToken = JwtTokenUtils.generateToken("apple@apple.com", key, refreshTokenRegenerationThreshold + 10000000L);
-			expiredAccessToken = JwtTokenUtils.generateToken("fakeAppleEmail", key, refreshTokenRegenerationThreshold - 10000000L);
+			availAccessToken = JwtTokenUtils.generateToken("apple@apple.com", key,
+				refreshTokenRegenerationThreshold + 10000000L);
+			expiredAccessToken = JwtTokenUtils.generateToken("fakeAppleEmail", key,
+				refreshTokenRegenerationThreshold - 10000000L);
 			String sql = "insert into refresh_token (refresh_token_seq, user_email, refresh_token) "
-						+ "values ('9999', 'apple@apple.com', ?) ,"
-								+ "('9998', 'fakeAppleEmail', ? )";
+				+ "values ('9999', 'apple@apple.com', ?) ,"
+				+ "('9998', 'fakeAppleEmail', ? )";
 
 			PreparedStatement statement = conn.prepareStatement(sql);
 			statement.setString(1, availAccessToken);
@@ -88,12 +88,10 @@ public class UserApiControllerAcceptanceTest {
 		}
 	}
 
-
 	@BeforeEach
 	void setUp() {
 		RestAssured.port = port;
 	}
-
 
 	@Test
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
@@ -135,7 +133,6 @@ public class UserApiControllerAcceptanceTest {
 		assertThat(response.getString("refreshToken")).isNotEqualTo(expiredAccessToken);
 	}
 
-
 	@Test
 	void 등록안된_jobCategory로_getJobField를_호출하면_기대하는_응답_exception_반환한다() throws Exception {
 
@@ -146,7 +143,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.get(baseUrl + "/job/"+ category + "/fields").
+			.get(baseUrl + "/job/" + category + "/fields").
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -165,7 +162,7 @@ public class UserApiControllerAcceptanceTest {
 			.contentType(ContentType.JSON).
 
 			when()
-			.get(baseUrl + "/job/field/"+ jobField).
+			.get(baseUrl + "/job/field/" + jobField).
 
 			then()
 			.statusCode(HttpStatus.BAD_REQUEST.value())
@@ -173,6 +170,5 @@ public class UserApiControllerAcceptanceTest {
 
 		assertThat(response).isEqualTo(ErrorCode.INVALID_JOB_DETAIL_FIELD.getMessage());
 	}
-
 
 }

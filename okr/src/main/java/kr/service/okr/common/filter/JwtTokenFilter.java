@@ -15,10 +15,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.service.okrcommon.common.utils.HeaderUtil;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.user.User;
 import kr.service.okr.domain.user.service.UserService;
+import kr.service.okrcommon.common.utils.HeaderUtil;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 		FilterChain filterChain) throws ServletException, IOException {
 		try {
 
-			String token = HeaderUtil.getToken("Authorization", request);
+			String token = HeaderUtil.getToken(request);
 			if (JwtTokenUtils.isExpired(token, key)) {
 				log.error("Key is Expired");
 				filterChain.doFilter(request, response);

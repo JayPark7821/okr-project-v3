@@ -5,15 +5,14 @@ import static kr.service.okr.acceptance.project.keyresult.KeyResultAccptanceTest
 
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.util.SpringBootTestReady;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DisplayName("KeyResult(핵심결과) 도메인 인수 테스트")
 public class KeyResultAcceptanceTest extends SpringBootTestReady {

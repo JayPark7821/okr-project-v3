@@ -2,9 +2,6 @@ package kr.service.okr.domain.token.service.impl;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.token.service.AuthTokenInfo;
 import kr.service.okr.domain.token.service.RefreshTokenRepository;
@@ -20,6 +18,7 @@ import kr.service.okr.domain.user.JobField;
 import kr.service.okr.domain.user.ProviderType;
 import kr.service.okr.domain.user.info.UserInfo;
 import kr.service.okr.infrastructure.token.RefreshTokenRepositoryImpl;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DataJpaTest
 @Import({TokenServiceImpl.class, RefreshTokenRepositoryImpl.class})
@@ -36,12 +35,11 @@ class TokenServiceImplTest {
 	@Autowired
 	private RefreshTokenRepository refreshTokenRepository;
 
-
 	@Test
 	@DisplayName("email이 입력 되었을때 기대하는 응답(AuthTokenInfo)을 반환한다.")
 	void create_new_authTokenInfo() throws Exception {
 		UserInfo userInfo =
-			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
+			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
 				JobField.WEB_SERVER_DEVELOPER);
 
 		AuthTokenInfo authTokenInfo = sut.generateTokenSet(userInfo);
@@ -55,7 +53,7 @@ class TokenServiceImplTest {
 	void returns_old_refreshToken_when_expire_date_more_then_3days() throws Exception {
 		//given
 		UserInfo userInfo =
-			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE ,
+			new UserInfo(999L, "appleId", "appleUser", "apple@apple.com", "appleProfileImage", ProviderType.APPLE,
 				JobField.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken("apple@apple.com", key, 259300000L);
 		refreshTokenRepository.save(new RefreshToken("apple@apple.com", UsableRefreshToken));
@@ -73,7 +71,7 @@ class TokenServiceImplTest {
 	void returns_new_refreshToken_when_expire_date_less_then_3days() throws Exception {
 		//given
 		UserInfo userInfo =
-			new UserInfo(998L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE ,
+			new UserInfo(998L, "googleId", "googleUser", "google@google.com", "googleProfileImage", ProviderType.GOOGLE,
 				JobField.WEB_SERVER_DEVELOPER);
 		String UsableRefreshToken = JwtTokenUtils.generateToken(userInfo.email(), key, 100000L);
 		refreshTokenRepository.save(new RefreshToken("google@google.com", UsableRefreshToken));
@@ -86,18 +84,16 @@ class TokenServiceImplTest {
 		assertThat(authTokenInfo.refreshToken()).isNotEqualTo(UsableRefreshToken);
 	}
 
-
 	@Test
 	void refreshToken으로_getNewAccessToken을_호출하면_기대하는_응답을_리턴한다_new_accessToken() {
 
 		String accessToken = JwtTokenUtils.generateToken("apple@apple.com", key, 10000000000000L);
-		em.persist(new RefreshToken("apple@apple.com",accessToken ));
+		em.persist(new RefreshToken("apple@apple.com", accessToken));
 		AuthTokenInfo info = sut.getNewAccessToken(accessToken);
 
 		assertThat(info.accessToken()).isNotNull();
 		assertThat(info.refreshToken()).isEqualTo(accessToken);
 
 	}
-
 
 }

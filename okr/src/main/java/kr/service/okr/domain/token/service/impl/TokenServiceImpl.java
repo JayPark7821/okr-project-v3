@@ -1,20 +1,18 @@
 package kr.service.okr.domain.token.service.impl;
 
-import static kr.service.okrcommon.common.utils.JwtTokenUtils.*;
-
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.token.service.AuthTokenInfo;
 import kr.service.okr.domain.token.service.RefreshTokenRepository;
 import kr.service.okr.domain.token.service.TokenService;
 import kr.service.okr.domain.user.info.UserInfo;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,7 +44,6 @@ public class TokenServiceImpl implements TokenService {
 		return new AuthTokenInfo(createNewToken(userInfo.email(), accessExpiredTimeMs), refreshToken.getRefreshToken());
 	}
 
-
 	@Override
 	public AuthTokenInfo getNewAccessToken(String refreshToken) {
 		String email = JwtTokenUtils.getEmail(refreshToken, secretKey);
@@ -63,11 +60,11 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	private long getRemainingTimeOf(String refreshToken) {
-		return getExpiration(refreshToken, secretKey).getTime() - new Date().getTime();
+		return JwtTokenUtils.getExpiration(refreshToken, secretKey).getTime() - new Date().getTime();
 	}
 
 	private String createNewToken(String email, Long expiredTimeMs) {
-		return generateToken(email, secretKey, expiredTimeMs);
+		return JwtTokenUtils.generateToken(email, secretKey, expiredTimeMs);
 	}
 
 	private RefreshToken getRefreshToken(String email) {

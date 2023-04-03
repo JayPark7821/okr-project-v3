@@ -18,11 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import kr.service.okr.application.user.UserFacade;
-import kr.service.okrcommon.common.Response;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.ClassUtils;
-import kr.service.okrcommon.common.utils.HeaderUtil;
 import kr.service.okr.domain.user.JobCategory;
 import kr.service.okr.domain.user.JobField;
 import kr.service.okr.domain.user.ProviderType;
@@ -37,6 +32,11 @@ import kr.service.okr.interfaces.user.response.JobResponse;
 import kr.service.okr.interfaces.user.response.LoginResponse;
 import kr.service.okr.interfaces.user.response.TokenResponse;
 import kr.service.okr.interfaces.user.response.UserInfoResponse;
+import kr.service.okrcommon.common.Response;
+import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okrcommon.common.utils.ClassUtils;
+import kr.service.okrcommon.common.utils.HeaderUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,7 +77,7 @@ public class UserApiController extends AbstractController {
 	ResponseEntity<TokenResponse> getNewAccessToken(HttpServletRequest request) {
 
 		return Response.successOk(
-			mapper.of(userFacade.getNewAccessToken(HeaderUtil.getAccessToken(request)))
+			mapper.of(userFacade.getNewAccessToken(HeaderUtil.getToken(request)))
 		);
 	}
 
