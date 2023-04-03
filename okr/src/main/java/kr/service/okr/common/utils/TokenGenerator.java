@@ -1,5 +1,4 @@
-
-package kr.service.okrcommon.common.utils;
+package kr.service.okr.common.utils;
 
 import org.apache.commons.lang3.RandomStringUtils;
 

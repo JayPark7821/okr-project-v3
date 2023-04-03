@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 
-import kr.service.okrcommon.common.utils.TokenGenerator;
-
 class TokenGeneratorTest {
 
 	@Test

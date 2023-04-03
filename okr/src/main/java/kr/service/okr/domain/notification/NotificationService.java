@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import kr.service.okr.common.enums.Notifications;
 import kr.service.okr.domain.notification.info.NotificationInfo;
-import kr.service.okrcommon.common.enums.Notifications;
 
 public interface NotificationService {
 	void sendNotification(Notifications notificationType, List<Long> notificationReceiveUserSeq, String... args);

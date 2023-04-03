@@ -1,12 +1,6 @@
 package kr.service.okr.domain.user;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,9 +11,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import kr.service.okr.common.audit.BaseTimeEntity;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.TokenGenerator;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okr.common.utils.TokenGenerator;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "user_table")
-public class User extends BaseTimeEntity  {
+public class User extends BaseTimeEntity {
 
 	private static final String UNKNOWN_PREFIX = "Unknown-";
 	@Id

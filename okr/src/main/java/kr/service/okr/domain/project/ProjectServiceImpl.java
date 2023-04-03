@@ -14,8 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 import kr.service.okr.domain.project.aggregate.feedback.Feedback;
 import kr.service.okr.domain.project.aggregate.feedback.FeedbackRepository;
 import kr.service.okr.domain.project.aggregate.feedback.SearchRange;
@@ -348,7 +348,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 	private IniFeedbackInfo getIniFeedbackinfoFrom(Long userSeq, Initiative initiative, List<Feedback> feedbacks) {
 		boolean isRequestersFeedback = initiative.getTeamMember().getUserSeq().equals(userSeq);
-		boolean wroteFeedback = !isRequestersFeedback && feedbacks.stream().anyMatch(f -> f.getTeamMember().getUserSeq().equals(userSeq));
+		boolean wroteFeedback =
+			!isRequestersFeedback && feedbacks.stream().anyMatch(f -> f.getTeamMember().getUserSeq().equals(userSeq));
 
 		return new IniFeedbackInfo(
 			isRequestersFeedback,

@@ -5,13 +5,12 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import jakarta.persistence.EntityManager;
-
 import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okrcommon.common.exception.ErrorCode;
+import jakarta.persistence.EntityManager;
+import kr.service.okr.common.exception.ErrorCode;
 import kr.service.okr.domain.project.Project;
 import kr.service.okr.domain.project.aggregate.initiative.Initiative;
 import kr.service.okr.domain.project.info.TeamMemberUserInfo;

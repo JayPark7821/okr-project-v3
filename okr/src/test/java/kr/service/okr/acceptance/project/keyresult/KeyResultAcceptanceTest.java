@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.util.SpringBootTestReady;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DisplayName("KeyResult(핵심결과) 도메인 인수 테스트")
 public class KeyResultAcceptanceTest extends SpringBootTestReady {

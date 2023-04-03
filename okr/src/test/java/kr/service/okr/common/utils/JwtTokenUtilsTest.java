@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 class JwtTokenUtilsTest {
 

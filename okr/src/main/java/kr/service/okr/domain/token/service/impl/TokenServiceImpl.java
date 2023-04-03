@@ -5,14 +5,14 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.token.service.AuthTokenInfo;
 import kr.service.okr.domain.token.service.RefreshTokenRepository;
 import kr.service.okr.domain.token.service.TokenService;
 import kr.service.okr.domain.user.info.UserInfo;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

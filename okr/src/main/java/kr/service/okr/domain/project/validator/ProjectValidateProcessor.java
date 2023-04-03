@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

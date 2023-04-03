@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.interfaces.project.request.ProjectInitiativeSaveRequest;
 import kr.service.okr.util.SpringBootTestReady;
 import kr.service.okr.util.TestHelpUtils;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DisplayName("Initiative(행동전략) 도메인 인수 테스트")
 public class InitiativeAcceptanceTest extends SpringBootTestReady {

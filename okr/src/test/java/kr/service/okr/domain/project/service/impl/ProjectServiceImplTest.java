@@ -21,6 +21,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 import kr.service.okr.domain.project.Project;
 import kr.service.okr.domain.project.ProjectAsyncService;
 import kr.service.okr.domain.project.ProjectServiceImpl;
@@ -63,8 +65,6 @@ import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackQueryDsl
 import kr.service.okr.infrastructure.project.aggregate.feedback.FeedbackRepositoryImpl;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeQueryDslRepository;
 import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeRepositoryImpl;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
 
 @DataJpaTest
 @Import({ProjectServiceImpl.class, ProjectRepositoryImpl.class, ProjectQueryDslRepository.class,

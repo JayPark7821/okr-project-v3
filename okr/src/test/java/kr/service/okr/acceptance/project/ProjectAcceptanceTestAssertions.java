@@ -10,11 +10,11 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kr.service.okr.common.exception.ErrorCode;
 import kr.service.okr.domain.project.aggregate.team.ProjectRoleType;
 import kr.service.okr.interfaces.project.response.ParticipateProjectResponse;
 import kr.service.okr.interfaces.project.response.ProjectDetailResponse;
 import kr.service.okr.interfaces.project.response.ProjectInfoResponse;
-import kr.service.okrcommon.common.exception.ErrorCode;
 
 public class ProjectAcceptanceTestAssertions {
 

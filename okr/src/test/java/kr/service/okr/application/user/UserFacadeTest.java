@@ -19,6 +19,9 @@ import org.springframework.test.context.jdbc.Sql;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.service.okr.application.project.ProjectFacade;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.guset.service.impl.GuestServiceImpl;
 import kr.service.okr.domain.notification.NotificationServiceImpl;
 import kr.service.okr.domain.project.Project;
@@ -58,9 +61,6 @@ import kr.service.okr.infrastructure.project.aggregate.initiative.InitiativeRepo
 import kr.service.okr.infrastructure.token.RefreshTokenRepositoryImpl;
 import kr.service.okr.infrastructure.user.auth.OAuth2UserInfo;
 import kr.service.okr.interfaces.user.request.JoinRequest;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DataJpaTest
 @Import({UserFacade.class, UserServiceImpl.class, GuestServiceImpl.class, GuestStoreImpl.class, GuestReaderImpl.class,

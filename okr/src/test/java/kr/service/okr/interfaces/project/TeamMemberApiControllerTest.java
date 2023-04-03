@@ -13,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 import kr.service.okr.interfaces.project.request.TeamMemberInviteRequest;
 import kr.service.okr.util.SpringBootTestReady;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
 
 class TeamMemberApiControllerTest extends SpringBootTestReady {
 

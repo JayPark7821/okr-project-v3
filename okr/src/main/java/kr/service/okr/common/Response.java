@@ -1,9 +1,9 @@
-package kr.service.okrcommon.common;
+package kr.service.okr.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
+import kr.service.okr.common.exception.ErrorCode;
 
 public class Response<T> {
 
@@ -31,5 +31,5 @@ public class Response<T> {
 		return ResponseEntity.status(status)
 			.body("SUCCESS");
 	}
- 
+
 }

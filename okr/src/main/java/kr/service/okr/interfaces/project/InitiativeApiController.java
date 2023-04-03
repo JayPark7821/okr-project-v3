@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import kr.service.okr.application.project.ProjectFacade;
-import kr.service.okrcommon.common.Response;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okr.common.Response;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 import kr.service.okr.domain.project.info.InitiativeDetailInfo;
 import kr.service.okr.domain.project.info.InitiativeForCalendarInfo;
 import kr.service.okr.interfaces.AbstractController;

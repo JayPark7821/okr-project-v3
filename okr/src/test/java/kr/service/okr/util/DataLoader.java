@@ -3,8 +3,6 @@ package kr.service.okr.util;
 import java.sql.Connection;
 import java.util.List;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Profile;
@@ -13,7 +11,9 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okrcommon.common.utils.ClassUtils;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.utils.ClassUtils;
 
 @Transactional
 @Profile("test")

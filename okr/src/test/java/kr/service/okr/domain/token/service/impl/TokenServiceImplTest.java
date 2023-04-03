@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Import;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.token.service.AuthTokenInfo;
 import kr.service.okr.domain.token.service.RefreshTokenRepository;
@@ -18,7 +19,6 @@ import kr.service.okr.domain.user.JobField;
 import kr.service.okr.domain.user.ProviderType;
 import kr.service.okr.domain.user.info.UserInfo;
 import kr.service.okr.infrastructure.token.RefreshTokenRepositoryImpl;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DataJpaTest
 @Import({TokenServiceImpl.class, RefreshTokenRepositoryImpl.class})

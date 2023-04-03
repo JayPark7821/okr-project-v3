@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.interfaces.project.request.ProjectSaveRequest;
 import kr.service.okr.util.SpringBootTestReady;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @DisplayName("Project 도메인 인수 테스트")
 public class ProjectAcceptanceTest extends SpringBootTestReady {

@@ -3,8 +3,8 @@ package kr.service.okr.domain.guset.service.impl;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 import kr.service.okr.domain.guset.service.GuestInfo;
 import kr.service.okr.domain.guset.service.GuestReader;
 import kr.service.okr.domain.guset.service.GuestService;

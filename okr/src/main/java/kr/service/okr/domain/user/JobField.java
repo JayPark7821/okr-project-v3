@@ -1,7 +1,7 @@
 package kr.service.okr.domain.user;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.utils.EnumLookUpUtil;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.utils.EnumLookUpUtil;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -69,8 +69,7 @@ public enum JobField implements JobType {
 	}
 
 	public static JobField of(String id) {
-		return EnumLookUpUtil.lookup(JobField.class, id,ErrorCode.INVALID_JOB_DETAIL_FIELD);
+		return EnumLookUpUtil.lookup(JobField.class, id, ErrorCode.INVALID_JOB_DETAIL_FIELD);
 	}
-
 
 }

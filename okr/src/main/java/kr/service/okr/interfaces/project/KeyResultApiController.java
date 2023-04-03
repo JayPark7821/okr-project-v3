@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import kr.service.okr.application.project.ProjectFacade;
-import kr.service.okrcommon.common.Response;
+import kr.service.okr.common.Response;
 import kr.service.okr.interfaces.AbstractController;
 import kr.service.okr.interfaces.project.request.ProjectKeyResultSaveRequest;
 import lombok.RequiredArgsConstructor;

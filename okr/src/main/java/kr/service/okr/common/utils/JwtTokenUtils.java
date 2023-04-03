@@ -1,4 +1,4 @@
-package kr.service.okrcommon.common.utils;
+package kr.service.okr.common.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;

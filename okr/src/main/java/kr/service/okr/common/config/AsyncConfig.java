@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import kr.service.okrcommon.common.exception.RejectedExecutionHandlerImpl;
+import kr.service.okr.common.exception.RejectedExecutionHandlerImpl;
 
 @EnableAsync
 @Configuration

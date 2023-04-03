@@ -1,4 +1,4 @@
-package kr.service.okrcommon.common.enums;
+package kr.service.okr.common.enums;
 
 import lombok.AllArgsConstructor;
 

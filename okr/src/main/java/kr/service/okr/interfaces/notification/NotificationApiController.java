@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.service.okr.application.notification.NotificationFacade;
-import kr.service.okrcommon.common.Response;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.ClassUtils;
+import kr.service.okr.common.Response;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okr.common.utils.ClassUtils;
 import kr.service.okr.domain.user.User;
 import kr.service.okr.interfaces.notification.response.NotificationResponse;
 import lombok.RequiredArgsConstructor;

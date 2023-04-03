@@ -2,8 +2,8 @@ package kr.service.okrbatch.repository;
 
 import java.time.LocalDateTime;
 
-import kr.service.okrcommon.common.enums.Notifications;
-import kr.service.okrcommon.common.utils.TokenGenerator;
+import kr.service.okr.common.enums.Notifications;
+import kr.service.okr.common.utils.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
 

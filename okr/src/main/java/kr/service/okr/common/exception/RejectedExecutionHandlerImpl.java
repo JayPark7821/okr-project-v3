@@ -1,4 +1,4 @@
-package kr.service.okrcommon.common.exception;
+package kr.service.okr.common.exception;
 
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;

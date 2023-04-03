@@ -6,8 +6,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication(
 	scanBasePackages = {
-		"kr.service.okr",
-		"kr.service.okrcommon"
+		"kr.service.okr"
 	}
 )
 @EnableDiscoveryClient

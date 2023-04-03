@@ -1,7 +1,7 @@
 package kr.service.okr.domain.user;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.utils.EnumLookUpUtil;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.utils.EnumLookUpUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

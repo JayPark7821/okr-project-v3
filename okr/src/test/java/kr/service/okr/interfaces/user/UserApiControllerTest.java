@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
+import kr.service.okr.common.utils.JwtTokenUtils;
 import kr.service.okr.domain.token.RefreshToken;
 import kr.service.okr.domain.user.ProviderType;
 import kr.service.okr.domain.user.User;
@@ -32,9 +35,6 @@ import kr.service.okr.interfaces.user.response.LoginResponse;
 import kr.service.okr.interfaces.user.response.TokenResponse;
 import kr.service.okr.interfaces.user.response.UserInfoResponse;
 import kr.service.okr.util.TestConfig;
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
-import kr.service.okrcommon.common.utils.JwtTokenUtils;
 
 @Import(TestConfig.class)
 @Transactional

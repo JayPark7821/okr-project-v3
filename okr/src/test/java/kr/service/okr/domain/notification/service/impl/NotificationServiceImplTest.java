@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.common.enums.Notifications;
 import kr.service.okr.domain.notification.Notification;
 import kr.service.okr.domain.notification.NotificationServiceImpl;
 import kr.service.okr.domain.notification.info.NotificationInfo;
@@ -25,7 +26,6 @@ import kr.service.okr.domain.user.User;
 import kr.service.okr.infrastructure.notification.NotificationJDBCRepository;
 import kr.service.okr.infrastructure.notification.NotificationQueryDslRepository;
 import kr.service.okr.infrastructure.notification.NotificationRepositoryImpl;
-import kr.service.okrcommon.common.enums.Notifications;
 
 @DataJpaTest
 @Import({NotificationServiceImpl.class, NotificationJDBCRepository.class, NotificationRepositoryImpl.class

@@ -1,10 +1,10 @@
-package kr.service.okrcommon.common.utils;
+package kr.service.okr.common.utils;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 
 public class ClassUtils {
 	public static <T> Optional<T> getSafeCastInstance(Object o, Class<T> clazz) {

@@ -1,4 +1,4 @@
-package kr.service.okrcommon.common.utils;
+package kr.service.okr.common.utils;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -15,11 +15,11 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DateValid {
 
-  String message() default "6자리의 yyyyMMdd 형식이어야 합니다.";
+	String message() default "6자리의 yyyyMMdd 형식이어야 합니다.";
 
-  Class<?>[] groups() default {};
+	Class<?>[] groups() default {};
 
-  Class<? extends Payload>[] payload() default {};
+	Class<? extends Payload>[] payload() default {};
 
-  String pattern() default "yyyyMMdd";
+	String pattern() default "yyyyMMdd";
 }

@@ -1,7 +1,7 @@
-package kr.service.okrcommon.common.utils;
+package kr.service.okr.common.utils;
 
-import kr.service.okrcommon.common.exception.ErrorCode;
-import kr.service.okrcommon.common.exception.OkrApplicationException;
+import kr.service.okr.common.exception.ErrorCode;
+import kr.service.okr.common.exception.OkrApplicationException;
 
 public class EnumLookUpUtil {
 	public static <E extends Enum<E>> E lookup(Class<E> e, String code, ErrorCode errorCode) {
