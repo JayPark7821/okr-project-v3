@@ -45,6 +45,8 @@ public class KeyResultJpaEntity extends BaseEntity {
 	@JoinColumn(name = "project_id", updatable = false)
 	private ProjectJpaEntity project;
 
+	@Column(name = "project_id")
+	private Long projectId;
 	private String name;
 
 	private Integer keyResultIndex;
@@ -65,12 +67,11 @@ public class KeyResultJpaEntity extends BaseEntity {
 
 	public KeyResultJpaEntity(KeyResult keyResult) {
 		this.id = keyResult.getId();
-		this.keyResultToken = keyResultToken;
-		this.project = project;
-		this.name = name;
-		this.keyResultIndex = keyResultIndex;
-		this.initiative = initiative;
-		this.deleted = deleted;
+		this.keyResultToken = keyResult.getKeyResultToken();
+		this.projectId = keyResult.getProjectId();
+		this.name = keyResult.getName();
+		this.keyResultIndex = keyResult.getKeyResultIndex();
+		this.initiative = keyResult.getInitiative().stream().map(InitiativeJpaEntity::new).toList();
 	}
 
 	public String addInitiative(InitiativeJpaEntity initiative) {

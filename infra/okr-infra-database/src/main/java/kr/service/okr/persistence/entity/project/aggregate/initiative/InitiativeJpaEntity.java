@@ -99,6 +99,20 @@ public class InitiativeJpaEntity extends BaseEntity {
 		this.done = false;
 	}
 
+	public InitiativeJpaEntity(Initiative initiative) {
+		this.id = initiative.getId();
+		this.initiativeToken = initiative.getInitiativeToken();
+		this.keyResult = initiative.getKeyResult();
+		this.teamMember = initiative.getTeamMember();
+		this.name = initiative.getName();
+		this.endDate = initiative.getEndDate();
+		this.startDate = initiative.getStartDate();
+		this.detail = initiative.getDetail();
+		this.done = initiative.getDone();
+		this.feedback = initiative.getFeedback();
+		this.deleted = initiative.getDeleted();
+	}
+
 	public void setKeyResult(KeyResultJpaEntity keyResult) {
 		this.keyResult = keyResult;
 	}

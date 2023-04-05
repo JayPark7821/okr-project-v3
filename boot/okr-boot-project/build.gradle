@@ -44,7 +44,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     implementation project(':domain:okr-domain-project')
-    implementation project(':infra:okr-infra-database')
+//    implementation project(':infra:okr-infra-database')
 
 }
 

@@ -73,8 +73,8 @@ public class ProjectJpaEntity extends BaseEntity {
 	@Builder
 	public ProjectJpaEntity(Project project) {
 		this.id = project.getId();
-		this.keyResults = project.getKeyResults().stream().map(KeyResultJpaEntity::t).toList();
-		this.teamMember = project.getTeamMember();
+		this.keyResults = project.getKeyResults().stream().map(KeyResultJpaEntity::new).toList();
+		this.teamMember = project.getTeamMember().stream().map(TeamMemberJpaEntity::new).toList();
 		this.projectToken = project.getProjectToken();
 		this.startDate = project.getStartDate();
 		this.endDate = project.getEndDate();

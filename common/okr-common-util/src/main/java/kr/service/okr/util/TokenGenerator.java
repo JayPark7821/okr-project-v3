@@ -1,15 +1,12 @@
 package kr.service.okr.util;
 
-import java.nio.ByteBuffer;
-import java.util.UUID;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class TokenGenerator {
 	private static final int TOKEN_LENGTH = 20;
 
 	public static String randomCharacter(int length) {
-		UUID uuid = UUID.randomUUID();
-		long l = ByteBuffer.wrap(uuid.toString().getBytes()).getLong();
-		return Long.toString(l, length);
+		return RandomStringUtils.randomAlphanumeric(length);
 	}
 
 	public static String randomCharacterWithPrefix(String prefix) {

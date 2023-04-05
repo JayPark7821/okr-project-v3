@@ -53,11 +53,9 @@ public class TeamMemberJpaEntity extends BaseEntity {
 	private boolean deleted = Boolean.FALSE;
 
 	@Builder
-	public TeamMemberJpaEntity(Long userSeq, ProjectJpaEntity project, ProjectRoleType projectRoleType, boolean isNew) {
-		this.userSeq = userSeq;
-		this.project = project;
-		this.projectRoleType = projectRoleType;
-		this.isNew = isNew;
+	public TeamMemberJpaEntity(TeamMember teamMember) {
+		this.userSeq = teamMember.getUserSeq();
+
 	}
 
 	public TeamMember toDomain() {

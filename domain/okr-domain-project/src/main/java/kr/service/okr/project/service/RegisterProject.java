@@ -3,7 +3,7 @@ package kr.service.okr.project.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.project.aggregate.team.domain.TeamMember;
+import kr.service.okr.OkrMessages;
 import kr.service.okr.project.domain.Project;
 import kr.service.okr.project.repository.ProjectCommand;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
@@ -17,11 +17,19 @@ public class RegisterProject implements RegisterProjectUseCase {
 	private final ProjectCommand projectCommand;
 
 	@Override
-	public Project registerProject(Command command) {
-		final Project project = new Project(command.objective(), command.startDate(), command.endDate());
-		project.addLeader(TeamMember.createLeader(command.userSeq()));
-		command.teamMemberUserSeqs().forEach(teamMember -> project.addTeamMember(TeamMember.createMember(teamMember)));
+	public String registerProject(Command command) {
 
-		return projectCommand.save(project);
+		assertLeaderIsNotInTeamMember(command);
+
+		final Project project = new Project(command.objective(), command.startDate(), command.endDate());
+		project.addLeader(command.userSeq());
+		command.teamMemberUserSeqs().forEach(project::addTeamMember);
+
+		return projectCommand.save(project).getProjectToken();
+	}
+
+	private void assertLeaderIsNotInTeamMember(final Command command) {
+		if (command.teamMemberUserSeqs().stream().anyMatch(teamMember -> teamMember.equals(command.userSeq())))
+			throw new IllegalArgumentException(OkrMessages.LEADER_IS_IN_TEAM_MEMBER.getMsg());
 	}
 }
