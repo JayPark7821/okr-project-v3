@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kr.service.okr.OkrMessages;
+import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.model.project.team.ProjectRoleType;
 import kr.service.okr.project.aggregate.team.domain.TeamMember;
 import kr.service.okr.project.repository.ProjectCommand;
@@ -73,7 +73,7 @@ class RegisterProjectTest {
 			new RegisterProjectUseCase.Command("object", projectSdt, projectEdt, 1L, List.of(1L, 3L)))
 		)
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(OkrMessages.LEADER_IS_IN_TEAM_MEMBER.getMsg());
+			.hasMessage(ErrorCode.LEADER_IS_IN_TEAM_MEMBER.getMessage());
 
 	}
 }

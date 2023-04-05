@@ -14,6 +14,5 @@ public interface RegisterProjectUseCase {
 		Long userSeq,
 		List<Long> teamMemberUserSeqs
 	) {
-
 	}
 }

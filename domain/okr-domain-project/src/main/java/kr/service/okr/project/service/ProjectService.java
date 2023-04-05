@@ -57,13 +57,7 @@
 // 	private final ProjectValidateProcessor validateProcessor;
 // 	private final ProjectAsyncService projectAsyncService;
 //
-// 	@Override
-// 	public ProjectInfo registerProject(ProjectSaveCommand command, Long userSeq, List<Long> teamMemberUserSeqs) {
-// 		Project project = projectRepository.save(command.toEntity());
-// 		project.addLeader(userSeq);
-// 		teamMemberUserSeqs.forEach(project::addTeamMember);
-// 		return new ProjectInfo(project);
-// 	}
+
 //
 // 	@Override
 // 	public ProjectInfo getProjectInfoBy(String projectToken, Long userSeq) {

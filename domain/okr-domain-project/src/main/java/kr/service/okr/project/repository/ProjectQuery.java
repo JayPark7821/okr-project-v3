@@ -11,42 +11,28 @@ import kr.service.okr.model.project.SortType;
 import kr.service.okr.project.domain.Project;
 
 public interface ProjectQuery {
-	Optional<Project> findByProjectTokenAndUser(QueryProject query);
+	Optional<Project> findByProjectTokenAndUser(String projectToken, Long userSeq);
 
-	Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(QueryProject query);
+	Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(String projectToken, Long inviterSeq);
 
-	Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(QueryProject query);
-
-	Optional<Project> findProjectKeyResultByProjectTokenAndUser(QueryProject query);
-
-	Page<Project> getDetailProjectList(QueryDetailProjectList query);
-
-	Optional<Project> findByKeyResultTokenAndUser(QueryProject query);
-
-	double getProjectProgress(Query projectId);
-
-	Optional<Project> findProjectForUpdateById(Query projectId);
-
-	List<Project> findParticipateProjectByUserSeq(Query userSeq);
-
-	record Query(
-		long id
-	) {
-	}
-
-	record QueryProject(
-		String Token,
-		Long userSeq
-	) {
-	}
-
-	record QueryDetailProjectList(
+	Page<Project> getDetailProjectList(
 		SortType sortType,
 		ProjectType projectType,
 		String includeFinishedProjectYN,
-		Long userSeq,
-		Pageable pageable
-	) {
-	}
+		Pageable pageable,
+		Long userSeq
+	);
+
+	Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(String projectToken, Long userSeq);
+
+	Optional<Project> findProjectKeyResultByProjectTokenAndUser(String projectToken, Long userSeq);
+
+	Optional<Project> findByKeyResultTokenAndUser(String keyResultToken, Long userSeq);
+
+	double getProjectProgress(Long projectId);
+
+	Optional<Project> findProjectForUpdateById(Long projectId);
+
+	List<Project> findParticipateProjectByUserSeq(Long userSeq);
 
 }

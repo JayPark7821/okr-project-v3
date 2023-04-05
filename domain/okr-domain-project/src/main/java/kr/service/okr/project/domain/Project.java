@@ -1,6 +1,6 @@
 package kr.service.okr.project.domain;
 
-import static kr.service.okr.OkrMessages.*;
+import static kr.service.okr.exception.ErrorCode.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,10 +31,10 @@ public class Project {
 	private double progress = 0.0D;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
-		Assert.hasText(objective, OBJECTIVE_IS_REQUIRED.getMsg());
-		Assert.isTrue(objective.length() <= 50, OBJECTIVE_IS_TOO_LONG.getMsg());
-		Assert.notNull(startDate, PROJECT_START_DATE_IS_REQUIRED.getMsg());
-		Assert.notNull(endDate, PROJECT_END_DATE_IS_REQUIRED.getMsg());
+		Assert.hasText(objective, OBJECTIVE_IS_REQUIRED.getMessage());
+		Assert.isTrue(objective.length() <= 50, OBJECTIVE_IS_TOO_LONG.getMessage());
+		Assert.notNull(startDate, PROJECT_START_DATE_IS_REQUIRED.getMessage());
+		Assert.notNull(endDate, PROJECT_END_DATE_IS_REQUIRED.getMessage());
 
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_TOKEN_PREFIX);
 		this.startDate = startDate;
@@ -65,12 +65,17 @@ public class Project {
 		this.progress = progress;
 	}
 
-	public void addLeader(final Long leader) {
-		this.teamMember.add(TeamMember.createLeader(leader, this));
+	public void addLeader(final Long leaderSeq) {
+		final TeamMember leader = TeamMember.createLeader(leaderSeq);
+		leader.join(this);
+		this.teamMember.add(leader);
 	}
 
-	public void addTeamMember(final Long teamMember) {
-		this.teamMember.add(TeamMember.createMember(teamMember, this));
+	public void addTeamMember(final Long memberSeq) {
+		final TeamMember member = TeamMember.createMember(memberSeq);
+		member.join(this);
+		this.teamMember.add(member);
+
 	}
 
 	public void assignId(final Long id) {
