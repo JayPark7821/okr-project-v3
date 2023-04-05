@@ -11,6 +11,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    implementation project(':common:okr-common-util')
     implementation project(':common:okr-common-model')
     implementation project(':domain:okr-domain-user')
 }
