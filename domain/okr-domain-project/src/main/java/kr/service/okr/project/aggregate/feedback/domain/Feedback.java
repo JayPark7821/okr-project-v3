@@ -19,8 +19,7 @@ public class Feedback {
 	private String opinion;
 	private boolean checked = Boolean.FALSE;
 
-	@Builder
-	private Feedback(
+	public Feedback(
 		final Initiative initiative,
 		final TeamMember teamMember,
 		final FeedbackType grade,
@@ -31,5 +30,24 @@ public class Feedback {
 		this.teamMember = teamMember;
 		this.grade = grade;
 		this.opinion = opinion;
+	}
+
+	@Builder
+	private Feedback(
+		final Long id,
+		final String feedbackToken,
+		final Initiative initiative,
+		final TeamMember teamMember,
+		final FeedbackType grade,
+		final String opinion,
+		final boolean checked
+	) {
+		this.id = id;
+		this.feedbackToken = feedbackToken;
+		this.initiative = initiative;
+		this.teamMember = teamMember;
+		this.grade = grade;
+		this.opinion = opinion;
+		this.checked = checked;
 	}
 }

@@ -26,9 +26,7 @@ import kr.service.okr.persistence.entity.project.aggregate.feedback.FeedbackJpaE
 import kr.service.okr.persistence.entity.project.aggregate.keyresult.KeyResultJpaEntity;
 import kr.service.okr.persistence.entity.project.aggregate.team.TeamMemberJpaEntity;
 import kr.service.okr.project.aggregate.initiative.domain.Initiative;
-import kr.service.okr.util.TokenGenerator;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -87,30 +85,17 @@ public class InitiativeJpaEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	@Builder
-	public InitiativeJpaEntity(TeamMemberJpaEntity teamMember, String name, LocalDate endDate, LocalDate startDate,
-		String detail) {
-		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_INITIATIVE_PREFIX);
-		this.teamMember = teamMember;
-		this.name = name;
-		this.endDate = endDate;
-		this.startDate = startDate;
-		this.detail = detail;
-		this.done = false;
-	}
-
 	public InitiativeJpaEntity(Initiative initiative) {
 		this.id = initiative.getId();
 		this.initiativeToken = initiative.getInitiativeToken();
-		this.keyResult = initiative.getKeyResult();
-		this.teamMember = initiative.getTeamMember();
+		this.keyResult = new KeyResultJpaEntity(initiative.getKeyResult());
+		// this.teamMember = new TeamMemberJpaEntity(initiative.getTeamMember());
 		this.name = initiative.getName();
 		this.endDate = initiative.getEndDate();
 		this.startDate = initiative.getStartDate();
 		this.detail = initiative.getDetail();
-		this.done = initiative.getDone();
-		this.feedback = initiative.getFeedback();
-		this.deleted = initiative.getDeleted();
+		this.done = initiative.isDone();
+		this.feedback = initiative.getFeedback().stream().map(FeedbackJpaEntity::new).toList();
 	}
 
 	public void setKeyResult(KeyResultJpaEntity keyResult) {
@@ -125,8 +110,8 @@ public class InitiativeJpaEntity extends BaseEntity {
 		return Initiative.builder()
 			.id(this.id)
 			.initiativeToken(this.initiativeToken)
-			.keyResultId(this.keyResult.getId())
-			.teamMember(this.teamMember.toDomain())
+			.keyResult(this.keyResult.toDomain())
+			// .teamMember(this.teamMember.toDomain())
 			.name(this.name)
 			.startDate(this.startDate)
 			.endDate(this.endDate)

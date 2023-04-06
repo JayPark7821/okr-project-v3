@@ -48,7 +48,7 @@ public class FeedbackQueryDslRepository {
 				, searchRangeCondition(range))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
-			.orderBy(feedbackJpaEntity.isChecked.asc(), feedbackJpaEntity.createdDate.desc())
+			.orderBy(feedbackJpaEntity.checked.asc(), feedbackJpaEntity.createdDate.desc())
 			.fetch();
 
 		JPAQuery<FeedbackJpaEntity> countQuery = queryFactory
@@ -60,7 +60,7 @@ public class FeedbackQueryDslRepository {
 			.where(teamMemberJpaEntity.userSeq.eq(userSeq)
 					.and(initiativeJpaEntity.done.isTrue())
 				, searchRangeCondition(range))
-			.orderBy(feedbackJpaEntity.isChecked.asc(), feedbackJpaEntity.createdDate.desc());
+			.orderBy(feedbackJpaEntity.checked.asc(), feedbackJpaEntity.createdDate.desc());
 
 		return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetch().size());
 	}

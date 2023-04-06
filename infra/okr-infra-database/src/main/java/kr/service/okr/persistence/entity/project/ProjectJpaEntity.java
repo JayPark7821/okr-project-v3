@@ -25,7 +25,6 @@ import kr.service.okr.persistence.entity.project.aggregate.keyresult.KeyResultJp
 import kr.service.okr.persistence.entity.project.aggregate.team.TeamMemberJpaEntity;
 import kr.service.okr.project.domain.Project;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -70,17 +69,35 @@ public class ProjectJpaEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	@Builder
+	public ProjectJpaEntity(final Long id, final String projectToken, final List<TeamMemberJpaEntity> teamMember,
+		final List<KeyResultJpaEntity> keyResults, final LocalDate startDate, final LocalDate endDate,
+		final ProjectType type, final String objective,
+		final double progress) {
+		this.id = id;
+		this.projectToken = projectToken;
+		this.teamMember = teamMember;
+		this.keyResults = keyResults;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.type = type;
+		this.objective = objective;
+		this.progress = progress;
+	}
+
 	public ProjectJpaEntity(Project project) {
+
 		this.id = project.getId();
-		this.keyResults = project.getKeyResults().stream().map(KeyResultJpaEntity::new).toList();
-		this.teamMember = project.getTeamMember().stream().map(TeamMemberJpaEntity::new).toList();
 		this.projectToken = project.getProjectToken();
+		this.teamMember = project.getTeamMember().stream()
+			.map(teamMember -> new TeamMemberJpaEntity(teamMember, this)).toList();
+		this.keyResults = project.getKeyResults().stream()
+			.map(KeyResultJpaEntity::new).toList();
 		this.startDate = project.getStartDate();
 		this.endDate = project.getEndDate();
 		this.type = project.getType();
 		this.objective = project.getObjective();
 		this.progress = project.getProgress();
+
 	}
 
 	public void updateProgress(double progress) {
@@ -88,18 +105,19 @@ public class ProjectJpaEntity extends BaseEntity {
 	}
 
 	public Project toDomain() {
-		return Project.builder()
+		final Project project = Project.builder()
 			.id(this.id)
 			.projectToken(this.projectToken)
-			.teamMember(this.teamMember.stream().map(TeamMemberJpaEntity::toDomain).toList())
 			.keyResults(this.keyResults.stream().map(KeyResultJpaEntity::toDomain).toList())
 			.startDate(this.startDate)
 			.endDate(this.endDate)
 			.type(this.type)
 			.objective(this.objective)
 			.progress(this.progress)
-			.deleted(this.deleted)
 			.build();
+
+		this.getTeamMember().stream().map(teamMember -> teamMember.toDomain(project)).toList();
+		return project;
 
 	}
 

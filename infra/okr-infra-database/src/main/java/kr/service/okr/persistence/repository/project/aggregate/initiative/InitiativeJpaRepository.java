@@ -56,7 +56,7 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 		"join i.teamMember t " +
 		"join t.user u " +
 		"where i.done = false " +
-		"and :searchDate between i.sdt and i.edt " +
+		"and :searchDate between i.startDate and i.endDate " +
 		"and u.userSeq =:userSeq")
 	List<InitiativeJpaEntity> findInitiativeByDateAndUserSeq(
 		@Param("searchDate") LocalDate searchDate,
@@ -68,8 +68,8 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 		"join i.teamMember t " +
 		"join t.user u " +
 		"where i.done = false " +
-		"and i.sdt <= :monthEdt " +
-		"and i.edt >= :monthSdt " +
+		"and i.startDate <= :monthEdt " +
+		"and i.endDate >= :monthSdt " +
 		"and u.userSeq =:userSeq")
 	List<InitiativeJpaEntity> findInitiativeBySdtAndEdtAndUserSeq(
 		@Param("monthSdt") LocalDate monthSdt,
@@ -87,7 +87,7 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 		"where i.done = true " +
 		"and u.userSeq =:userSeq " +
 		"and it.userSeq != :userSeq " +
-		"and i.iniId not in (select f.initiative.iniId " +
+		"and i.id not in (select f.initiative.id " +
 		"                    from FeedbackJpaEntity f " +
 		"                    join f.teamMember fm " +
 		"                    join fm.user fu " +

@@ -20,8 +20,10 @@ public class ProjectCommandImpl implements ProjectCommand {
 
 	@Override
 	public Project save(final Project project) {
-		final ProjectJpaEntity projectJpaEntity = projectJpaRepository.save(new ProjectJpaEntity(project));
-		return null;
+		final Project project1 = projectJpaRepository.save(new ProjectJpaEntity(project))
+			.toDomain();
+		return project1;
+
 	}
 
 	@Override

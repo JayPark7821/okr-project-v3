@@ -23,9 +23,7 @@ import kr.service.okr.persistence.config.BaseEntity;
 import kr.service.okr.persistence.entity.project.aggregate.initiative.InitiativeJpaEntity;
 import kr.service.okr.persistence.entity.project.aggregate.team.TeamMemberJpaEntity;
 import kr.service.okr.project.aggregate.feedback.domain.Feedback;
-import kr.service.okr.util.TokenGenerator;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,8 +34,6 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted = false")
 @Table(name = "feedback")
 public class FeedbackJpaEntity extends BaseEntity {
-
-	private static final String FEEDBACK_PREFIX = "feedback-";
 
 	@Id
 	@Column(name = "feedback_id")
@@ -67,36 +63,36 @@ public class FeedbackJpaEntity extends BaseEntity {
 
 	@NotNull
 	@Column(name = "checked")
-	private boolean isChecked;
+	private boolean checked;
 
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	@Builder
-	public FeedbackJpaEntity(InitiativeJpaEntity initiative, TeamMemberJpaEntity teamMember, FeedbackType grade,
-		String opinion) {
-		this.feedbackToken = TokenGenerator.randomCharacterWithPrefix(FEEDBACK_PREFIX);
-		this.initiative = initiative;
-		this.teamMember = teamMember;
-		this.grade = grade;
-		this.opinion = opinion;
-		this.isChecked = false;
+	public FeedbackJpaEntity(final Feedback feedback) {
+		this.id = feedback.getId();
+		this.feedbackToken = feedback.getFeedbackToken();
+		this.initiative = new InitiativeJpaEntity(feedback.getInitiative());
+		// this.teamMember = new TeamMemberJpaEntity(feedback.getTeamMember());
+		this.grade = feedback.getGrade();
+		this.opinion = feedback.getOpinion();
+		this.checked = feedback.isChecked();
 	}
 
 	public void checkFeedback() {
-		this.isChecked = true;
+		this.checked = true;
 	}
 
 	public Feedback toDomain() {
-		return new Feedback(
-			this.id,
-			this.feedbackToken,
-			this.initiative.toDomain(),
-			this.teamMember.toDomain(),
-			this.grade,
-			this.opinion,
-			this.isChecked
-		);
+		return Feedback.builder()
+			.id(this.id)
+			.feedbackToken(this.feedbackToken)
+			.initiative(this.initiative.toDomain())
+			// .teamMember(this.teamMember.toDomain())
+			.grade(this.grade)
+			.opinion(this.opinion)
+			.checked(this.checked)
+			.build();
+
 	}
 }
 

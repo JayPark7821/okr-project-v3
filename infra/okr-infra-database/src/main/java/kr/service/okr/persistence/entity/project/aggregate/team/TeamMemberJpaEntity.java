@@ -17,8 +17,8 @@ import kr.service.okr.persistence.config.BaseEntity;
 import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
 import kr.service.okr.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.project.aggregate.team.domain.TeamMember;
+import kr.service.okr.project.domain.Project;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -52,18 +52,35 @@ public class TeamMemberJpaEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	@Builder
-	public TeamMemberJpaEntity(TeamMember teamMember) {
-		this.userSeq = teamMember.getUserSeq();
-
+	public TeamMemberJpaEntity(
+		final Long userSeq,
+		final ProjectJpaEntity project,
+		final ProjectRoleType projectRoleType,
+		final boolean isNew
+	) {
+		this.userSeq = userSeq;
+		this.project = project;
+		this.projectRoleType = projectRoleType;
+		this.isNew = isNew;
 	}
 
-	public TeamMember toDomain() {
-		return TeamMember.builder()
-			.projectId(this.project.getId())
+	public TeamMemberJpaEntity(TeamMember teamMember, ProjectJpaEntity project) {
+		this(
+			teamMember.getUserSeq(),
+			project,
+			teamMember.getProjectRoleType(),
+			teamMember.isNew())
+		;
+	}
+
+	public TeamMember toDomain(Project project) {
+		final TeamMember teamMember = TeamMember.builder()
+			.project(project)
 			.userSeq(this.userSeq)
 			.projectRoleType(this.projectRoleType)
 			.isNew(this.isNew)
 			.build();
+		project.addTeamMember(teamMember);
+		return teamMember;
 	}
 }

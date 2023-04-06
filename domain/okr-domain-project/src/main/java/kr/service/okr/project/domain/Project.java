@@ -56,7 +56,7 @@ public class Project {
 	) {
 		this.id = id;
 		this.projectToken = projectToken;
-		this.teamMember = teamMember;
+		this.teamMember = teamMember == null ? new ArrayList<>() : teamMember;
 		this.keyResults = keyResults;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -76,6 +76,10 @@ public class Project {
 		member.join(this);
 		this.teamMember.add(member);
 
+	}
+
+	public void addTeamMember(final TeamMember member) {
+		this.teamMember.add(member);
 	}
 
 	public void assignId(final Long id) {

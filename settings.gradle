@@ -12,7 +12,7 @@ include 'cloud:okr-cloud-gateway'
 include 'api'
 
 include 'infra'
-//include 'infra:okr-infra-database'
+include 'infra:okr-infra-database'
 include 'infra:okr-infra-oauth'
 
 include 'domain'

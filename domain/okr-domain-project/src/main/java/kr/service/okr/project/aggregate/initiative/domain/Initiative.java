@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.service.okr.project.aggregate.feedback.domain.Feedback;
+import kr.service.okr.project.aggregate.keyresult.domain.KeyResult;
 import kr.service.okr.project.aggregate.team.domain.TeamMember;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
@@ -16,7 +17,7 @@ public class Initiative {
 	private static final String INITIATIVE_TOKEN_PREFIX = "initiative-";
 	private Long id;
 	private String initiativeToken;
-	private long keyResultId;
+	private KeyResult keyResult;
 	private TeamMember teamMember;
 	private String name;
 	private LocalDate startDate;
@@ -26,7 +27,7 @@ public class Initiative {
 	private List<Feedback> feedback = new ArrayList<>();
 
 	public Initiative(
-		final Long keyResultId,
+		final KeyResult keyResult,
 		final TeamMember teamMember,
 		final String name,
 		final LocalDate startDate,
@@ -35,7 +36,7 @@ public class Initiative {
 	) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(INITIATIVE_TOKEN_PREFIX);
 		;
-		this.keyResultId = keyResultId;
+		this.keyResult = keyResult;
 		this.teamMember = teamMember;
 		this.name = name;
 		this.startDate = startDate;
@@ -47,7 +48,7 @@ public class Initiative {
 	private Initiative(
 		final Long id,
 		final String initiativeToken,
-		final long keyResultId,
+		final KeyResult keyResult,
 		final TeamMember teamMember,
 		final String name,
 		final LocalDate startDate,
@@ -58,7 +59,7 @@ public class Initiative {
 	) {
 		this.id = id;
 		this.initiativeToken = initiativeToken;
-		this.keyResultId = keyResultId;
+		this.keyResult = keyResult;
 		this.teamMember = teamMember;
 		this.name = name;
 		this.startDate = startDate;
