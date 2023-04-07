@@ -1,12 +1,12 @@
-package kr.service.okr.project.aggregate.initiative.domain;
+package kr.service.okr.initiative.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.service.okr.project.aggregate.feedback.domain.Feedback;
-import kr.service.okr.project.aggregate.keyresult.domain.KeyResult;
-import kr.service.okr.project.aggregate.team.domain.TeamMember;
+import kr.service.okr.feedback.domain.Feedback;
+import kr.service.okr.keyresult.domain.KeyResult;
+import kr.service.okr.team.domain.TeamMember;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;

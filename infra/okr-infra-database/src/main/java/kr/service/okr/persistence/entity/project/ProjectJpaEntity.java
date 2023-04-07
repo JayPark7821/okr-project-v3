@@ -116,7 +116,7 @@ public class ProjectJpaEntity extends BaseEntity {
 			.progress(this.progress)
 			.build();
 
-		this.getTeamMember().stream().map(teamMember -> teamMember.toDomain(project)).toList();
+		this.getTeamMember().forEach(teamMember -> teamMember.toDomain(project));
 		return project;
 
 	}

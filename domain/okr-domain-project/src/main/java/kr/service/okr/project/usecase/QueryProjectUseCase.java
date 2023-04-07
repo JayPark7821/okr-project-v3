@@ -2,13 +2,14 @@ package kr.service.okr.project.usecase;
 
 import kr.service.okr.project.domain.Project;
 
-public interface QueryProjectByProjectTokenAndUserSeqUseCase {
+public interface QueryProjectUseCase {
 
-	Project findProjectBy(Query query);
+	Project findProjectBy(QueryProjectBy query);
 
-	record Query(
+	record QueryProjectBy(
 		String projectToken,
 		Long userSeq
 	) {
 	}
+
 }

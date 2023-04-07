@@ -1,8 +1,9 @@
-package kr.service.okr.api.project;
+package kr.service.okr.api.project.external;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import kr.service.okr.api.RegisterProjectRequestDto;
 import kr.service.okr.application.RegisterProjectCommand;
 
 public class ProjectMapper {

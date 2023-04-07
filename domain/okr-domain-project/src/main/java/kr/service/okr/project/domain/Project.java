@@ -8,9 +8,12 @@ import java.util.List;
 
 import org.springframework.util.Assert;
 
+import kr.service.okr.exception.ErrorCode;
+import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.keyresult.domain.KeyResult;
 import kr.service.okr.model.project.ProjectType;
-import kr.service.okr.project.aggregate.keyresult.domain.KeyResult;
-import kr.service.okr.project.aggregate.team.domain.TeamMember;
+import kr.service.okr.model.project.team.ProjectRoleType;
+import kr.service.okr.team.domain.TeamMember;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +38,8 @@ public class Project {
 		Assert.isTrue(objective.length() <= 50, OBJECTIVE_IS_TOO_LONG.getMessage());
 		Assert.notNull(startDate, PROJECT_START_DATE_IS_REQUIRED.getMessage());
 		Assert.notNull(endDate, PROJECT_END_DATE_IS_REQUIRED.getMessage());
+		Assert.isTrue(startDate.isBefore(endDate), PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage());
+		Assert.isTrue(endDate.isAfter(LocalDate.now()), PROJECT_END_DATE_IS_BEFORE_TODAY.getMessage());
 
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_TOKEN_PREFIX);
 		this.startDate = startDate;
@@ -65,24 +70,37 @@ public class Project {
 		this.progress = progress;
 	}
 
-	public void addLeader(final Long leaderSeq) {
-		final TeamMember leader = TeamMember.createLeader(leaderSeq);
-		leader.join(this);
+	public void createAndAddLeaderOf(final Long leaderSeq) {
+		final TeamMember leader = TeamMember.createLeader(leaderSeq, this);
 		this.teamMember.add(leader);
 	}
 
-	public void addTeamMember(final Long memberSeq) {
-		final TeamMember member = TeamMember.createMember(memberSeq);
-		member.join(this);
-		this.teamMember.add(member);
+	public void createAndAddMemberOf(final Long memberSeq, final Long leaderSeq) {
 
+		if (this.endDate.isAfter(LocalDate.now()))
+			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
+
+		if (memberSeq.equals(leaderSeq))
+			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
+
+		this.teamMember.stream()
+			.filter(member ->
+				member.getUserSeq().equals(leaderSeq) &&
+					member.getProjectRoleType().equals(ProjectRoleType.LEADER))
+			.findAny()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
+
+		this.teamMember.stream()
+			.filter(member -> member.getUserSeq().equals(leaderSeq))
+			.findAny()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER));
+
+		final TeamMember member = TeamMember.createMember(memberSeq, this);
+		this.teamMember.add(member);
 	}
 
 	public void addTeamMember(final TeamMember member) {
 		this.teamMember.add(member);
 	}
 
-	public void assignId(final Long id) {
-		this.id = id;
-	}
 }

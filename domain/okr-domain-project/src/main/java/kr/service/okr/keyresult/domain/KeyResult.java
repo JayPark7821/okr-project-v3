@@ -1,9 +1,9 @@
-package kr.service.okr.project.aggregate.keyresult.domain;
+package kr.service.okr.keyresult.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.service.okr.project.aggregate.initiative.domain.Initiative;
+import kr.service.okr.initiative.domain.Initiative;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;

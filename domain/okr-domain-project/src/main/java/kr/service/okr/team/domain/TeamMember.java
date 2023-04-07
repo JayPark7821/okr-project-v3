@@ -1,4 +1,4 @@
-package kr.service.okr.project.aggregate.team.domain;
+package kr.service.okr.team.domain;
 
 import kr.service.okr.model.project.team.ProjectRoleType;
 import kr.service.okr.project.domain.Project;
@@ -12,12 +12,14 @@ public class TeamMember {
 	private ProjectRoleType projectRoleType;
 	private boolean isNew = Boolean.TRUE;
 
-	public TeamMember(
+	private TeamMember(
 		final Long userSeq,
-		final ProjectRoleType projectRoleType
+		final ProjectRoleType projectRoleType,
+		final Project project
 	) {
 		this.userSeq = userSeq;
 		this.projectRoleType = projectRoleType;
+		this.project = project;
 	}
 
 	@Builder
@@ -29,16 +31,12 @@ public class TeamMember {
 		this.isNew = isNew;
 	}
 
-	public static TeamMember createLeader(long userSeq) {
-		return new TeamMember(userSeq, ProjectRoleType.LEADER);
+	public static TeamMember createLeader(long userSeq, Project project) {
+		return new TeamMember(userSeq, ProjectRoleType.LEADER, project);
 	}
 
-	public static TeamMember createMember(long userSeq) {
-		return new TeamMember(userSeq, ProjectRoleType.MEMBER);
-	}
-
-	public void join(Project project) {
-		this.project = project;
+	public static TeamMember createMember(long userSeq, Project project) {
+		return new TeamMember(userSeq, ProjectRoleType.MEMBER, project);
 	}
 
 	public void deleteNewProjectMark() {
