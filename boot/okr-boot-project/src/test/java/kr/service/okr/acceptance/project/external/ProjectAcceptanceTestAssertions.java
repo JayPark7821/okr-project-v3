@@ -1,4 +1,4 @@
-package kr.service.okr.acceptance.project;
+package kr.service.okr.acceptance.project.external;
 
 import java.util.regex.Pattern;
 

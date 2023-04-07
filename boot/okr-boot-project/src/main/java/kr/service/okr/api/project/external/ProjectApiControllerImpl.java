@@ -1,4 +1,4 @@
-package kr.service.okr.api.project;
+package kr.service.okr.api.project.external;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,19 +7,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import kr.service.okr.Response;
+import kr.service.okr.api.ProjectApiController;
+import kr.service.okr.api.RegisterProjectRequestDto;
 import kr.service.okr.application.ProjectFacade;
-import kr.service.okr.web.Response;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/project")
 @RequiredArgsConstructor
-public class ProjectApiController {
+public class ProjectApiControllerImpl implements ProjectApiController {
 
 	private final ProjectFacade projectFacade;
 
+	@Override
 	@PostMapping
-	ResponseEntity<String> registerProject(
+	public ResponseEntity<String> registerProject(
 		@RequestBody @Valid RegisterProjectRequestDto request
 	) {
 
@@ -27,5 +30,4 @@ public class ProjectApiController {
 			projectFacade.registerProject(ProjectMapper.toCommand(request, 1L))
 		);
 	}
-
 }

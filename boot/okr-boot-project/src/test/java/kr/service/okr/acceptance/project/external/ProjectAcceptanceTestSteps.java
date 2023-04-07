@@ -1,10 +1,10 @@
-package kr.service.okr.acceptance.project;
+package kr.service.okr.acceptance.project.external;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okr.api.project.RegisterProjectRequestDto;
+import kr.service.okr.api.RegisterProjectRequestDto;
 
 public class ProjectAcceptanceTestSteps {
 

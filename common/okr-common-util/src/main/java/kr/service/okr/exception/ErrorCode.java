@@ -6,10 +6,22 @@ public enum ErrorCode {
 	OBJECTIVE_IS_TOO_LONG("목표는 50자 이내로 입력해주세요."),
 	PROJECT_START_DATE_IS_REQUIRED("프로젝트 시작일은 필수 값 입니다."),
 	PROJECT_END_DATE_IS_REQUIRED("프로젝트 종료일은 필수 값 입니다."),
-
 	LEADER_IS_IN_TEAM_MEMBER("팀원에 리더가 포함되어 있습니다."),
-	PROJECT_NOT_FOUND("프로젝트를 찾을 수 없습니다.");
-	String message;
+	PROJECT_NOT_FOUND("프로젝트를 찾을 수 없습니다."),
+	REQUIRED_DATE_VALUE("날짜는 필수 값 입니다."),
+	INTERNAL_SERVER_ERROR("서버에 오류가 발생했습니다."),
+	PROJECT_START_DATE_IS_AFTER_END_DATE("프로젝트 시작일은 종료일 이전이어야 합니다."),
+	PROJECT_END_DATE_IS_BEFORE_TODAY("프로젝트 종료일은 오늘 이후여야 합니다."),
+	NOT_AVAIL_INVITE_MYSELF("자신을 초대할 수 없습니다."),
+	INVALID_PROJECT_TOKEN("유효하지 않은 프로젝트 토큰입니다."),
+	USER_IS_NOT_LEADER("해당 프로젝트의 리더만 진행 할 수 있습니다."),
+	NOT_UNDER_PROJECT_DURATION("프로젝트 기간이 아닙니다."),
+
+	USER_ALREADY_PROJECT_MEMBER("이미 프로젝트에 참여중인 사용자입니다."),
+
+	;
+
+	final String message;
 
 	ErrorCode(final String message) {
 		this.message = message;
