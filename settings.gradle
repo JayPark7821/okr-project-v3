@@ -1,7 +1,30 @@
 rootProject.name = 'okr-ver3'
 
 include 'okr'
-include 'okr-discovery-service'
-include 'okr-gateway-service'
+include 'boot'
+include 'boot:okr-boot-batch'
+include 'boot:okr-boot-project'
+
+include 'cloud'
+include 'cloud:okr-cloud-discovery'
+include 'cloud:okr-cloud-gateway'
+
+include 'api'
+include 'api:okr-api-project'
+
+include 'infra'
+include 'infra:okr-infra-database'
+include 'infra:okr-infra-oauth'
+
+include 'domain'
+include 'domain:okr-domain-project'
+include 'domain:okr-domain-user'
+
+include 'common'
+include 'common:okr-common-util'
+include 'common:okr-common-model'
+
 include 'okr-api'
 include 'okr-batch'
+
+
