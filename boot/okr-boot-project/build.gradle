@@ -4,7 +4,8 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 //    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 
     // jsonwebtoken 추가
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
@@ -13,7 +14,6 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -31,6 +31,7 @@ dependencies {
     implementation project(':domain:okr-domain-project')
     implementation project(':infra:okr-infra-database')
     implementation project(':common:okr-common-util')
+    implementation project(':api:okr-api-project')
 
 }
 

@@ -1,9 +1,7 @@
-package kr.service.okr.web;
+package kr.service.okr;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import kr.service.okr.exception.ErrorCode;
 
 public class Response<T> {
 
@@ -12,9 +10,9 @@ public class Response<T> {
 			.body(message);
 	}
 
-	public static ResponseEntity<String> error(ErrorCode errorCode) {
+	public static ResponseEntity<String> error(String errorMsg) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-			.body(errorCode.getMessage());
+			.body(errorMsg);
 	}
 
 	public static <T> ResponseEntity<T> successOk(T result) {

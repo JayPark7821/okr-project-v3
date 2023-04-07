@@ -10,6 +10,7 @@ include 'cloud:okr-cloud-discovery'
 include 'cloud:okr-cloud-gateway'
 
 include 'api'
+include 'api:okr-api-project'
 
 include 'infra'
 include 'infra:okr-infra-database'
