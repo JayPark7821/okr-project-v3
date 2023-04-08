@@ -75,6 +75,10 @@ public class Project {
 
 	public void createAndAddLeader(final Long leaderSeq) {
 		validateFinishedProject();
+		if (this.teamMember.stream()
+			.anyMatch(teamMember -> teamMember.getProjectRoleType().equals(ProjectRoleType.LEADER)))
+			throw new OkrApplicationException(ErrorCode.PROJECT_ALREADY_HAS_LEADER);
+
 		final TeamMember leader = TeamMember.createLeader(leaderSeq, this);
 		this.teamMember.add(leader);
 	}
