@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
@@ -21,6 +22,8 @@ class ProjectTest {
 	private static final Long LEADER = 1L;
 	private static final Long FIRST_MEMBER = 2L;
 	private static final Long SECOND_MEMBER = 3L;
+
+	@Value("${project.objective.max-length}")
 	private RegisterProjectUseCase sut;
 
 	@Test
@@ -105,15 +108,32 @@ class ProjectTest {
 	@Test
 	void registerKeyResult() throws Exception {
 		//given
-		final Long LEADER = 1L;
-		final Long FIRST_MEMBER = 2L;
-		final Long SECOND_MEMBER = 3L;
-		getProject();
-
+		final Project project = getProject();
+		final Project endedProject = getEndedProject();
+		final Project finishedProject = getFinishedProject();
+		final String keyResultName = "new keyResultName";
 		//when
+		assertThatThrownBy(() -> endedProject.addKeyResult(keyResultName, LEADER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
+
+		assertThatThrownBy(() -> finishedProject.addKeyResult(keyResultName, LEADER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
+
+		assertThatThrownBy(() -> project.addKeyResult(keyResultName, FIRST_MEMBER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
+
+		IntStream.range(0, 3)
+			.forEach(i -> project.addKeyResult(keyResultName + i, LEADER));
+
+		assertThatThrownBy(() -> project.addKeyResult(keyResultName, LEADER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.MAX_KEYRESULT_COUNT_EXCEEDED.getMessage());
 
 		//then
-
+		assertThat(project.getKeyResults()).hasSize(3);
 	}
 
 	private static Project getEndedProject() throws Exception {

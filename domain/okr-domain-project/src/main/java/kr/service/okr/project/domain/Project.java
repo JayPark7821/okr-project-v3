@@ -125,4 +125,8 @@ public class Project {
 		if (this.endDate.isBefore(LocalDate.now()))
 			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
 	}
+
+	public String addKeyResult(final String keyResultName, final Long leader) {
+		throw new IllegalStateException("Project::addKeyResult not implemented yet");
+	}
 }
