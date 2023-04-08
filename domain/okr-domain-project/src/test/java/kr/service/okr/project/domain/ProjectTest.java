@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
@@ -18,6 +19,11 @@ import kr.service.okr.project.usecase.RegisterProjectUseCase;
 import kr.service.okr.team.domain.TeamMember;
 
 class ProjectTest {
+	private static final Long LEADER = 1L;
+	private static final Long FIRST_MEMBER = 2L;
+	private static final Long SECOND_MEMBER = 3L;
+
+	@Value("${project.objective.max-length}")
 	private RegisterProjectUseCase sut;
 
 	@Test
@@ -57,44 +63,34 @@ class ProjectTest {
 	@Test
 	void inviteNewTeamMember() throws Exception {
 		// given
-		final Long projectLeaderSeq = 1L;
-		final Long projectMemberSeq = 2L;
-		final Long projectMemberSeq2 = 3L;
-		final Project project = new Project("objective", generateDate(0), generateDate(10));
-		final Project endedProject = new Project("objective", generateDate(-10), generateDate(1));
-		final Project finishedProject = new Project("objective", generateDate(-10), generateDate(1));
-		final Field endDate = endedProject.getClass().getDeclaredField("endDate");
-		endDate.setAccessible(true);
-		endDate.set(endedProject, generateDate(-1));
-		endDate.setAccessible(false);
-		finishedProject.makeProjectFinished();
-		project.createAndAddLeader(projectLeaderSeq);
-		endedProject.createAndAddLeader(projectLeaderSeq);
+		final Project project = getProject();
+		final Project endedProject = getEndedProject();
+		final Project finishedProject = getFinishedProject();
 
 		// when
-		assertThatThrownBy(() -> endedProject.createAndAddMemberOf(projectMemberSeq, projectLeaderSeq))
+		assertThatThrownBy(() -> endedProject.createAndAddMemberOf(FIRST_MEMBER, LEADER))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 
-		assertThatThrownBy(() -> finishedProject.createAndAddMemberOf(projectMemberSeq, projectLeaderSeq))
+		assertThatThrownBy(() -> finishedProject.createAndAddMemberOf(FIRST_MEMBER, LEADER))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
 
-		assertThatThrownBy(() -> project.createAndAddMemberOf(projectLeaderSeq, projectLeaderSeq))
+		assertThatThrownBy(() -> project.createAndAddMemberOf(LEADER, LEADER))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
 
-		assertThatThrownBy(() -> project.createAndAddMemberOf(projectMemberSeq2, projectMemberSeq))
+		assertThatThrownBy(() -> project.createAndAddMemberOf(SECOND_MEMBER, FIRST_MEMBER))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
-		assertThatThrownBy(() -> project.createAndAddMemberOf(projectMemberSeq, projectMemberSeq2))
+		assertThatThrownBy(() -> project.createAndAddMemberOf(FIRST_MEMBER, SECOND_MEMBER))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
-		project.createAndAddMemberOf(projectMemberSeq, projectLeaderSeq);
+		project.createAndAddMemberOf(FIRST_MEMBER, LEADER);
 
-		assertThatThrownBy(() -> project.createAndAddMemberOf(projectMemberSeq, projectLeaderSeq))
+		assertThatThrownBy(() -> project.createAndAddMemberOf(FIRST_MEMBER, LEADER))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
 
@@ -107,6 +103,60 @@ class ProjectTest {
 					teamMember.getUserSeq().equals(2L)).findAny())
 			.isPresent();
 
+	}
+
+	@Test
+	void registerKeyResult() throws Exception {
+		//given
+		final Project project = getProject();
+		final Project endedProject = getEndedProject();
+		final Project finishedProject = getFinishedProject();
+		final String keyResultName = "new keyResultName";
+		//when
+		assertThatThrownBy(() -> endedProject.addKeyResult(keyResultName, LEADER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
+
+		assertThatThrownBy(() -> finishedProject.addKeyResult(keyResultName, LEADER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
+
+		assertThatThrownBy(() -> project.addKeyResult(keyResultName, FIRST_MEMBER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
+
+		IntStream.range(0, 3)
+			.forEach(i -> project.addKeyResult(keyResultName + i, LEADER));
+
+		assertThatThrownBy(() -> project.addKeyResult(keyResultName, LEADER))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.MAX_KEYRESULT_COUNT_EXCEEDED.getMessage());
+
+		//then
+		assertThat(project.getKeyResults()).hasSize(3);
+	}
+
+	private static Project getEndedProject() throws Exception {
+		final Project project = new Project("objective", generateDate(-10), generateDate(1));
+		project.createAndAddLeader(LEADER);
+		final Field endDate = project.getClass().getDeclaredField("endDate");
+		endDate.setAccessible(true);
+		endDate.set(project, generateDate(-1));
+		endDate.setAccessible(false);
+		return project;
+	}
+
+	private static Project getProject() {
+		final Project project = new Project("objective", generateDate(0), generateDate(10));
+		project.createAndAddLeader(LEADER);
+		return project;
+	}
+
+	private static Project getFinishedProject() {
+		final Project project = new Project("objective", generateDate(-10), generateDate(1));
+		project.createAndAddLeader(LEADER);
+		project.makeProjectFinished();
+		return project;
 	}
 
 	private static LocalDate generateDate(int days) {
