@@ -103,6 +103,19 @@ public class Project {
 		this.teamMember.add(member);
 	}
 
+	public String addKeyResult(final String keyResultName, final Long leader) {
+		validateProjectLeader(leader);
+		validateProjectDuration();
+		validateFinishedProject();
+		if (this.keyResults.size() >= MAX_KEYRESULT_COUNT)
+			throw new OkrApplicationException(MAX_KEYRESULT_COUNT_EXCEEDED);
+
+		final KeyResult keyResult = new KeyResult(keyResultName, this.id, this.keyResults.size() + 1, List.of());
+		this.keyResults.add(keyResult);
+
+		return keyResult.getKeyResultToken();
+	}
+
 	public void makeProjectFinished() {
 		this.finished = true;
 	}
@@ -124,9 +137,5 @@ public class Project {
 	private void validateProjectDuration() {
 		if (this.endDate.isBefore(LocalDate.now()))
 			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
-	}
-
-	public String addKeyResult(final String keyResultName, final Long leader) {
-		throw new IllegalStateException("Project::addKeyResult not implemented yet");
 	}
 }
