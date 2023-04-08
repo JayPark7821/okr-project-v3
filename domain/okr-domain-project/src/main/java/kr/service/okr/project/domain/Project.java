@@ -77,11 +77,8 @@ public class Project {
 
 	public void createAndAddMemberOf(final Long memberSeq, final Long leaderSeq) {
 
-		if (this.endDate.isAfter(LocalDate.now()))
+		if (this.endDate.isBefore(LocalDate.now()))
 			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
-
-		if (memberSeq.equals(leaderSeq))
-			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 
 		this.teamMember.stream()
 			.filter(member ->
@@ -90,10 +87,11 @@ public class Project {
 			.findAny()
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
 
-		this.teamMember.stream()
-			.filter(member -> member.getUserSeq().equals(leaderSeq))
-			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER));
+		if (memberSeq.equals(leaderSeq))
+			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
+
+		if (this.teamMember.stream().anyMatch(member -> member.getUserSeq().equals(memberSeq)))
+			throw new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER);
 
 		final TeamMember member = TeamMember.createMember(memberSeq, this);
 		this.teamMember.add(member);
