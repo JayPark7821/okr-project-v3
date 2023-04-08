@@ -74,26 +74,16 @@ public class Project {
 	}
 
 	public void createAndAddLeader(final Long leaderSeq) {
-		if (this.finished)
-			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
+		validateFinishedProject();
 		final TeamMember leader = TeamMember.createLeader(leaderSeq, this);
 		this.teamMember.add(leader);
 	}
 
 	public void createAndAddMemberOf(final Long memberSeq, final Long leaderSeq) {
 
-		if (this.finished)
-			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
-
-		if (this.endDate.isBefore(LocalDate.now()))
-			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
-
-		this.teamMember.stream()
-			.filter(member ->
-				member.getUserSeq().equals(leaderSeq) &&
-					member.getProjectRoleType().equals(ProjectRoleType.LEADER))
-			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
+		validateFinishedProject();
+		validateProjectDuration();
+		validateProjectLeader(leaderSeq);
 
 		if (memberSeq.equals(leaderSeq))
 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
@@ -111,5 +101,24 @@ public class Project {
 
 	public void makeProjectFinished() {
 		this.finished = true;
+	}
+
+	private void validateFinishedProject() {
+		if (this.finished)
+			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
+	}
+
+	private void validateProjectLeader(final Long leaderSeq) {
+		this.teamMember.stream()
+			.filter(member ->
+				member.getUserSeq().equals(leaderSeq) &&
+					member.getProjectRoleType().equals(ProjectRoleType.LEADER))
+			.findAny()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
+	}
+
+	private void validateProjectDuration() {
+		if (this.endDate.isBefore(LocalDate.now()))
+			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
 	}
 }
