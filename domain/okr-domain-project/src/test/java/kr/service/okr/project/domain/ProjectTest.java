@@ -62,17 +62,23 @@ class ProjectTest {
 		final Long projectMemberSeq2 = 3L;
 		final Project project = new Project("objective", generateDate(0), generateDate(10));
 		final Project endedProject = new Project("objective", generateDate(-10), generateDate(1));
+		final Project finishedProject = new Project("objective", generateDate(-10), generateDate(1));
 		final Field endDate = endedProject.getClass().getDeclaredField("endDate");
 		endDate.setAccessible(true);
 		endDate.set(endedProject, generateDate(-1));
 		endDate.setAccessible(false);
-		project.createAndAddLeaderOf(projectLeaderSeq);
-		endedProject.createAndAddLeaderOf(projectLeaderSeq);
+		finishedProject.makeProjectFinished();
+		project.createAndAddLeader(projectLeaderSeq);
+		endedProject.createAndAddLeader(projectLeaderSeq);
 
 		// when
 		assertThatThrownBy(() -> endedProject.createAndAddMemberOf(projectMemberSeq, projectLeaderSeq))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
+
+		assertThatThrownBy(() -> finishedProject.createAndAddMemberOf(projectMemberSeq, projectLeaderSeq))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
 
 		assertThatThrownBy(() -> project.createAndAddMemberOf(projectLeaderSeq, projectLeaderSeq))
 			.isInstanceOf(OkrApplicationException.class)

@@ -32,6 +32,7 @@ public class Project {
 	private ProjectType type = ProjectType.SINGLE;
 	private String objective;
 	private double progress = 0.0D;
+	private boolean finished = false;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
 		Assert.hasText(objective, OBJECTIVE_IS_REQUIRED.getMessage());
@@ -57,7 +58,8 @@ public class Project {
 		final LocalDate endDate,
 		final ProjectType type,
 		final String objective,
-		final double progress
+		final double progress,
+		final boolean finished
 	) {
 		this.id = id;
 		this.projectToken = projectToken;
@@ -68,14 +70,20 @@ public class Project {
 		this.type = type;
 		this.objective = objective;
 		this.progress = progress;
+		this.finished = finished;
 	}
 
-	public void createAndAddLeaderOf(final Long leaderSeq) {
+	public void createAndAddLeader(final Long leaderSeq) {
+		if (this.finished)
+			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
 		final TeamMember leader = TeamMember.createLeader(leaderSeq, this);
 		this.teamMember.add(leader);
 	}
 
 	public void createAndAddMemberOf(final Long memberSeq, final Long leaderSeq) {
+
+		if (this.finished)
+			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
 
 		if (this.endDate.isBefore(LocalDate.now()))
 			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
@@ -101,4 +109,7 @@ public class Project {
 		this.teamMember.add(member);
 	}
 
+	public void makeProjectFinished() {
+		this.finished = true;
+	}
 }
