@@ -23,7 +23,7 @@ public class RegisterProject implements RegisterProjectUseCase {
 		assertLeaderIsNotInTeamMember(command);
 
 		final Project project = new Project(command.objective(), command.startDate(), command.endDate());
-		project.createAndAddLeaderOf(command.userSeq());
+		project.createAndAddLeader(command.userSeq());
 		command.teamMemberUserSeqs()
 			.forEach(teamMemberSeq -> project.createAndAddMemberOf(teamMemberSeq, command.userSeq()));
 

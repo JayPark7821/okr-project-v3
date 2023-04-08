@@ -32,6 +32,7 @@ public class Project {
 	private ProjectType type = ProjectType.SINGLE;
 	private String objective;
 	private double progress = 0.0D;
+	private boolean finished = false;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
 		Assert.hasText(objective, OBJECTIVE_IS_REQUIRED.getMessage());
@@ -57,7 +58,8 @@ public class Project {
 		final LocalDate endDate,
 		final ProjectType type,
 		final String objective,
-		final double progress
+		final double progress,
+		final boolean finished
 	) {
 		this.id = id;
 		this.projectToken = projectToken;
@@ -68,32 +70,30 @@ public class Project {
 		this.type = type;
 		this.objective = objective;
 		this.progress = progress;
+		this.finished = finished;
 	}
 
-	public void createAndAddLeaderOf(final Long leaderSeq) {
+	public void createAndAddLeader(final Long leaderSeq) {
+		validateFinishedProject();
+		if (this.teamMember.stream()
+			.anyMatch(teamMember -> teamMember.getProjectRoleType().equals(ProjectRoleType.LEADER)))
+			throw new OkrApplicationException(ErrorCode.PROJECT_ALREADY_HAS_LEADER);
+
 		final TeamMember leader = TeamMember.createLeader(leaderSeq, this);
 		this.teamMember.add(leader);
 	}
 
 	public void createAndAddMemberOf(final Long memberSeq, final Long leaderSeq) {
 
-		if (this.endDate.isAfter(LocalDate.now()))
-			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
+		validateFinishedProject();
+		validateProjectDuration();
+		validateProjectLeader(leaderSeq);
 
 		if (memberSeq.equals(leaderSeq))
 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 
-		this.teamMember.stream()
-			.filter(member ->
-				member.getUserSeq().equals(leaderSeq) &&
-					member.getProjectRoleType().equals(ProjectRoleType.LEADER))
-			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
-
-		this.teamMember.stream()
-			.filter(member -> member.getUserSeq().equals(leaderSeq))
-			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER));
+		if (this.teamMember.stream().anyMatch(member -> member.getUserSeq().equals(memberSeq)))
+			throw new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER);
 
 		final TeamMember member = TeamMember.createMember(memberSeq, this);
 		this.teamMember.add(member);
@@ -103,4 +103,26 @@ public class Project {
 		this.teamMember.add(member);
 	}
 
+	public void makeProjectFinished() {
+		this.finished = true;
+	}
+
+	private void validateFinishedProject() {
+		if (this.finished)
+			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
+	}
+
+	private void validateProjectLeader(final Long leaderSeq) {
+		this.teamMember.stream()
+			.filter(member ->
+				member.getUserSeq().equals(leaderSeq) &&
+					member.getProjectRoleType().equals(ProjectRoleType.LEADER))
+			.findAny()
+			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
+	}
+
+	private void validateProjectDuration() {
+		if (this.endDate.isBefore(LocalDate.now()))
+			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
+	}
 }

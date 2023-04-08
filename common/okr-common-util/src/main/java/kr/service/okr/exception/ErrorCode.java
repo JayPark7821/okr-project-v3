@@ -19,6 +19,8 @@ public enum ErrorCode {
 
 	USER_ALREADY_PROJECT_MEMBER("이미 프로젝트에 참여중인 사용자입니다."),
 
+	PROJECT_IS_FINISHED("이미 종료된 프로젝트 입니다."),
+	PROJECT_ALREADY_HAS_LEADER("이미 리더가 존재합니다."),
 	;
 
 	final String message;
