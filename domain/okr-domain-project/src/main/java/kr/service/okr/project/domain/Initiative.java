@@ -1,12 +1,9 @@
-package kr.service.okr.initiative.domain;
+package kr.service.okr.project.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.service.okr.feedback.domain.Feedback;
-import kr.service.okr.keyresult.domain.KeyResult;
-import kr.service.okr.team.domain.TeamMember;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +23,7 @@ public class Initiative {
 	private boolean done = Boolean.FALSE;
 	private List<Feedback> feedback = new ArrayList<>();
 
-	public Initiative(
+	protected Initiative(
 		final KeyResult keyResult,
 		final TeamMember teamMember,
 		final String name,
@@ -35,7 +32,6 @@ public class Initiative {
 		final String detail
 	) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(INITIATIVE_TOKEN_PREFIX);
-		;
 		this.keyResult = keyResult;
 		this.teamMember = teamMember;
 		this.name = name;

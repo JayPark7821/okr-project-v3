@@ -17,7 +17,7 @@ import kr.service.okr.persistence.config.BaseEntity;
 import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
 import kr.service.okr.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.project.domain.Project;
-import kr.service.okr.team.domain.TeamMember;
+import kr.service.okr.project.domain.TeamMember;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,7 +3,10 @@ package kr.service.okr.exception;
 public enum ErrorCode {
 
 	OBJECTIVE_IS_REQUIRED("목표는 필수 값 입니다."),
-	OBJECTIVE_IS_TOO_LONG("목표는 50자 이내로 입력해주세요."),
+	OBJECTIVE_WRONG_INPUT_LENGTH("목표는 1자 이상 50자 이내로 입력해주세요."),
+	KEYRESULT_NAME_WRONG_INPUT_LENGTH("핵심결과는 1자 이상 50자 이내로 입력해주세요."),
+	INITIATIVE_NAME_WRONG_INPUT_LENGTH("행동전략은 1자 이상 50자 이내로 입력해주세요."),
+	INITIATIVE_DETAIL_WRONG_INPUT_LENGTH("행동전략 1자 이상 상세는 50자 이내로 입력해주세요."),
 	PROJECT_START_DATE_IS_REQUIRED("프로젝트 시작일은 필수 값 입니다."),
 	PROJECT_END_DATE_IS_REQUIRED("프로젝트 종료일은 필수 값 입니다."),
 	LEADER_IS_IN_TEAM_MEMBER("팀원에 리더가 포함되어 있습니다."),
@@ -22,6 +25,14 @@ public enum ErrorCode {
 	PROJECT_IS_FINISHED("이미 종료된 프로젝트 입니다."),
 	PROJECT_ALREADY_HAS_LEADER("이미 리더가 존재합니다."),
 	MAX_KEYRESULT_COUNT_EXCEEDED("핵심결과 등록 최대 개수를 초과했습니다."),
+
+	INVALID_INITIATIVE_DATE("행동전략의 시작, 종료일은 목표 기간 안에서만 등록할 수 있습니다."),
+	INVALID_KEYRESULT_TOKEN("유효하지 않은 핵심결과 토큰입니다."),
+	INITIATIVE_NAME_IS_REQUIRED("행동전략명은 필수 값 입니다."),
+
+	INITIATIVE_DETAIL_IS_REQUIRED("행동전략 상세는 필수 값 입니다."),
+	INITIATIVE_START_DATE_IS_REQUIRED("행동전략 시작일은 필수 값 입니다."),
+	INITIATIVE_END_DATE_IS_REQUIRED("행동전략 종료일은 필수 값 입니다."),
 	;
 
 	final String message;

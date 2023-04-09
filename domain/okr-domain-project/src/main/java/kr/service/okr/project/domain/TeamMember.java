@@ -1,7 +1,6 @@
-package kr.service.okr.team.domain;
+package kr.service.okr.project.domain;
 
 import kr.service.okr.model.project.team.ProjectRoleType;
-import kr.service.okr.project.domain.Project;
 import lombok.Builder;
 import lombok.Getter;
 
