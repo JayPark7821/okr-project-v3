@@ -119,7 +119,8 @@ public class Project {
 		if (keyResultName.length() >= MAX_KERSULT_NAME_LENGTH)
 			throw new OkrApplicationException(KEYRESULT_NAME_WRONG_INPUT_LENGTH);
 
-		final KeyResult keyResult = new KeyResult(keyResultName, this.id, this.keyResults.size() + 1, List.of());
+		final KeyResult keyResult =
+			new KeyResult(keyResultName, this.id, this.keyResults.size() + 1, new ArrayList<>());
 		this.keyResults.add(keyResult);
 
 		return keyResult.getKeyResultToken();
@@ -186,6 +187,6 @@ public class Project {
 			throw new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_DATE);
 		}
 
-		return keyResult.addInitiative(initiativeName, memberSeq, initiativeDetail, startDate, endDate);
+		return keyResult.addInitiative(initiativeName, member, initiativeDetail, startDate, endDate);
 	}
 }

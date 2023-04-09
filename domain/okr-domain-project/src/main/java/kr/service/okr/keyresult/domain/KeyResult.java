@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.service.okr.initiative.domain.Initiative;
+import kr.service.okr.team.domain.TeamMember;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,8 +51,18 @@ public class KeyResult {
 		this.initiative = initiative;
 	}
 
-	public String addInitiative(final String initiativeName, final Long member, final String initiativeDetail,
-		final LocalDate startDate, final LocalDate endDate) {
-		throw new IllegalStateException("KeyResult::addInitiative not implemented yet");
+	public String addInitiative(
+		final String initiativeName,
+		final TeamMember member,
+		final String initiativeDetail,
+		final LocalDate startDate,
+		final LocalDate endDate
+	) {
+
+		final Initiative initiative =
+			new Initiative(this, member, initiativeName, startDate, endDate, initiativeDetail);
+		this.initiative.add(initiative);
+
+		return initiative.getInitiativeToken();
 	}
 }

@@ -35,7 +35,6 @@ public class Initiative {
 		final String detail
 	) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(INITIATIVE_TOKEN_PREFIX);
-		;
 		this.keyResult = keyResult;
 		this.teamMember = teamMember;
 		this.name = name;

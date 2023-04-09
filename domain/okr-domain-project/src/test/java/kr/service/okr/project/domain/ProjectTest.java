@@ -244,7 +244,7 @@ class ProjectTest {
 				LocalDate.now().plusDays(11))
 		)
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
+			.hasMessage(ErrorCode.INVALID_KEYRESULT_TOKEN.getMessage());
 
 		project.addInitiative(projectKeyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, LocalDate.now(),
 			LocalDate.now());
