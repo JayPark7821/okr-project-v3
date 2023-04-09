@@ -1,5 +1,6 @@
 package kr.service.okr.keyresult.domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +48,10 @@ public class KeyResult {
 		this.name = name;
 		this.keyResultIndex = keyResultIndex;
 		this.initiative = initiative;
+	}
+
+	public String addInitiative(final String initiativeName, final Long member, final String initiativeDetail,
+		final LocalDate startDate, final LocalDate endDate) {
+		throw new IllegalStateException("KeyResult::addInitiative not implemented yet");
 	}
 }

@@ -40,7 +40,7 @@ class ProjectTest {
 
 		assertThatThrownBy(() -> new Project(tooLongObjective, generateDate(0), generateDate(10)))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorCode.OBJECTIVE_IS_TOO_LONG.getMessage());
+			.hasMessage(ErrorCode.OBJECTIVE_WRONG_INPUT_LENGTH.getMessage());
 
 		assertThatThrownBy(() -> new Project("objective", null, generateDate(10)))
 			.isInstanceOf(IllegalArgumentException.class)
@@ -221,6 +221,30 @@ class ProjectTest {
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
+
+		assertThatThrownBy(
+			() -> project.addInitiative(
+				projectKeyResultToken,
+				initiativeName,
+				SECOND_MEMBER,
+				initiativeDetail,
+				LocalDate.now().minusDays(0),
+				LocalDate.now().plusDays(11))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
+
+		assertThatThrownBy(
+			() -> project.addInitiative(
+				"wrongKeyresultToken",
+				initiativeName,
+				SECOND_MEMBER,
+				initiativeDetail,
+				LocalDate.now().minusDays(0),
+				LocalDate.now().plusDays(11))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
 
 		project.addInitiative(projectKeyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, LocalDate.now(),
 			LocalDate.now());

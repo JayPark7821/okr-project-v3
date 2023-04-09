@@ -23,6 +23,11 @@ public class Project {
 
 	private static final String PROJECT_TOKEN_PREFIX = "project-";
 	private static final int MAX_KEYRESULT_COUNT = 3;
+	private static final int MAX_OBJECTIVE_LENGTH = 50;
+	private static final int MAX_KERSULT_NAME_LENGTH = 50;
+	private static final int MAX_INITIATIVE_NAME_LENGTH = 50;
+	private static final int MAX_INITIATIVE_DETAIL_LENGTH = 200;
+
 	private Long id;
 	private String projectToken;
 	private List<TeamMember> teamMember = new ArrayList<>();
@@ -35,8 +40,9 @@ public class Project {
 	private boolean finished = false;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
-		Assert.hasText(objective, OBJECTIVE_IS_REQUIRED.getMessage());
-		Assert.isTrue(objective.length() <= 50, OBJECTIVE_IS_TOO_LONG.getMessage());
+		Assert.notNull(objective, OBJECTIVE_IS_REQUIRED.getMessage());
+		Assert.isTrue(objective.length() <= MAX_OBJECTIVE_LENGTH && objective.length() > 0,
+			OBJECTIVE_WRONG_INPUT_LENGTH.getMessage());
 		Assert.notNull(startDate, PROJECT_START_DATE_IS_REQUIRED.getMessage());
 		Assert.notNull(endDate, PROJECT_END_DATE_IS_REQUIRED.getMessage());
 		Assert.isTrue(startDate.isBefore(endDate), PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage());
@@ -110,6 +116,9 @@ public class Project {
 		if (this.keyResults.size() >= MAX_KEYRESULT_COUNT)
 			throw new OkrApplicationException(MAX_KEYRESULT_COUNT_EXCEEDED);
 
+		if (keyResultName.length() >= MAX_KERSULT_NAME_LENGTH)
+			throw new OkrApplicationException(KEYRESULT_NAME_WRONG_INPUT_LENGTH);
+
 		final KeyResult keyResult = new KeyResult(keyResultName, this.id, this.keyResults.size() + 1, List.of());
 		this.keyResults.add(keyResult);
 
@@ -139,14 +148,44 @@ public class Project {
 			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
 	}
 
-	public void addInitiative(
+	public String addInitiative(
 		final String keyResultToken,
 		final String initiativeName,
-		final Long member,
+		final Long memberSeq,
 		final String initiativeDetail,
 		final LocalDate startDate,
 		final LocalDate endDate
 	) {
-		throw new IllegalStateException("Project::addInitiative not implemented yet");
+		validateProjectDuration();
+		validateFinishedProject();
+
+		final KeyResult keyResult = this.keyResults.stream()
+			.filter(kr -> kr.getKeyResultToken().equals(keyResultToken))
+			.findAny()
+			.orElseThrow(() -> new OkrApplicationException(INVALID_KEYRESULT_TOKEN));
+
+		final TeamMember member = this.teamMember.stream()
+			.filter(teamMember -> teamMember.getUserSeq().equals(memberSeq))
+			.findAny()
+			.orElseThrow(() -> new OkrApplicationException(INVALID_PROJECT_TOKEN));
+
+		Assert.notNull(initiativeName, INITIATIVE_NAME_IS_REQUIRED.getMessage());
+		Assert.notNull(initiativeDetail, INITIATIVE_DETAIL_IS_REQUIRED.getMessage());
+		Assert.isTrue(initiativeName.length() <= MAX_INITIATIVE_NAME_LENGTH && initiativeName.length() > 0,
+			INITIATIVE_NAME_WRONG_INPUT_LENGTH.getMessage());
+		Assert.isTrue(initiativeDetail.length() <= MAX_INITIATIVE_DETAIL_LENGTH && initiativeDetail.length() > 0,
+			INITIATIVE_DETAIL_WRONG_INPUT_LENGTH.getMessage());
+		Assert.notNull(startDate, INITIATIVE_START_DATE_IS_REQUIRED.getMessage());
+		Assert.notNull(endDate, INITIATIVE_END_DATE_IS_REQUIRED.getMessage());
+
+		if (endDate.isBefore(this.startDate) ||
+			endDate.isAfter(this.endDate) ||
+			startDate.isBefore(this.startDate) ||
+			startDate.isAfter(this.endDate)
+		) {
+			throw new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_DATE);
+		}
+
+		return keyResult.addInitiative(initiativeName, memberSeq, initiativeDetail, startDate, endDate);
 	}
 }
