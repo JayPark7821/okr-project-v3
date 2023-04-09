@@ -22,6 +22,8 @@ public enum ErrorCode {
 	PROJECT_IS_FINISHED("이미 종료된 프로젝트 입니다."),
 	PROJECT_ALREADY_HAS_LEADER("이미 리더가 존재합니다."),
 	MAX_KEYRESULT_COUNT_EXCEEDED("핵심결과 등록 최대 개수를 초과했습니다."),
+
+	INVALID_INITIATIVE_DATE("행동전략의 시작, 종료일은 목표 기간 안에서만 등록할 수 있습니다."),
 	;
 
 	final String message;

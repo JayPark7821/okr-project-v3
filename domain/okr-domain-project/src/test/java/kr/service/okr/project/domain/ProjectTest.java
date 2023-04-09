@@ -1,5 +1,6 @@
 package kr.service.okr.project.domain;
 
+import static kr.service.okr.project.domain.ProjectTest.ProjectStatusType.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Field;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,9 +65,9 @@ class ProjectTest {
 	@Test
 	void inviteNewTeamMember() throws Exception {
 		// given
-		final Project project = getProject();
-		final Project endedProject = getEndedProject();
-		final Project finishedProject = getFinishedProject();
+		final Project project = generateProject(NORMAL, 0, 0);
+		final Project endedProject = generateProject(ENDED, 0, 0);
+		final Project finishedProject = generateProject(FINISHED, 0, 0);
 
 		// when
 		assertThatThrownBy(() -> endedProject.createAndAddMemberOf(FIRST_MEMBER, LEADER))
@@ -108,9 +110,9 @@ class ProjectTest {
 	@Test
 	void registerKeyResult() throws Exception {
 		//given
-		final Project project = getProject();
-		final Project endedProject = getEndedProject();
-		final Project finishedProject = getFinishedProject();
+		final Project project = generateProject(NORMAL, 0, 0);
+		final Project endedProject = generateProject(ENDED, 0, 0);
+		final Project finishedProject = generateProject(FINISHED, 0, 0);
 		final String keyResultName = "new keyResultName";
 		//when
 		assertThatThrownBy(() -> endedProject.addKeyResult(keyResultName, LEADER))
@@ -136,30 +138,131 @@ class ProjectTest {
 		assertThat(project.getKeyResults()).hasSize(3);
 	}
 
-	private static Project getEndedProject() throws Exception {
-		final Project project = new Project("objective", generateDate(-10), generateDate(1));
-		project.createAndAddLeader(LEADER);
-		final Field endDate = project.getClass().getDeclaredField("endDate");
-		endDate.setAccessible(true);
-		endDate.set(project, generateDate(-1));
-		endDate.setAccessible(false);
-		return project;
+	@Test
+	void registerInitiative() throws Exception {
+		//given
+		final Project project = generateProject(NORMAL, 1, 1);
+		final Project endedProject = generateProject(ENDED, 1, 1);
+		final Project finishedProject = generateProject(FINISHED, 1, 1);
+		final String initiativeName = "new initiativeName";
+		final String initiativeDetail = "initiative Details";
+		final String projectKeyResultToken = project.getKeyResults().get(0).getKeyResultToken();
+		final String endedProjectKeyResultToken = endedProject.getKeyResults().get(0).getKeyResultToken();
+		final String finishedProjectKeyResultToken = finishedProject.getKeyResults().get(0).getKeyResultToken();
+
+		//when
+		assertThatThrownBy(() -> endedProject.addInitiative(
+			endedProjectKeyResultToken,
+			initiativeName,
+			FIRST_MEMBER,
+			initiativeDetail,
+			LocalDate.now(),
+			LocalDate.now().plusDays(1))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
+
+		assertThatThrownBy(
+			() -> finishedProject.addInitiative(
+				finishedProjectKeyResultToken,
+				initiativeName,
+				FIRST_MEMBER,
+				initiativeDetail,
+				LocalDate.now(),
+				LocalDate.now().plusDays(1))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
+
+		assertThatThrownBy(
+			() -> project.addInitiative(
+				projectKeyResultToken,
+				initiativeName,
+				FIRST_MEMBER,
+				initiativeDetail,
+				LocalDate.now().minusDays(11),
+				LocalDate.now().plusDays(1))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
+
+		assertThatThrownBy(
+			() -> project.addInitiative(
+				projectKeyResultToken,
+				initiativeName,
+				FIRST_MEMBER,
+				initiativeDetail,
+				LocalDate.now().minusDays(0),
+				LocalDate.now().plusDays(11))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
+
+		assertThatThrownBy(
+			() -> project.addInitiative(
+				projectKeyResultToken,
+				initiativeName,
+				FIRST_MEMBER,
+				initiativeDetail,
+				LocalDate.now().minusDays(0),
+				LocalDate.now().minusDays(11))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
+
+		assertThatThrownBy(
+			() -> project.addInitiative(
+				projectKeyResultToken,
+				initiativeName,
+				FIRST_MEMBER,
+				initiativeDetail,
+				LocalDate.now().minusDays(0),
+				LocalDate.now().plusDays(11))
+		)
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
+
+		project.addInitiative(projectKeyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, LocalDate.now(),
+			LocalDate.now());
+
+		//then
+		assertThat(project.getKeyResults()
+			.stream()
+			.filter(keyResult -> keyResult.getKeyResultToken().equals(projectKeyResultToken))
+			.count()).isEqualTo(1);
+
 	}
 
-	private static Project getProject() {
-		final Project project = new Project("objective", generateDate(0), generateDate(10));
-		project.createAndAddLeader(LEADER);
-		return project;
-	}
-
-	private static Project getFinishedProject() {
-		final Project project = new Project("objective", generateDate(-10), generateDate(1));
-		project.createAndAddLeader(LEADER);
-		project.makeProjectFinished();
-		return project;
-	}
-
-	private static LocalDate generateDate(int days) {
+	private LocalDate generateDate(int days) {
 		return days >= 0 ? LocalDate.now().plusDays(days) : LocalDate.now().minusDays(Math.abs(days));
+	}
+
+	public Project generateProject(ProjectStatusType type, int teamMemberCount, int keyResultCount) throws Exception {
+		final Project project = new Project("objective", generateDate(-10), generateDate(10));
+		project.createAndAddLeader(LEADER);
+
+		LongStream.range(1, teamMemberCount + 1)
+			.forEach(i -> project.createAndAddMemberOf(FIRST_MEMBER, i));
+
+		IntStream.range(0, keyResultCount)
+			.forEach(i -> project.addKeyResult("keyResultName" + i, LEADER));
+
+		if (type.equals(FINISHED)) {
+			project.makeProjectFinished();
+
+		} else if (type.equals(ENDED)) {
+			final Field endDate = project.getClass().getDeclaredField("endDate");
+			endDate.setAccessible(true);
+			endDate.set(project, generateDate(-1));
+			endDate.setAccessible(false);
+		}
+
+		return project;
+	}
+
+	enum ProjectStatusType {
+		NORMAL,
+		FINISHED,
+		ENDED;
 	}
 }

@@ -138,4 +138,15 @@ public class Project {
 		if (this.endDate.isBefore(LocalDate.now()))
 			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
 	}
+
+	public void addInitiative(
+		final String keyResultToken,
+		final String initiativeName,
+		final Long member,
+		final String initiativeDetail,
+		final LocalDate startDate,
+		final LocalDate endDate
+	) {
+		throw new IllegalStateException("Project::addInitiative not implemented yet");
+	}
 }
