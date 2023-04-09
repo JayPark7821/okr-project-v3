@@ -1,11 +1,9 @@
-package kr.service.okr.keyresult.domain;
+package kr.service.okr.project.domain;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.service.okr.initiative.domain.Initiative;
-import kr.service.okr.team.domain.TeamMember;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +19,7 @@ public class KeyResult {
 	private Integer keyResultIndex;
 	private List<Initiative> initiative = new ArrayList<>();
 
-	public KeyResult(
+	protected KeyResult(
 		final String name,
 		final Long projectId,
 		final Integer keyResultIndex,
@@ -51,7 +49,7 @@ public class KeyResult {
 		this.initiative = initiative;
 	}
 
-	public String addInitiative(
+	protected String addInitiative(
 		final String initiativeName,
 		final TeamMember member,
 		final String initiativeDetail,

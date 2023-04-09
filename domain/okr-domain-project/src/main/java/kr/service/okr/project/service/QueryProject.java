@@ -6,9 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.project.domain.Project;
+import kr.service.okr.project.domain.TeamMember;
 import kr.service.okr.project.repository.ProjectQuery;
 import kr.service.okr.project.usecase.QueryProjectUseCase;
-import kr.service.okr.team.domain.TeamMember;
 import lombok.RequiredArgsConstructor;
 
 @Service

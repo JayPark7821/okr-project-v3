@@ -1,5 +1,6 @@
 package kr.service.okr.project.domain;
 
+import static java.time.LocalDate.*;
 import static kr.service.okr.project.domain.ProjectTest.ProjectStatusType.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -18,7 +19,6 @@ import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.model.project.team.ProjectRoleType;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
-import kr.service.okr.team.domain.TeamMember;
 
 class ProjectTest {
 	private static final Long LEADER = 1L;
@@ -156,8 +156,8 @@ class ProjectTest {
 			initiativeName,
 			FIRST_MEMBER,
 			initiativeDetail,
-			LocalDate.now(),
-			LocalDate.now().plusDays(1))
+			now(),
+			now().plusDays(1))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
@@ -168,8 +168,8 @@ class ProjectTest {
 				initiativeName,
 				FIRST_MEMBER,
 				initiativeDetail,
-				LocalDate.now(),
-				LocalDate.now().plusDays(1))
+				now(),
+				now().plusDays(1))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
@@ -180,8 +180,8 @@ class ProjectTest {
 				initiativeName,
 				FIRST_MEMBER,
 				initiativeDetail,
-				LocalDate.now().minusDays(11),
-				LocalDate.now().plusDays(1))
+				now().minusDays(11),
+				now().plusDays(1))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
@@ -192,8 +192,8 @@ class ProjectTest {
 				initiativeName,
 				FIRST_MEMBER,
 				initiativeDetail,
-				LocalDate.now().minusDays(0),
-				LocalDate.now().plusDays(11))
+				now().minusDays(0),
+				now().plusDays(11))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
@@ -204,8 +204,8 @@ class ProjectTest {
 				initiativeName,
 				FIRST_MEMBER,
 				initiativeDetail,
-				LocalDate.now().minusDays(0),
-				LocalDate.now().minusDays(11))
+				now().minusDays(0),
+				now().minusDays(11))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
@@ -216,8 +216,8 @@ class ProjectTest {
 				initiativeName,
 				FIRST_MEMBER,
 				initiativeDetail,
-				LocalDate.now().minusDays(0),
-				LocalDate.now().plusDays(11))
+				now().minusDays(0),
+				now().plusDays(11))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
@@ -228,8 +228,8 @@ class ProjectTest {
 				initiativeName,
 				SECOND_MEMBER,
 				initiativeDetail,
-				LocalDate.now().minusDays(0),
-				LocalDate.now().plusDays(11))
+				now().minusDays(0),
+				now().plusDays(0))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
@@ -240,14 +240,15 @@ class ProjectTest {
 				initiativeName,
 				SECOND_MEMBER,
 				initiativeDetail,
-				LocalDate.now().minusDays(0),
-				LocalDate.now().plusDays(11))
+				now().minusDays(0),
+				now().plusDays(0))
 		)
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.INVALID_KEYRESULT_TOKEN.getMessage());
 
-		project.addInitiative(projectKeyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, LocalDate.now(),
-			LocalDate.now());
+		assertThat(
+			project.addInitiative(projectKeyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, now(), now()))
+			.containsPattern(Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 
 		//then
 		assertThat(project.getKeyResults()
@@ -258,7 +259,7 @@ class ProjectTest {
 	}
 
 	private LocalDate generateDate(int days) {
-		return days >= 0 ? LocalDate.now().plusDays(days) : LocalDate.now().minusDays(Math.abs(days));
+		return days >= 0 ? now().plusDays(days) : now().minusDays(Math.abs(days));
 	}
 
 	public Project generateProject(ProjectStatusType type, int teamMemberCount, int keyResultCount) throws Exception {
