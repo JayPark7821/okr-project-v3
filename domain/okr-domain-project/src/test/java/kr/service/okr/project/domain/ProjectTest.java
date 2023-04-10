@@ -142,6 +142,34 @@ class ProjectTest {
 
 	}
 
+	@Test
+	void 프로젝트_업데이터_성공_테스트_케이스() throws Exception {
+		final Project project = generateProject(NORMAL, 1, 1);
+		final String keyResultToken = project.getKeyResults().get(0).getKeyResultToken();
+		project.addInitiative(keyResultToken, "new initiativeName", FIRST_MEMBER, "initiative Details", now(), now());
+
+		final String updatedObject = "updated Object";
+		project.updateProject(updatedObject, generateDate(0), generateDate(10), LEADER);
+		assertThat(project.getObjective()).isEqualTo(updatedObject);
+		assertThat(project.getStartDate()).isEqualTo(generateDate(0));
+		assertThat(project.getEndDate()).isEqualTo(generateDate(10));
+	}
+
+	@ParameterizedTest
+	@MethodSource("updateProjectTestSource")
+	void 프로젝트_업데이트_실패_테스트_케이스(
+		Project project,
+		Long userSeq,
+		LocalDate startDate,
+		LocalDate endDate,
+		String objective,
+		String errorMsg
+	) throws Exception {
+		assertThatThrownBy(() -> project.updateProject(objective, startDate, endDate, userSeq))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(errorMsg);
+	}
+
 	private static LocalDate generateDate(int days) {
 		return days >= 0 ? now().plusDays(days) : now().minusDays(Math.abs(days));
 	}
@@ -214,6 +242,41 @@ class ProjectTest {
 				generateDate(0), INVALID_PROJECT_TOKEN.getMessage()),
 			Arguments.of(project, "wrongKeyresultToken", SECOND_MEMBER, generateDate(0), generateDate(0),
 				INVALID_KEYRESULT_TOKEN.getMessage())
+		);
+	}
+
+	public static Stream<Arguments> updateProjectTestSource() throws Exception {
+		final Project project = generateProject(NORMAL, 0, 0);
+		final Project finishedProject = generateProject(FINISHED, 0, 0);
+		final String tooLongObjective = IntStream.range(0, 51)
+			.mapToObj(i -> "a")
+			.collect(Collectors.joining());
+		final Project projectWithInitiative = generateProject(NORMAL, 1, 1);
+		final String keyResultToken = projectWithInitiative.getKeyResults().get(0).getKeyResultToken();
+		projectWithInitiative.addInitiative(keyResultToken, "new initiativeName", FIRST_MEMBER, "initiative Details",
+			generateDate(-10), generateDate(10));
+
+		return Stream.of(
+			Arguments.of(finishedProject, LEADER, generateDate(0), generateDate(10), "new objective",
+				PROJECT_IS_FINISHED.getMessage()),
+			Arguments.of(project, FIRST_MEMBER, generateDate(0), generateDate(10), "new objective",
+				USER_IS_NOT_LEADER.getMessage()),
+			Arguments.of(project, LEADER, generateDate(0), generateDate(10), "",
+				OBJECTIVE_WRONG_INPUT_LENGTH.getMessage()),
+			Arguments.of(project, LEADER, generateDate(0), generateDate(10), tooLongObjective,
+				OBJECTIVE_WRONG_INPUT_LENGTH.getMessage()),
+			Arguments.of(project, LEADER, generateDate(11), generateDate(10), "new objective",
+				PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage()),
+			Arguments.of(project, LEADER, generateDate(11), null, "new objective",
+				PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage()),
+			Arguments.of(project, LEADER, null, generateDate(-20), "new objective",
+				PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage()),
+			Arguments.of(projectWithInitiative, LEADER, generateDate(5), generateDate(6), "new objective",
+				INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES.getMessage()),
+			Arguments.of(projectWithInitiative, LEADER, null, generateDate(6), "new objective",
+				INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES.getMessage()),
+			Arguments.of(projectWithInitiative, LEADER, generateDate(5), null, "new objective",
+				INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES.getMessage())
 		);
 	}
 
