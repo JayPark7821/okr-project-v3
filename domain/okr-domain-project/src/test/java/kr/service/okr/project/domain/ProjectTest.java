@@ -1,6 +1,7 @@
 package kr.service.okr.project.domain;
 
 import static java.time.LocalDate.*;
+import static kr.service.okr.exception.ErrorCode.*;
 import static kr.service.okr.project.domain.ProjectTest.ProjectStatusType.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,92 +12,67 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.model.project.team.ProjectRoleType;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ProjectTest {
 	private static final Long LEADER = 1L;
 	private static final Long FIRST_MEMBER = 2L;
 	private static final Long SECOND_MEMBER = 3L;
 
-	@Value("${project.objective.max-length}")
 	private RegisterProjectUseCase sut;
 
+	@ParameterizedTest
+	@MethodSource("projectConstructorTestSource")
+	void 프로젝트_생성_실패_테스트_케이스(
+		String objective,
+		LocalDate startDate,
+		LocalDate endDate,
+		String errorMsg
+	) throws Exception {
+
+		assertThatThrownBy(() -> new Project(objective, startDate, endDate))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(errorMsg);
+	}
+
 	@Test
-	void project_constructor_test() throws Exception {
-		final String tooLongObjective = IntStream.range(0, 51)
-			.mapToObj(i -> "a")
-			.collect(Collectors.joining());
-
-		assertThatThrownBy(() -> new Project(null, generateDate(0), generateDate(10)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorCode.OBJECTIVE_IS_REQUIRED.getMessage());
-
-		assertThatThrownBy(() -> new Project(tooLongObjective, generateDate(0), generateDate(10)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorCode.OBJECTIVE_WRONG_INPUT_LENGTH.getMessage());
-
-		assertThatThrownBy(() -> new Project("objective", null, generateDate(10)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorCode.PROJECT_START_DATE_IS_REQUIRED.getMessage());
-
-		assertThatThrownBy(() -> new Project("objective", generateDate(0), null))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorCode.PROJECT_END_DATE_IS_REQUIRED.getMessage());
-
-		assertThatThrownBy(() -> new Project("objective", generateDate(10), generateDate(0)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorCode.PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage());
-
-		assertThatThrownBy(() -> new Project("objective", generateDate(-10), generateDate(-1)))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage(ErrorCode.PROJECT_END_DATE_IS_BEFORE_TODAY.getMessage());
-
+	void 프로젝트_생성_성공_테스트_케이스() throws Exception {
 		assertThat(new Project("objective", generateDate(0), generateDate(10)).getProjectToken())
 			.containsPattern(Pattern.compile("project-[a-zA-Z0-9]{12}"));
 	}
 
+	@ParameterizedTest
+	@MethodSource("inviteTeamMemberTestSource")
+	void 팀원_초대_실패_테스트_케이스(
+		Project project,
+		Long memberId,
+		Long leaderId,
+		String errorMsg
+	) throws Exception {
+
+		assertThatThrownBy(() -> project.createAndAddMemberOf(memberId, leaderId))
+			.isInstanceOf(OkrApplicationException.class)
+			.hasMessage(errorMsg);
+	}
+
 	@Test
-	void inviteNewTeamMember() throws Exception {
-		// given
+	void 팀원_초대_성공_테스트_케이스() throws Exception {
 		final Project project = generateProject(NORMAL, 0, 0);
-		final Project endedProject = generateProject(ENDED, 0, 0);
-		final Project finishedProject = generateProject(FINISHED, 0, 0);
-
-		// when
-		assertThatThrownBy(() -> endedProject.createAndAddMemberOf(FIRST_MEMBER, LEADER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
-
-		assertThatThrownBy(() -> finishedProject.createAndAddMemberOf(FIRST_MEMBER, LEADER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
-
-		assertThatThrownBy(() -> project.createAndAddMemberOf(LEADER, LEADER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.NOT_AVAIL_INVITE_MYSELF.getMessage());
-
-		assertThatThrownBy(() -> project.createAndAddMemberOf(SECOND_MEMBER, FIRST_MEMBER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
-
-		assertThatThrownBy(() -> project.createAndAddMemberOf(FIRST_MEMBER, SECOND_MEMBER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
 
 		project.createAndAddMemberOf(FIRST_MEMBER, LEADER);
 
-		assertThatThrownBy(() -> project.createAndAddMemberOf(FIRST_MEMBER, LEADER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.USER_ALREADY_PROJECT_MEMBER.getMessage());
-
-		//then
 		final List<TeamMember> teamMembers = project.getTeamMember();
 		assertThat(teamMembers).hasSize(2);
 		assertThat(teamMembers.stream()
@@ -104,165 +80,145 @@ class ProjectTest {
 				teamMember.getProjectRoleType().equals(ProjectRoleType.MEMBER) &&
 					teamMember.getUserSeq().equals(2L)).findAny())
 			.isPresent();
-
 	}
 
-	@Test
-	void registerKeyResult() throws Exception {
-		//given
-		final Project project = generateProject(NORMAL, 0, 0);
-		final Project endedProject = generateProject(ENDED, 0, 0);
-		final Project finishedProject = generateProject(FINISHED, 0, 0);
+	@ParameterizedTest
+	@MethodSource("addKeyResultTestSource")
+	void 핵심결과_생성_실패_테스트_케이스(
+		Project project,
+		Long userSeq,
+		String errorMsg
+	) throws Exception {
 		final String keyResultName = "new keyResultName";
-		//when
-		assertThatThrownBy(() -> endedProject.addKeyResult(keyResultName, LEADER))
+		assertThatThrownBy(() -> project.addKeyResult(keyResultName, userSeq))
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
-
-		assertThatThrownBy(() -> finishedProject.addKeyResult(keyResultName, LEADER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
-
-		assertThatThrownBy(() -> project.addKeyResult(keyResultName, FIRST_MEMBER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.USER_IS_NOT_LEADER.getMessage());
-
-		IntStream.range(0, 3)
-			.forEach(i -> project.addKeyResult(keyResultName + i, LEADER));
-
-		assertThatThrownBy(() -> project.addKeyResult(keyResultName, LEADER))
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.MAX_KEYRESULT_COUNT_EXCEEDED.getMessage());
-
-		//then
-		assertThat(project.getKeyResults()).hasSize(3);
+			.hasMessage(errorMsg);
 	}
 
 	@Test
-	void registerInitiative() throws Exception {
-		//given
-		final Project project = generateProject(NORMAL, 1, 1);
-		final Project endedProject = generateProject(ENDED, 1, 1);
-		final Project finishedProject = generateProject(FINISHED, 1, 1);
+	void 핵심결과_생성_성공_테스트_케이스() throws Exception {
+		final Project project = generateProject(NORMAL, 0, 0);
+		final String keyResultName = "new keyResultName";
+
+		final String keyResultToken = project.addKeyResult(keyResultName, LEADER);
+
+		assertThat(keyResultToken).containsPattern(Pattern.compile("keyresult-[a-zA-Z0-9]{10}"));
+	}
+
+	@ParameterizedTest
+	@MethodSource("addInitiativeTestSource")
+	void 행동전략_생성_실패_테스트_케이스(
+		Project project,
+		String keyResultToken,
+		Long userSeq,
+		LocalDate startDate,
+		LocalDate endDate,
+		String errorMsg
+	) throws Exception {
 		final String initiativeName = "new initiativeName";
 		final String initiativeDetail = "initiative Details";
-		final String projectKeyResultToken = project.getKeyResults().get(0).getKeyResultToken();
-		final String endedProjectKeyResultToken = endedProject.getKeyResults().get(0).getKeyResultToken();
-		final String finishedProjectKeyResultToken = finishedProject.getKeyResults().get(0).getKeyResultToken();
-
-		//when
-		assertThatThrownBy(() -> endedProject.addInitiative(
-			endedProjectKeyResultToken,
-			initiativeName,
-			FIRST_MEMBER,
-			initiativeDetail,
-			now(),
-			now().plusDays(1))
-		)
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
-
 		assertThatThrownBy(
-			() -> finishedProject.addInitiative(
-				finishedProjectKeyResultToken,
-				initiativeName,
-				FIRST_MEMBER,
-				initiativeDetail,
-				now(),
-				now().plusDays(1))
-		)
+			() -> project.addInitiative(keyResultToken, initiativeName, userSeq, initiativeDetail, startDate,
+				endDate))
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.PROJECT_IS_FINISHED.getMessage());
+			.hasMessage(errorMsg);
+	}
 
-		assertThatThrownBy(
-			() -> project.addInitiative(
-				projectKeyResultToken,
-				initiativeName,
-				FIRST_MEMBER,
-				initiativeDetail,
-				now().minusDays(11),
-				now().plusDays(1))
-		)
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
-
-		assertThatThrownBy(
-			() -> project.addInitiative(
-				projectKeyResultToken,
-				initiativeName,
-				FIRST_MEMBER,
-				initiativeDetail,
-				now().minusDays(0),
-				now().plusDays(11))
-		)
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
-
-		assertThatThrownBy(
-			() -> project.addInitiative(
-				projectKeyResultToken,
-				initiativeName,
-				FIRST_MEMBER,
-				initiativeDetail,
-				now().minusDays(0),
-				now().minusDays(11))
-		)
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
-
-		assertThatThrownBy(
-			() -> project.addInitiative(
-				projectKeyResultToken,
-				initiativeName,
-				FIRST_MEMBER,
-				initiativeDetail,
-				now().minusDays(0),
-				now().plusDays(11))
-		)
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_INITIATIVE_DATE.getMessage());
-
-		assertThatThrownBy(
-			() -> project.addInitiative(
-				projectKeyResultToken,
-				initiativeName,
-				SECOND_MEMBER,
-				initiativeDetail,
-				now().minusDays(0),
-				now().plusDays(0))
-		)
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_PROJECT_TOKEN.getMessage());
-
-		assertThatThrownBy(
-			() -> project.addInitiative(
-				"wrongKeyresultToken",
-				initiativeName,
-				SECOND_MEMBER,
-				initiativeDetail,
-				now().minusDays(0),
-				now().plusDays(0))
-		)
-			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.INVALID_KEYRESULT_TOKEN.getMessage());
+	@Test
+	void 행동전략_생성_성공_테스트_케이스() throws Exception {
+		final Project project = generateProject(NORMAL, 1, 1);
+		final String keyResultToken = project.getKeyResults().get(0).getKeyResultToken();
+		final String initiativeName = "new initiativeName";
+		final String initiativeDetail = "initiative Details";
 
 		assertThat(
-			project.addInitiative(projectKeyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, now(), now()))
+			project.addInitiative(keyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, now(), now()))
 			.containsPattern(Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 
-		//then
 		assertThat(project.getKeyResults()
 			.stream()
-			.filter(keyResult -> keyResult.getKeyResultToken().equals(projectKeyResultToken))
+			.filter(keyResult -> keyResult.getKeyResultToken().equals(keyResultToken))
 			.count()).isEqualTo(1);
 
 	}
 
-	private LocalDate generateDate(int days) {
+	private static LocalDate generateDate(int days) {
 		return days >= 0 ? now().plusDays(days) : now().minusDays(Math.abs(days));
 	}
 
-	public Project generateProject(ProjectStatusType type, int teamMemberCount, int keyResultCount) throws Exception {
+	private static Stream<Arguments> projectConstructorTestSource() {
+		final String tooLongObjective = IntStream.range(0, 51)
+			.mapToObj(i -> "a")
+			.collect(Collectors.joining());
+
+		return Stream.of(
+			Arguments.of(null, generateDate(0), generateDate(10), OBJECTIVE_IS_REQUIRED.getMessage()),
+			Arguments.of(tooLongObjective, generateDate(0), generateDate(10),
+				OBJECTIVE_WRONG_INPUT_LENGTH.getMessage()),
+			Arguments.of("objective", null, generateDate(10), PROJECT_START_DATE_IS_REQUIRED.getMessage()),
+			Arguments.of("objective", generateDate(0), null, PROJECT_END_DATE_IS_REQUIRED.getMessage()),
+			Arguments.of("objective", generateDate(10), generateDate(0),
+				PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage()),
+			Arguments.of("objective", generateDate(-10), generateDate(-1),
+				PROJECT_END_DATE_IS_BEFORE_TODAY.getMessage())
+		);
+	}
+
+	private static Stream<Arguments> inviteTeamMemberTestSource() throws Exception {
+		final Project project = generateProject(NORMAL, 0, 0);
+		final Project endedProject = generateProject(ENDED, 0, 0);
+		final Project finishedProject = generateProject(FINISHED, 0, 0);
+		final Project projectWithMember = generateProject(NORMAL, 0, 0);
+		projectWithMember.createAndAddMemberOf(FIRST_MEMBER, LEADER);
+
+		return Stream.of(
+			Arguments.of(endedProject, FIRST_MEMBER, LEADER, NOT_UNDER_PROJECT_DURATION.getMessage()),
+			Arguments.of(finishedProject, FIRST_MEMBER, LEADER, PROJECT_IS_FINISHED.getMessage()),
+			Arguments.of(project, LEADER, LEADER, NOT_AVAIL_INVITE_MYSELF.getMessage()),
+			Arguments.of(project, SECOND_MEMBER, FIRST_MEMBER, USER_IS_NOT_LEADER.getMessage()),
+			Arguments.of(projectWithMember, FIRST_MEMBER, LEADER, USER_ALREADY_PROJECT_MEMBER.getMessage())
+		);
+	}
+
+	private static Stream<Arguments> addKeyResultTestSource() throws Exception {
+		final Project project = generateProject(NORMAL, 0, 0);
+		final Project endedProject = generateProject(ENDED, 0, 0);
+		final Project finishedProject = generateProject(FINISHED, 0, 0);
+		final Project projectWithKeyResult = generateProject(NORMAL, 0, 3);
+		return Stream.of(
+			Arguments.of(endedProject, LEADER, NOT_UNDER_PROJECT_DURATION.getMessage()),
+			Arguments.of(finishedProject, LEADER, PROJECT_IS_FINISHED.getMessage()),
+			Arguments.of(project, FIRST_MEMBER, USER_IS_NOT_LEADER.getMessage()),
+			Arguments.of(projectWithKeyResult, LEADER, MAX_KEYRESULT_COUNT_EXCEEDED.getMessage())
+		);
+	}
+
+	private static Stream<Arguments> addInitiativeTestSource() throws Exception {
+		final Project project = generateProject(NORMAL, 1, 1);
+		final Project endedProject = generateProject(ENDED, 1, 1);
+		final Project finishedProject = generateProject(FINISHED, 1, 1);
+		return Stream.of(
+			Arguments.of(endedProject, endedProject.getKeyResults().get(0).getKeyResultToken(), FIRST_MEMBER,
+				generateDate(0), generateDate(1), NOT_UNDER_PROJECT_DURATION.getMessage()),
+			Arguments.of(finishedProject, finishedProject.getKeyResults().get(0).getKeyResultToken(), FIRST_MEMBER,
+				generateDate(0), generateDate(1), PROJECT_IS_FINISHED.getMessage()),
+			Arguments.of(project, project.getKeyResults().get(0).getKeyResultToken(), FIRST_MEMBER, generateDate(-11),
+				generateDate(1), INVALID_INITIATIVE_DATE.getMessage()),
+			Arguments.of(project, project.getKeyResults().get(0).getKeyResultToken(), FIRST_MEMBER, generateDate(0),
+				generateDate(11), INVALID_INITIATIVE_DATE.getMessage()),
+			Arguments.of(project, project.getKeyResults().get(0).getKeyResultToken(), FIRST_MEMBER, generateDate(0),
+				generateDate(-11), INVALID_INITIATIVE_DATE.getMessage()),
+			Arguments.of(project, project.getKeyResults().get(0).getKeyResultToken(), FIRST_MEMBER, generateDate(0),
+				generateDate(11), INVALID_INITIATIVE_DATE.getMessage()),
+			Arguments.of(project, project.getKeyResults().get(0).getKeyResultToken(), SECOND_MEMBER, generateDate(0),
+				generateDate(0), INVALID_PROJECT_TOKEN.getMessage()),
+			Arguments.of(project, "wrongKeyresultToken", SECOND_MEMBER, generateDate(0), generateDate(0),
+				INVALID_KEYRESULT_TOKEN.getMessage())
+		);
+	}
+
+	private static Project generateProject(ProjectStatusType type, int teamMemberCount, int keyResultCount) throws
+		Exception {
 		final Project project = new Project("objective", generateDate(-10), generateDate(10));
 		project.createAndAddLeader(LEADER);
 

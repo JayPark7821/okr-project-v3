@@ -1,30 +1,35 @@
 package kr.service.okr.project.domain;
 
 import static kr.service.okr.exception.ErrorCode.*;
+import static kr.service.okr.project.domain.ProjectValidator.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.util.Assert;
-
-import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.model.project.ProjectType;
-import kr.service.okr.model.project.team.ProjectRoleType;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
 
+/*
+ TODO :
+  1. 프로젝트 삭제
+  2. 프로젝트 수정
+  3. 행동전략 삭제
+  4. 행동전략 수정
+  5. 핵심결과 삭제
+  6. 핵심결과 수정
+  7. 피드백 등록
+  8. 피드백 삭제
+  9. 피드백 수정
+
+ */
 @Getter
 public class Project {
 
 	private static final String PROJECT_TOKEN_PREFIX = "project-";
-	private static final int MAX_KEYRESULT_COUNT = 3;
-	private static final int MAX_OBJECTIVE_LENGTH = 50;
-	private static final int MAX_KERSULT_NAME_LENGTH = 50;
-	private static final int MAX_INITIATIVE_NAME_LENGTH = 50;
-	private static final int MAX_INITIATIVE_DETAIL_LENGTH = 200;
 
 	private Long id;
 	private String projectToken;
@@ -38,8 +43,7 @@ public class Project {
 	private boolean finished = false;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
-		canRegisterProject(objective, startDate, endDate);
-
+		validateAddingNewProject(objective, startDate, endDate);
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_TOKEN_PREFIX);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -59,6 +63,7 @@ public class Project {
 		final double progress,
 		final boolean finished
 	) {
+
 		this.id = id;
 		this.projectToken = projectToken;
 		this.teamMember = teamMember == null ? new ArrayList<>() : teamMember;
@@ -72,18 +77,17 @@ public class Project {
 	}
 
 	public void createAndAddLeader(final Long leaderSeq) {
-		canAddProjectLeader();
-
-		final TeamMember leader = TeamMember.createLeader(leaderSeq, this);
-		this.teamMember.add(leader);
+		validateAddingProjectLeader();
+		this.teamMember.add(
+			TeamMember.createLeader(leaderSeq, this)
+		);
 	}
 
 	public void createAndAddMemberOf(final Long memberSeq, final Long leaderSeq) {
-
-		canAddNewTeamMember(memberSeq, leaderSeq);
-
-		final TeamMember member = TeamMember.createMember(memberSeq, this);
-		this.teamMember.add(member);
+		validateAddingNewTeamMember(memberSeq, leaderSeq);
+		this.teamMember.add(
+			TeamMember.createMember(memberSeq, this)
+		);
 	}
 
 	// TODO protected로 변경
@@ -92,7 +96,7 @@ public class Project {
 	}
 
 	public String addKeyResult(final String keyResultName, final Long leader) {
-		canRegisterKeyResult(keyResultName, leader);
+		validateAddingNewKeyResult(keyResultName, leader);
 
 		final KeyResult keyResult =
 			new KeyResult(keyResultName, this.id, this.keyResults.size() + 1, new ArrayList<>());
@@ -115,100 +119,69 @@ public class Project {
 	) {
 		canRegisterInitiative(initiativeName, initiativeDetail, startDate, endDate);
 
-		final KeyResult keyResult = this.keyResults.stream()
-			.filter(kr -> kr.getKeyResultToken().equals(keyResultToken))
-			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(INVALID_KEYRESULT_TOKEN));
+		return getKeyResult(keyResultToken)
+			.addInitiative(
+				initiativeName,
+				getMemberBy(memberSeq),
+				initiativeDetail,
+				startDate,
+				endDate
+			);
+	}
 
-		final TeamMember member = this.teamMember.stream()
+	private TeamMember getMemberBy(final Long memberSeq) {
+		return this.teamMember.stream()
 			.filter(teamMember -> teamMember.getUserSeq().equals(memberSeq))
 			.findAny()
 			.orElseThrow(() -> new OkrApplicationException(INVALID_PROJECT_TOKEN));
-
-		return keyResult.addInitiative(initiativeName, member, initiativeDetail, startDate, endDate);
 	}
 
-	//====================================  validator  =================================================
-	private void canRegisterInitiative(final String initiativeName, final String initiativeDetail,
-		final LocalDate startDate,
-		final LocalDate endDate) {
-		validateProjectDuration();
-		validateFinishedProject();
-
-		Assert.notNull(initiativeName, INITIATIVE_NAME_IS_REQUIRED.getMessage());
-		Assert.notNull(initiativeDetail, INITIATIVE_DETAIL_IS_REQUIRED.getMessage());
-		Assert.isTrue(initiativeName.length() <= MAX_INITIATIVE_NAME_LENGTH && initiativeName.length() > 0,
-			INITIATIVE_NAME_WRONG_INPUT_LENGTH.getMessage());
-		Assert.isTrue(initiativeDetail.length() <= MAX_INITIATIVE_DETAIL_LENGTH && initiativeDetail.length() > 0,
-			INITIATIVE_DETAIL_WRONG_INPUT_LENGTH.getMessage());
-		Assert.notNull(startDate, INITIATIVE_START_DATE_IS_REQUIRED.getMessage());
-		Assert.notNull(endDate, INITIATIVE_END_DATE_IS_REQUIRED.getMessage());
-
-		if (endDate.isBefore(this.startDate) ||
-			endDate.isAfter(this.endDate) ||
-			startDate.isBefore(this.startDate) ||
-			startDate.isAfter(this.endDate)
-		) {
-			throw new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_DATE);
-		}
-	}
-
-	private void canRegisterProject(final String objective, final LocalDate startDate, final LocalDate endDate) {
-		Assert.notNull(objective, OBJECTIVE_IS_REQUIRED.getMessage());
-		Assert.isTrue(objective.length() <= MAX_OBJECTIVE_LENGTH && objective.length() > 0,
-			OBJECTIVE_WRONG_INPUT_LENGTH.getMessage());
-		Assert.notNull(startDate, PROJECT_START_DATE_IS_REQUIRED.getMessage());
-		Assert.notNull(endDate, PROJECT_END_DATE_IS_REQUIRED.getMessage());
-		Assert.isTrue(startDate.isBefore(endDate), PROJECT_START_DATE_IS_AFTER_END_DATE.getMessage());
-		Assert.isTrue(endDate.isAfter(LocalDate.now()), PROJECT_END_DATE_IS_BEFORE_TODAY.getMessage());
-	}
-
-	private void canAddNewTeamMember(final Long memberSeq, final Long leaderSeq) {
-		validateFinishedProject();
-		validateProjectDuration();
-		validateProjectLeader(leaderSeq);
-
-		if (memberSeq.equals(leaderSeq))
-			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
-
-		if (this.teamMember.stream().anyMatch(member -> member.getUserSeq().equals(memberSeq)))
-			throw new OkrApplicationException(ErrorCode.USER_ALREADY_PROJECT_MEMBER);
-	}
-
-	private void validateFinishedProject() {
-		if (this.finished)
-			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
-	}
-
-	private void validateProjectLeader(final Long leaderSeq) {
-		this.teamMember.stream()
-			.filter(member ->
-				member.getUserSeq().equals(leaderSeq) &&
-					member.getProjectRoleType().equals(ProjectRoleType.LEADER))
+	private KeyResult getKeyResult(final String keyResultToken) {
+		return this.keyResults.stream()
+			.filter(kr -> kr.getKeyResultToken().equals(keyResultToken))
 			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.USER_IS_NOT_LEADER));
+			.orElseThrow(() -> new OkrApplicationException(INVALID_KEYRESULT_TOKEN));
 	}
 
-	private void validateProjectDuration() {
-		if (this.endDate.isBefore(LocalDate.now()))
-			throw new OkrApplicationException(ErrorCode.NOT_UNDER_PROJECT_DURATION);
+	//====================================  validate  =================================================
+	private void canRegisterInitiative(
+		final String initiativeName,
+		final String initiativeDetail,
+		final LocalDate startDate,
+		final LocalDate endDate
+	) {
+
+		validateProjectInProgress(this);
+		validateFinishedProject(this);
+
+		validateInitiativeNameInput(initiativeName);
+		validateInitiativeDetailInput(initiativeDetail);
+		validateInitiativeDuration(this, startDate, endDate);
 	}
 
-	private void canRegisterKeyResult(final String keyResultName, final Long leader) {
-		validateProjectLeader(leader);
-		validateProjectDuration();
-		validateFinishedProject();
-		if (this.keyResults.size() >= MAX_KEYRESULT_COUNT)
-			throw new OkrApplicationException(MAX_KEYRESULT_COUNT_EXCEEDED);
-
-		if (keyResultName.length() >= MAX_KERSULT_NAME_LENGTH)
-			throw new OkrApplicationException(KEYRESULT_NAME_WRONG_INPUT_LENGTH);
+	private void validateAddingNewProject(final String objective, final LocalDate startDate, final LocalDate endDate) {
+		validateObjectInput(objective);
+		validateProjectDuration(startDate, endDate);
 	}
 
-	private void canAddProjectLeader() {
-		validateFinishedProject();
-		if (this.teamMember.stream()
-			.anyMatch(teamMember -> teamMember.getProjectRoleType().equals(ProjectRoleType.LEADER)))
-			throw new OkrApplicationException(ErrorCode.PROJECT_ALREADY_HAS_LEADER);
+	private void validateAddingNewTeamMember(final Long memberSeq, final Long leaderSeq) {
+		validateFinishedProject(this);
+		validateProjectInProgress(this);
+		validateProjectLeader(this, leaderSeq);
+		validateSelfInviting(memberSeq, leaderSeq);
+		validateAlreadyTeamMember(this, memberSeq);
+	}
+
+	private void validateAddingNewKeyResult(final String keyResultName, final Long leader) {
+		validateProjectLeader(this, leader);
+		validateProjectInProgress(this);
+		validateFinishedProject(this);
+		validateMaxKeyResultCountExceeded(this);
+		validateMaxKeyResultLength(keyResultName);
+	}
+
+	private void validateAddingProjectLeader() {
+		validateFinishedProject(this);
+		validateProjectHasLeader(this);
 	}
 }
