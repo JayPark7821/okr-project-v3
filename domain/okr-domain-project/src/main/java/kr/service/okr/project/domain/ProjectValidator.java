@@ -112,39 +112,35 @@ public class ProjectValidator {
 	}
 
 	protected static void validateAndUpdateDates(Project project, LocalDate startDate, LocalDate endDate) {
-		if (startDate != null && endDate != null) {
-			if (startDate.isAfter(endDate)) {
-				throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
-			}
-			project.getKeyResults().stream().map(KeyResult::getInitiative).flatMap(Collection::stream)
-				.forEach(initiative -> {
-					if (initiative.getStartDate().isBefore(startDate) ||
-						initiative.getEndDate().isAfter(endDate)) {
-						throw new OkrApplicationException(ErrorCode.INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES);
-					}
-				});
-		} else if (startDate != null) {
-			if (startDate.isAfter(project.getEndDate())) {
-				throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
-			}
-			project.getKeyResults().stream().map(KeyResult::getInitiative).flatMap(Collection::stream)
-				.forEach(initiative -> {
-					if (initiative.getStartDate().isBefore(startDate)) {
-						throw new OkrApplicationException(ErrorCode.INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES);
-					}
-				});
+		validateProjectDates(project, startDate, endDate);
+		validateInitiativeDates(
+			project,
+			startDate != null ? startDate : project.getStartDate(),
+			endDate != null ? endDate : project.getEndDate()
+		);
+	}
 
-		} else if (endDate != null) {
-			if (project.getStartDate().isAfter(endDate)) {
-				throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
-			}
-			project.getKeyResults().stream().map(KeyResult::getInitiative).flatMap(Collection::stream)
-				.forEach(initiative -> {
-					if (initiative.getEndDate().isAfter(endDate)) {
-						throw new OkrApplicationException(ErrorCode.INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES);
-					}
-				});
+	private static void validateProjectDates(Project project, LocalDate startDate, LocalDate endDate) {
+		if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+			throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
+		} else if (startDate != null && startDate.isAfter(project.getEndDate())) {
+			throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
+		} else if (endDate != null && project.getStartDate().isAfter(endDate)) {
+			throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
 		}
+	}
+
+	private static void validateInitiativeDates(Project project, LocalDate startDate, LocalDate endDate) {
+		project.getKeyResults().stream()
+			.map(KeyResult::getInitiative)
+			.flatMap(Collection::stream)
+			.filter(initiative -> {
+				return initiative.getStartDate().isBefore(startDate) || initiative.getEndDate().isAfter(endDate);
+			})
+			.findFirst()
+			.ifPresent(initiative -> {
+				throw new OkrApplicationException(ErrorCode.INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES);
+			});
 	}
 
 	protected static void validateAndUpdateObjective(String objective) {
