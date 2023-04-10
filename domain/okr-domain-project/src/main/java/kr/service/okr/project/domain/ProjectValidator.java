@@ -3,6 +3,7 @@ package kr.service.okr.project.domain;
 import static kr.service.okr.exception.ErrorCode.*;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
@@ -10,11 +11,11 @@ import kr.service.okr.model.project.team.ProjectRoleType;
 
 public class ProjectValidator {
 
-	private static final int MAX_KEYRESULT_COUNT = 3;
-	private static final int MAX_OBJECTIVE_LENGTH = 50;
-	private static final int MAX_KERSULT_NAME_LENGTH = 50;
-	private static final int MAX_INITIATIVE_NAME_LENGTH = 50;
-	private static final int MAX_INITIATIVE_DETAIL_LENGTH = 200;
+	protected static final int MAX_KEYRESULT_COUNT = 3;
+	protected static final int MAX_OBJECTIVE_LENGTH = 50;
+	protected static final int MAX_KERSULT_NAME_LENGTH = 50;
+	protected static final int MAX_INITIATIVE_NAME_LENGTH = 50;
+	protected static final int MAX_INITIATIVE_DETAIL_LENGTH = 200;
 
 	protected static void validateProjectInProgress(final Project project) {
 		if (project.getEndDate().isBefore(LocalDate.now()))
@@ -108,6 +109,44 @@ public class ProjectValidator {
 		if (initiativeName.length() > MAX_INITIATIVE_NAME_LENGTH || initiativeName.length() == 0)
 			throw new OkrApplicationException(INITIATIVE_NAME_WRONG_INPUT_LENGTH);
 
+	}
+
+	protected static void validateAndUpdateDates(Project project, LocalDate startDate, LocalDate endDate) {
+		validateProjectDates(project, startDate, endDate);
+		validateInitiativeDates(
+			project,
+			startDate != null ? startDate : project.getStartDate(),
+			endDate != null ? endDate : project.getEndDate()
+		);
+	}
+
+	private static void validateProjectDates(Project project, LocalDate startDate, LocalDate endDate) {
+		if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+			throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
+		} else if (startDate != null && startDate.isAfter(project.getEndDate())) {
+			throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
+		} else if (endDate != null && project.getStartDate().isAfter(endDate)) {
+			throw new OkrApplicationException(PROJECT_START_DATE_IS_AFTER_END_DATE);
+		}
+	}
+
+	private static void validateInitiativeDates(Project project, LocalDate startDate, LocalDate endDate) {
+		project.getKeyResults().stream()
+			.map(KeyResult::getInitiative)
+			.flatMap(Collection::stream)
+			.filter(initiative -> {
+				return initiative.getStartDate().isBefore(startDate) || initiative.getEndDate().isAfter(endDate);
+			})
+			.findFirst()
+			.ifPresent(initiative -> {
+				throw new OkrApplicationException(ErrorCode.INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES);
+			});
+	}
+
+	protected static void validateAndUpdateObjective(String objective) {
+		if (objective != null && (objective.length() > MAX_OBJECTIVE_LENGTH || objective.isEmpty())) {
+			throw new OkrApplicationException(OBJECTIVE_WRONG_INPUT_LENGTH);
+		}
 	}
 
 }

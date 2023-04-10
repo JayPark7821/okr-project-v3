@@ -71,6 +71,7 @@ public class Project {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = type;
+
 		this.objective = objective;
 		this.progress = progress;
 		this.finished = finished;
@@ -129,6 +130,14 @@ public class Project {
 			);
 	}
 
+	public void updateProject(String objective, LocalDate startDate, LocalDate endDate, Long userSeq) {
+		validateUpdateProject(objective, startDate, endDate, userSeq);
+		this.objective = objective != null ? objective : this.objective;
+		this.startDate = startDate != null ? startDate : this.startDate;
+		this.endDate = endDate != null ? endDate : this.endDate;
+
+	}
+
 	private TeamMember getMemberBy(final Long memberSeq) {
 		return this.teamMember.stream()
 			.filter(teamMember -> teamMember.getUserSeq().equals(memberSeq))
@@ -159,6 +168,14 @@ public class Project {
 		validateInitiativeDuration(this, startDate, endDate);
 	}
 
+	private void validateUpdateProject(final String objective, final LocalDate startDate, final LocalDate endDate,
+		Long userSeq) {
+		validateProjectLeader(this, userSeq);
+		validateFinishedProject(this);
+		validateAndUpdateDates(this, startDate, endDate);
+		validateAndUpdateObjective(objective);
+	}
+
 	private void validateAddingNewProject(final String objective, final LocalDate startDate, final LocalDate endDate) {
 		validateObjectInput(objective);
 		validateProjectDuration(startDate, endDate);
@@ -184,4 +201,5 @@ public class Project {
 		validateFinishedProject(this);
 		validateProjectHasLeader(this);
 	}
+
 }

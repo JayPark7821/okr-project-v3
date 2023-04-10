@@ -33,6 +33,7 @@ public enum ErrorCode {
 	INITIATIVE_DETAIL_IS_REQUIRED("행동전략 상세는 필수 값 입니다."),
 	INITIATIVE_START_DATE_IS_REQUIRED("행동전략 시작일은 필수 값 입니다."),
 	INITIATIVE_END_DATE_IS_REQUIRED("행동전략 종료일은 필수 값 입니다."),
+	INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES("프로젝트 기간이 행동전략 기간을 포함해야 합니다."),
 	;
 
 	final String message;
