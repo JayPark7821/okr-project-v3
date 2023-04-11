@@ -14,12 +14,12 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
-import kr.service.okr.model.project.SearchRange;
 import kr.service.okr.persistence.entity.project.aggregate.feedback.FeedbackJpaEntity;
 import kr.service.okr.persistence.entity.project.aggregate.feedback.QFeedbackJpaEntity;
 import kr.service.okr.persistence.entity.project.aggregate.initiative.QInitiativeJpaEntity;
 import kr.service.okr.persistence.entity.project.aggregate.team.QTeamMemberJpaEntity;
 import kr.service.okr.persistence.entity.user.QUserJpaEntity;
+import kr.service.okr.project.domain.enums.SearchRange;
 
 @Repository
 public class FeedbackQueryDslRepository {

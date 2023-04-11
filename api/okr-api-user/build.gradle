@@ -11,7 +11,7 @@ dependencies {
     api 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation project(':common:okr-common-util')
-    implementation project(':common:okr-common-model')
+    implementation project(':domain:okr-domain-user')
 }
 
 dependencyManagement {

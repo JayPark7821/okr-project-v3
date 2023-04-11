@@ -7,10 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.model.project.SearchRange;
 import kr.service.okr.persistence.entity.project.aggregate.feedback.FeedbackJpaEntity;
 import kr.service.okr.persistence.repository.project.aggregate.feedback.FeedbackJpaRepository;
 import kr.service.okr.persistence.repository.project.aggregate.feedback.FeedbackQueryDslRepository;
+import kr.service.okr.project.domain.enums.SearchRange;
 import lombok.RequiredArgsConstructor;
 
 @Service

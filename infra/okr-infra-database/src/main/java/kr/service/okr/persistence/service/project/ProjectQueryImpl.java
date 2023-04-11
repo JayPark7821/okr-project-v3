@@ -8,11 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.model.project.ProjectType;
-import kr.service.okr.model.project.SortType;
 import kr.service.okr.persistence.repository.project.ProjectJpaRepository;
 import kr.service.okr.persistence.repository.project.ProjectQueryDslRepository;
 import kr.service.okr.project.domain.Project;
+import kr.service.okr.project.domain.enums.ProjectType;
+import kr.service.okr.project.domain.enums.SortType;
 import kr.service.okr.project.repository.ProjectQuery;
 import lombok.RequiredArgsConstructor;
 

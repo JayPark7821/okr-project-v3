@@ -1,4 +1,4 @@
-package kr.service.okr.model.project;
+package kr.service.okr.project.domain.enums;
 
 import java.time.LocalDate;
 import java.util.Map;

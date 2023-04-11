@@ -8,10 +8,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    
+
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
-    implementation project(':common:okr-common-model')
     implementation project(':common:okr-common-util')
 }
 

@@ -1,13 +1,13 @@
 package kr.service.okr.utils;
 
-import kr.service.oauth.TokenVerifier;
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.OAuth2UserInfo;
+import kr.service.oauth.OAuth2UserInfo;
+import kr.service.oauth.SocialPlatform;
+import kr.service.oauth.SocialTokenVerifier;
 
-public class FakeTokenVerifier implements TokenVerifier {
+public class FakeSocialTokenVerifier implements SocialTokenVerifier {
 
 	@Override
-	public boolean support(ProviderType providerType) {
+	public boolean support(SocialPlatform providerType) {
 		return true;
 	}
 

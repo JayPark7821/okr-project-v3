@@ -23,7 +23,6 @@ include 'domain:okr-domain-user'
 
 include 'common'
 include 'common:okr-common-util'
-include 'common:okr-common-model'
 
 
 

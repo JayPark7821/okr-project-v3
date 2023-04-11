@@ -16,9 +16,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.JobField;
-import kr.service.okr.model.user.RoleType;
+import kr.service.user.guest.ProviderType;
+import kr.service.user.user.domain.JobField;
+import kr.service.user.user.domain.RoleType;
 import kr.service.user.user.domain.User;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

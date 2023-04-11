@@ -5,13 +5,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.service.okr.application.user.SocialTokenVerifyProcessor;
-import kr.service.okr.exception.ErrorCode;
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.OAuth2UserInfo;
-import kr.service.okr.util.EnumLookUpUtil;
+import kr.service.oauth.OAuth2UserInfo;
+import kr.service.oauth.SocialTokenVerifyProcessor;
 import kr.service.user.api.LoginResponse;
 import kr.service.user.api.UserApiController;
+import kr.service.user.guest.ProviderType;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -24,12 +22,10 @@ public class UserApiControllerImpl implements UserApiController {
 	@Override
 	@PostMapping("/login/{provider}/{idToken}")
 	public ResponseEntity<LoginResponse> loginWithIdToken(final String provider, final String idToken) {
-		//TODO
-		final ProviderType providerType =
-			EnumLookUpUtil.lookup(ProviderType.class, provider, ErrorCode.UNSUPPORTED_SOCIAL_TYPE);
 
 		OAuth2UserInfo oAuth2UserInfo =
-			socialTokenVerifyProcessor.verifyIdToken(providerType, idToken);
+			socialTokenVerifyProcessor.verifyIdToken(ProviderType.of(provider).name(), idToken);
+
 		return null;
 	}
 }

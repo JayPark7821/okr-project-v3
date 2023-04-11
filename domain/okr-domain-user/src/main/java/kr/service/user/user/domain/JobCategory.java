@@ -1,4 +1,4 @@
-package kr.service.okr.model.user;
+package kr.service.user.user.domain;
 
 import java.util.Arrays;
 import java.util.List;

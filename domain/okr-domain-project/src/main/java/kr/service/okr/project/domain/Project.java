@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.service.okr.exception.OkrApplicationException;
-import kr.service.okr.model.project.ProjectType;
+import kr.service.okr.project.domain.enums.ProjectType;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;

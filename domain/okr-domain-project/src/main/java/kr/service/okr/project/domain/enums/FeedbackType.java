@@ -1,4 +1,4 @@
-package kr.service.okr.model.project.feedback;
+package kr.service.okr.project.domain.enums;
 
 public enum FeedbackType {
 

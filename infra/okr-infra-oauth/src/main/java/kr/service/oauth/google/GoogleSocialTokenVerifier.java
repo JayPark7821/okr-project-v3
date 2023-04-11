@@ -14,12 +14,12 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 
-import kr.service.oauth.TokenVerifier;
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.OAuth2UserInfo;
+import kr.service.oauth.OAuth2UserInfo;
+import kr.service.oauth.SocialPlatform;
+import kr.service.oauth.SocialTokenVerifier;
 
 @Component
-public class GoogleTokenVerifier implements TokenVerifier {
+public class GoogleSocialTokenVerifier implements SocialTokenVerifier {
 
 	@Value("${google.clientId}")
 	private String clientId;
@@ -27,8 +27,8 @@ public class GoogleTokenVerifier implements TokenVerifier {
 	private final JsonFactory jsonFactory = new GsonFactory();
 
 	@Override
-	public boolean support(ProviderType providerType) {
-		return ProviderType.GOOGLE == providerType;
+	public boolean support(SocialPlatform socialPlatform) {
+		return SocialPlatform.GOOGLE == socialPlatform;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class GoogleTokenVerifier implements TokenVerifier {
 				(String)payload.get("name"),
 				(String)payload.get("email"),
 				(String)payload.get("picture"),
-				ProviderType.GOOGLE
+				SocialPlatform.GOOGLE.name()
 			);
 		} else {
 			throw new IllegalArgumentException("Invalid ID token");

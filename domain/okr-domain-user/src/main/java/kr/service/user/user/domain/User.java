@@ -4,10 +4,8 @@ import static kr.service.user.validator.Validator.*;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.JobField;
-import kr.service.okr.model.user.RoleType;
 import kr.service.okr.util.TokenGenerator;
+import kr.service.user.guest.ProviderType;
 import lombok.Builder;
 import lombok.Getter;
 

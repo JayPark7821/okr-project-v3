@@ -21,9 +21,9 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
-import kr.service.okr.model.project.ProjectType;
-import kr.service.okr.model.project.SortType;
 import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
+import kr.service.okr.project.domain.enums.ProjectType;
+import kr.service.okr.project.domain.enums.SortType;
 
 @Repository
 public class ProjectQueryDslRepository {

@@ -1,4 +1,4 @@
-package kr.service.okr.model.project.team;
+package kr.service.okr.project.domain.enums;
 
 public enum ProjectRoleType {
 	LEADER("Leader"),

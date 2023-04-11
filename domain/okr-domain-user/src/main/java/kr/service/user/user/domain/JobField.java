@@ -1,4 +1,4 @@
-package kr.service.okr.model.user;
+package kr.service.user.user.domain;
 
 public enum JobField {
 	UI_UX_PLANNER("UI/UX 기획자", "PLAN"),

@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
-import kr.service.okr.model.project.team.ProjectRoleType;
+import kr.service.okr.project.domain.enums.ProjectRoleType;
 
 public class ProjectValidator {
 

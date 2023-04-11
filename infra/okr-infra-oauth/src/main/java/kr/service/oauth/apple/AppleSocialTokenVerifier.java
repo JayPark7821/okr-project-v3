@@ -17,20 +17,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import kr.service.oauth.TokenVerifier;
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.OAuth2UserInfo;
+import kr.service.oauth.OAuth2UserInfo;
+import kr.service.oauth.SocialPlatform;
+import kr.service.oauth.SocialTokenVerifier;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class AppleTokenVerifier implements TokenVerifier {
+public class AppleSocialTokenVerifier implements SocialTokenVerifier {
 
 	private final AppleClient appleClient;
 
 	@Override
-	public boolean support(ProviderType providerType) {
-		return ProviderType.APPLE == providerType;
+	public boolean support(SocialPlatform socialPlatform) {
+		return SocialPlatform.APPLE == socialPlatform;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class AppleTokenVerifier implements TokenVerifier {
 			"일잘러",
 			body.get("email", String.class),
 			null,
-			ProviderType.APPLE
+			SocialPlatform.APPLE.name()
 		);
 	}
 

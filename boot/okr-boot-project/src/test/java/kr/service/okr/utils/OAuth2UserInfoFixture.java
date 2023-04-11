@@ -1,7 +1,7 @@
 package kr.service.okr.utils;
 
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.OAuth2UserInfo;
+import kr.service.oauth.OAuth2UserInfo;
+import kr.service.user.guest.ProviderType;
 
 public final class OAuth2UserInfoFixture {
 
@@ -13,7 +13,7 @@ public final class OAuth2UserInfoFixture {
 		public static final ProviderType PROVIDER_TYPE = ProviderType.APPLE;
 
 		public static OAuth2UserInfo build() {
-			return new OAuth2UserInfo(ID, NAME, EMAIL, PIC, PROVIDER_TYPE);
+			return new OAuth2UserInfo(ID, NAME, EMAIL, PIC, PROVIDER_TYPE.name());
 		}
 	}
 
@@ -25,7 +25,7 @@ public final class OAuth2UserInfoFixture {
 		public static final ProviderType PROVIDER_TYPE = ProviderType.APPLE;
 
 		public static OAuth2UserInfo build() {
-			return new OAuth2UserInfo(ID, NAME, EMAIL, PIC, PROVIDER_TYPE);
+			return new OAuth2UserInfo(ID, NAME, EMAIL, PIC, PROVIDER_TYPE.name());
 		}
 	}
 
@@ -37,7 +37,7 @@ public final class OAuth2UserInfoFixture {
 		public static final ProviderType PROVIDER_TYPE = ProviderType.APPLE;
 
 		public static OAuth2UserInfo build() {
-			return new OAuth2UserInfo(ID, NAME, EMAIL, PIC, PROVIDER_TYPE);
+			return new OAuth2UserInfo(ID, NAME, EMAIL, PIC, PROVIDER_TYPE.name());
 		}
 	}
 }

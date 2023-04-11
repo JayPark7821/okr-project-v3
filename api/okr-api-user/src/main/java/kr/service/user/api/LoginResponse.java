@@ -1,7 +1,7 @@
 package kr.service.user.api;
 
-import kr.service.okr.model.guset.ProviderType;
-import kr.service.okr.model.user.RoleType;
+import kr.service.user.guest.ProviderType;
+import kr.service.user.user.domain.RoleType;
 
 public record LoginResponse(
 	String guestUserId,

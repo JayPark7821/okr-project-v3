@@ -28,7 +28,6 @@ dependencies {
     implementation project(':domain:okr-domain-project')
     implementation project(':domain:okr-domain-user')
     implementation project(':common:okr-common-util')
-    implementation project(':common:okr-common-model')
 }
 
 tasks.named('test') {

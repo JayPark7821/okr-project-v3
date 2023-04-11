@@ -1,4 +1,4 @@
-package kr.service.okr.model.notification;
+package kr.service.user.notification;
 
 public enum NotificationType {
 

@@ -4,16 +4,16 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-import kr.service.oauth.TokenVerifier;
-import kr.service.okr.application.user.SocialTokenVerifyProcessor;
+import kr.service.oauth.SocialTokenVerifier;
+import kr.service.okr.processor.SocialTokenVerifyProcessor;
 
 @TestConfiguration
 public class TestConfig {
 
 	@Primary
 	@Bean
-	public TokenVerifier tokenVerifier() {
-		return new FakeTokenVerifier();
+	public SocialTokenVerifier tokenVerifier() {
+		return new FakeSocialTokenVerifier();
 	}
 
 	@Primary
