@@ -16,7 +16,6 @@ import lombok.Getter;
 /*
  TODO :
   1. 프로젝트 삭제
-  2. 프로젝트 수정
   3. 행동전략 삭제
   4. 행동전략 수정
   5. 핵심결과 삭제
@@ -43,7 +42,7 @@ public class Project {
 	private boolean finished = false;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
-		validateAddingNewProject(objective, startDate, endDate);
+		// validateAddingNewProject(objective, startDate, endDate);
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_TOKEN_PREFIX);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -71,7 +70,6 @@ public class Project {
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = type;
-
 		this.objective = objective;
 		this.progress = progress;
 		this.finished = finished;
@@ -118,7 +116,7 @@ public class Project {
 		final LocalDate startDate,
 		final LocalDate endDate
 	) {
-		canRegisterInitiative(initiativeName, initiativeDetail, startDate, endDate);
+		validateAddingNewInitiative(initiativeName, initiativeDetail, startDate, endDate);
 
 		return getKeyResult(keyResultToken)
 			.addInitiative(
@@ -153,7 +151,7 @@ public class Project {
 	}
 
 	//====================================  validate  =================================================
-	private void canRegisterInitiative(
+	private void validateAddingNewInitiative(
 		final String initiativeName,
 		final String initiativeDetail,
 		final LocalDate startDate,

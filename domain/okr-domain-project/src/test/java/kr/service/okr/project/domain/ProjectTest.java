@@ -23,15 +23,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.model.project.team.ProjectRoleType;
-import kr.service.okr.project.usecase.RegisterProjectUseCase;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ProjectTest {
 	private static final Long LEADER = 1L;
 	private static final Long FIRST_MEMBER = 2L;
 	private static final Long SECOND_MEMBER = 3L;
-
-	private RegisterProjectUseCase sut;
 
 	@ParameterizedTest
 	@MethodSource("projectConstructorTestSource")
