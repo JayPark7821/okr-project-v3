@@ -1,4 +1,4 @@
-package kr.service.okr.token.domain;
+package kr.service.user.token.domain;
 
 public record RefreshToken(
 	Long refreshTokenSeq,

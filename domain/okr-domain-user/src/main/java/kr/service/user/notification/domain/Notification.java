@@ -1,8 +1,8 @@
-package kr.service.okr.notification.domain;
+package kr.service.user.notification.domain;
 
 import java.time.LocalDateTime;
 
-import kr.service.okr.user.domain.User;
+import kr.service.user.user.domain.User;
 
 public record Notification(
 	Long id,

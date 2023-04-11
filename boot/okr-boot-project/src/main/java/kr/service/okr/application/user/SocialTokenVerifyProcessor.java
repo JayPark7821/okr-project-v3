@@ -1,4 +1,4 @@
-package kr.service.okr.user.service;
+package kr.service.okr.application.user;
 
 import kr.service.okr.model.guset.ProviderType;
 import kr.service.okr.model.user.OAuth2UserInfo;
