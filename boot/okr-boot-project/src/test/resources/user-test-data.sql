@@ -1,7 +1,7 @@
 SET REFERENTIAL_INTEGRITY FALSE;
 
 TRUNCATE TABLE USER_TABLE;
-ALTER TABLE USER_TABLE ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE USER_TABLE ALTER COLUMN USER_SEQ RESTART WITH 1;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 insert into user_table ( user_seq  , user_id, username , email , profile_image , provider_type , role_type, password,job_field)

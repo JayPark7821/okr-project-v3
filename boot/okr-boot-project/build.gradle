@@ -13,6 +13,7 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation project(path: ':api:okr-api-user')
 
 
     compileOnly 'org.projectlombok:lombok'
@@ -29,9 +30,12 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     implementation project(':domain:okr-domain-project')
+    implementation project(':domain:okr-domain-user')
     implementation project(':infra:okr-infra-database')
+    implementation project(':infra:okr-infra-oauth')
     implementation project(':common:okr-common-util')
     implementation project(':api:okr-api-project')
+    implementation project(':api:okr-api-user')
 
 }
 

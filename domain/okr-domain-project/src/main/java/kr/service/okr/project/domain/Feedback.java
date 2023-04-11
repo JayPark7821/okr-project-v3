@@ -1,6 +1,6 @@
 package kr.service.okr.project.domain;
 
-import kr.service.okr.model.project.feedback.FeedbackType;
+import kr.service.okr.project.domain.enums.FeedbackType;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,10 +1,5 @@
 package kr.service.okr.persistence.repository.project.aggregate.feedback;
 
-import static kr.service.okr.persistence.entity.project.aggregate.feedback.QFeedbackJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.aggregate.initiative.QInitiativeJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.aggregate.team.QTeamMemberJpaEntity.*;
-import static kr.service.okr.persistence.entity.user.QUserJpaEntity.*;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +14,12 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
-import kr.service.okr.model.project.SearchRange;
 import kr.service.okr.persistence.entity.project.aggregate.feedback.FeedbackJpaEntity;
+import kr.service.okr.persistence.entity.project.aggregate.feedback.QFeedbackJpaEntity;
+import kr.service.okr.persistence.entity.project.aggregate.initiative.QInitiativeJpaEntity;
 import kr.service.okr.persistence.entity.project.aggregate.team.QTeamMemberJpaEntity;
+import kr.service.okr.persistence.entity.user.QUserJpaEntity;
+import kr.service.okr.project.domain.enums.SearchRange;
 
 @Repository
 public class FeedbackQueryDslRepository {
@@ -38,29 +36,37 @@ public class FeedbackQueryDslRepository {
 		QTeamMemberJpaEntity writerTeamMember = new QTeamMemberJpaEntity("writerTeamMember");
 
 		List<FeedbackJpaEntity> results = queryFactory
-			.selectFrom(feedbackJpaEntity)
-			.innerJoin(feedbackJpaEntity.initiative, initiativeJpaEntity).fetchJoin()
-			.innerJoin(initiativeJpaEntity.teamMember, teamMemberJpaEntity)
-			.innerJoin(feedbackJpaEntity.teamMember, writerTeamMember).fetchJoin()
-			.innerJoin(writerTeamMember.user, userJpaEntity).fetchJoin()
-			.where(teamMemberJpaEntity.userSeq.eq(userSeq)
-					.and(initiativeJpaEntity.done.isTrue())
+			.selectFrom(QFeedbackJpaEntity.feedbackJpaEntity)
+			.innerJoin(QFeedbackJpaEntity.feedbackJpaEntity.initiative, QInitiativeJpaEntity.initiativeJpaEntity)
+			.fetchJoin()
+			.innerJoin(QInitiativeJpaEntity.initiativeJpaEntity.teamMember, QTeamMemberJpaEntity.teamMemberJpaEntity)
+			.innerJoin(QFeedbackJpaEntity.feedbackJpaEntity.teamMember, writerTeamMember)
+			.fetchJoin()
+			.innerJoin(writerTeamMember.user, QUserJpaEntity.userJpaEntity)
+			.fetchJoin()
+			.where(QTeamMemberJpaEntity.teamMemberJpaEntity.userSeq.eq(userSeq)
+					.and(QInitiativeJpaEntity.initiativeJpaEntity.done.isTrue())
 				, searchRangeCondition(range))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
-			.orderBy(feedbackJpaEntity.checked.asc(), feedbackJpaEntity.createdDate.desc())
+			.orderBy(QFeedbackJpaEntity.feedbackJpaEntity.checked.asc(),
+				QFeedbackJpaEntity.feedbackJpaEntity.createdDate.desc())
 			.fetch();
 
 		JPAQuery<FeedbackJpaEntity> countQuery = queryFactory
-			.selectFrom(feedbackJpaEntity)
-			.innerJoin(feedbackJpaEntity.initiative, initiativeJpaEntity).fetchJoin()
-			.innerJoin(initiativeJpaEntity.teamMember, teamMemberJpaEntity)
-			.innerJoin(feedbackJpaEntity.teamMember, writerTeamMember).fetchJoin()
-			.innerJoin(writerTeamMember.user, userJpaEntity).fetchJoin()
-			.where(teamMemberJpaEntity.userSeq.eq(userSeq)
-					.and(initiativeJpaEntity.done.isTrue())
+			.selectFrom(QFeedbackJpaEntity.feedbackJpaEntity)
+			.innerJoin(QFeedbackJpaEntity.feedbackJpaEntity.initiative, QInitiativeJpaEntity.initiativeJpaEntity)
+			.fetchJoin()
+			.innerJoin(QInitiativeJpaEntity.initiativeJpaEntity.teamMember, QTeamMemberJpaEntity.teamMemberJpaEntity)
+			.innerJoin(QFeedbackJpaEntity.feedbackJpaEntity.teamMember, writerTeamMember)
+			.fetchJoin()
+			.innerJoin(writerTeamMember.user, QUserJpaEntity.userJpaEntity)
+			.fetchJoin()
+			.where(QTeamMemberJpaEntity.teamMemberJpaEntity.userSeq.eq(userSeq)
+					.and(QInitiativeJpaEntity.initiativeJpaEntity.done.isTrue())
 				, searchRangeCondition(range))
-			.orderBy(feedbackJpaEntity.checked.asc(), feedbackJpaEntity.createdDate.desc());
+			.orderBy(QFeedbackJpaEntity.feedbackJpaEntity.checked.asc(),
+				QFeedbackJpaEntity.feedbackJpaEntity.createdDate.desc());
 
 		return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetch().size());
 	}
@@ -68,7 +74,7 @@ public class FeedbackQueryDslRepository {
 	private BooleanExpression searchRangeCondition(SearchRange searchRange) {
 		Map<String, LocalDate> range = searchRange.getRange();
 		if (range != null) {
-			return feedbackJpaEntity.createdDate.between(range.get("startDt").atStartOfDay(),
+			return QFeedbackJpaEntity.feedbackJpaEntity.createdDate.between(range.get("startDt").atStartOfDay(),
 				range.get("endDt").atStartOfDay());
 		} else {
 			return null;

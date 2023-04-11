@@ -3,24 +3,22 @@ package kr.service.okr.exception;
 public class OkrApplicationException extends RuntimeException {
 
 	private final ErrorCode errorCode;
-	private String message;
+	private final String message;
 
-	public OkrApplicationException(final String message, final ErrorCode errorCode) {
+	public OkrApplicationException(final ErrorCode errorCode, final String... args) {
 		this.errorCode = errorCode;
-		this.message = message;
+		this.message = errorCode.getMessage().formatted(args);
+
 	}
 
 	public OkrApplicationException(final ErrorCode errorCode) {
 		this.errorCode = errorCode;
-		this.message = null;
+		this.message = errorCode.getMessage();
 	}
 
 	@Override
 	public String getMessage() {
-		if (message == null) {
-			return errorCode.getMessage();
-		}
-		return String.format("%s, %s", errorCode.getMessage(), message);
+		return message;
 	}
 
 	@Override

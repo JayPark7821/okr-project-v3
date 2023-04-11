@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import kr.service.okr.Response;
 import kr.service.okr.api.ProjectApiController;
 import kr.service.okr.api.RegisterProjectRequestDto;
-import kr.service.okr.application.ProjectFacade;
+import kr.service.okr.application.project.ProjectFacade;
 import lombok.RequiredArgsConstructor;
 
 @RestController

@@ -13,7 +13,7 @@
 // import org.springframework.data.domain.Pageable;
 // import org.springframework.stereotype.Service;
 // import org.springframework.transaction.annotation.Transactional;
-//
+// Transactional
 // import kr.service.okr.common.exception.ErrorCode;
 // import kr.service.okr.common.exception.OkrApplicationException;
 // import kr.service.okr.domain.project.aggregate.feedback.Feedback;
@@ -27,7 +27,6 @@
 // import kr.service.okr.domain.project.command.ProjectInitiativeSaveCommand;
 // import kr.service.okr.domain.project.command.ProjectInitiativeUpdateCommand;
 // import kr.service.okr.domain.project.command.ProjectKeyResultSaveCommand;
-// import kr.service.okr.domain.project.command.ProjectSaveCommand;
 // import kr.service.okr.domain.project.info.FeedbackDetailInfo;
 // import kr.service.okr.domain.project.info.FeedbackInfo;
 // import kr.service.okr.domain.project.info.IniFeedbackInfo;
@@ -56,8 +55,6 @@
 // 	private final FeedbackRepository feedbackRepository;
 // 	private final ProjectValidateProcessor validateProcessor;
 // 	private final ProjectAsyncService projectAsyncService;
-//
-
 //
 // 	@Override
 // 	public ProjectInfo getProjectInfoBy(String projectToken, Long userSeq) {

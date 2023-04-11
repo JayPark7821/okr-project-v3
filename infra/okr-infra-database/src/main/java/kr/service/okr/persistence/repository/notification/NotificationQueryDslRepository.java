@@ -1,7 +1,5 @@
 package kr.service.okr.persistence.repository.notification;
 
-import static kr.service.okr.persistence.entity.notification.QNotificationJpaEntity.*;
-
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
 import kr.service.okr.persistence.entity.notification.NotificationJpaEntity;
+import kr.service.okr.persistence.entity.notification.QNotificationJpaEntity;
 
 @Repository
 public class NotificationQueryDslRepository {
@@ -29,18 +28,20 @@ public class NotificationQueryDslRepository {
 	public Page<NotificationJpaEntity> findNotificationByUserSeq(Pageable pageable, Long userSeq) {
 		List<NotificationJpaEntity> results =
 			queryFactory
-				.select(notificationJpaEntity)
-				.from(notificationJpaEntity)
-				.where(notificationJpaEntity.userSeq.eq(userSeq))
+				.select(QNotificationJpaEntity.notificationJpaEntity)
+				.from(QNotificationJpaEntity.notificationJpaEntity)
+				.where(QNotificationJpaEntity.notificationJpaEntity.userSeq.eq(userSeq))
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
-				.orderBy(notificationJpaEntity.isChecked.asc(), notificationJpaEntity.createdDate.desc())
+				.orderBy(
+					QNotificationJpaEntity.notificationJpaEntity.isChecked.asc(),
+					QNotificationJpaEntity.notificationJpaEntity.createdDate.desc())
 				.fetch();
 
 		JPAQuery<Long> countQuery = queryFactory
-			.select(notificationJpaEntity.id)
-			.from(notificationJpaEntity)
-			.where(notificationJpaEntity.userSeq.eq(userSeq));
+			.select(QNotificationJpaEntity.notificationJpaEntity.id)
+			.from(QNotificationJpaEntity.notificationJpaEntity)
+			.where(QNotificationJpaEntity.notificationJpaEntity.userSeq.eq(userSeq));
 
 		return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetch().size());
 	}

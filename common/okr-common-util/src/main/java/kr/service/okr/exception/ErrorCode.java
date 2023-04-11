@@ -34,7 +34,13 @@ public enum ErrorCode {
 	INITIATIVE_START_DATE_IS_REQUIRED("행동전략 시작일은 필수 값 입니다."),
 	INITIATIVE_END_DATE_IS_REQUIRED("행동전략 종료일은 필수 값 입니다."),
 	INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES("프로젝트 기간이 행동전략 기간을 포함해야 합니다."),
-	;
+	MISS_MATCH_PROVIDER("{} (으)로 가입한 계정이 있습니다."),
+	PROVIDER_TYPE_IS_REQUIRED("소셜플랫폼 타입은 필수 값 입니다."),
+	EMAIL_IS_REQUIRED("이메일이 누락되었습니다."),
+	USERNAME_IS_REQUIRED("사용자명(20자 이하)은 필수 값 입니다."),
+	ID_IS_REQUIRED("ID값이 누락되었습니다."),
+	JOB_FIELD_IS_REQUIRED("직무분야는 필수 값 입니다."),
+	UNSUPPORTED_SOCIAL_TYPE("지원하지 않는 소셜 타입입니다.");
 
 	final String message;
 

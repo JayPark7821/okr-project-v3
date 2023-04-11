@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import kr.service.okr.model.project.ProjectType;
-import kr.service.okr.model.project.SortType;
 import kr.service.okr.project.domain.Project;
+import kr.service.okr.project.domain.enums.ProjectType;
+import kr.service.okr.project.domain.enums.SortType;
 
 public interface ProjectQuery {
 	Optional<Project> findByProjectTokenAndUser(String projectToken, Long userSeq);

@@ -61,6 +61,5 @@ public class GlobalLogFilter extends AbstractGatewayFilterFactory<GlobalLogFilte
 				}
 			}));
 		};
-
 	}
 }

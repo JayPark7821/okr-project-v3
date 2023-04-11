@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import kr.service.okr.api.RegisterProjectRequestDto;
-import kr.service.okr.application.RegisterProjectCommand;
+import kr.service.okr.application.project.RegisterProjectCommand;
 
 public class ProjectMapper {
 
