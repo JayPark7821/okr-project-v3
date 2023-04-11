@@ -7,7 +7,7 @@ spring:
   cloud:
     gateway:
       default-filters:
-        - name: GlobalFilter
+        - name: GlobalLogFilter
           args:
             baseMessage: Spring cloud Gateway Global Filter
             preLogger: true
@@ -23,5 +23,5 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://okr-discovery:8761/eureka
+      defaultZone: http://localhost:8761/eureka
 
