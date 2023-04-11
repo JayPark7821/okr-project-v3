@@ -1,4 +1,4 @@
-package kr.service.okr.apple;
+package kr.service.oauth.apple;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

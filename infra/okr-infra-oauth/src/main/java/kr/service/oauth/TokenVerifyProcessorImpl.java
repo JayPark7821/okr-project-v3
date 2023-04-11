@@ -1,4 +1,4 @@
-package kr.service.okr;
+package kr.service.oauth;
 
 import java.util.List;
 

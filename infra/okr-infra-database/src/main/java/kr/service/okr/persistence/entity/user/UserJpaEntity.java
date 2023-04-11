@@ -12,7 +12,7 @@ import kr.service.okr.model.guset.ProviderType;
 import kr.service.okr.model.user.JobField;
 import kr.service.okr.model.user.RoleType;
 import kr.service.okr.persistence.config.BaseEntity;
-import kr.service.okr.user.domain.User;
+import kr.service.user.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -65,16 +65,17 @@ public class UserJpaEntity extends BaseEntity {
 	}
 
 	public User toDomain() {
-		return new User(
-			this.userSeq,
-			this.userId,
-			this.username,
-			this.email,
-			this.profileImage,
-			this.providerType,
-			this.roleType,
-			this.password,
-			this.jobField
-		);
+		return User.builder()
+			.userSeq(this.userSeq)
+			.userId(this.userId)
+			.username(this.username)
+			.email(this.email)
+			.profileImage(this.profileImage)
+			.providerType(this.providerType)
+			.roleType(this.roleType)
+			.password(this.password)
+			.jobField(this.jobField)
+			.build();
 	}
+
 }

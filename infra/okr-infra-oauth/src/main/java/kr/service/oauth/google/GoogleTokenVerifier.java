@@ -1,4 +1,4 @@
-package kr.service.okr.google;
+package kr.service.oauth.google;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -14,7 +14,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 
-import kr.service.okr.TokenVerifier;
+import kr.service.oauth.TokenVerifier;
 import kr.service.okr.model.guset.ProviderType;
 import kr.service.okr.model.user.OAuth2UserInfo;
 

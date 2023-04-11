@@ -1,4 +1,4 @@
-package kr.service.okr.application;
+package kr.service.okr.application.project;
 
 import java.time.LocalDate;
 import java.util.List;

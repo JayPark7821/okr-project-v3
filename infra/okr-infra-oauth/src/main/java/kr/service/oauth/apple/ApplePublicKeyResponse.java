@@ -1,4 +1,4 @@
-package kr.service.okr.apple;
+package kr.service.oauth.apple;
 
 import java.util.List;
 import java.util.Optional;

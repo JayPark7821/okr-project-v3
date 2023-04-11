@@ -1,7 +1,7 @@
-package kr.service.okr.acceptance.project.external;
+package kr.service.okr.acceptance.project;
 
-import static kr.service.okr.acceptance.project.external.ProjectAcceptanceTestAssertions.*;
-import static kr.service.okr.acceptance.project.external.ProjectAcceptanceTestSteps.*;
+import static kr.service.okr.acceptance.project.ProjectAcceptanceTestAssertions.*;
+import static kr.service.okr.acceptance.project.ProjectAcceptanceTestSteps.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kr.service.okr.api.RegisterProjectRequestDto;
 import kr.service.okr.utils.SpringBootTestReady;
+import kr.service.okr.api.RegisterProjectRequestDto;
 
 @DisplayName("Project 도메인 인수 테스트")
 public class ProjectAcceptanceTest extends SpringBootTestReady {

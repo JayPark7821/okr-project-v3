@@ -1,4 +1,4 @@
-package kr.service.okr.application;
+package kr.service.okr.application.project;
 
 import java.util.List;
 

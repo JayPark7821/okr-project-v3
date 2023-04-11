@@ -11,6 +11,7 @@ include 'cloud:okr-cloud-gateway'
 
 include 'api'
 include 'api:okr-api-project'
+include 'api:okr-api-user'
 
 include 'infra'
 include 'infra:okr-infra-database'
@@ -24,7 +25,5 @@ include 'common'
 include 'common:okr-common-util'
 include 'common:okr-common-model'
 
-include 'okr-api'
-include 'okr-batch'
 
 

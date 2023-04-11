@@ -1,10 +1,5 @@
 package kr.service.okr.persistence.repository.project.aggregate.initiative;
 
-import static kr.service.okr.persistence.entity.project.aggregate.initiative.QInitiativeJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.aggregate.keyresult.QKeyResultJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.aggregate.team.QTeamMemberJpaEntity.*;
-import static kr.service.okr.persistence.entity.user.QUserJpaEntity.*;
-
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +12,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
 import kr.service.okr.persistence.entity.project.aggregate.initiative.InitiativeJpaEntity;
+import kr.service.okr.persistence.entity.project.aggregate.initiative.QInitiativeJpaEntity;
+import kr.service.okr.persistence.entity.project.aggregate.keyresult.QKeyResultJpaEntity;
+import kr.service.okr.persistence.entity.project.aggregate.team.QTeamMemberJpaEntity;
+import kr.service.okr.persistence.entity.user.QUserJpaEntity;
 
 @Repository
 public class InitiativeQueryDslRepository {
@@ -33,25 +32,27 @@ public class InitiativeQueryDslRepository {
 		Pageable pageable) {
 
 		List<InitiativeJpaEntity> results = queryFactory
-			.select(initiativeJpaEntity)
-			.from(initiativeJpaEntity)
-			.innerJoin(initiativeJpaEntity.teamMember, teamMemberJpaEntity).fetchJoin()
-			.innerJoin(teamMemberJpaEntity.user, userJpaEntity).fetchJoin()
-			.innerJoin(initiativeJpaEntity.keyResult, keyResultJpaEntity)
+			.select(QInitiativeJpaEntity.initiativeJpaEntity)
+			.from(QInitiativeJpaEntity.initiativeJpaEntity)
+			.innerJoin(QInitiativeJpaEntity.initiativeJpaEntity.teamMember, QTeamMemberJpaEntity.teamMemberJpaEntity)
+			.fetchJoin()
+			.innerJoin(QTeamMemberJpaEntity.teamMemberJpaEntity.user, QUserJpaEntity.userJpaEntity)
+			.fetchJoin()
+			.innerJoin(QInitiativeJpaEntity.initiativeJpaEntity.keyResult, QKeyResultJpaEntity.keyResultJpaEntity)
 			.where(
-				keyResultJpaEntity.keyResultToken.eq(keyResultToken)
+				QKeyResultJpaEntity.keyResultJpaEntity.keyResultToken.eq(keyResultToken)
 			)
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
-			.orderBy(initiativeJpaEntity.createdDate.asc())
+			.orderBy(QInitiativeJpaEntity.initiativeJpaEntity.createdDate.asc())
 			.fetch();
 
 		JPAQuery<Long> countQuery = queryFactory
-			.select(initiativeJpaEntity.id)
-			.from(initiativeJpaEntity)
-			.innerJoin(initiativeJpaEntity.keyResult, keyResultJpaEntity)
+			.select(QInitiativeJpaEntity.initiativeJpaEntity.id)
+			.from(QInitiativeJpaEntity.initiativeJpaEntity)
+			.innerJoin(QInitiativeJpaEntity.initiativeJpaEntity.keyResult, QKeyResultJpaEntity.keyResultJpaEntity)
 			.where(
-				keyResultJpaEntity.keyResultToken.eq(keyResultToken)
+				QKeyResultJpaEntity.keyResultJpaEntity.keyResultToken.eq(keyResultToken)
 			);
 
 		return PageableExecutionUtils.getPage(results, pageable, () -> countQuery.fetch().size());

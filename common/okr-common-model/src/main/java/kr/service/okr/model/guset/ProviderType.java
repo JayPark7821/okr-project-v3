@@ -13,4 +13,5 @@ public enum ProviderType {
 	public String getName() {
 		return name;
 	}
+
 }
