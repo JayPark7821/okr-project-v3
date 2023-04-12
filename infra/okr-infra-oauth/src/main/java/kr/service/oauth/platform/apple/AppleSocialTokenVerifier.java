@@ -1,4 +1,4 @@
-package kr.service.oauth.apple;
+package kr.service.oauth.platform.apple;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -17,9 +17,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import kr.service.oauth.OAuth2UserInfo;
-import kr.service.oauth.SocialPlatform;
-import kr.service.oauth.SocialTokenVerifier;
+import kr.service.oauth.platform.OAuth2UserInfo;
+import kr.service.oauth.platform.SocialPlatform;
+import kr.service.oauth.processor.SocialTokenVerifier;
 import lombok.RequiredArgsConstructor;
 
 @Component

@@ -21,8 +21,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    
+
     implementation project(':common:okr-common-util')
+    implementation project(':domain:okr-domain-user')
 }
 dependencyManagement {
     imports {

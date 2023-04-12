@@ -1,14 +1,16 @@
-package kr.service.oauth;
+package kr.service.oauth.processor;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import kr.service.oauth.platform.OAuth2UserInfo;
+import kr.service.oauth.platform.SocialPlatform;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class SocialTokenVerifyProcessor {
+public class SocialTokenVerifyProcessorImpl implements SocialTokenVerifyProcessor {
 
 	private final List<SocialTokenVerifier> socialTokenVerifierList;
 

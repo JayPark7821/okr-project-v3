@@ -1,4 +1,4 @@
-package kr.service.oauth.google;
+package kr.service.oauth.platform.google;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -14,9 +14,9 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 
-import kr.service.oauth.OAuth2UserInfo;
-import kr.service.oauth.SocialPlatform;
-import kr.service.oauth.SocialTokenVerifier;
+import kr.service.oauth.platform.OAuth2UserInfo;
+import kr.service.oauth.platform.SocialPlatform;
+import kr.service.oauth.processor.SocialTokenVerifier;
 
 @Component
 public class GoogleSocialTokenVerifier implements SocialTokenVerifier {
@@ -51,9 +51,9 @@ public class GoogleSocialTokenVerifier implements SocialTokenVerifier {
 			GoogleIdToken.Payload payload = idToken.getPayload();
 			return new OAuth2UserInfo(
 				payload.getSubject(),
-				(String)payload.get("name"),
+				(String)payload.get("username"),
 				(String)payload.get("email"),
-				(String)payload.get("picture"),
+				(String)payload.get("profileImage"),
 				SocialPlatform.GOOGLE.name()
 			);
 		} else {

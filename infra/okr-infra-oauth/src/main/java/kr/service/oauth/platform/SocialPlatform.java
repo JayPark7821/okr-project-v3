@@ -1,4 +1,4 @@
-package kr.service.oauth;
+package kr.service.oauth.platform;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.util.EnumLookUpUtil;
