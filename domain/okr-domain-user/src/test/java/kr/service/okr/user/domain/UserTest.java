@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
-import kr.service.user.guest.ProviderType;
+import kr.service.user.ProviderType;
 import kr.service.user.user.domain.JobField;
 import kr.service.user.user.domain.RoleType;
 import kr.service.user.user.domain.User;
