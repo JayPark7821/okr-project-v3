@@ -1,6 +1,6 @@
-package kr.service.okr.acceptance.user;
+package kr.service.user.acceptance.user;
 
-import static kr.service.okr.utils.OAuth2UserInfoFixture.DiffAppleUserInfoFixture.*;
+import static kr.service.user.utils.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.regex.Pattern;
@@ -21,9 +21,9 @@ public class UserAcceptanceTestAssertions {
 		assertThat(response.guestUserId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
 		);
-		assertThat(response.name()).isEqualTo(NAME);
-		assertThat(response.email()).isEqualTo(EMAIL);
-		assertThat(response.providerType()).isEqualTo(PROVIDER_TYPE);
+		assertThat(response.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
+		assertThat(response.email()).isEqualTo(DiffAppleUserInfoFixture.EMAIL);
+		assertThat(response.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE);
 		assertThat(response.accessToken()).isNull();
 		assertThat(response.refreshToken()).isNull();
 

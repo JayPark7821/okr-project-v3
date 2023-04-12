@@ -1,4 +1,4 @@
-package kr.service.okr.application.user;
+package kr.service.user.application.user;
 
 import java.util.Optional;
 

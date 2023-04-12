@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import kr.service.okr.user.domain.User;
 import kr.service.okr.util.ClassUtils;
-import kr.service.user.user.domain.User;
 
 @Component
 public class AuditorProvider implements AuditorAware<String> {
@@ -20,6 +20,7 @@ public class AuditorProvider implements AuditorAware<String> {
 			return Optional.empty();
 		}
 
-		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class).map(User::getUserId);
+		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
+			.map(user -> user.getUserSeq().toString());
 	}
 }

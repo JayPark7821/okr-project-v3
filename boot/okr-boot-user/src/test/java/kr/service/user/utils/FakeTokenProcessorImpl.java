@@ -1,4 +1,4 @@
-package kr.service.okr.utils;
+package kr.service.user.utils;
 
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.oauth.processor.SocialTokenVerifier;

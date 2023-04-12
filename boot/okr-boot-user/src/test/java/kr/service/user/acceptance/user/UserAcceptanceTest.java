@@ -1,13 +1,13 @@
-package kr.service.okr.acceptance.user;
+package kr.service.user.acceptance.user;
 
-import static kr.service.okr.acceptance.user.UserAcceptanceTestAssertions.*;
-import static kr.service.okr.acceptance.user.UserAcceptanceTestSteps.*;
+import static kr.service.user.acceptance.user.UserAcceptanceTestAssertions.*;
+import static kr.service.user.acceptance.user.UserAcceptanceTestSteps.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kr.service.okr.utils.SpringBootTestReady;
+import kr.service.user.utils.SpringBootTestReady;
 
 @DisplayName("User 도메인 인수 테스트")
 public class UserAcceptanceTest extends SpringBootTestReady {

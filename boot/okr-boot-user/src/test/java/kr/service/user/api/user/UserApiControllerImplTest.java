@@ -1,5 +1,6 @@
-package kr.service.okr.api.user;
+package kr.service.user.api.user;
 
+import static kr.service.user.utils.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.regex.Pattern;
@@ -13,10 +14,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.api.user.external.UserApiControllerImpl;
-import kr.service.okr.utils.OAuth2UserInfoFixture.DiffAppleUserInfoFixture;
-import kr.service.okr.utils.TestConfig;
 import kr.service.user.api.LoginResponse;
+import kr.service.user.api.user.external.UserApiControllerImpl;
+import kr.service.user.utils.TestConfig;
 
 @Import(TestConfig.class)
 @Transactional

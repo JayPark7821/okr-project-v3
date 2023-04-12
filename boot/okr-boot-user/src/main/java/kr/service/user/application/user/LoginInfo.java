@@ -1,4 +1,4 @@
-package kr.service.okr.application.user;
+package kr.service.user.application.user;
 
 import kr.service.user.ProviderType;
 import kr.service.user.guest.domain.Guest;

@@ -1,7 +1,7 @@
-package kr.service.okr.api.user;
+package kr.service.user.api.user;
 
-import kr.service.okr.application.user.LoginInfo;
 import kr.service.user.api.LoginResponse;
+import kr.service.user.application.user.LoginInfo;
 
 public class Mapper {
 

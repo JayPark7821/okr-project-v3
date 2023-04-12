@@ -1,4 +1,4 @@
-package kr.service.okr.api.user.external;
+package kr.service.user.api.user.external;
 
 import java.util.Optional;
 
@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.oauth.processor.SocialTokenVerifyProcessor;
-import kr.service.okr.api.user.Mapper;
-import kr.service.okr.application.user.LoginInfo;
-import kr.service.okr.application.user.UserFacade;
 import kr.service.user.ProviderType;
 import kr.service.user.Response;
 import kr.service.user.api.LoginResponse;
 import kr.service.user.api.UserApiController;
+import kr.service.user.api.user.Mapper;
+import kr.service.user.application.user.LoginInfo;
+import kr.service.user.application.user.UserFacade;
 import lombok.RequiredArgsConstructor;
 
 @RestController

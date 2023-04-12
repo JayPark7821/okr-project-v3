@@ -1,4 +1,4 @@
-package kr.service.okr.acceptance.user;
+package kr.service.user.acceptance.user;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

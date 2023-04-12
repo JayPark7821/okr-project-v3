@@ -4,6 +4,7 @@ include 'okr'
 include 'boot'
 include 'boot:okr-boot-batch'
 include 'boot:okr-boot-project'
+include 'boot:okr-boot-user'
 
 include 'cloud'
 include 'cloud:okr-cloud-discovery'
