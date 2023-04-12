@@ -1,7 +1,7 @@
 package kr.service.okr.utils;
 
-import kr.service.oauth.OAuth2UserInfo;
-import kr.service.user.guest.ProviderType;
+import kr.service.oauth.platform.OAuth2UserInfo;
+import kr.service.user.ProviderType;
 
 public final class OAuth2UserInfoFixture {
 

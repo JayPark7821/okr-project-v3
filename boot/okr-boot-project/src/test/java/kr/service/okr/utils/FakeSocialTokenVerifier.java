@@ -1,8 +1,8 @@
 package kr.service.okr.utils;
 
-import kr.service.oauth.OAuth2UserInfo;
-import kr.service.oauth.SocialPlatform;
-import kr.service.oauth.SocialTokenVerifier;
+import kr.service.oauth.platform.OAuth2UserInfo;
+import kr.service.oauth.platform.SocialPlatform;
+import kr.service.oauth.processor.SocialTokenVerifier;
 
 public class FakeSocialTokenVerifier implements SocialTokenVerifier {
 

@@ -4,8 +4,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
-import kr.service.oauth.SocialTokenVerifier;
-import kr.service.okr.processor.SocialTokenVerifyProcessor;
+import kr.service.oauth.processor.SocialTokenVerifier;
+import kr.service.oauth.processor.SocialTokenVerifyProcessor;
 
 @TestConfiguration
 public class TestConfig {
