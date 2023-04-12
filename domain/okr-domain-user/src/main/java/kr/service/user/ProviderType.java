@@ -1,4 +1,4 @@
-package kr.service.user.guest;
+package kr.service.user;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.util.EnumLookUpUtil;

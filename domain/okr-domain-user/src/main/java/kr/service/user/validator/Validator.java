@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
-import kr.service.user.guest.ProviderType;
+import kr.service.user.ProviderType;
 import kr.service.user.user.domain.JobField;
 
 public class Validator {
@@ -36,4 +36,8 @@ public class Validator {
 			throw new OkrApplicationException(ErrorCode.JOB_FIELD_IS_REQUIRED);
 	}
 
+	public static void validateRefreshToken(String refreshToken) {
+		if (Objects.isNull(refreshToken) || refreshToken.isBlank())
+			throw new OkrApplicationException(ErrorCode.INTERNAL_SERVER_ERROR);
+	}
 }
