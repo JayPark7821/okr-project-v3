@@ -13,10 +13,14 @@ spring:
             preLogger: true
             postLogger: true
       routes:
-        - id: okr-service
-          uri: lb://OKR-SERVICE
+        - id: okr-boot-user
+          uri: lb://OKR-BOOT-USER
           predicates:
-            - Path=/api/**
+            - Path=/api/v1/user/**
+        - id: okr-boot-project
+          uri: lb://OKR-BOOT-PROJECT
+          predicates:
+            - Path=/api/v1/project/**
 
 eureka:
   client:

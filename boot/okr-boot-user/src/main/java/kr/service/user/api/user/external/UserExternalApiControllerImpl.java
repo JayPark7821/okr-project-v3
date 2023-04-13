@@ -12,7 +12,7 @@ import kr.service.oauth.processor.SocialTokenVerifyProcessor;
 import kr.service.user.ProviderType;
 import kr.service.user.Response;
 import kr.service.user.api.LoginResponse;
-import kr.service.user.api.UserApiController;
+import kr.service.user.api.external.UserExternalApiController;
 import kr.service.user.api.user.Mapper;
 import kr.service.user.application.user.LoginInfo;
 import kr.service.user.application.user.UserFacade;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-public class UserApiControllerImpl implements UserApiController {
+public class UserExternalApiControllerImpl implements UserExternalApiController {
 
 	private final SocialTokenVerifyProcessor socialTokenVerifyProcessor;
 	private final UserFacade userFacade;

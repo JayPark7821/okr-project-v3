@@ -2,9 +2,13 @@ package kr.service.okr.application.project;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import kr.service.okr.project.domain.Project;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
+import kr.service.user.api.internal.UserInfo;
+import kr.service.user.api.internal.UserInternalApiController;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -12,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class ProjectFacade {
 
 	private final RegisterProjectUseCase registerProjectUseCase;
+	private final UserInternalApiController userInternalApiController;
 
 	public String registerProject(RegisterProjectCommand requestCommand) {
 
@@ -24,5 +29,10 @@ public class ProjectFacade {
 		);
 
 		return registerProjectUseCase.registerProject(command);
+	}
+
+	public Project getProjectInfoBy(final String projectToken, final String authToken) {
+		final ResponseEntity<UserInfo> userInfo = userInternalApiController.getUserSeqByEmail(authToken);
+		return null;
 	}
 }
