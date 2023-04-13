@@ -14,6 +14,8 @@ spring:
       - infra-user-database
       - infra-jwt
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
   client:
     register-with-eureka: true
     fetch-registry: true

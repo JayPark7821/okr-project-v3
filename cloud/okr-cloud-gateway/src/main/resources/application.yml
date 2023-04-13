@@ -17,6 +17,7 @@ spring:
           uri: lb://OKR-BOOT-USER
           predicates:
             - Path=/api/v1/user/**
+            -
         - id: okr-boot-project
           uri: lb://OKR-BOOT-PROJECT
           predicates:
