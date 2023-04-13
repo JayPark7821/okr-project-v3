@@ -15,16 +15,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.service.user.api.LoginResponse;
-import kr.service.user.api.user.external.UserApiControllerImpl;
+import kr.service.user.api.user.external.UserExternalApiControllerImpl;
 import kr.service.user.utils.TestConfig;
 
 @Import(TestConfig.class)
 @Transactional
 @SpringBootTest
-class UserApiControllerImplTest {
+class UserExternalApiControllerImplTest {
 
 	@Autowired
-	private UserApiControllerImpl sut;
+	private UserExternalApiControllerImpl sut;
 
 	@Value("${app.auth.tokenSecret}")
 	private String key;
