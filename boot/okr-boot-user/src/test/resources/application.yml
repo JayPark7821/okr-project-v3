@@ -1,0 +1,13 @@
+spring:
+  sql:
+    init:
+      mode: always
+
+  cloud:
+    discovery:
+      enabled: false
+
+  profiles:
+    include:
+      - infra-oauth
+      - infra-user-database

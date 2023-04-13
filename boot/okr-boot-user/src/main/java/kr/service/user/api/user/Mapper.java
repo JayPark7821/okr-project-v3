@@ -10,7 +10,7 @@ public class Mapper {
 			loginInfo.guestUuid(),
 			loginInfo.email(),
 			loginInfo.name(),
-			loginInfo.providerType(),
+			loginInfo.providerType().name(),
 			loginInfo.profileImageUrl(),
 			loginInfo.accessToken(),
 			loginInfo.refreshToken(),

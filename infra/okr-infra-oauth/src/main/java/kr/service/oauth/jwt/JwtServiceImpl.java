@@ -1,5 +1,7 @@
 package kr.service.oauth.jwt;
 
+import static kr.service.oauth.jwt.JwtUtils.*;
+
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -54,13 +56,4 @@ public class JwtServiceImpl implements JwtService {
 		}
 	}
 
-	private Key getKey(String key) {
-		byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
-		return Keys.hmacShaKeyFor(keyBytes);
-	}
-
-	private Claims extractClaims(String token, String key) {
-		return Jwts.parserBuilder().setSigningKey(getKey(key))
-			.build().parseClaimsJws(token).getBody();
-	}
 }

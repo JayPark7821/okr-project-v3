@@ -2,25 +2,25 @@ package kr.service.user.persistence.service.token;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.service.user.persistence.entity.token.RefreshTokenJpaEntity;
 import kr.service.user.persistence.repository.token.RefreshTokenJpaRepository;
+import kr.service.user.token.domain.RefreshToken;
+import kr.service.user.token.repository.RefreshTokenQuery;
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Repository
 @Transactional
 @RequiredArgsConstructor
-public class RefreshTokenQuery {
+public class RefreshTokenQueryImpl implements RefreshTokenQuery {
 
 	private final RefreshTokenJpaRepository repository;
 
-	public Optional<RefreshTokenJpaEntity> findByUserEmail(String userEmail) {
-		return repository.findByUserEmail(userEmail);
-	}
-
-	public Optional<RefreshTokenJpaEntity> findByEmailAndRefreshToken(String email, String refreshToken) {
-		return repository.findByUserEmailAndRefreshToken(email, refreshToken);
+	@Override
+	public Optional<RefreshToken> findByUserEmail(final String email) {
+		return repository.findByUserEmail(email).map(RefreshTokenJpaEntity::toDomain);
 	}
 }

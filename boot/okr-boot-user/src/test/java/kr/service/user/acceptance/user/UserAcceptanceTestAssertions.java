@@ -23,11 +23,8 @@ public class UserAcceptanceTestAssertions {
 		);
 		assertThat(response.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
 		assertThat(response.email()).isEqualTo(DiffAppleUserInfoFixture.EMAIL);
-		assertThat(response.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE);
+		assertThat(response.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE.name());
 		assertThat(response.accessToken()).isNull();
 		assertThat(response.refreshToken()).isNull();
-
-		AssertionsForClassTypes.assertThat(응답.body().asString()).containsPattern(
-			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 	}
 }

@@ -1,0 +1,21 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: okr-boot-user
+  sql:
+    init:
+      mode: always
+
+  profiles:
+    include:
+      - infra-oauth
+      - infra-user-database
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: localhost:8761/eureka

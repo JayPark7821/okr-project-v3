@@ -4,3 +4,6 @@ app:
     tokenExpiry: 1800000
     refreshTokenExpiry: 604800000
     refreshTokenRegenerationThreshold: 259200000
+
+google:
+  clientId: test-google-client-id

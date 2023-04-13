@@ -1,11 +1,14 @@
 package kr.service.user.persistence.entity.token;
 
+import java.sql.Ref;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import kr.service.user.token.domain.RefreshToken;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +27,17 @@ public class RefreshTokenJpaEntity {
 
 	private String refreshToken;
 
-	public RefreshTokenJpaEntity(String userEmail, String refreshToken) {
-		this.userEmail = userEmail;
-		this.refreshToken = refreshToken;
+	public RefreshTokenJpaEntity(final RefreshToken refreshToken) {
+		this.refreshTokenSeq = refreshToken.getRefreshTokenSeq();
+		this.userEmail = refreshToken.getUserEmail();
+		this.refreshToken = refreshToken.getRefreshToken();
 	}
 
-	public void updateRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
+	public RefreshToken toDomain() {
+		return RefreshToken.builder()
+			.refreshTokenSeq(this.refreshTokenSeq)
+			.userEmail(this.userEmail)
+			.refreshToken(this.refreshToken)
+			.build();
 	}
 }

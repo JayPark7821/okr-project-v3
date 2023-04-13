@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import kr.service.okr.util.TokenGenerator;
 import kr.service.user.ProviderType;
+import kr.service.user.guest.domain.Guest;
 import kr.service.user.persistence.config.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,8 +21,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "guest")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GuestJpaEntity extends BaseTimeEntity {
-
-	private static final String GUEST_PREFIX = "guest-";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,14 +39,25 @@ public class GuestJpaEntity extends BaseTimeEntity {
 
 	private String profileImage;
 
-	@Builder
-	private GuestJpaEntity(String guestId, String guestName, String email, ProviderType providerType,
-		String profileImage) {
-		this.guestUuid = TokenGenerator.randomCharacterWithPrefix(GUEST_PREFIX);
-		this.guestId = guestId;
-		this.guestName = guestName;
-		this.email = email;
-		this.providerType = providerType;
-		this.profileImage = profileImage;
+	public GuestJpaEntity(final Guest guest) {
+		this.guestUuid = guest.getGuestUuid();
+		this.guestId = guest.getGuestId();
+		this.guestName = guest.getGuestName();
+		this.email = guest.getEmail();
+		this.providerType = guest.getProviderType();
+		this.profileImage = guest.getProfileImage();
+	}
+
+	public Guest toDomain() {
+		return Guest.builder()
+			.guestSeq(guestSeq)
+			.guestUuid(guestUuid)
+			.guestId(guestId)
+			.guestName(guestName)
+			.email(email)
+			.providerType(providerType)
+			.profileImage(profileImage)
+			.build();
+
 	}
 }
