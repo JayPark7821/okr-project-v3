@@ -2,25 +2,37 @@ package kr.service.okr.config;
 
 import java.util.Optional;
 
+import org.apache.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import kr.service.okr.user.domain.User;
-import kr.service.okr.util.ClassUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import kr.service.oauth.jwt.JwtUtils;
+import kr.service.okr.util.HeaderUtil;
 
 @Component
 public class AuditorProvider implements AuditorAware<String> {
+
+	@Value("${app.auth.tokenSecret}")
+	private String secretKey;
+
 	@Override
 	public Optional<String> getCurrentAuditor() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (ObjectUtils.isEmpty(authentication) || !authentication.isAuthenticated()) {
+		try {
+			HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+			final String jwt = HeaderUtil.getTokenFrom(request.getHeader(HttpHeaders.AUTHORIZATION));
+			if (ObjectUtils.isEmpty(jwt)) {
+				return Optional.empty();
+			}
+			return Optional.of(JwtUtils.getEmail(jwt, secretKey));
+
+		} catch (NullPointerException e) {
 			return Optional.empty();
 		}
 
-		return ClassUtils.getSafeCastInstance(authentication.getPrincipal(), User.class)
-			.map(user -> user.getUserSeq().toString());
 	}
 }

@@ -67,7 +67,7 @@ public class User {
 
 	public void validateProvider(ProviderType providerType) {
 		if (this.providerType != providerType) {
-			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, this.providerType.getName());
+			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, this.providerType.name());
 		}
 	}
 
