@@ -18,8 +18,7 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 		+ "join fetch k.project p "
 		+ "join fetch p.teamMember pt "
 		+ "join fetch i.teamMember t "
-		+ "join fetch t.user u "
-		+ "where u.userSeq = :userSeq "
+		+ "where t.userSeq = :userSeq "
 		+ "and i.initiativeToken =:initiativeToken ")
 	Optional<InitiativeJpaEntity> findInitiativeByInitiativeTokenAndUserSeq(
 		@Param("initiativeToken") String initiativeToken,
@@ -31,8 +30,7 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 		+ "join fetch i.keyResult k "
 		+ "join fetch k.project p "
 		+ "join fetch p.teamMember t "
-		+ "join fetch t.user u "
-		+ "where u.userSeq = :requesterSeq "
+		+ "where t.userSeq = :requesterSeq "
 		+ "and i.initiativeToken =:initiativeToken ")
 	Optional<InitiativeJpaEntity> findInitiativeForFeedbackByInitiativeTokenAndRequester(
 		@Param("initiativeToken") String initiativeToken,
@@ -42,10 +40,9 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 		+ "from InitiativeJpaEntity i "
 		+ "join fetch i.teamMember t "
 		+ "join fetch t.project p "
-		+ "join fetch t.user u "
 		+ "join p.teamMember pt "
 		+ "where i.initiativeToken =:initiativeToken "
-		+ "and pt.user.userSeq = :userSeq ")
+		+ "and pt.userSeq = :userSeq ")
 	Optional<InitiativeJpaEntity> findInitiativeDetailByInitiativeTokenAndUserSeq(
 		@Param("initiativeToken") String initiativeToken,
 		@Param("userSeq") Long userSeq
@@ -54,10 +51,9 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 	@Query("SELECT i " +
 		"FROM InitiativeJpaEntity i " +
 		"join i.teamMember t " +
-		"join t.user u " +
 		"where i.done = false " +
 		"and :searchDate between i.startDate and i.endDate " +
-		"and u.userSeq =:userSeq")
+		"and t.userSeq =:userSeq")
 	List<InitiativeJpaEntity> findInitiativeByDateAndUserSeq(
 		@Param("searchDate") LocalDate searchDate,
 		@Param("userSeq") Long userSeq
@@ -66,11 +62,10 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 	@Query("SELECT i " +
 		"FROM InitiativeJpaEntity i " +
 		"join i.teamMember t " +
-		"join t.user u " +
 		"where i.done = false " +
 		"and i.startDate <= :monthEdt " +
 		"and i.endDate >= :monthSdt " +
-		"and u.userSeq =:userSeq")
+		"and t.userSeq =:userSeq")
 	List<InitiativeJpaEntity> findInitiativeBySdtAndEdtAndUserSeq(
 		@Param("monthSdt") LocalDate monthSdt,
 		@Param("monthEdt") LocalDate monthEdt,
@@ -83,15 +78,13 @@ public interface InitiativeJpaRepository extends JpaRepository<InitiativeJpaEnti
 		"join i.keyResult k " +
 		"join k.project p " +
 		"join p.teamMember t " +
-		"join t.user u " +
 		"where i.done = true " +
-		"and u.userSeq =:userSeq " +
+		"and t.userSeq =:userSeq " +
 		"and it.userSeq != :userSeq " +
 		"and i.id not in (select f.initiative.id " +
 		"                    from FeedbackJpaEntity f " +
 		"                    join f.teamMember fm " +
-		"                    join fm.user fu " +
-		"                    where fu.userSeq = :userSeq ) ")
+		"                    where fm.userSeq = :userSeq ) ")
 	List<InitiativeJpaEntity> getCountOfInitiativeToGiveFeedback(
 		@Param("userSeq") Long userSeq
 	);

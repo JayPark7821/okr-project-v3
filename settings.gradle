@@ -18,6 +18,7 @@ include 'infra'
 include 'infra:okr-infra-project-database'
 include 'infra:okr-infra-user-database'
 include 'infra:okr-infra-oauth'
+include 'infra:okr-infra-jwt'
 
 include 'domain'
 include 'domain:okr-domain-project'

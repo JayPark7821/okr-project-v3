@@ -31,6 +31,7 @@ dependencies {
     implementation project(':domain:okr-domain-user')
     implementation project(':infra:okr-infra-user-database')
     implementation project(':infra:okr-infra-oauth')
+    implementation project(':infra:okr-infra-jwt')
     implementation project(':common:okr-common-util')
 
 }

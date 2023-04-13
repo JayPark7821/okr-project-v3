@@ -1,4 +1,4 @@
-package kr.service.oauth.jwt;
+package kr.service.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -8,7 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 public class JwtUtils {
-
 
 	public static String getEmail(String token, String key) {
 		return extractClaims(token, key).get("email", String.class);

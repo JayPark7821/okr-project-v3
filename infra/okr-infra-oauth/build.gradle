@@ -11,7 +11,7 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:1.32.1'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    implementation 'org.apache.commons:commons-lang3'
+
 
     // jsonwebtoken 추가
     implementation 'io.jsonwebtoken:jjwt-api:0.11.2'

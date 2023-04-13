@@ -13,7 +13,6 @@ public interface FeedbackJpaRepository extends JpaRepository<FeedbackJpaEntity, 
 	@Query("SELECT f " +
 		"FROM FeedbackJpaEntity f " +
 		"join fetch f.teamMember t " +
-		"join fetch t.user u " +
 		"join fetch f.initiative i " +
 		"where f.initiative.initiativeToken =:initiativeToken " +
 		"order by f.createdDate desc")

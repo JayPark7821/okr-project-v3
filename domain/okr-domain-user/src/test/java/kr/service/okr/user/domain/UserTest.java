@@ -104,7 +104,7 @@ class UserTest {
 
 		Assertions.assertThatThrownBy(() -> testUser.validateProvider(ProviderType.APPLE))
 			.isInstanceOf(OkrApplicationException.class)
-			.hasMessage(ErrorCode.MISS_MATCH_PROVIDER.getMessage().formatted(ProviderType.GOOGLE.getName()));
+			.hasMessage(ErrorCode.MISS_MATCH_PROVIDER.getMessage().formatted(ProviderType.GOOGLE.name()));
 
 	}
 }

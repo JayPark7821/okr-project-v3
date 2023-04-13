@@ -1,9 +1,7 @@
-package kr.service.oauth.jwt;
+package kr.service.jwt;
 
-import static kr.service.oauth.jwt.JwtUtils.*;
+import static kr.service.jwt.JwtUtils.*;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +11,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import kr.service.user.token.repository.JwtService;
 import lombok.RequiredArgsConstructor;
 

@@ -3,8 +3,11 @@ server:
 
 spring:
   application:
-    name: okr-service
-
+    name: okr-boot-project
+  profiles:
+    include:
+      - infra-project-database
+      - infra-jwt
 eureka:
   client:
     register-with-eureka: true
