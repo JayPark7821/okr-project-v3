@@ -1,7 +1,7 @@
 package kr.service.jwt;
 
-import static kr.service.jwt.JwtUtils.*;
-
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,12 +11,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import kr.service.user.token.repository.JwtService;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class JwtServiceImpl implements JwtService {
+public class JwtService {
 
 	@Value("${app.auth.tokenSecret}")
 	private String secretKey;
@@ -27,7 +27,6 @@ public class JwtServiceImpl implements JwtService {
 	@Value("${app.auth.refreshTokenRegenerationThreshold}")
 	private Long refreshTokenRegenerationThreshold;
 
-	@Override
 	public String generateJwtToken(final String userEmail, boolean isRefreshToken) {
 		Claims claims = Jwts.claims();
 		claims.put("email", userEmail);
@@ -42,7 +41,6 @@ public class JwtServiceImpl implements JwtService {
 
 	}
 
-	@Override
 	public boolean needNewRefreshToken(final String token) {
 		try {
 			final long remainingTimeOf =
@@ -51,6 +49,20 @@ public class JwtServiceImpl implements JwtService {
 		} catch (ExpiredJwtException e) {
 			return true;
 		}
+	}
+
+	public String getEmail(String token) {
+		return extractClaims(token, secretKey).get("email", String.class);
+	}
+
+	Key getKey(String key) {
+		byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+		return Keys.hmacShaKeyFor(keyBytes);
+	}
+
+	Claims extractClaims(String token, String key) {
+		return Jwts.parserBuilder().setSigningKey(getKey(key))
+			.build().parseClaimsJws(token).getBody();
 	}
 
 }
