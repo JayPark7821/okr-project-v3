@@ -40,7 +40,9 @@ public enum ErrorCode {
 	USERNAME_IS_REQUIRED("사용자명(20자 이하)은 필수 값 입니다."),
 	ID_IS_REQUIRED("ID값이 누락되었습니다."),
 	JOB_FIELD_IS_REQUIRED("직무분야는 필수 값 입니다."),
-	UNSUPPORTED_SOCIAL_TYPE("지원하지 않는 소셜 타입입니다.");
+	UNSUPPORTED_SOCIAL_TYPE("지원하지 않는 소셜 타입입니다."),
+	INVALID_TOKEN("유효하지 않은 토큰입니다."),
+	EXPIRED_TOKEN("만료된 토큰입니다.");
 
 	final String message;
 

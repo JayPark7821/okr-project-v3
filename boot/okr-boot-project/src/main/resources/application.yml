@@ -8,6 +8,7 @@ spring:
     include:
       - infra-project-database
       - infra-jwt
+      - api-project
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}

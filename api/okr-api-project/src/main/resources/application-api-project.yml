@@ -1,0 +1,7 @@
+feign:
+  client:
+    config:
+      okr-boot-user:
+        connectTimeout: 1000
+        readTimeout: 5000
+        loggerLevel: HEADERS
