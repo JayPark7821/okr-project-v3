@@ -1,4 +1,4 @@
-# FLAG Project
+# FLAG Project v1.0
 
 ## 1. 프로젝트 설계 & 구조
 
@@ -123,6 +123,10 @@ public class TokenVerifyProcessorImpl implements TokenVerifyProcessor {
 * 현재 팀원을 초대하면 팀원과, 알림을 모두 저장해야만 API 호출 이 끝난다.
 * 팀원 저장에 대한 요청을 할 때 유저는 팀원이 저장되길 기대한다, 알림은 부가적인 기능임.
 * 사용자가 팀원 초대에 대한 API 호출했을때 팀원 저장이 완료되면 바로 팀원 초대 완료를 리턴하고     
-  알림 저장은 message Queue에 publish해 담아 놓고 비동기적으로 처리하여 응답 속도를 개선할 수 있을 것 같다.
+  알림 저장은 message Queue에 publish해 담아 놓거나 별도의 쓰레드로 비동기적으로 처리하여 응답 속도를 개선할 수 있을 것 같다.
 
  
+---
+---
+
+# FLAG Project v2.0 (feat.spring cloud )
