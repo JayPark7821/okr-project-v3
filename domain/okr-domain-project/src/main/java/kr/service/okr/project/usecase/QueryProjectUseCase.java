@@ -4,9 +4,9 @@ import kr.service.okr.project.domain.Project;
 
 public interface QueryProjectUseCase {
 
-	Project findProjectBy(QueryProjectBy query);
+	Project queryProjectBy(Query query);
 
-	record QueryProjectBy(
+	record Query(
 		String projectToken,
 		Long userSeq
 	) {

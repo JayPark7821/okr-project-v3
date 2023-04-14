@@ -1,6 +1,6 @@
 package kr.service.user.api.internal;
 
-public record UserInfo(
+public record UserInfoResponse(
 	Long userSeq,
 	String email,
 	String userId,

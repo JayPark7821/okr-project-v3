@@ -19,7 +19,7 @@ public class QueryProject implements QueryProjectUseCase {
 	private final ProjectQuery projectQuery;
 
 	@Override
-	public Project findProjectBy(final QueryProjectBy query) {
+	public Project queryProjectBy(final Query query) {
 		final Project project = projectQuery.findByProjectTokenAndUser(query.projectToken(), query.userSeq())
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.PROJECT_NOT_FOUND));
 

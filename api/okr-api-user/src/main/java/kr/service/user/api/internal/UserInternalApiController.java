@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface UserInternalApiController {
 
 	@GetMapping("/api/v1/user/auth")
-	ResponseEntity<UserInfo> getUserSeqByEmail(
+	ResponseEntity<UserInfoResponse> getUserInfoBy(
 		final @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt
 	);
 }

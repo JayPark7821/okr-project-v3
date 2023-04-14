@@ -16,7 +16,6 @@ import kr.service.okr.api.ProjectApiController;
 import kr.service.okr.api.ProjectInfoResponse;
 import kr.service.okr.api.RegisterProjectRequestDto;
 import kr.service.okr.application.project.ProjectFacade;
-import kr.service.okr.project.domain.Project;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -29,9 +28,8 @@ public class ProjectApiControllerImpl implements ProjectApiController {
 	@Override
 	@PostMapping
 	public ResponseEntity<String> registerProject(
-		@RequestBody @Valid RegisterProjectRequestDto request
+		final @RequestBody @Valid RegisterProjectRequestDto request
 	) {
-
 		return Response.successCreated(
 			projectFacade.registerProject(ProjectMapper.toCommand(request, 1L))
 		);
@@ -43,12 +41,8 @@ public class ProjectApiControllerImpl implements ProjectApiController {
 		final @PathVariable("projectToken") String projectToken,
 		final @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken
 	) {
-
-		final Project projectInfoBy = projectFacade.getProjectInfoBy(projectToken, authToken);
-		return null;
-		// return Response.successOk(
-		//
-		// 	// ProjectMapper.of()
-		// );
+		return Response.successOk(
+			ProjectMapper.of(projectFacade.getProjectInfoBy(projectToken, authToken))
+		);
 	}
 }

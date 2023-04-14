@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.service.jwt.JwtService;
 import kr.service.user.token.domain.RefreshToken;
-import kr.service.user.token.repository.JwtService;
 import kr.service.user.token.repository.RefreshTokenCommand;
 import kr.service.user.token.repository.RefreshTokenQuery;
 import kr.service.user.token.usecase.GenerateTokenSetUseCase;
