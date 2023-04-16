@@ -9,6 +9,7 @@ include 'boot:okr-boot-user'
 include 'cloud'
 include 'cloud:okr-cloud-discovery'
 include 'cloud:okr-cloud-gateway'
+include 'cloud:okr-cloud-admin'
 
 include 'api'
 include 'api:okr-api-project'

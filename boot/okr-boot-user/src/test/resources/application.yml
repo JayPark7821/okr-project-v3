@@ -11,3 +11,4 @@ spring:
     include:
       - infra-oauth
       - infra-user-database
+      - infra-jwt

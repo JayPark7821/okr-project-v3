@@ -3,23 +3,16 @@ ext {
 }
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
-
-    // jsonwebtoken 추가
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
-
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:2.30.1'
+    
     // rest-assured
     testImplementation "io.rest-assured:rest-assured"
 
@@ -32,17 +25,11 @@ dependencies {
 
     implementation project(':domain:okr-domain-project')
 
-
     implementation project(':infra:okr-infra-project-database')
-    implementation project(':infra:okr-infra-user-database')
-    implementation project(':infra:okr-infra-oauth')
     implementation project(':infra:okr-infra-jwt')
 
     implementation project(':common:okr-common-util')
-
-
 }
-
 
 dependencyManagement {
     imports {

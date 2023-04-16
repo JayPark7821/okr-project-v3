@@ -44,7 +44,7 @@ class UserExternalApiControllerImplTest {
 		);
 		assertThat(body.name()).isEqualTo(DiffAppleUserInfoFixture.NAME);
 		assertThat(body.email()).isEqualTo(DiffAppleUserInfoFixture.EMAIL);
-		assertThat(body.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE);
+		assertThat(body.providerType()).isEqualTo(DiffAppleUserInfoFixture.PROVIDER_TYPE.name());
 		assertThat(body.accessToken()).isNull();
 		assertThat(body.refreshToken()).isNull();
 	}

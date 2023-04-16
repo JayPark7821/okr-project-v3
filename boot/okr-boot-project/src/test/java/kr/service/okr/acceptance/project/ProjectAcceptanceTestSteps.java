@@ -1,5 +1,7 @@
 package kr.service.okr.acceptance.project;
 
+import org.springframework.http.HttpHeaders;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
@@ -20,6 +22,22 @@ public class ProjectAcceptanceTestSteps {
 
 			when()
 			.post(baseUrl).
+
+			then()
+			.log().all()
+			.extract();
+	}
+
+	static ExtractableResponse<Response> 프로젝트_조회_요청(String 프로젝트_토큰, String 로그인_인증_토큰) throws
+		Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + 로그인_인증_토큰).
+
+			when()
+			.get(baseUrl + "/" + 프로젝트_토큰).
 
 			then()
 			.log().all()
