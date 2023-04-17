@@ -80,13 +80,15 @@ public class KeyResultJpaEntity extends BaseEntity {
 	}
 
 	public KeyResult toDomain() {
-		return KeyResult.builder()
+		final KeyResult keyResult = KeyResult.builder()
 			.id(this.id)
 			.keyResultToken(this.keyResultToken)
 			.projectId(this.project.getId())
 			.name(this.name)
 			.keyResultIndex(this.keyResultIndex)
-			.initiative(this.initiative.stream().map(InitiativeJpaEntity::toDomain).toList())
 			.build();
+
+		this.initiative.forEach(initiative -> initiative.toDomain(keyResult));
+		return keyResult;
 	}
 }

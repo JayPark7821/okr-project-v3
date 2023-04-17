@@ -27,6 +27,7 @@ import kr.service.okr.persistence.entity.project.feedback.FeedbackJpaEntity;
 import kr.service.okr.persistence.entity.project.keyresult.KeyResultJpaEntity;
 import kr.service.okr.persistence.entity.project.team.TeamMemberJpaEntity;
 import kr.service.okr.project.domain.Initiative;
+import kr.service.okr.project.domain.KeyResult;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -108,11 +109,11 @@ public class InitiativeJpaEntity extends BaseEntity {
 		this.done = true;
 	}
 
-	public Initiative toDomain() {
-		return Initiative.builder()
+	public Initiative toDomain(KeyResult keyResult) {
+		final Initiative initiative = Initiative.builder()
 			.id(this.id)
 			.initiativeToken(this.initiativeToken)
-			.keyResult(this.keyResult.toDomain())
+			.keyResult(keyResult)
 			// .teamMember(this.teamMember.toDomain())
 			.name(this.name)
 			.startDate(this.startDate)
@@ -122,6 +123,8 @@ public class InitiativeJpaEntity extends BaseEntity {
 			.feedback(this.feedback.stream().map(FeedbackJpaEntity::toDomain).toList())
 			.build();
 
+		keyResult.addInitiative(initiative);
+		return initiative;
 	}
 }
 

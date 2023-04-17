@@ -86,7 +86,7 @@ public class FeedbackJpaEntity extends BaseEntity {
 		return Feedback.builder()
 			.id(this.id)
 			.feedbackToken(this.feedbackToken)
-			.initiative(this.initiative.toDomain())
+			// .initiative(this.initiative.toDomain())
 			// .teamMember(this.teamMember.toDomain())
 			.grade(this.grade)
 			.opinion(this.opinion)
