@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kr.service.okr.persistence.config.BaseEntity;
@@ -35,6 +36,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @SQLDelete(sql = "UPDATE initiative SET deleted = true WHERE initiative_id = ?")
 @Where(clause = "deleted = false")
+@Table(name = "initiative")
 public class InitiativeJpaEntity extends BaseEntity {
 
 	private static final String PROJECT_INITIATIVE_PREFIX = "initiative-";

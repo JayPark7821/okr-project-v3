@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
 import kr.service.okr.persistence.repository.project.ProjectJpaRepository;
 import kr.service.okr.persistence.repository.project.ProjectQueryDslRepository;
 import kr.service.okr.project.domain.Project;
@@ -26,7 +27,7 @@ public class ProjectQueryImpl implements ProjectQuery {
 
 	@Override
 	public Optional<Project> findByProjectTokenAndUser(final String projectToken, final Long userSeq) {
-		return Optional.empty();
+		return projectJpaRepository.findByProjectTokenAndUser(projectToken, userSeq).map(ProjectJpaEntity::toDomain);
 	}
 
 	@Override
