@@ -18,4 +18,10 @@ public class ProjectAcceptanceTestAssertions {
 			Pattern.compile("project-[a-zA-Z0-9]{12}"));
 	}
 
+	static void 프로젝트_조회_요청_응답_검증(ExtractableResponse<Response> 응답) {
+
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+	}
+
 }

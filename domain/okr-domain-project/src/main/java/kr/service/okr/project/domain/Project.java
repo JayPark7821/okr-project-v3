@@ -39,7 +39,8 @@ public class Project {
 	private ProjectType type = ProjectType.SINGLE;
 	private String objective;
 	private double progress = 0.0D;
-	private boolean finished = false;
+	private boolean completed = false;
+	private boolean deleted = false;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
 		// validateAddingNewProject(objective, startDate, endDate);
@@ -60,7 +61,7 @@ public class Project {
 		final ProjectType type,
 		final String objective,
 		final double progress,
-		final boolean finished
+		final boolean completed
 	) {
 
 		this.id = id;
@@ -72,7 +73,7 @@ public class Project {
 		this.type = type;
 		this.objective = objective;
 		this.progress = progress;
-		this.finished = finished;
+		this.completed = completed;
 	}
 
 	public void createAndAddLeader(final Long leaderSeq) {
@@ -105,7 +106,7 @@ public class Project {
 	}
 
 	public void makeProjectFinished() {
-		this.finished = true;
+		this.completed = true;
 	}
 
 	public String addInitiative(

@@ -46,7 +46,7 @@ public class KeyResult {
 		this.projectId = projectId;
 		this.name = name;
 		this.keyResultIndex = keyResultIndex;
-		this.initiative = initiative;
+		this.initiative = initiative == null ? new ArrayList<>() : initiative;
 	}
 
 	protected String addInitiative(
@@ -62,5 +62,9 @@ public class KeyResult {
 		this.initiative.add(initiative);
 
 		return initiative.getInitiativeToken();
+	}
+
+	public void addInitiative(final Initiative initiative) {
+		this.initiative.add(initiative);
 	}
 }

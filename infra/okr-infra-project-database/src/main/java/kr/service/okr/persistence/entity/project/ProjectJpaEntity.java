@@ -69,20 +69,7 @@ public class ProjectJpaEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	public ProjectJpaEntity(final Long id, final String projectToken, final List<TeamMemberJpaEntity> teamMember,
-		final List<KeyResultJpaEntity> keyResults, final LocalDate startDate, final LocalDate endDate,
-		final ProjectType type, final String objective,
-		final double progress) {
-		this.id = id;
-		this.projectToken = projectToken;
-		this.teamMember = teamMember;
-		this.keyResults = keyResults;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.type = type;
-		this.objective = objective;
-		this.progress = progress;
-	}
+	private boolean completed = Boolean.FALSE;
 
 	public ProjectJpaEntity(Project project) {
 
@@ -97,6 +84,8 @@ public class ProjectJpaEntity extends BaseEntity {
 		this.type = project.getType();
 		this.objective = project.getObjective();
 		this.progress = project.getProgress();
+		this.completed = project.isCompleted();
+		this.deleted = project.isDeleted();
 
 	}
 
@@ -114,6 +103,7 @@ public class ProjectJpaEntity extends BaseEntity {
 			.type(this.type)
 			.objective(this.objective)
 			.progress(this.progress)
+			.completed(this.completed)
 			.build();
 
 		this.getTeamMember().forEach(teamMember -> teamMember.toDomain(project));

@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import kr.service.okr.persistence.config.BaseEntity;
 import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
 import kr.service.okr.project.domain.Project;
@@ -27,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @SQLDelete(sql = "UPDATE team_member SET deleted = true WHERE user_seq = ? AND project_id = ?")
 @Where(clause = "deleted = false")
+@Table(name = "team_member")
 public class TeamMemberJpaEntity extends BaseEntity {
 	@Id
 	@Column(name = "user_seq")

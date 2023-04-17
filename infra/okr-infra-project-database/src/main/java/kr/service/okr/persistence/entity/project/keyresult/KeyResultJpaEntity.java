@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import kr.service.okr.persistence.config.BaseEntity;
 import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
 import kr.service.okr.persistence.entity.project.initiative.InitiativeJpaEntity;
@@ -31,6 +32,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @SQLDelete(sql = "UPDATE key_result SET deleted = true WHERE key_result_id = ?")
 @Where(clause = "deleted = false")
+@Table(name = "key_result")
 public class KeyResultJpaEntity extends BaseEntity {
 
 	private static final String PROJECT_KEYRESULT_PREFIX = "keyResult-";
@@ -78,13 +80,15 @@ public class KeyResultJpaEntity extends BaseEntity {
 	}
 
 	public KeyResult toDomain() {
-		return KeyResult.builder()
+		final KeyResult keyResult = KeyResult.builder()
 			.id(this.id)
 			.keyResultToken(this.keyResultToken)
 			.projectId(this.project.getId())
 			.name(this.name)
 			.keyResultIndex(this.keyResultIndex)
-			.initiative(this.initiative.stream().map(InitiativeJpaEntity::toDomain).toList())
 			.build();
+
+		this.initiative.forEach(initiative -> initiative.toDomain(keyResult));
+		return keyResult;
 	}
 }

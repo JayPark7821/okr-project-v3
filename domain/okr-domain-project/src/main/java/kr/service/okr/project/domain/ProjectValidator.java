@@ -23,7 +23,7 @@ public class ProjectValidator {
 	}
 
 	protected static void validateFinishedProject(final Project project) {
-		if (project.isFinished())
+		if (project.isCompleted())
 			throw new OkrApplicationException(ErrorCode.PROJECT_IS_FINISHED);
 	}
 

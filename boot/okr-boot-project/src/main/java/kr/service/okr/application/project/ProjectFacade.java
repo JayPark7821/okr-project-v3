@@ -21,15 +21,15 @@ public class ProjectFacade {
 
 	public String registerProject(RegisterProjectCommand requestCommand) {
 
-		final RegisterProjectUseCase.Command command = new RegisterProjectUseCase.Command(
-			requestCommand.objective(),
-			requestCommand.startDate(),
-			requestCommand.endDate(),
-			requestCommand.userSeq(),
-			List.of()
+		return registerProjectUseCase.registerProject(
+			new RegisterProjectUseCase.Command(
+				requestCommand.objective(),
+				requestCommand.startDate(),
+				requestCommand.endDate(),
+				requestCommand.userSeq(),
+				List.of()
+			)
 		);
-
-		return registerProjectUseCase.registerProject(command);
 	}
 
 	public ProjectInfo getProjectInfoBy(final String projectToken, final String authToken) {
