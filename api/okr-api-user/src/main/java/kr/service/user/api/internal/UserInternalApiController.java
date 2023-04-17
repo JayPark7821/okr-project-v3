@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "okr-boot-user")
+@FeignClient(name = "okr-boot-user", url = "${okr.user-auth-service.url}")
 public interface UserInternalApiController {
 
 	@GetMapping("/api/v1/user/auth")

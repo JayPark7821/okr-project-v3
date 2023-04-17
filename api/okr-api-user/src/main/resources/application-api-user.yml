@@ -1,1 +1,3 @@
-
+okr:
+  user-auth-service:
+    url: ""
