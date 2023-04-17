@@ -45,6 +45,9 @@ public class FeedbackJpaEntity extends BaseEntity {
 	@JoinColumn(name = "initiative_id", updatable = false)
 	private InitiativeJpaEntity initiative;
 
+	@Column(name = "initiative_id", insertable = false, updatable = false)
+	private Long initiativeId;
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumns(value = {
 		@JoinColumn(name = "user_seq", referencedColumnName = "user_seq", updatable = false),
@@ -71,8 +74,8 @@ public class FeedbackJpaEntity extends BaseEntity {
 	public FeedbackJpaEntity(final Feedback feedback) {
 		this.id = feedback.getId();
 		this.feedbackToken = feedback.getFeedbackToken();
-		this.initiative = new InitiativeJpaEntity(feedback.getInitiative());
-		// this.teamMember = new TeamMemberJpaEntity(feedback.getTeamMember());
+		this.initiativeId = feedback.getInitiativeId();
+		this.teamMember = new TeamMemberJpaEntity(feedback.getTeamMember());
 		this.grade = feedback.getGrade();
 		this.opinion = feedback.getOpinion();
 		this.checked = feedback.isChecked();
@@ -86,8 +89,8 @@ public class FeedbackJpaEntity extends BaseEntity {
 		return Feedback.builder()
 			.id(this.id)
 			.feedbackToken(this.feedbackToken)
-			// .initiative(this.initiative.toDomain())
-			// .teamMember(this.teamMember.toDomain())
+			.initiativeId(this.initiativeId)
+			.teamMember(this.teamMember.toDomain())
 			.grade(this.grade)
 			.opinion(this.opinion)
 			.checked(this.checked)

@@ -27,7 +27,6 @@ import kr.service.okr.persistence.entity.project.feedback.FeedbackJpaEntity;
 import kr.service.okr.persistence.entity.project.keyresult.KeyResultJpaEntity;
 import kr.service.okr.persistence.entity.project.team.TeamMemberJpaEntity;
 import kr.service.okr.project.domain.Initiative;
-import kr.service.okr.project.domain.KeyResult;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,6 +51,9 @@ public class InitiativeJpaEntity extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "key_result_id", updatable = false)
 	private KeyResultJpaEntity keyResult;
+
+	@Column(name = "key_result_id", insertable = false, updatable = false)
+	private Long keyResultId;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumns(value = {
@@ -91,8 +93,8 @@ public class InitiativeJpaEntity extends BaseEntity {
 	public InitiativeJpaEntity(Initiative initiative) {
 		this.id = initiative.getId();
 		this.initiativeToken = initiative.getInitiativeToken();
-		this.keyResult = new KeyResultJpaEntity(initiative.getKeyResult());
-		// this.teamMember = new TeamMemberJpaEntity(initiative.getTeamMember());
+		this.keyResultId = initiative.getKeyResultId();
+		this.teamMember = new TeamMemberJpaEntity(initiative.getTeamMember());
 		this.name = initiative.getName();
 		this.endDate = initiative.getEndDate();
 		this.startDate = initiative.getStartDate();
@@ -109,12 +111,13 @@ public class InitiativeJpaEntity extends BaseEntity {
 		this.done = true;
 	}
 
-	public Initiative toDomain(KeyResult keyResult) {
-		final Initiative initiative = Initiative.builder()
+	public Initiative toDomain() {
+
+		return Initiative.builder()
 			.id(this.id)
 			.initiativeToken(this.initiativeToken)
-			.keyResult(keyResult)
-			// .teamMember(this.teamMember.toDomain())
+			.keyResultId(keyResultId)
+			.teamMember(this.teamMember.toDomain())
 			.name(this.name)
 			.startDate(this.startDate)
 			.endDate(this.endDate)
@@ -122,9 +125,6 @@ public class InitiativeJpaEntity extends BaseEntity {
 			.done(this.done)
 			.feedback(this.feedback.stream().map(FeedbackJpaEntity::toDomain).toList())
 			.build();
-
-		keyResult.addInitiative(initiative);
-		return initiative;
 	}
 }
 

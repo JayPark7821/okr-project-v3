@@ -58,7 +58,7 @@ public class KeyResult {
 	) {
 
 		final Initiative initiative =
-			new Initiative(this, member, initiativeName, startDate, endDate, initiativeDetail);
+			new Initiative(this.id, member, initiativeName, startDate, endDate, initiativeDetail);
 		this.initiative.add(initiative);
 
 		return initiative.getInitiativeToken();

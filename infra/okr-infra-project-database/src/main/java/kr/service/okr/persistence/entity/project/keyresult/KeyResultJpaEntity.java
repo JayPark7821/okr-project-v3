@@ -21,9 +21,7 @@ import kr.service.okr.persistence.config.BaseEntity;
 import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
 import kr.service.okr.persistence.entity.project.initiative.InitiativeJpaEntity;
 import kr.service.okr.project.domain.KeyResult;
-import kr.service.okr.util.TokenGenerator;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -47,6 +45,9 @@ public class KeyResultJpaEntity extends BaseEntity {
 	@JoinColumn(name = "project_id", updatable = false)
 	private ProjectJpaEntity project;
 
+	@Column(name = "project_id", insertable = false, updatable = false)
+	private Long projectId;
+
 	private String name;
 
 	private Integer keyResultIndex;
@@ -57,17 +58,10 @@ public class KeyResultJpaEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	@Builder
-	public KeyResultJpaEntity(ProjectJpaEntity project, String name, Integer index) {
-		this.keyResultToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_KEYRESULT_PREFIX);
-		this.project = project;
-		this.name = name;
-		this.keyResultIndex = index;
-	}
-
 	public KeyResultJpaEntity(KeyResult keyResult) {
 		this.id = keyResult.getId();
 		this.keyResultToken = keyResult.getKeyResultToken();
+		this.projectId = keyResult.getProjectId();
 		this.name = keyResult.getName();
 		this.keyResultIndex = keyResult.getKeyResultIndex();
 		this.initiative = keyResult.getInitiative().stream().map(InitiativeJpaEntity::new).toList();
@@ -80,15 +74,14 @@ public class KeyResultJpaEntity extends BaseEntity {
 	}
 
 	public KeyResult toDomain() {
-		final KeyResult keyResult = KeyResult.builder()
+		return KeyResult.builder()
 			.id(this.id)
 			.keyResultToken(this.keyResultToken)
 			.projectId(this.project.getId())
 			.name(this.name)
+			.initiative(this.initiative.stream().map(InitiativeJpaEntity::toDomain).toList())
 			.keyResultIndex(this.keyResultIndex)
 			.build();
-
-		this.initiative.forEach(initiative -> initiative.toDomain(keyResult));
-		return keyResult;
 	}
+
 }

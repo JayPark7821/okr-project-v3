@@ -79,14 +79,14 @@ public class Project {
 	public void createAndAddLeader(final Long leaderSeq) {
 		validateAddingProjectLeader();
 		this.teamMember.add(
-			TeamMember.createLeader(leaderSeq, this)
+			TeamMember.createLeader(leaderSeq, this.id)
 		);
 	}
 
 	public void createAndAddMemberOf(final Long memberSeq, final Long leaderSeq) {
 		validateAddingNewTeamMember(memberSeq, leaderSeq);
 		this.teamMember.add(
-			TeamMember.createMember(memberSeq, this)
+			TeamMember.createMember(memberSeq, this.id)
 		);
 	}
 
