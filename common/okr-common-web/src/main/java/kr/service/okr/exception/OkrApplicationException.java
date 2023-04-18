@@ -16,6 +16,10 @@ public class OkrApplicationException extends RuntimeException {
 		this.message = errorCode.getMessage();
 	}
 
+	public ErrorCode getErrorCode() {
+		return errorCode;
+	}
+
 	@Override
 	public String getMessage() {
 		return message;

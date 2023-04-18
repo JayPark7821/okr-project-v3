@@ -5,12 +5,12 @@ import org.springframework.http.ResponseEntity;
 
 public class Response<T> {
 
-	public static ResponseEntity<String> error(HttpStatus status, String message) {
+	public static ResponseEntity<String> response(HttpStatus status, String message) {
 		return ResponseEntity.status(status)
 			.body(message);
 	}
 
-	public static ResponseEntity<String> error(String errorMsg) {
+	public static ResponseEntity<String> errorBadRequest(String errorMsg) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(errorMsg);
 	}
