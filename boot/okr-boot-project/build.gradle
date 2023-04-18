@@ -28,7 +28,6 @@ dependencies {
     implementation project(':infra:okr-infra-jwt')
 
     implementation project(':common:okr-common-util')
-    implementation project(':common:okr-common-web')
 
 }
 

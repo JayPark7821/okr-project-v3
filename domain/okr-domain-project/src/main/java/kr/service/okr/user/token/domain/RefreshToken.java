@@ -3,7 +3,6 @@ package kr.service.okr.user.token.domain;
 import static kr.service.okr.user.validator.Validator.*;
 
 import kr.service.okr.user.exception.ErrorCode;
-import kr.service.okr.user.exception.OkrUserDomainException;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,6 +1,6 @@
 package kr.service.okr.user.guest.usecase;
 
-import kr.service.okr.user.ProviderType;
+import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.guest.domain.Guest;
 
 public interface JoinNewGuestUseCase {

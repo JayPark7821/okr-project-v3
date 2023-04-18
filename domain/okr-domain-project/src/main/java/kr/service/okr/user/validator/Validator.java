@@ -2,9 +2,8 @@ package kr.service.okr.user.validator;
 
 import java.util.Objects;
 
-import kr.service.okr.user.ProviderType;
+import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.exception.ErrorCode;
-import kr.service.okr.user.exception.OkrUserDomainException;
 import kr.service.okr.user.user.domain.JobField;
 
 public class Validator {

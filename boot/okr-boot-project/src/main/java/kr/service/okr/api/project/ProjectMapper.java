@@ -1,4 +1,4 @@
-package kr.service.okr.api.project.external;
+package kr.service.okr.api.project;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -1,4 +1,4 @@
-package kr.service.okr.api.project.external;
+package kr.service.okr.api.project;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import kr.service.okr.Response;
+import kr.service.okr.api.Response;
 import kr.service.okr.application.project.ProjectFacade;
 import kr.service.okr.project.api.ProjectApiController;
 import kr.service.okr.project.api.ProjectInfoResponse;

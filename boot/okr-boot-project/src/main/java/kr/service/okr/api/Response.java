@@ -1,4 +1,4 @@
-package kr.service.okr;
+package kr.service.okr.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

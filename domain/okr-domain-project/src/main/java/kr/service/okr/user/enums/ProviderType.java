@@ -1,4 +1,4 @@
-package kr.service.okr.user;
+package kr.service.okr.user.enums;
 
 import kr.service.okr.user.exception.ErrorCode;
 import kr.service.okr.util.EnumLookUpUtil;
