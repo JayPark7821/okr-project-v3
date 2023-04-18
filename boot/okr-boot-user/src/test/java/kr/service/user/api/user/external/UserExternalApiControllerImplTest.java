@@ -1,4 +1,4 @@
-package kr.service.user.api.user;
+package kr.service.user.api.user.external;
 
 import static kr.service.user.utils.OAuth2UserInfoFixture.*;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
@@ -9,19 +9,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 import kr.service.user.api.LoginResponse;
-import kr.service.user.api.user.external.UserExternalApiControllerImpl;
-import kr.service.user.utils.TestConfig;
+import kr.service.user.utils.SpringBootTestReady;
 
-@Import(TestConfig.class)
-@Transactional
-@SpringBootTest
-class UserExternalApiControllerImplTest {
+class UserExternalApiControllerImplTest extends SpringBootTestReady {
 
 	@Autowired
 	private UserExternalApiControllerImpl sut;

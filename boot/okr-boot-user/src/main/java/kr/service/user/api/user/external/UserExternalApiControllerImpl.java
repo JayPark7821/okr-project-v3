@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.oauth.processor.SocialTokenVerifyProcessor;
+import kr.service.okr.Response;
 import kr.service.user.ProviderType;
-import kr.service.user.Response;
 import kr.service.user.api.LoginResponse;
 import kr.service.user.api.external.UserExternalApiController;
 import kr.service.user.api.user.Mapper;

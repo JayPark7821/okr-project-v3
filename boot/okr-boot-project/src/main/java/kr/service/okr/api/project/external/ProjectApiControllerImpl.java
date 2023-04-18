@@ -28,10 +28,11 @@ public class ProjectApiControllerImpl implements ProjectApiController {
 	@Override
 	@PostMapping
 	public ResponseEntity<String> registerProject(
-		final @RequestBody @Valid RegisterProjectRequestDto request
+		final @RequestBody @Valid RegisterProjectRequestDto request,
+		final @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken
 	) {
 		return Response.successCreated(
-			projectFacade.registerProject(ProjectMapper.toCommand(request, 1L))
+			projectFacade.registerProject(ProjectMapper.toCommand(request, authToken))
 		);
 	}
 

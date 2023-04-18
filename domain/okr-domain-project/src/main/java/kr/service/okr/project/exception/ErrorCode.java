@@ -1,7 +1,6 @@
-package kr.service.okr.exception;
+package kr.service.okr.project.exception;
 
 public enum ErrorCode {
-
 	OBJECTIVE_IS_REQUIRED("목표는 필수 값 입니다."),
 	OBJECTIVE_WRONG_INPUT_LENGTH("목표는 1자 이상 50자 이내로 입력해주세요."),
 	KEYRESULT_NAME_WRONG_INPUT_LENGTH("핵심결과는 1자 이상 50자 이내로 입력해주세요."),
@@ -11,7 +10,7 @@ public enum ErrorCode {
 	PROJECT_END_DATE_IS_REQUIRED("프로젝트 종료일은 필수 값 입니다."),
 	LEADER_IS_IN_TEAM_MEMBER("팀원에 리더가 포함되어 있습니다."),
 	PROJECT_NOT_FOUND("프로젝트를 찾을 수 없습니다."),
-	REQUIRED_DATE_VALUE("날짜는 필수 값 입니다."),
+
 	INTERNAL_SERVER_ERROR("서버에 오류가 발생했습니다."),
 	PROJECT_START_DATE_IS_AFTER_END_DATE("프로젝트 시작일은 종료일 이전이어야 합니다."),
 	PROJECT_END_DATE_IS_BEFORE_TODAY("프로젝트 종료일은 오늘 이후여야 합니다."),
@@ -34,16 +33,7 @@ public enum ErrorCode {
 	INITIATIVE_START_DATE_IS_REQUIRED("행동전략 시작일은 필수 값 입니다."),
 	INITIATIVE_END_DATE_IS_REQUIRED("행동전략 종료일은 필수 값 입니다."),
 	INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES("프로젝트 기간이 행동전략 기간을 포함해야 합니다."),
-	MISS_MATCH_PROVIDER("{} (으)로 가입한 계정이 있습니다."),
-	PROVIDER_TYPE_IS_REQUIRED("소셜플랫폼 타입은 필수 값 입니다."),
-	EMAIL_IS_REQUIRED("이메일이 누락되었습니다."),
-	USERNAME_IS_REQUIRED("사용자명(20자 이하)은 필수 값 입니다."),
-	ID_IS_REQUIRED("ID값이 누락되었습니다."),
-	JOB_FIELD_IS_REQUIRED("직무분야는 필수 값 입니다."),
-	UNSUPPORTED_SOCIAL_TYPE("지원하지 않는 소셜 타입입니다."),
-	INVALID_TOKEN("유효하지 않은 토큰입니다."),
-	EXPIRED_TOKEN("만료된 토큰입니다.");
-
+	;
 	final String message;
 
 	ErrorCode(final String message) {

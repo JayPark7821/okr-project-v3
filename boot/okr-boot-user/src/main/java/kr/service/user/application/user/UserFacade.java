@@ -1,5 +1,6 @@
 package kr.service.user.application.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -54,5 +55,9 @@ public class UserFacade {
 		} catch (Exception e) {
 			throw new OkrApplicationException(ErrorCode.INVALID_TOKEN);
 		}
+	}
+
+	public List<Long> getUserSeqsBy(final List<String> userEmails) {
+		return queryUserUseCase.query(userEmails);
 	}
 }
