@@ -1,13 +1,13 @@
 package kr.service.okr.project.domain;
 
-import static kr.service.okr.project.exception.ErrorCode.*;
+import static kr.service.okr.exception.ErrorCode.*;
 
 import java.time.LocalDate;
 import java.util.Collection;
 
+import kr.service.okr.exception.ErrorCode;
+import kr.service.okr.exception.OkrProjectDomainException;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
-import kr.service.okr.project.exception.ErrorCode;
-import kr.service.okr.project.exception.OkrProjectDomainException;
 
 public class ProjectValidator {
 

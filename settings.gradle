@@ -4,7 +4,6 @@ include 'okr'
 include 'boot'
 include 'boot:okr-boot-batch'
 include 'boot:okr-boot-project'
-include 'boot:okr-boot-user'
 
 include 'cloud'
 include 'cloud:okr-cloud-discovery'
@@ -13,17 +12,14 @@ include 'cloud:okr-cloud-admin'
 
 include 'api'
 include 'api:okr-api-project'
-include 'api:okr-api-user'
 
 include 'infra'
 include 'infra:okr-infra-project-database'
-include 'infra:okr-infra-user-database'
 include 'infra:okr-infra-oauth'
 include 'infra:okr-infra-jwt'
 
 include 'domain'
 include 'domain:okr-domain-project'
-include 'domain:okr-domain-user'
 
 include 'common'
 include 'common:okr-common-util'

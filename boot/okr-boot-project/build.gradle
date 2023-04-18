@@ -21,7 +21,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     implementation project(':api:okr-api-project')
-    implementation project(':api:okr-api-user')
 
     implementation project(':domain:okr-domain-project')
 

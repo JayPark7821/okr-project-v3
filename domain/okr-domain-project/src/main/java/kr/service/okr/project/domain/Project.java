@@ -1,14 +1,14 @@
 package kr.service.okr.project.domain;
 
+import static kr.service.okr.exception.ErrorCode.*;
 import static kr.service.okr.project.domain.ProjectValidator.*;
-import static kr.service.okr.project.exception.ErrorCode.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.service.okr.exception.OkrProjectDomainException;
 import kr.service.okr.project.domain.enums.ProjectType;
-import kr.service.okr.project.exception.OkrProjectDomainException;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;

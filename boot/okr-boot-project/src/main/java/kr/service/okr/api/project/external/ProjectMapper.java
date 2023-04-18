@@ -3,12 +3,12 @@ package kr.service.okr.api.project.external;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import kr.service.okr.api.KeyResultResponse;
-import kr.service.okr.api.ProjectInfoResponse;
-import kr.service.okr.api.RegisterProjectRequestDto;
 import kr.service.okr.application.project.KeyResultInfo;
 import kr.service.okr.application.project.ProjectInfo;
 import kr.service.okr.application.project.RegisterProjectCommand;
+import kr.service.okr.project.api.KeyResultResponse;
+import kr.service.okr.project.api.ProjectInfoResponse;
+import kr.service.okr.project.api.RegisterProjectRequestDto;
 
 public class ProjectMapper {
 

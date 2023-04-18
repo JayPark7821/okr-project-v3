@@ -16,7 +16,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okr.api.RegisterProjectRequestDto;
+import kr.service.okr.project.api.RegisterProjectRequestDto;
 
 public class ProjectAcceptanceTestSteps {
 

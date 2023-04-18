@@ -1,8 +1,8 @@
 package kr.service.okr.project.domain;
 
 import static java.time.LocalDate.*;
+import static kr.service.okr.exception.ErrorCode.*;
 import static kr.service.okr.project.domain.ProjectTest.ProjectStatusType.*;
-import static kr.service.okr.project.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Field;
@@ -21,8 +21,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import kr.service.okr.exception.OkrProjectDomainException;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
-import kr.service.okr.project.exception.OkrProjectDomainException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ProjectTest {

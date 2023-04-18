@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import kr.service.okr.Response;
-import kr.service.okr.api.ProjectApiController;
-import kr.service.okr.api.ProjectInfoResponse;
-import kr.service.okr.api.RegisterProjectRequestDto;
 import kr.service.okr.application.project.ProjectFacade;
+import kr.service.okr.project.api.ProjectApiController;
+import kr.service.okr.project.api.ProjectInfoResponse;
+import kr.service.okr.project.api.RegisterProjectRequestDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
