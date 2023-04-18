@@ -2,9 +2,9 @@ package kr.service.user.guest.domain;
 
 import static kr.service.user.validator.Validator.*;
 
-import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.util.TokenGenerator;
 import kr.service.user.ProviderType;
+import kr.service.user.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 

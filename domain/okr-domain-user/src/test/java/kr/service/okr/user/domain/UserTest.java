@@ -14,9 +14,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import kr.service.okr.exception.ErrorCode;
-import kr.service.okr.exception.OkrApplicationException;
 import kr.service.user.ProviderType;
+import kr.service.user.exception.ErrorCode;
+import kr.service.user.exception.OkrUserDomainException;
 import kr.service.user.user.domain.JobField;
 import kr.service.user.user.domain.RoleType;
 import kr.service.user.user.domain.User;
@@ -37,7 +37,7 @@ class UserTest {
 	) throws Exception {
 
 		assertThatThrownBy(() -> new User(id, username, email, profileImageUrl, providerType, jobField))
-			.isInstanceOf(OkrApplicationException.class)
+			.isInstanceOf(OkrUserDomainException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -103,7 +103,7 @@ class UserTest {
 			.build();
 
 		Assertions.assertThatThrownBy(() -> testUser.validateProvider(ProviderType.APPLE))
-			.isInstanceOf(OkrApplicationException.class)
+			.isInstanceOf(OkrUserDomainException.class)
 			.hasMessage(ErrorCode.MISS_MATCH_PROVIDER.getMessage().formatted(ProviderType.GOOGLE.name()));
 
 	}
