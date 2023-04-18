@@ -1,14 +1,14 @@
 package kr.service.okr.project.domain;
 
-import static kr.service.okr.exception.ErrorCode.*;
 import static kr.service.okr.project.domain.ProjectValidator.*;
+import static kr.service.okr.project.exception.ErrorCode.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.project.domain.enums.ProjectType;
+import kr.service.okr.project.exception.OkrProjectDomainException;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +43,7 @@ public class Project {
 	private boolean deleted = false;
 
 	public Project(final String objective, final LocalDate startDate, final LocalDate endDate) {
-		// validateAddingNewProject(objective, startDate, endDate);
+		validateAddingNewProject(objective, startDate, endDate);
 		this.projectToken = TokenGenerator.randomCharacterWithPrefix(PROJECT_TOKEN_PREFIX);
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -88,11 +88,6 @@ public class Project {
 		this.teamMember.add(
 			TeamMember.createMember(memberSeq, this.id)
 		);
-	}
-
-	// TODO protected로 변경
-	public void addTeamMember(final TeamMember member) {
-		this.teamMember.add(member);
 	}
 
 	public String addKeyResult(final String keyResultName, final Long leader) {
@@ -141,14 +136,14 @@ public class Project {
 		return this.teamMember.stream()
 			.filter(teamMember -> teamMember.getUserSeq().equals(memberSeq))
 			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(INVALID_PROJECT_TOKEN));
+			.orElseThrow(() -> new OkrProjectDomainException(INVALID_PROJECT_TOKEN));
 	}
 
 	private KeyResult getKeyResult(final String keyResultToken) {
 		return this.keyResults.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(keyResultToken))
 			.findAny()
-			.orElseThrow(() -> new OkrApplicationException(INVALID_KEYRESULT_TOKEN));
+			.orElseThrow(() -> new OkrProjectDomainException(INVALID_KEYRESULT_TOKEN));
 	}
 
 	//====================================  validate  =================================================

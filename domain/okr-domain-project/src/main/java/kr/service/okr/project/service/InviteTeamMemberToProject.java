@@ -3,9 +3,9 @@ package kr.service.okr.project.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.okr.exception.ErrorCode;
-import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.project.domain.Project;
+import kr.service.okr.project.exception.ErrorCode;
+import kr.service.okr.project.exception.OkrProjectDomainException;
 import kr.service.okr.project.repository.ProjectCommand;
 import kr.service.okr.project.repository.ProjectQuery;
 import kr.service.okr.project.usecase.InviteTeamMemberToProjectUseCase;
@@ -23,7 +23,7 @@ public class InviteTeamMemberToProject implements InviteTeamMemberToProjectUseCa
 	public Project inviteTeamMemberToProject(final Command command) {
 		Project project = projectQuery.findFetchedTeamMemberByProjectTokenAndUser(command.projectToken(),
 				command.inviterSeq())
-			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_PROJECT_TOKEN));
 
 		project.createAndAddMemberOf(command.invitedUserSeq(), command.inviterSeq());
 

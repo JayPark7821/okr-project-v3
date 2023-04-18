@@ -15,7 +15,7 @@
 // import org.springframework.transaction.annotation.Transactional;
 // Transactional
 // import kr.service.okr.common.exception.ErrorCode;
-// import kr.service.okr.common.exception.OkrApplicationException;
+// import kr.service.okr.common.exception.OkrProjectDomainException;
 // import kr.service.okr.domain.project.aggregate.feedback.Feedback;
 // import kr.service.okr.domain.project.aggregate.feedback.FeedbackRepository;
 // import kr.service.okr.domain.project.aggregate.feedback.SearchRange;
@@ -59,13 +59,13 @@
 // 	@Override
 // 	public ProjectInfo getProjectInfoBy(String projectToken, Long userSeq) {
 // 		Project project = projectRepository.findByProjectTokenAndUser(projectToken, userSeq)
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_PROJECT_TOKEN));
 //
 // 		project.getTeamMember()
 // 			.stream()
 // 			.filter(teamMember -> teamMember.getUserSeq().equals(userSeq))
 // 			.findFirst()
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN))
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_PROJECT_TOKEN))
 // 			.checkNewProjectToOld();
 //
 // 		return new ProjectInfo(project);
@@ -97,14 +97,14 @@
 // 	public ProjectSideMenuInfo getProjectSideMenuDetails(String projectToken, Long userSeq) {
 // 		return projectRepository.findProgressAndTeamMembersByProjectTokenAndUser(projectToken, userSeq)
 // 			.map(ProjectSideMenuInfo::new)
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_PROJECT_TOKEN));
 // 	}
 //
 // 	@Override
 // 	public String registerKeyResult(ProjectKeyResultSaveCommand command, Long userSeq) {
 // 		Project project =
 // 			projectRepository.findProjectKeyResultByProjectTokenAndUser(command.projectToken(), userSeq)
-// 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+// 				.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_PROJECT_TOKEN));
 //
 // 		validateProcessor.validate(
 // 			List.of(VALIDATE_LEADER, VALIDATE_PROJECT_PERIOD, VALIDATE_KEYRESULT_COUNT),
@@ -119,7 +119,7 @@
 // 	public InitiativeSavedInfo registerInitiative(ProjectInitiativeSaveCommand command, Long userSeq) {
 //
 // 		Project project = projectRepository.findByKeyResultTokenAndUser(command.keyResultToken(), userSeq)
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_KEYRESULT_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_KEYRESULT_TOKEN));
 //
 // 		Initiative initiative = buildInitiative(command, getTeamMember(userSeq, project));
 //
@@ -138,7 +138,7 @@
 // 	public InitiativeDoneInfo initiativeFinished(String initiativeToken, Long userSeq) {
 // 		Initiative initiative =
 // 			initiativeRepository.findInitiativeByInitiativeTokenAndUserSeq(initiativeToken, userSeq)
-// 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+// 				.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 //
 // 		validateProcessor.validate(
 // 			List.of(VALIDATE_INITIATIVE_IN_PROGRESS, VALIDATE_PROJECT_PERIOD),
@@ -168,7 +168,7 @@
 // 	public FeedbackInfo registerFeedback(FeedbackSaveCommand command, Long requesterSeq) {
 // 		Initiative initiative = initiativeRepository.findInitiativeForFeedbackByInitiativeTokenAndRequesterSeq(
 // 				command.initiativeToken(), requesterSeq)
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 //
 // 		validateProcessor.validate(
 // 			List.of(VALIDATE_PROJECT_PERIOD, VALIDATE_INITIATIVE_DONE, VALIDATE_SELF_FEEDBACK),
@@ -185,7 +185,7 @@
 // 	public InitiativeDetailInfo getInitiativeBy(String initiativeToken, Long userSeq) {
 // 		return initiativeRepository.findInitiativeDetailByInitiativeTokenAndUserSeq(initiativeToken, userSeq)
 // 			.map(initiative -> new InitiativeDetailInfo(initiative, userSeq))
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 // 	}
 //
 // 	@Override
@@ -219,7 +219,7 @@
 // 		Initiative initiative =
 // 			initiativeRepository.findInitiativeForFeedbackByInitiativeTokenAndRequesterSeq(
 // 				initiativeToken, userSeq
-// 			).orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+// 			).orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 //
 // 		List<Feedback> feedbacks =
 // 			feedbackRepository.findInitiativeFeedbacksByInitiativeToken(initiativeToken);
@@ -278,7 +278,7 @@
 //
 // 		final Initiative initiative = initiativeRepository.findInitiativeDetailByInitiativeTokenAndUserSeq(
 // 				initiativeToken, userSeq)
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_INITIATIVE_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_INITIATIVE_TOKEN));
 //
 // 		validateProcessor.validate(
 // 			List.of(VALIDATE_PROJECT_PERIOD, VALIDATE_INITIATIVE_IN_PROGRESS),
@@ -323,15 +323,15 @@
 // 			.stream()
 // 			.filter(tm -> tm.getUser().getUserSeq().equals(userSeq))
 // 			.findFirst()
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_PROJECT_TOKEN));
 // 	}
 //
 // 	private Project inviteUserValidator(String projectToken, Long invitedUserSeq, Long inviterSeq) {
 // 		if (inviterSeq.equals(invitedUserSeq))
-// 			throw new OkrApplicationException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
+// 			throw new OkrProjectDomainException(ErrorCode.NOT_AVAIL_INVITE_MYSELF);
 //
 // 		Project project = projectRepository.findFetchedTeamMemberByProjectTokenAndUser(projectToken, inviterSeq)
-// 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
+// 			.orElseThrow(() -> new OkrProjectDomainException(ErrorCode.INVALID_PROJECT_TOKEN));
 //
 // 		validateProcessor.validate(List.of(VALIDATE_LEADER, VALIDATE_PROJECT_PERIOD), project, inviterSeq);
 //

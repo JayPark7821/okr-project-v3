@@ -1,8 +1,8 @@
 package kr.service.okr.project.domain;
 
 import static java.time.LocalDate.*;
-import static kr.service.okr.exception.ErrorCode.*;
 import static kr.service.okr.project.domain.ProjectTest.ProjectStatusType.*;
+import static kr.service.okr.project.exception.ErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.lang.reflect.Field;
@@ -21,8 +21,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
+import kr.service.okr.project.exception.OkrProjectDomainException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ProjectTest {
@@ -40,7 +40,7 @@ class ProjectTest {
 	) throws Exception {
 
 		assertThatThrownBy(() -> new Project(objective, startDate, endDate))
-			.isInstanceOf(OkrApplicationException.class)
+			.isInstanceOf(OkrProjectDomainException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -60,7 +60,7 @@ class ProjectTest {
 	) throws Exception {
 
 		assertThatThrownBy(() -> project.createAndAddMemberOf(memberId, leaderId))
-			.isInstanceOf(OkrApplicationException.class)
+			.isInstanceOf(OkrProjectDomainException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -88,7 +88,7 @@ class ProjectTest {
 	) throws Exception {
 		final String keyResultName = "new keyResultName";
 		assertThatThrownBy(() -> project.addKeyResult(keyResultName, userSeq))
-			.isInstanceOf(OkrApplicationException.class)
+			.isInstanceOf(OkrProjectDomainException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -117,7 +117,7 @@ class ProjectTest {
 		assertThatThrownBy(
 			() -> project.addInitiative(keyResultToken, initiativeName, userSeq, initiativeDetail, startDate,
 				endDate))
-			.isInstanceOf(OkrApplicationException.class)
+			.isInstanceOf(OkrProjectDomainException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -163,7 +163,7 @@ class ProjectTest {
 		String errorMsg
 	) throws Exception {
 		assertThatThrownBy(() -> project.updateProject(objective, startDate, endDate, userSeq))
-			.isInstanceOf(OkrApplicationException.class)
+			.isInstanceOf(OkrProjectDomainException.class)
 			.hasMessage(errorMsg);
 	}
 
