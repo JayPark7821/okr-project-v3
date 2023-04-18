@@ -76,7 +76,7 @@ public class ProjectJpaEntity extends BaseEntity {
 		this.id = project.getId();
 		this.projectToken = project.getProjectToken();
 		this.teamMember = project.getTeamMember().stream()
-			.map(teamMember -> new TeamMemberJpaEntity(teamMember, this)).toList();
+			.map(TeamMemberJpaEntity::new).toList();
 		this.keyResults = project.getKeyResults().stream()
 			.map(KeyResultJpaEntity::new).toList();
 		this.startDate = project.getStartDate();
@@ -97,6 +97,7 @@ public class ProjectJpaEntity extends BaseEntity {
 		final Project project = Project.builder()
 			.id(this.id)
 			.projectToken(this.projectToken)
+			.teamMember(this.teamMember.stream().map(TeamMemberJpaEntity::toDomain).toList())
 			.keyResults(this.keyResults.stream().map(KeyResultJpaEntity::toDomain).toList())
 			.startDate(this.startDate)
 			.endDate(this.endDate)
@@ -106,7 +107,6 @@ public class ProjectJpaEntity extends BaseEntity {
 			.completed(this.completed)
 			.build();
 
-		this.getTeamMember().forEach(teamMember -> teamMember.toDomain(project));
 		return project;
 
 	}

@@ -20,14 +20,18 @@ public class ProjectFacade {
 	private final QueryProjectUseCase queryProjectUseCase;
 
 	public String registerProject(RegisterProjectCommand requestCommand) {
+		final UserInfoResponse userInfo =
+			userInternalApiController.getUserInfoBy(requestCommand.authToken()).getBody();
+		final List<Long> inviteMemberSeq =
+			userInternalApiController.getUserSeqsBy(requestCommand.teamMembers()).getBody();
 
 		return registerProjectUseCase.registerProject(
 			new RegisterProjectUseCase.Command(
 				requestCommand.objective(),
 				requestCommand.startDate(),
 				requestCommand.endDate(),
-				requestCommand.userSeq(),
-				List.of()
+				userInfo.userSeq(),
+				inviteMemberSeq
 			)
 		);
 	}

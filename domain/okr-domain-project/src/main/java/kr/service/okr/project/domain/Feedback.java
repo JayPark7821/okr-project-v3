@@ -11,20 +11,20 @@ public class Feedback {
 	private static final String FEEDBACK_TOKEN_PREFIX = "feedback-";
 	private Long id;
 	private String feedbackToken;
-	private Initiative initiative;
+	private Long initiativeId;
 	private TeamMember teamMember;
 	private FeedbackType grade;
 	private String opinion;
 	private boolean checked = Boolean.FALSE;
 
 	public Feedback(
-		final Initiative initiative,
+		final Long initiativeId,
 		final TeamMember teamMember,
 		final FeedbackType grade,
 		final String opinion
 	) {
 		this.feedbackToken = TokenGenerator.randomCharacterWithPrefix(FEEDBACK_TOKEN_PREFIX);
-		this.initiative = initiative;
+		this.initiativeId = initiativeId;
 		this.teamMember = teamMember;
 		this.grade = grade;
 		this.opinion = opinion;
@@ -34,7 +34,7 @@ public class Feedback {
 	private Feedback(
 		final Long id,
 		final String feedbackToken,
-		final Initiative initiative,
+		final Long initiativeId,
 		final TeamMember teamMember,
 		final FeedbackType grade,
 		final String opinion,
@@ -42,7 +42,7 @@ public class Feedback {
 	) {
 		this.id = id;
 		this.feedbackToken = feedbackToken;
-		this.initiative = initiative;
+		this.initiativeId = initiativeId;
 		this.teamMember = teamMember;
 		this.grade = grade;
 		this.opinion = opinion;

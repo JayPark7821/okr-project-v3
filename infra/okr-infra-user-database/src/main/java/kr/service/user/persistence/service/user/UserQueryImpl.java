@@ -1,5 +1,6 @@
 package kr.service.user.persistence.service.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,11 @@ public class UserQueryImpl implements UserQuery {
 	public Optional<User> findByEmail(String email) {
 		return userJpaRepository.findByEmail(email)
 			.map(UserJpaEntity::toDomain);
+	}
+
+	@Override
+	public List<Long> findUserSeqsByEmails(final List<String> emails) {
+		return userJpaRepository.findUserSeqsByEmails(emails);
 	}
 
 }

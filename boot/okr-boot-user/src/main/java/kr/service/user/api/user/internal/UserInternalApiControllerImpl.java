@@ -2,12 +2,17 @@ package kr.service.user.api.user.internal;
 
 import static kr.service.user.api.user.Mapper.*;
 
+import java.util.List;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.service.user.Response;
+import kr.service.okr.Response;
 import kr.service.user.api.internal.UserInfoResponse;
 import kr.service.user.api.internal.UserInternalApiController;
 import kr.service.user.application.user.UserFacade;
@@ -22,8 +27,18 @@ public class UserInternalApiControllerImpl implements UserInternalApiController 
 
 	@Override
 	@GetMapping("/auth")
-	public ResponseEntity<UserInfoResponse> getUserInfoBy(final String jwt) {
+	public ResponseEntity<UserInfoResponse> getUserInfoBy(
+		final @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt
+	) {
 		return Response.successOk(of(userFacade.getUserInfoBy(jwt)));
+	}
+
+	@Override
+	@GetMapping("/validateEmails")
+	public ResponseEntity<List<Long>> getUserSeqsBy(
+		final @RequestBody List<String> userEmails
+	) {
+		return Response.successOk(userFacade.getUserSeqsBy(userEmails));
 	}
 
 }

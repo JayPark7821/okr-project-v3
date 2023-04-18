@@ -15,7 +15,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kr.service.okr.persistence.config.BaseEntity;
 import kr.service.okr.persistence.entity.project.ProjectJpaEntity;
-import kr.service.okr.project.domain.Project;
 import kr.service.okr.project.domain.TeamMember;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
 import lombok.AccessLevel;
@@ -39,6 +38,9 @@ public class TeamMemberJpaEntity extends BaseEntity {
 	@JoinColumn(name = "project_id")
 	private ProjectJpaEntity project;
 
+	@Column(name = "project_id", insertable = false, updatable = false)
+	private Long projectId;
+
 	@Column(name = "project_role_type")
 	@Enumerated(EnumType.STRING)
 	private ProjectRoleType projectRoleType;
@@ -49,35 +51,19 @@ public class TeamMemberJpaEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	public TeamMemberJpaEntity(
-		final Long userSeq,
-		final ProjectJpaEntity project,
-		final ProjectRoleType projectRoleType,
-		final boolean isNew
-	) {
-		this.userSeq = userSeq;
-		this.project = project;
-		this.projectRoleType = projectRoleType;
-		this.isNew = isNew;
+	public TeamMemberJpaEntity(TeamMember teamMember) {
+		this.userSeq = teamMember.getUserSeq();
+		this.projectId = teamMember.getProjectId();
+		this.projectRoleType = teamMember.getProjectRoleType();
+		this.isNew = teamMember.isNew();
 	}
 
-	public TeamMemberJpaEntity(TeamMember teamMember, ProjectJpaEntity project) {
-		this(
-			teamMember.getUserSeq(),
-			project,
-			teamMember.getProjectRoleType(),
-			teamMember.isNew())
-		;
-	}
-
-	public TeamMember toDomain(Project project) {
-		final TeamMember teamMember = TeamMember.builder()
-			.project(project)
+	public TeamMember toDomain() {
+		return TeamMember.builder()
+			.projectId(projectId)
 			.userSeq(this.userSeq)
 			.projectRoleType(this.projectRoleType)
 			.isNew(this.isNew)
 			.build();
-		project.addTeamMember(teamMember);
-		return teamMember;
 	}
 }

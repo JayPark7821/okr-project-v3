@@ -2,10 +2,10 @@ package kr.service.user.user.domain;
 
 import static kr.service.user.validator.Validator.*;
 
-import kr.service.okr.exception.ErrorCode;
-import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.util.TokenGenerator;
 import kr.service.user.ProviderType;
+import kr.service.user.exception.ErrorCode;
+import kr.service.user.exception.OkrUserDomainException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -28,7 +28,7 @@ public class User {
 
 		if (userSeq == null || userId == null || username == null || email == null || providerType == null
 			|| roleType == null || password == null || jobField == null)
-			throw new OkrApplicationException(ErrorCode.INTERNAL_SERVER_ERROR);
+			throw new OkrUserDomainException(ErrorCode.INTERNAL_SERVER_ERROR);
 
 		this.userSeq = userSeq;
 		this.userId = userId;
@@ -67,7 +67,7 @@ public class User {
 
 	public void validateProvider(ProviderType providerType) {
 		if (this.providerType != providerType) {
-			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, this.providerType.name());
+			throw new OkrUserDomainException(ErrorCode.MISS_MATCH_PROVIDER, this.providerType.name());
 		}
 	}
 

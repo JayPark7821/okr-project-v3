@@ -1,7 +1,7 @@
 package kr.service.okr.user.domain;
 
-import kr.service.okr.exception.ErrorCode;
-import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.project.exception.ErrorCode;
+import kr.service.okr.project.exception.OkrProjectDomainException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public class User {
 	@Builder
 	private User(final Long userSeq, final String userId, final String username, final String email) {
 		if (userSeq == null || userId == null || username == null || email == null)
-			throw new OkrApplicationException(ErrorCode.INTERNAL_SERVER_ERROR);
+			throw new OkrProjectDomainException(ErrorCode.INTERNAL_SERVER_ERROR);
 
 		this.userSeq = userSeq;
 		this.userId = userId;

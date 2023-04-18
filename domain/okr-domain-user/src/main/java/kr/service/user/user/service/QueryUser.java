@@ -1,5 +1,6 @@
 package kr.service.user.user.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -18,5 +19,10 @@ public class QueryUser implements QueryUserUseCase {
 	@Override
 	public Optional<User> query(final String email) {
 		return userQuery.findByEmail(email);
+	}
+
+	@Override
+	public List<Long> query(final List<String> emails) {
+		return userQuery.findUserSeqsByEmails(emails);
 	}
 }

@@ -14,7 +14,7 @@ public class Initiative {
 	private static final String INITIATIVE_TOKEN_PREFIX = "initiative-";
 	private Long id;
 	private String initiativeToken;
-	private KeyResult keyResult;
+	private Long keyResultId;
 	private TeamMember teamMember;
 	private String name;
 	private LocalDate startDate;
@@ -24,7 +24,7 @@ public class Initiative {
 	private List<Feedback> feedback = new ArrayList<>();
 
 	protected Initiative(
-		final KeyResult keyResult,
+		final Long keyResultId,
 		final TeamMember teamMember,
 		final String name,
 		final LocalDate startDate,
@@ -32,7 +32,7 @@ public class Initiative {
 		final String detail
 	) {
 		this.initiativeToken = TokenGenerator.randomCharacterWithPrefix(INITIATIVE_TOKEN_PREFIX);
-		this.keyResult = keyResult;
+		this.keyResultId = keyResultId;
 		this.teamMember = teamMember;
 		this.name = name;
 		this.startDate = startDate;
@@ -44,7 +44,7 @@ public class Initiative {
 	private Initiative(
 		final Long id,
 		final String initiativeToken,
-		final KeyResult keyResult,
+		final Long keyResultId,
 		final TeamMember teamMember,
 		final String name,
 		final LocalDate startDate,
@@ -55,7 +55,7 @@ public class Initiative {
 	) {
 		this.id = id;
 		this.initiativeToken = initiativeToken;
-		this.keyResult = keyResult;
+		this.keyResultId = keyResultId;
 		this.teamMember = teamMember;
 		this.name = name;
 		this.startDate = startDate;
