@@ -12,11 +12,12 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import kr.service.okr.user.token.repository.AuthService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class JwtService {
+public class JwtService implements AuthService {
 
 	@Value("${app.auth.tokenSecret}")
 	private String secretKey;
@@ -41,16 +42,6 @@ public class JwtService {
 
 	}
 
-	public boolean needNewRefreshToken(final String token) {
-		try {
-			final long remainingTimeOf =
-				extractClaims(token, secretKey).getExpiration().getTime() - new Date().getTime();
-			return remainingTimeOf <= refreshTokenRegenerationThreshold;
-		} catch (ExpiredJwtException e) {
-			return true;
-		}
-	}
-
 	public String getEmail(String token) {
 		return extractClaims(token, secretKey).get("email", String.class);
 	}
@@ -65,4 +56,19 @@ public class JwtService {
 			.build().parseClaimsJws(token).getBody();
 	}
 
+	@Override
+	public boolean needNewAuthentication(final String token) {
+		try {
+			final long remainingTimeOf =
+				extractClaims(token, secretKey).getExpiration().getTime() - new Date().getTime();
+			return remainingTimeOf <= refreshTokenRegenerationThreshold;
+		} catch (ExpiredJwtException e) {
+			return true;
+		}
+	}
+
+	@Override
+	public String generateAuthToken(final String email, final boolean isRefreshToken) {
+		return null;
+	}
 }

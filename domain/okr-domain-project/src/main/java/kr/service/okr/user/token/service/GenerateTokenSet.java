@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.service.jwt.JwtService;
 import kr.service.okr.user.token.domain.RefreshToken;
+import kr.service.okr.user.token.repository.AuthService;
 import kr.service.okr.user.token.repository.RefreshTokenCommand;
 import kr.service.okr.user.token.repository.RefreshTokenQuery;
 import kr.service.okr.user.token.usecase.GenerateTokenSetUseCase;
@@ -19,7 +19,7 @@ public class GenerateTokenSet implements GenerateTokenSetUseCase {
 
 	private final RefreshTokenCommand command;
 	private final RefreshTokenQuery query;
-	private final JwtService jwtService;
+	private final AuthService authService;
 
 	@Override
 	public AuthTokenInfo command(final String email) {
@@ -28,13 +28,13 @@ public class GenerateTokenSet implements GenerateTokenSetUseCase {
 
 		if (tokenOptional.isPresent()) {
 			refreshToken = tokenOptional.get();
-			if (jwtService.needNewRefreshToken(refreshToken.getRefreshToken())) {
-				refreshToken.updateRefreshToken(jwtService.generateJwtToken(email, true));
+			if (authService.needNewAuthentication(refreshToken.getRefreshToken())) {
+				refreshToken.updateRefreshToken(authService.generateAuthToken(email, true));
 				command.save(refreshToken);
 			}
 		} else {
-			refreshToken = command.save(new RefreshToken(email, jwtService.generateJwtToken(email, true)));
+			refreshToken = command.save(new RefreshToken(email, authService.generateAuthToken(email, true)));
 		}
-		return new AuthTokenInfo(jwtService.generateJwtToken(email, false), refreshToken.getRefreshToken());
+		return new AuthTokenInfo(authService.generateAuthToken(email, false), refreshToken.getRefreshToken());
 	}
 }
