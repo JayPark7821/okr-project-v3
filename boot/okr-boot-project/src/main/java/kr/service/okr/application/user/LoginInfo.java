@@ -1,9 +1,9 @@
 package kr.service.okr.application.user;
 
+import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.guest.domain.Guest;
 import kr.service.okr.user.token.usecase.GenerateTokenSetUseCase;
 import kr.service.okr.user.user.domain.User;
-import kr.service.user.ProviderType;
 
 public record LoginInfo(
 	String guestUuid,

@@ -12,7 +12,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import kr.service.user.ProviderType;
+import kr.service.okr.exception.ErrorCode;
+import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.enums.ProviderType;
 
 class GuestTest {
 
@@ -28,7 +30,7 @@ class GuestTest {
 	) throws Exception {
 
 		assertThatThrownBy(() -> new Guest(id, username, email, providerType, profileImageUrl))
-			.isInstanceOf(OkrUserDomainException.class)
+			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(errorMsg);
 
 	}

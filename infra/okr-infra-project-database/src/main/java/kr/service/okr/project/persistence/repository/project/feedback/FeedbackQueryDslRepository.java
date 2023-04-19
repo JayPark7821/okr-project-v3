@@ -1,8 +1,8 @@
 package kr.service.okr.project.persistence.repository.project.feedback;
 
-import static kr.service.okr.persistence.entity.project.feedback.QFeedbackJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.initiative.QInitiativeJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.team.QTeamMemberJpaEntity.*;
+import static kr.service.okr.project.persistence.entity.project.feedback.QFeedbackJpaEntity.*;
+import static kr.service.okr.project.persistence.entity.project.initiative.QInitiativeJpaEntity.*;
+import static kr.service.okr.project.persistence.entity.project.team.QTeamMemberJpaEntity.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,9 +18,9 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
-import kr.service.okr.persistence.entity.project.team.QTeamMemberJpaEntity;
 import kr.service.okr.project.domain.enums.SearchRange;
 import kr.service.okr.project.persistence.entity.project.feedback.FeedbackJpaEntity;
+import kr.service.okr.project.persistence.entity.project.team.QTeamMemberJpaEntity;
 
 @Repository
 public class FeedbackQueryDslRepository {

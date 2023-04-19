@@ -21,7 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import kr.service.okr.exception.OkrProjectDomainException;
+import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -40,7 +40,7 @@ class ProjectTest {
 	) throws Exception {
 
 		assertThatThrownBy(() -> new Project(objective, startDate, endDate))
-			.isInstanceOf(OkrProjectDomainException.class)
+			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -60,7 +60,7 @@ class ProjectTest {
 	) throws Exception {
 
 		assertThatThrownBy(() -> project.createAndAddMemberOf(memberId, leaderId))
-			.isInstanceOf(OkrProjectDomainException.class)
+			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -88,7 +88,7 @@ class ProjectTest {
 	) throws Exception {
 		final String keyResultName = "new keyResultName";
 		assertThatThrownBy(() -> project.addKeyResult(keyResultName, userSeq))
-			.isInstanceOf(OkrProjectDomainException.class)
+			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -117,7 +117,7 @@ class ProjectTest {
 		assertThatThrownBy(
 			() -> project.addInitiative(keyResultToken, initiativeName, userSeq, initiativeDetail, startDate,
 				endDate))
-			.isInstanceOf(OkrProjectDomainException.class)
+			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(errorMsg);
 	}
 
@@ -163,7 +163,7 @@ class ProjectTest {
 		String errorMsg
 	) throws Exception {
 		assertThatThrownBy(() -> project.updateProject(objective, startDate, endDate, userSeq))
-			.isInstanceOf(OkrProjectDomainException.class)
+			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(errorMsg);
 	}
 

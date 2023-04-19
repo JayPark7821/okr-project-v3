@@ -1,9 +1,9 @@
 package kr.service.okr.project.persistence.repository.project;
 
-import static kr.service.okr.persistence.entity.project.QProjectJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.initiative.QInitiativeJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.keyresult.QKeyResultJpaEntity.*;
-import static kr.service.okr.persistence.entity.project.team.QTeamMemberJpaEntity.*;
+import static kr.service.okr.project.persistence.entity.project.QProjectJpaEntity.*;
+import static kr.service.okr.project.persistence.entity.project.initiative.QInitiativeJpaEntity.*;
+import static kr.service.okr.project.persistence.entity.project.keyresult.QKeyResultJpaEntity.*;
+import static kr.service.okr.project.persistence.entity.project.team.QTeamMemberJpaEntity.*;
 
 import java.util.List;
 import java.util.Objects;

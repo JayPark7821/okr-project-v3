@@ -2,7 +2,8 @@ package kr.service.okr.user.token.domain;
 
 import static kr.service.okr.user.validator.Validator.*;
 
-import kr.service.okr.user.exception.ErrorCode;
+import kr.service.okr.exception.ErrorCode;
+import kr.service.okr.exception.OkrApplicationException;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ public class RefreshToken {
 	@Builder
 	private RefreshToken(final Long refreshTokenSeq, final String userEmail, final String refreshToken) {
 		if (refreshTokenSeq == null || userEmail == null || refreshToken == null)
-			throw new OkrUserDomainException(ErrorCode.INTERNAL_SERVER_ERROR);
+			throw new OkrApplicationException(ErrorCode.INTERNAL_SERVER_ERROR);
 		this.refreshTokenSeq = refreshTokenSeq;
 		this.userEmail = userEmail;
 		this.refreshToken = refreshToken;

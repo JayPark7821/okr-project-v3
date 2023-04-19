@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.service.okr.exception.OkrProjectDomainException;
+import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.project.domain.enums.ProjectType;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
@@ -136,14 +136,14 @@ public class Project {
 		return this.teamMember.stream()
 			.filter(teamMember -> teamMember.getUserSeq().equals(memberSeq))
 			.findAny()
-			.orElseThrow(() -> new OkrProjectDomainException(INVALID_PROJECT_TOKEN));
+			.orElseThrow(() -> new OkrApplicationException(INVALID_PROJECT_TOKEN));
 	}
 
 	private KeyResult getKeyResult(final String keyResultToken) {
 		return this.keyResults.stream()
 			.filter(kr -> kr.getKeyResultToken().equals(keyResultToken))
 			.findAny()
-			.orElseThrow(() -> new OkrProjectDomainException(INVALID_KEYRESULT_TOKEN));
+			.orElseThrow(() -> new OkrApplicationException(INVALID_KEYRESULT_TOKEN));
 	}
 
 	//====================================  validate  =================================================

@@ -1,14 +1,9 @@
 package kr.service.okr.application.project;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import kr.service.okr.project.usecase.QueryProjectUseCase;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
-import kr.service.user.api.internal.UserInfoResponse;
-import kr.service.user.api.internal.UserInternalApiController;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -16,33 +11,25 @@ import lombok.RequiredArgsConstructor;
 public class ProjectFacade {
 
 	private final RegisterProjectUseCase registerProjectUseCase;
-	private final UserInternalApiController userInternalApiController;
 	private final QueryProjectUseCase queryProjectUseCase;
 
 	public String registerProject(RegisterProjectCommand requestCommand) {
-		final UserInfoResponse userInfo =
-			userInternalApiController.getUserInfoBy(requestCommand.authToken()).getBody();
-		final List<Long> inviteMemberSeq =
-			userInternalApiController.getUserSeqsBy(requestCommand.teamMembers()).getBody();
-
 		return registerProjectUseCase.registerProject(
 			new RegisterProjectUseCase.Command(
 				requestCommand.objective(),
 				requestCommand.startDate(),
 				requestCommand.endDate(),
-				userInfo.userSeq(),
-				inviteMemberSeq
+				null,
+				null
 			)
 		);
 	}
 
 	public ProjectInfo getProjectInfoBy(final String projectToken, final String authToken) {
-		final ResponseEntity<UserInfoResponse> userInfo = userInternalApiController.getUserInfoBy(authToken);
-		final Long userSeq = userInfo.getBody().userSeq();
 
 		return new ProjectInfo(
-			queryProjectUseCase.queryProjectBy(new QueryProjectUseCase.Query(projectToken, userSeq)),
-			userSeq
+			queryProjectUseCase.queryProjectBy(new QueryProjectUseCase.Query(projectToken, null)),
+			null
 		);
 	}
 

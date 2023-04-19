@@ -2,8 +2,8 @@ package kr.service.okr.user.guest.domain;
 
 import static kr.service.okr.user.validator.Validator.*;
 
+import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.user.enums.ProviderType;
-import kr.service.okr.user.exception.ErrorCode;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
