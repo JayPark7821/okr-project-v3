@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 	"kr.service.jwt",
 	"kr.service.okr",
 })
-@EnableFeignClients("kr.service.user")
+@EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
 public class OkrBootProjectApplication {

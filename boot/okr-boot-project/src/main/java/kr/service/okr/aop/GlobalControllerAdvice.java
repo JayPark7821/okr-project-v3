@@ -10,7 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import kr.service.okr.Response;
+import kr.service.okr.api.Response;
 import kr.service.okr.exception.OkrApplicationException;
 
 @RestControllerAdvice

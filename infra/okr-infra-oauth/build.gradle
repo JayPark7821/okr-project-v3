@@ -23,7 +23,6 @@ dependencies {
 
 
     implementation project(':common:okr-common-util')
-    implementation project(':domain:okr-domain-user')
 }
 dependencyManagement {
     imports {

@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import kr.service.jwt.JwtService;
-import kr.service.okr.api.RegisterProjectRequestDto;
+import kr.service.okr.project.api.RegisterProjectRequestDto;
 import kr.service.okr.utils.SpringBootTestReady;
 
 @DisplayName("Project 도메인 인수 테스트")
