@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import kr.service.jwt.JwtService;
+import kr.service.jwt.JwtTokenRepository;
 import kr.service.oauth.platform.OAuth2UserInfo;
+import kr.service.okr.user.auth.usecase.GenerateTokenSetUseCase;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.guest.usecase.JoinNewGuestUseCase;
-import kr.service.okr.user.token.usecase.GenerateTokenSetUseCase;
 import kr.service.okr.user.user.usecase.QueryUserUseCase;
 import lombok.RequiredArgsConstructor;
 
@@ -19,10 +19,10 @@ public class UserFacade {
 	private final QueryUserUseCase queryUserUseCase;
 	private final GenerateTokenSetUseCase GenerateTokenSetUseCase;
 	private final JoinNewGuestUseCase joinNewGuestUseCase;
-	private final JwtService jwtService;
+	private final JwtTokenRepository jwtService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(final OAuth2UserInfo info) {
-		return queryUserUseCase.query(info.email())
+		return queryUserUseCase.queryUserBy(info.email())
 			.map(user -> new LoginInfo(user, GenerateTokenSetUseCase.command(user.getEmail())));
 	}
 
