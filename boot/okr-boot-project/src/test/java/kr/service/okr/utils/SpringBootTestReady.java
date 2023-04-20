@@ -13,7 +13,7 @@ import io.restassured.RestAssured;
 @Import(TestConfig.class)
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = WireMockServerConfig.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SpringBootTestReady {
 
 	@LocalServerPort
