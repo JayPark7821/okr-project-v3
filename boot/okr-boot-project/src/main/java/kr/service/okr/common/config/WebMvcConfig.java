@@ -22,12 +22,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
 		registry.addInterceptor(authenticationInterceptor());
-
 	}
 
 	private HandlerInterceptor authenticationInterceptor() {
-		final RequestMatcherInterceptor interceptor = new RequestMatcherInterceptor(
-			new AuthenticationInterceptor(queryAuthenticationUseCase, queryUserUseCase));
+		final RequestMatcherInterceptor interceptor =
+			new RequestMatcherInterceptor(
+				new AuthenticationInterceptor(queryAuthenticationUseCase, queryUserUseCase)
+			);
 
 		return interceptor.includeNotRequireAuthPath("/api/*/user/login/**", HttpMethod.POST);
 	}
