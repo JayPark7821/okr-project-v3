@@ -3,6 +3,7 @@ package kr.service.jwt;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,12 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import kr.service.okr.user.token.repository.AuthService;
+import kr.service.okr.user.auth.repository.AuthenticationRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class JwtService implements AuthService {
+public class JwtTokenRepository implements AuthenticationRepository {
 
 	@Value("${app.auth.tokenSecret}")
 	private String secretKey;
@@ -28,7 +29,37 @@ public class JwtService implements AuthService {
 	@Value("${app.auth.refreshTokenRegenerationThreshold}")
 	private Long refreshTokenRegenerationThreshold;
 
-	public String generateJwtToken(final String userEmail, boolean isRefreshToken) {
+	@Override
+	public Optional<String> findEmailByToken(final String token) {
+		try {
+			return Optional.of(getEmail(token, secretKey));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public boolean isTokenExpired(final String token) {
+		try {
+			final long remainingTimeOf =
+				extractClaims(token, secretKey).getExpiration().getTime() - new Date().getTime();
+			return remainingTimeOf <= refreshTokenRegenerationThreshold;
+		} catch (ExpiredJwtException e) {
+			return true;
+		}
+	}
+
+	@Override
+	public String generateRefreshToken(final String email) {
+		return generateJwtToken(email, true);
+	}
+
+	@Override
+	public String generateAccessToken(final String email) {
+		return generateJwtToken(email, false);
+	}
+
+	private String generateJwtToken(final String userEmail, boolean isRefreshToken) {
 		Claims claims = Jwts.claims();
 		claims.put("email", userEmail);
 
@@ -39,11 +70,10 @@ public class JwtService implements AuthService {
 				new Date(System.currentTimeMillis() + (isRefreshToken ? refreshExpiredTimeMs : accessExpiredTimeMs)))
 			.signWith(getKey(secretKey), SignatureAlgorithm.HS256)
 			.compact();
-
 	}
 
-	public String getEmail(String token) {
-		return extractClaims(token, secretKey).get("email", String.class);
+	public String getEmail(String token, String key) {
+		return extractClaims(token, key).get("email", String.class);
 	}
 
 	Key getKey(String key) {
@@ -56,19 +86,4 @@ public class JwtService implements AuthService {
 			.build().parseClaimsJws(token).getBody();
 	}
 
-	@Override
-	public boolean needNewAuthentication(final String token) {
-		try {
-			final long remainingTimeOf =
-				extractClaims(token, secretKey).getExpiration().getTime() - new Date().getTime();
-			return remainingTimeOf <= refreshTokenRegenerationThreshold;
-		} catch (ExpiredJwtException e) {
-			return true;
-		}
-	}
-
-	@Override
-	public String generateAuthToken(final String email, final boolean isRefreshToken) {
-		return null;
-	}
 }

@@ -13,9 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-
-import kr.service.jwt.JwtService;
+import kr.service.jwt.JwtTokenRepository;
 import kr.service.okr.project.api.RegisterProjectRequestDto;
 import kr.service.okr.utils.SpringBootTestReady;
 
@@ -23,10 +21,7 @@ import kr.service.okr.utils.SpringBootTestReady;
 public class ProjectAcceptanceTest extends SpringBootTestReady {
 
 	@Autowired
-	private JwtService jwtService;
-
-	@Autowired
-	private WireMockServer wireMockServer;
+	private JwtTokenRepository jwtService;
 
 	@BeforeEach
 	void beforeEach() throws IOException {
@@ -52,10 +47,10 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	void query_project() throws Exception {
 		//given
 		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
-		var 로그인_인증_토큰 = jwtService.generateJwtToken("user@email.com", false);
+		var 로그인_인증_토큰 = "token";// jwtService.generateJwtToken("user@email.com", false);
 
 		//when
-		var 응답 = 프로젝트_조회_요청(프로젝트_토큰, 로그인_인증_토큰, wireMockServer);
+		var 응답 = 프로젝트_조회_요청(프로젝트_토큰, 로그인_인증_토큰);
 
 		//then
 		프로젝트_조회_요청_응답_검증(응답);

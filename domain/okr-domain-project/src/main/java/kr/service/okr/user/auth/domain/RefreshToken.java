@@ -1,4 +1,4 @@
-package kr.service.okr.user.token.domain;
+package kr.service.okr.user.auth.domain;
 
 import static kr.service.okr.user.validator.Validator.*;
 

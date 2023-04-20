@@ -1,3 +1,7 @@
+plugins {
+    id 'java-library'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -9,7 +13,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     //Querydsl 추가
@@ -43,3 +47,6 @@ tasks.withType(JavaCompile) {
 clean.doLast {
     file(querydslDir).deleteDir()
 }
+
+tasks.bootJar { enabled = false }
+tasks.jar { enabled = true }
