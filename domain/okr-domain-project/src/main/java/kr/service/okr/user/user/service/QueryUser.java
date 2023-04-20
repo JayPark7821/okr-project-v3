@@ -17,7 +17,7 @@ public class QueryUser implements QueryUserUseCase {
 	private final UserQuery userQuery;
 
 	@Override
-	public Optional<User> query(final String email) {
+	public Optional<User> queryUserBy(final String email) {
 		return userQuery.findByEmail(email);
 	}
 

@@ -1,4 +1,4 @@
-package kr.service.okr.user.token.usecase;
+package kr.service.okr.user.auth.usecase;
 
 public interface GenerateTokenSetUseCase {
 
