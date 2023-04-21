@@ -20,12 +20,16 @@ public class RegisterProject implements RegisterProjectUseCase {
 	@Override
 	public String registerProject(Command command) {
 
-		assertLeaderIsNotInTeamMember(command);
-
 		final Project project = new Project(command.objective(), command.startDate(), command.endDate());
 		project.createAndAddLeader(command.userSeq());
-		command.teamMemberUserSeqs()
-			.forEach(teamMemberSeq -> project.createAndAddMemberOf(teamMemberSeq, command.userSeq()));
+
+		if (command.teamMemberUserSeqs() != null) {
+			
+			assertLeaderIsNotInTeamMember(command);
+
+			command.teamMemberUserSeqs()
+				.forEach(teamMemberSeq -> project.createAndAddMemberOf(teamMemberSeq, command.userSeq()));
+		}
 
 		return projectCommand.save(project).getProjectToken();
 	}

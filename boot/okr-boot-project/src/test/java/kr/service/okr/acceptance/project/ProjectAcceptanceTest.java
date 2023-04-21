@@ -23,10 +23,13 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	@Autowired
 	private JwtTokenRepository jwtService;
 
+	String 사용자_토큰;
+
 	@BeforeEach
 	void beforeEach() throws IOException {
 		super.setUp();
 		dataLoader.loadData(List.of("/project-test-data.sql"));
+		사용자_토큰 = jwtService.generateAccessToken("projectMasterTest@naver.com");
 	}
 
 	@Test
@@ -36,7 +39,7 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 		var 프로젝트_생성_요청_데이터 = 프로젝트_생성_요청_데이터_생성("프로젝트 목표", List.of());
 
 		//when
-		var 응답 = 프로젝트_생성_요청(프로젝트_생성_요청_데이터);
+		var 응답 = 프로젝트_생성_요청(프로젝트_생성_요청_데이터, 사용자_토큰);
 
 		//then
 		프로젝트_생성_요청_응답_검증(응답);

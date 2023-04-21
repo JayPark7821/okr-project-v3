@@ -31,10 +31,8 @@ public class AuthenticationArgumentResolver implements HandlerMethodArgumentReso
 		final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
 		AuthenticationInfo authentication = this.securityContextHolderStrategy.getContext().getAuthenticationInfo();
 
-		if (authentication == null) {
-			return null;
-		}
-		if (!ClassUtils.isAssignable(parameter.getParameterType(), authentication.getClass())) {
+		if (authentication == null || !ClassUtils.isAssignable(parameter.getParameterType(),
+			authentication.getClass())) {
 			return null;
 		}
 		return authentication;

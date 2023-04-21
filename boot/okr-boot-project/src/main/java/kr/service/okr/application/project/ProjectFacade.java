@@ -19,16 +19,16 @@ public class ProjectFacade {
 				requestCommand.objective(),
 				requestCommand.startDate(),
 				requestCommand.endDate(),
-				null,
+				requestCommand.userSeq(),
 				null
 			)
 		);
 	}
 
-	public ProjectInfo getProjectInfoBy(final String projectToken, final String authToken) {
+	public ProjectInfo getProjectInfoBy(final String projectToken, final Long userSeq) {
 
 		return new ProjectInfo(
-			queryProjectUseCase.queryProjectBy(new QueryProjectUseCase.Query(projectToken, null)),
+			queryProjectUseCase.queryProjectBy(new QueryProjectUseCase.Query(projectToken, userSeq)),
 			null
 		);
 	}

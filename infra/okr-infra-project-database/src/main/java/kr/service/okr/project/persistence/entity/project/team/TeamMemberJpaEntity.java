@@ -46,12 +46,30 @@ public class TeamMemberJpaEntity extends BaseEntity {
 	private ProjectRoleType projectRoleType;
 
 	@Column(name = "is_new")
-	private boolean isNew;
+	private boolean isNew = Boolean.FALSE;
 
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
-	public TeamMemberJpaEntity(TeamMember teamMember) {
+	public TeamMemberJpaEntity(
+		final Long userSeq,
+		final ProjectJpaEntity project,
+		final ProjectRoleType projectRoleType
+	) {
+		this.userSeq = userSeq;
+		this.project = project;
+		this.projectRoleType = projectRoleType;
+	}
+
+	public static TeamMemberJpaEntity createFrom(final TeamMember teamMember, final ProjectJpaEntity project) {
+		return new TeamMemberJpaEntity(
+			teamMember.getUserSeq(),
+			project,
+			teamMember.getProjectRoleType()
+		);
+	}
+
+	public TeamMemberJpaEntity(final TeamMember teamMember) {
 		this.userSeq = teamMember.getUserSeq();
 		this.projectId = teamMember.getProjectId();
 		this.projectRoleType = teamMember.getProjectRoleType();

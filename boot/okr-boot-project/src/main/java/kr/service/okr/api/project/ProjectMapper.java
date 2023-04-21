@@ -12,13 +12,13 @@ import kr.service.okr.project.api.RegisterProjectRequestDto;
 
 public class ProjectMapper {
 
-	static RegisterProjectCommand toCommand(RegisterProjectRequestDto request, String authToken) {
+	static RegisterProjectCommand toCommand(RegisterProjectRequestDto request, Long userSeq) {
 		return new RegisterProjectCommand(
 			request.objective(),
 			LocalDate.parse(request.startDate(), DateTimeFormatter.ISO_DATE),
 			LocalDate.parse(request.endDate(), DateTimeFormatter.ISO_DATE),
 			request.teamMembers(),
-			authToken
+			userSeq
 		);
 	}
 
