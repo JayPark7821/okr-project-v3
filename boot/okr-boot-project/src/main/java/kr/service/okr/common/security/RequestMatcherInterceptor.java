@@ -37,4 +37,11 @@ public class RequestMatcherInterceptor implements HandlerInterceptor {
 		this.requestMatcherContainer.includeNotRequireAuthPath(requestPattern, methods);
 		return this;
 	}
+
+	@Override
+	public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response,
+		final Object handler,
+		final Exception ex) throws Exception {
+		handlerInterceptor.afterCompletion(request, response, handler, ex);
+	}
 }

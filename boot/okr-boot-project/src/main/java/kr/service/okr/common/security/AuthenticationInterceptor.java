@@ -62,7 +62,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response,
 		final Object handler,
 		final Exception ex) throws Exception {
-		log.error("=-=----=-=-=-=-=-=-=-=--------------");
 		this.securityContextHolderStrategy.clearContext();
 	}
 }
