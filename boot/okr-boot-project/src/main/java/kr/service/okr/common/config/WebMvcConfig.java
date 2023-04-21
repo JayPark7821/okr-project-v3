@@ -1,13 +1,17 @@
 package kr.service.okr.common.config;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import kr.service.okr.common.auth.AuthenticationInterceptor;
-import kr.service.okr.common.auth.RequestMatcherInterceptor;
+import kr.service.okr.common.security.AuthenticationArgumentResolver;
+import kr.service.okr.common.security.AuthenticationInterceptor;
+import kr.service.okr.common.security.RequestMatcherInterceptor;
 import kr.service.okr.user.auth.usecase.QueryAuthenticationUseCase;
 import kr.service.okr.user.user.usecase.QueryUserUseCase;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
 		registry.addInterceptor(authenticationInterceptor());
+	}
+
+	@Override
+	public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
+		resolvers.add(new AuthenticationArgumentResolver());
 	}
 
 	private HandlerInterceptor authenticationInterceptor() {
