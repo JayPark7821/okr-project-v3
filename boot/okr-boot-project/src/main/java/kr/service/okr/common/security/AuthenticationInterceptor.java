@@ -1,4 +1,4 @@
-package kr.service.okr.common.auth;
+package kr.service.okr.common.security;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,6 +7,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolder;
+import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolderStrategy;
+import kr.service.okr.common.security.core.context.AuthenticationInfo;
 import kr.service.okr.user.auth.usecase.QueryAuthenticationUseCase;
 import kr.service.okr.user.user.domain.User;
 import kr.service.okr.user.user.usecase.QueryUserUseCase;
@@ -15,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
+
+	private AuthenticatedUserContextHolderStrategy securityContextHolderStrategy =
+		AuthenticatedUserContextHolder.getContextHolderStrategy();
 
 	private final QueryAuthenticationUseCase queryAuthenticationUseCase;
 	private final QueryUserUseCase queryUserUseCase;
@@ -47,6 +53,16 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 				log.error("User does not exist");
 				return new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 			});
+
+		this.securityContextHolderStrategy.getContext().setAuthenticationInfo(new AuthenticationInfo(user));
 		return true;
+	}
+
+	@Override
+	public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response,
+		final Object handler,
+		final Exception ex) throws Exception {
+		log.error("=-=----=-=-=-=-=-=-=-=--------------");
+		this.securityContextHolderStrategy.clearContext();
 	}
 }

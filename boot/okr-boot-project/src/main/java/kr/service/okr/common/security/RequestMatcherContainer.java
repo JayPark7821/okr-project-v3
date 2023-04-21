@@ -1,4 +1,4 @@
-package kr.service.okr.common.auth;
+package kr.service.okr.common.security;
 
 import java.util.ArrayList;
 import java.util.List;
