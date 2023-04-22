@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import kr.service.okr.config.BaseEntity;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.user.domain.JobField;
-import kr.service.okr.user.user.domain.RoleType;
 import kr.service.okr.user.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,25 +33,18 @@ public class UserJpaEntity extends BaseEntity {
 	private String profileImage;
 	@Enumerated(EnumType.STRING)
 	private ProviderType providerType;
-
-	@Enumerated(EnumType.STRING)
-	private RoleType roleType;
-	private String password;
-
 	@Enumerated(EnumType.STRING)
 	private JobField jobField;
 
 	@Builder
 	public UserJpaEntity(Long userSeq, String userId, String username, String email, String profileImage,
-		ProviderType providerType, RoleType roleType, String password, JobField jobField) {
+		ProviderType providerType, JobField jobField) {
 		this.userSeq = userSeq;
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
 		this.profileImage = profileImage;
 		this.providerType = providerType;
-		this.roleType = roleType;
-		this.password = password;
 		this.jobField = jobField;
 	}
 
@@ -72,8 +64,6 @@ public class UserJpaEntity extends BaseEntity {
 			.email(this.email)
 			.profileImage(this.profileImage)
 			.providerType(this.providerType)
-			.roleType(this.roleType)
-			.password(this.password)
 			.jobField(this.jobField)
 			.build();
 	}

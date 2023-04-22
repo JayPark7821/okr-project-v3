@@ -8,6 +8,6 @@ public record RegisterProjectCommand(
 	LocalDate startDate,
 	LocalDate endDate,
 	List<String> teamMembers,
-	String authToken
+	Long userSeq
 ) {
 }

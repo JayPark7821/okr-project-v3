@@ -5,7 +5,6 @@ import static kr.service.okr.user.validator.Validator.*;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.user.enums.ProviderType;
-import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,17 +16,14 @@ public class User {
 	private String email;
 	private String profileImage;
 	private ProviderType providerType;
-	private RoleType roleType;
-	private String password;
 	private JobField jobField;
 
 	@Builder
 	private User(final Long userSeq, final String userId, final String username, final String email,
-		final String profileImage, final ProviderType providerType,
-		final RoleType roleType, final String password, final JobField jobField) {
+		final String profileImage, final ProviderType providerType, final JobField jobField) {
 
 		if (userSeq == null || userId == null || username == null || email == null || providerType == null
-			|| roleType == null || password == null || jobField == null)
+			|| jobField == null)
 			throw new OkrApplicationException(ErrorCode.INTERNAL_SERVER_ERROR);
 
 		this.userSeq = userSeq;
@@ -36,8 +32,6 @@ public class User {
 		this.email = email;
 		this.profileImage = profileImage;
 		this.providerType = providerType;
-		this.roleType = roleType;
-		this.password = password;
 		this.jobField = jobField;
 	}
 
@@ -60,8 +54,6 @@ public class User {
 		this.email = email;
 		this.profileImage = profileImage;
 		this.providerType = providerType;
-		this.roleType = RoleType.USER;
-		this.password = TokenGenerator.randomCharacter(20);
 		this.jobField = jobField;
 	}
 

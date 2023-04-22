@@ -48,7 +48,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 				return new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 			});
 
-		User user = queryUserUseCase.queryUserBy(email)
+		User user = queryUserUseCase.query(email)
 			.orElseThrow(() -> {
 				log.error("User does not exist");
 				return new ResponseStatusException(HttpStatus.UNAUTHORIZED);

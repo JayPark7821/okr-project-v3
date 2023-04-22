@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import kr.service.okr.project.usecase.QueryProjectUseCase;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
+import kr.service.okr.user.user.usecase.QueryUserUseCase;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -12,6 +13,7 @@ public class ProjectFacade {
 
 	private final RegisterProjectUseCase registerProjectUseCase;
 	private final QueryProjectUseCase queryProjectUseCase;
+	private final QueryUserUseCase queryUserUseCase;
 
 	public String registerProject(RegisterProjectCommand requestCommand) {
 		return registerProjectUseCase.registerProject(
@@ -19,16 +21,16 @@ public class ProjectFacade {
 				requestCommand.objective(),
 				requestCommand.startDate(),
 				requestCommand.endDate(),
-				null,
-				null
+				requestCommand.userSeq(),
+				queryUserUseCase.query(requestCommand.teamMembers())
 			)
 		);
 	}
 
-	public ProjectInfo getProjectInfoBy(final String projectToken, final String authToken) {
+	public ProjectInfo getProjectInfoBy(final String projectToken, final Long userSeq) {
 
 		return new ProjectInfo(
-			queryProjectUseCase.queryProjectBy(new QueryProjectUseCase.Query(projectToken, null)),
+			queryProjectUseCase.queryProjectBy(new QueryProjectUseCase.Query(projectToken, userSeq)),
 			null
 		);
 	}

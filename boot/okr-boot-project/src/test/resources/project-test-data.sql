@@ -1,5 +1,8 @@
 SET REFERENTIAL_INTEGRITY FALSE;
 
+TRUNCATE TABLE USER_TABLE;
+ALTER TABLE USER_TABLE ALTER COLUMN USER_SEQ RESTART WITH 1;
+
 TRUNCATE TABLE PROJECT;
 ALTER TABLE PROJECT ALTER COLUMN PROJECT_ID RESTART WITH 1;
 
@@ -16,6 +19,27 @@ ALTER TABLE INITIATIVE ALTER COLUMN INITIATIVE_ID RESTART WITH 1;
 
 SET REFERENTIAL_INTEGRITY TRUE;
 
+insert into user_table (user_seq, user_id,username, email, provider_type, job_field, profile_image )values
+( 1,'testId1', 'testUser1','teamMemberTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 2,'testId2', 'testUser2','projectMasterTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+(11,'testId11', 'testUser2','keyResultTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+(12,'testId12', 'testUser2','initiativeTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+(13,'testId13', 'testUser2','projectMasterRetrieveTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+(14,'testId14', 'testUser2','projectCalendarTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+(15,'testId15', 'testUser2','initiativeRetrieveTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+(16,'testId16', 'testUser2','notificationTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+(17,'testId17', 'testUser2','feedbackTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 3,'testId3', 'testUser3','user1@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 4,'testId4', 'testUser4','user2@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 5,'testId5', 'testUser5','user3@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 6,'testId6', 'testUser6','user4@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 7,'testId7', 'testUser7','user5@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 8,'testId8', 'testUser8','user6@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 9,'testId9', 'testUser9','user7@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 10,'testId10', 'testUser10','user2222@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 18,'testId11', 'testUser10','guest@email.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
+( 19,'effefee23', 'Unknown','guest@unknown.com',null,null,null )
+;
 
 insert into project
 ( project_id, created_date, last_modified_date, created_by, last_modified_by, project_edt, project_objective, progress, project_token, project_sdt, project_type, deleted, completed) values
