@@ -7,7 +7,7 @@ import kr.service.okr.user.user.domain.User;
 
 public interface QueryUserUseCase {
 
-	Optional<User> queryUserBy(String email);
+	Optional<User> query(String email);
 
 	List<Long> query(List<String> emails);
 }

@@ -22,7 +22,7 @@ public class UserFacade {
 	private final JwtTokenRepository jwtService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(final OAuth2UserInfo info) {
-		return queryUserUseCase.queryUserBy(info.email())
+		return queryUserUseCase.query(info.email())
 			.map(user -> new LoginInfo(user, GenerateTokenSetUseCase.command(user.getEmail())));
 	}
 

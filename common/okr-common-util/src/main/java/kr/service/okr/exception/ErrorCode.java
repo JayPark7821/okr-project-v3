@@ -38,7 +38,7 @@ public enum ErrorCode {
 	INITIATIVE_END_DATE_IS_REQUIRED(HttpStatus.BAD_REQUEST, "행동전략 종료일은 필수 값 입니다."),
 	INITIATIVE_DATES_WILL_BE_OVER_PROJECT_DATES(HttpStatus.BAD_REQUEST, "프로젝트 기간이 행동전략 기간을 포함해야 합니다."),
 	REQUIRED_DATE_VALUE(HttpStatus.BAD_REQUEST, "날짜는 필수 값 입니다."),
-
+	INVALID_USER_EMAIL(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
 	INVALID_TOKEN(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다."),
 	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다.");
 
