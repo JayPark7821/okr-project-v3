@@ -29,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted = false")
 @Table(name = "team_member")
 public class TeamMemberJpaEntity extends BaseEntity {
+	
 	@Id
 	@Column(name = "user_seq")
 	private Long userSeq;
