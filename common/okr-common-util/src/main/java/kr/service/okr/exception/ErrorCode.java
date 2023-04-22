@@ -18,7 +18,6 @@ public enum ErrorCode {
 	INITIATIVE_DETAIL_WRONG_INPUT_LENGTH(HttpStatus.BAD_REQUEST, "행동전략 1자 이상 상세는 50자 이내로 입력해주세요."),
 	PROJECT_START_DATE_IS_REQUIRED(HttpStatus.BAD_REQUEST, "프로젝트 시작일은 필수 값 입니다."),
 	PROJECT_END_DATE_IS_REQUIRED(HttpStatus.BAD_REQUEST, "프로젝트 종료일은 필수 값 입니다."),
-	LEADER_IS_IN_TEAM_MEMBER(HttpStatus.BAD_REQUEST, "팀원에 리더가 포함되어 있습니다."),
 	PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, "프로젝트를 찾을 수 없습니다."),
 	PROJECT_START_DATE_IS_AFTER_END_DATE(HttpStatus.BAD_REQUEST, "프로젝트 시작일은 종료일 이전이어야 합니다."),
 	PROJECT_END_DATE_IS_BEFORE_TODAY(HttpStatus.BAD_REQUEST, "프로젝트 종료일은 오늘 이후여야 합니다."),
