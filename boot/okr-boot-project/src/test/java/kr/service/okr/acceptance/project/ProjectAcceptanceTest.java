@@ -46,14 +46,26 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	}
 
 	@Test
+	@DisplayName("프로젝트를 생성시 팀원을 초대하여 생성하면 기대하는 응답(projectToken)을 반환한다.")
+	void create_project_with_teammember() throws Exception {
+		//given
+		var 프로젝트_생성_요청_데이터 = 프로젝트_생성_요청_데이터_생성("프로젝트 목표", List.of("user7@naver.com"));
+
+		//when
+		var 응답 = 프로젝트_생성_요청(프로젝트_생성_요청_데이터, 사용자_토큰);
+
+		//then
+		프로젝트_생성_요청_응답_검증(응답);
+	}
+
+	@Test
 	@DisplayName("프로젝트를 조회하면 기대하는 응답(ProjectInfoResponse)을 반환한다.")
 	void query_project() throws Exception {
 		//given
 		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
-		var 로그인_인증_토큰 = "token";// jwtService.generateJwtToken("user@email.com", false);
 
 		//when
-		var 응답 = 프로젝트_조회_요청(프로젝트_토큰, 로그인_인증_토큰);
+		var 응답 = 프로젝트_조회_요청(프로젝트_토큰, 사용자_토큰);
 
 		//then
 		프로젝트_조회_요청_응답_검증(응답);
