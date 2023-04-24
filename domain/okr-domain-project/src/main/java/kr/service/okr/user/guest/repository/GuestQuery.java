@@ -6,4 +6,6 @@ import kr.service.okr.user.guest.domain.Guest;
 
 public interface GuestQuery {
 	Optional<Guest> findByEmail(String email);
+
+	Optional<Guest> findByGuestUuid(String guestUuid);
 }

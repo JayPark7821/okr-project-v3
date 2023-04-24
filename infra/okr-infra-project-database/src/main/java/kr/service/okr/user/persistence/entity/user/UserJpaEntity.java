@@ -13,7 +13,6 @@ import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.user.domain.JobField;
 import kr.service.okr.user.user.domain.User;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,17 +34,16 @@ public class UserJpaEntity extends BaseEntity {
 	private ProviderType providerType;
 	@Enumerated(EnumType.STRING)
 	private JobField jobField;
+	@Column(nullable = false)
+	private boolean deleted = Boolean.FALSE;
 
-	@Builder
-	public UserJpaEntity(Long userSeq, String userId, String username, String email, String profileImage,
-		ProviderType providerType, JobField jobField) {
-		this.userSeq = userSeq;
-		this.userId = userId;
-		this.username = username;
-		this.email = email;
-		this.profileImage = profileImage;
-		this.providerType = providerType;
-		this.jobField = jobField;
+	public UserJpaEntity(User user) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.profileImage = user.getProfileImage();
+		this.providerType = user.getProviderType();
+		this.jobField = user.getJobField();
 	}
 
 	public void updateUserName(String username) {

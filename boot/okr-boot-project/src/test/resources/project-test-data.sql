@@ -18,12 +18,12 @@ TRUNCATE TABLE INITIATIVE;
 ALTER TABLE INITIATIVE ALTER COLUMN INITIATIVE_ID RESTART WITH 1;
 
 TRUNCATE TABLE GUEST;
-ALTER TABLE GUEST ALTER COLUMN guestSeq RESTART WITH 1;
+ALTER TABLE GUEST ALTER COLUMN GUEST_SEQ RESTART WITH 1;
 
 
 SET REFERENTIAL_INTEGRITY TRUE;
 
-insert into guest(guest_seq, guest_uuid, guest_id, guest_name, email, providerType, profileImage)
+insert into guest(guest_seq, guest_uuid, guest_id, guest_name, email, provider_type, profile_image)
 values (1, 'guest-ttdxe', 'guestId', 'guestName', 'guest@email', 'GOOGLE', 'profileImage');
 
 

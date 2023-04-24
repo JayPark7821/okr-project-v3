@@ -6,11 +6,11 @@ import jakarta.validation.constraints.Size;
 
 public record JoinRequest(
 	@NotNull(message = "임시 유저ID는 필수 값입니다.")
-	String guestUserId,
+	String guestUuid,
 
 	@NotNull(message = "사용자 이름은 필수 값입니다.")
 	@Size(min = 1, max = 100)
-	String name,
+	String username,
 
 	@NotNull(message = "email은 필수 값입니다.")
 	@Size(max = 512)

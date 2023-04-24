@@ -79,7 +79,7 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		assertThat(response.getBody().guestUserId()).isNull();
 		assertThat(response.getBody().name()).isEqualTo("guest");
 		assertThat(response.getBody().email()).isEqualTo("guest@email");
-		assertThat(response.getBody().providerType()).isEqualTo(ProviderType.GOOGLE);
+		assertThat(response.getBody().providerType()).isEqualTo(ProviderType.GOOGLE.name());
 		assertThat(response.getBody().accessToken()).isNotNull();
 		assertThat(response.getBody().refreshToken()).isNotNull();
 	}

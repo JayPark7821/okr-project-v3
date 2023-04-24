@@ -9,5 +9,5 @@ import kr.service.okr.user.persistence.entity.guset.GuestJpaEntity;
 public interface GuestRepository extends JpaRepository<GuestJpaEntity, Long> {
 	Optional<GuestJpaEntity> findByEmail(String email);
 
-	Optional<GuestJpaEntity> findByGuestUuid(String guestTempId);
+	Optional<GuestJpaEntity> findByGuestUuid(String guestUuid);
 }

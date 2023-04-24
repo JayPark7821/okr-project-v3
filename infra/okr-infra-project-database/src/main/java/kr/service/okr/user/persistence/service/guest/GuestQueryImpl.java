@@ -22,4 +22,9 @@ public class GuestQueryImpl implements GuestQuery {
 	public Optional<Guest> findByEmail(final String email) {
 		return repository.findByEmail(email).map(GuestJpaEntity::toDomain);
 	}
+
+	@Override
+	public Optional<Guest> findByGuestUuid(final String guestUuid) {
+		return repository.findByGuestUuid(guestUuid).map(GuestJpaEntity::toDomain);
+	}
 }
