@@ -12,6 +12,7 @@ import kr.service.oauth.processor.SocialTokenVerifyProcessor;
 import kr.service.okr.api.Response;
 import kr.service.okr.application.user.LoginInfo;
 import kr.service.okr.application.user.UserFacade;
+import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.api.UserApiController;
 import kr.service.okr.user.enums.ProviderType;
@@ -35,5 +36,10 @@ public class UserApiControllerImpl implements UserApiController {
 
 		return Response.successOk(loginInfo.map(Mapper::of)
 			.orElseGet(() -> Mapper.of(userFacade.createGuest(oAuth2UserInfo))));
+	}
+
+	@Override
+	public ResponseEntity<LoginResponse> join(final JoinRequest joinRequestDto) {
+		return null;
 	}
 }

@@ -17,7 +17,15 @@ ALTER TABLE FEEDBACK ALTER COLUMN FEEDBACK_ID RESTART WITH 1;
 TRUNCATE TABLE INITIATIVE;
 ALTER TABLE INITIATIVE ALTER COLUMN INITIATIVE_ID RESTART WITH 1;
 
+TRUNCATE TABLE GUEST;
+ALTER TABLE GUEST ALTER COLUMN guestSeq RESTART WITH 1;
+
+
 SET REFERENTIAL_INTEGRITY TRUE;
+
+insert into guest(guest_seq, guest_uuid, guest_id, guest_name, email, providerType, profileImage)
+values (1, 'guest-ttdxe', 'guestId', 'guestName', 'guest@email', 'GOOGLE', 'profileImage');
+
 
 insert into user_table (user_seq, user_id,username, email, provider_type, job_field, profile_image )values
 ( 1,'testId1', 'testUser1','teamMemberTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),

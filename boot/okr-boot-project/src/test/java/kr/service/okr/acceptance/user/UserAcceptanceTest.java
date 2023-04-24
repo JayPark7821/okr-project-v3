@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.utils.SpringBootTestReady;
 
 @DisplayName("User 도메인 인수 테스트")
@@ -61,5 +62,28 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		//then
 		로그인_실패_검증_구글_가입(응답);
 
+	}
+
+	@Test
+	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
+	void join_after_guest_login() throws Exception {
+		//given
+		var 회원가입_정보 =
+			회원가입_정보_생성(
+				"guestId",
+				"guest@email",
+				"게스트",
+				"WEB_SERVER_DEVELOPER"
+			);
+
+		//when
+		var 응답 = 회원가입_요청(회원가입_정보);
+
+		//then
+		회원가입_요청_성공_검증(응답);
+	}
+
+	private JoinRequest 회원가입_정보_생성(String 게스트_id, String 게스트_email, String 사용자명, String 직무_포지션) {
+		return new JoinRequest(게스트_id, 사용자명, 게스트_email, 직무_포지션);
 	}
 }
