@@ -26,16 +26,7 @@ public class UserFacade {
 
 	public Optional<LoginInfo> getLoginInfoFrom(final OAuth2UserInfo info) {
 		final Optional<User> selectedUser = queryUserUseCase.query(info.email());
-
-		return selectedUser.isEmpty() ?
-			Optional.empty() :
-			Optional.of(
-				new LoginInfo(
-					selectedUser.filter(user -> user.validateProvider(ProviderType.of(info.socialPlatform())))
-						.orElseThrow(
-							() -> new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, info.socialPlatform())),
-					GenerateTokenSetUseCase.command(info.email())));
-
+		return selectedUser.isEmpty() ? Optional.empty() : validateProviderAndGetLoginInfo(info, selectedUser);
 	}
 
 	public LoginInfo createGuest(final OAuth2UserInfo info) {
@@ -52,4 +43,15 @@ public class UserFacade {
 		);
 	}
 
+	private Optional<LoginInfo> validateProviderAndGetLoginInfo(
+		final OAuth2UserInfo info,
+		final Optional<User> selectedUser
+	) {
+		return Optional.of(
+			new LoginInfo(
+				selectedUser.filter(user -> user.validateProvider(ProviderType.of(info.socialPlatform())))
+					.orElseThrow(
+						() -> new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, info.socialPlatform())),
+				GenerateTokenSetUseCase.command(info.email())));
+	}
 }
