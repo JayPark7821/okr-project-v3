@@ -5,6 +5,7 @@ import static kr.service.okr.user.validator.Validator.*;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.user.enums.ProviderType;
+import kr.service.okr.user.guest.domain.Guest;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -55,6 +56,20 @@ public class User {
 		this.profileImage = profileImage;
 		this.providerType = providerType;
 		this.jobField = jobField;
+	}
+
+	public static User joinNewUser(Guest guest, String username, String email, String jobField) {
+		if (!guest.getEmail().equals(email)) {
+			throw new OkrApplicationException(ErrorCode.INVALID_JOIN_INFO);
+		}
+		return new User(
+			guest.getGuestId(),
+			username,
+			guest.getEmail(),
+			guest.getProfileImage(),
+			guest.getProviderType(),
+			JobField.valueOf(jobField)
+		);
 	}
 
 	public boolean validateProvider(ProviderType providerType) {

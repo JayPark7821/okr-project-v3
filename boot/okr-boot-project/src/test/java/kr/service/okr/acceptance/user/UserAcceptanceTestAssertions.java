@@ -43,4 +43,18 @@ public class UserAcceptanceTestAssertions {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 		assertThat(응답.body().asString()).contains(ErrorCode.MISS_MATCH_PROVIDER.getMessage().formatted("GOOGLE"));
 	}
+
+	static void 회원가입_요청_성공_검증(ExtractableResponse<Response> 응답) {
+
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+		JsonPath response = 응답.body().jsonPath();
+		assertThat(response.getString("guestUserId")).isNull();
+		assertThat(response.getString("email")).isNotNull();
+		assertThat(response.getString("name")).isNotNull();
+		assertThat(response.getString("providerType")).isNotNull();
+		assertThat(response.getString("accessToken")).isNotNull();
+		assertThat(response.getString("refreshToken")).isNotNull();
+		assertThat(response.getString("jobFieldDetail")).isNotNull();
+	}
 }

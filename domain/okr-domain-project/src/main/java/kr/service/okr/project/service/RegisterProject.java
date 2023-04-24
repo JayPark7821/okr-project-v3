@@ -19,6 +19,7 @@ public class RegisterProject implements RegisterProjectUseCase {
 	public String registerProject(Command command) {
 
 		final Project project = createProject(command);
+
 		if (command.teamMemberUserSeqs() != null)
 			addTeamMember(command, project);
 

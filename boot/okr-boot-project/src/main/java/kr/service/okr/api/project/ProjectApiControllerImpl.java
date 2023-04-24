@@ -32,7 +32,7 @@ public class ProjectApiControllerImpl implements ProjectApiController {
 		final @AuthenticatedUser AuthenticationInfo authenticationInfo
 	) {
 		return Response.successCreated(
-			projectFacade.registerProject(ProjectMapper.toCommand(request, authenticationInfo.user().getUserSeq()))
+			projectFacade.registerProject(ProjectDtoMapper.toCommand(request, authenticationInfo.user().getUserSeq()))
 		);
 	}
 
@@ -42,7 +42,7 @@ public class ProjectApiControllerImpl implements ProjectApiController {
 		final @AuthenticatedUser AuthenticationInfo authenticationInfo
 	) {
 		return Response.successOk(
-			ProjectMapper.of(projectFacade.getProjectInfoBy(projectToken, authenticationInfo.user().getUserSeq()))
+			ProjectDtoMapper.of(projectFacade.getProjectInfoBy(projectToken, authenticationInfo.user().getUserSeq()))
 		);
 	}
 }
