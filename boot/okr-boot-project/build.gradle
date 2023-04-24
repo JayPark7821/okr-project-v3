@@ -10,8 +10,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
-//
-//    testImplementation 'org.testcontainers:testcontainers:1.17.6'
     // rest-assured
     testImplementation "io.rest-assured:rest-assured"
 

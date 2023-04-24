@@ -1,10 +1,2 @@
 google:
   clientId: test-google-client-id
-
-feign:
-  client:
-    config:
-      default:
-        connectTimeout: 1000
-        readTimeout: 5000
-        loggerLevel: HEADERS

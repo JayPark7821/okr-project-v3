@@ -2,19 +2,20 @@ spring:
   sql:
     init:
       mode: always
-
   cloud:
     discovery:
       enabled: false
-
   profiles:
     include:
       - infra-project-database
       - infra-jwt
       - api-project
+      - infra-oauth
+ 
 eureka:
   client:
     enabled: false
+
 okr:
   user-auth-service:
     url: http://localhost:8080

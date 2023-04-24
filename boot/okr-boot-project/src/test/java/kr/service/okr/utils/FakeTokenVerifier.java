@@ -13,10 +13,10 @@ public class FakeTokenVerifier implements SocialTokenVerifier {
 
 	@Override
 	public OAuth2UserInfo verifyIdToken(String token) {
-		if (token.equals("appleToken")) {
-			return OAuth2UserInfoFixture.AppleUserInfoFixture.build();
-		} else if (token.equals("notMemberIdToken")) {
-			return OAuth2UserInfoFixture.NotMemberInfoFixture.build();
+		1 if (token.equals("memberAppleIdToken")) {
+			return OAuth2UserInfoFixture.MemberAppleInfoFixture.build();
+		} else if (token.equals("notMemberAppleIdToken")) {
+			return OAuth2UserInfoFixture.NotMemberAppleInfoFixture.build();
 		}
 		return OAuth2UserInfoFixture.DiffAppleUserInfoFixture.build();
 

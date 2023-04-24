@@ -17,7 +17,7 @@ public final class OAuth2UserInfoFixture {
 		}
 	}
 
-	public static final class AppleUserInfoFixture {
+	public static final class MemberAppleInfoFixture {
 		public static final String ID = "fakeAppleId";
 		public static final String NAME = "fakeAppleName";
 		public static final String EMAIL = "fakeAppleEmail";
@@ -29,7 +29,7 @@ public final class OAuth2UserInfoFixture {
 		}
 	}
 
-	public static final class NotMemberInfoFixture {
+	public static final class NotMemberAppleInfoFixture {
 		public static final String ID = "notMemberId";
 		public static final String NAME = "notMemberName";
 		public static final String EMAIL = "notMemberEmail@email.com";

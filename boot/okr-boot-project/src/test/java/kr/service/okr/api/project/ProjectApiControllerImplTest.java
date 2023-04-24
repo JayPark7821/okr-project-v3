@@ -18,9 +18,7 @@ import jakarta.persistence.PersistenceContext;
 import kr.service.okr.common.security.core.context.AuthenticationInfo;
 import kr.service.okr.project.api.RegisterProjectRequestDto;
 import kr.service.okr.project.persistence.entity.project.team.TeamMemberJpaEntity;
-import kr.service.okr.user.enums.ProviderType;
-import kr.service.okr.user.user.domain.JobField;
-import kr.service.okr.user.user.domain.User;
+import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.utils.SpringBootTestReady;
 
 class ProjectApiControllerImplTest extends SpringBootTestReady {
@@ -46,17 +44,7 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 
 		final ResponseEntity<String> response = sut.registerProject(
 			new RegisterProjectRequestDto("projectObjective", projectSdt, projectEdt, List.of()),
-			new AuthenticationInfo(
-				User.builder()
-					.userId("testId2")
-					.userSeq(2L)
-					.username("testUser2")
-					.email("projectMasterTest@naver.com")
-					.providerType(ProviderType.GOOGLE)
-					.jobField(JobField.PRODUCER_CP)
-					.profileImage("profile_image_url")
-					.build()
-			)
+			getAuthenticationInfo(2L)
 		);
 
 		assertThat(response.getBody()).containsPattern(
@@ -71,17 +59,7 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 
 		final ResponseEntity<String> response = sut.registerProject(
 			new RegisterProjectRequestDto("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")),
-			new AuthenticationInfo(
-				User.builder()
-					.userId("testId2")
-					.userSeq(2L)
-					.username("testUser2")
-					.email("projectMasterTest@naver.com")
-					.providerType(ProviderType.GOOGLE)
-					.jobField(JobField.PRODUCER_CP)
-					.profileImage("profile_image_url")
-					.build()
-			)
+			getAuthenticationInfo(2L)
 		);
 
 		assertThat(response.getBody()).containsPattern(
@@ -92,7 +70,16 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 				TeamMemberJpaEntity.class)
 			.setParameter("projectToken", response.getBody())
 			.getResultList();
-		
+
 		assertThat(teamMembers.size()).isEqualTo(2);
 	}
+
+	private AuthenticationInfo getAuthenticationInfo(Long userSeq) {
+		return new AuthenticationInfo(em.createQuery("select u from UserJpaEntity u where u.userSeq = :userSeq",
+				UserJpaEntity.class)
+			.setParameter("userSeq", userSeq)
+			.getSingleResult()
+			.toDomain());
+	}
+
 }
