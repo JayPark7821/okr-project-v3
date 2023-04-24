@@ -20,6 +20,7 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 	private static final String 애플 = "APPLE";
 	private static final String 회원가입안된_애플_idToken = "notMemberAppleIdToken";
 	private static final String 회원가입된_애플_idToken = "memberAppleIdToken";
+	private static final String 회원가입된_구글_idToken = "memberGoogleIdToken";
 	String 사용자1_토큰;
 
 	@Autowired
@@ -51,4 +52,14 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		로그인_응답_검증_회원(응답);
 	}
 
+	@Test
+	@DisplayName("가입한 유저 정보와 다른 ProviderType으로 로그인을 호출하면 기대하는 예외를 던진다.")
+	void loginWithSocialIdToken_when_after_join_and_with_another_provider() throws Exception {
+		//when
+		var 응답 = 소셜_idToken으로_로그인_요청(애플, 회원가입된_구글_idToken);
+
+		//then
+		로그인_실패_검증(응답);
+
+	}
 }

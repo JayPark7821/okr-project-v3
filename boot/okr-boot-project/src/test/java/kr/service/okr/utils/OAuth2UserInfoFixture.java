@@ -10,7 +10,7 @@ public final class OAuth2UserInfoFixture {
 		public static final String NAME = "fakeGoogleName";
 		public static final String EMAIL = "fakeGoogleIdEmail";
 		public static final String PIC = "fakeGoogleIdPic";
-		public static final SocialPlatform PROVIDER_TYPE = SocialPlatform.APPLE;
+		public static final SocialPlatform PROVIDER_TYPE = SocialPlatform.GOOGLE;
 
 		public static OAuth2UserInfo build() {
 			return new OAuth2UserInfo(ID, NAME, EMAIL, PIC, PROVIDER_TYPE.name());
