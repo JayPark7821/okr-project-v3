@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kr.service.okr.exception.ErrorCode;
 
 public class UserAcceptanceTestAssertions {
 
@@ -38,8 +39,8 @@ public class UserAcceptanceTestAssertions {
 		assertThat(response.getString("jobFieldDetail")).isNotNull();
 	}
 
-	static void 로그인_실패_검증(ExtractableResponse<Response> 응답) {
+	static void 로그인_실패_검증_구글_가입(ExtractableResponse<Response> 응답) {
 		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-		assertThat(응답.body().asString()).contains("소셜 provider 불일치,");
+		assertThat(응답.body().asString()).contains(ErrorCode.MISS_MATCH_PROVIDER.getMessage().formatted("GOOGLE"));
 	}
 }

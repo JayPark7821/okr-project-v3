@@ -59,7 +59,7 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		var 응답 = 소셜_idToken으로_로그인_요청(애플, 회원가입된_구글_idToken);
 
 		//then
-		로그인_실패_검증(응답);
+		로그인_실패_검증_구글_가입(응답);
 
 	}
 }
