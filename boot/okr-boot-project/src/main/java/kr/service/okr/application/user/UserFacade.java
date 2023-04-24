@@ -8,6 +8,7 @@ import kr.service.jwt.JwtTokenRepository;
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.auth.usecase.GenerateTokenSetUseCase;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.guest.usecase.JoinNewGuestUseCase;
@@ -53,5 +54,9 @@ public class UserFacade {
 					.orElseThrow(
 						() -> new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, info.socialPlatform())),
 				GenerateTokenSetUseCase.command(info.email())));
+	}
+
+	public LoginInfo join(final JoinRequest joinRequestDto) {
+		throw new UnsupportedOperationException();
 	}
 }

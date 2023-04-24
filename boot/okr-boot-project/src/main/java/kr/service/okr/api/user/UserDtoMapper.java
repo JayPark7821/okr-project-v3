@@ -3,7 +3,7 @@ package kr.service.okr.api.user;
 import kr.service.okr.application.user.LoginInfo;
 import kr.service.okr.user.api.LoginResponse;
 
-public class Mapper {
+public class UserDtoMapper {
 
 	public static LoginResponse of(LoginInfo loginInfo) {
 		return new LoginResponse(

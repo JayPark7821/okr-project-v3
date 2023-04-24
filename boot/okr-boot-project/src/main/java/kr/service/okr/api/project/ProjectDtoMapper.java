@@ -10,7 +10,7 @@ import kr.service.okr.project.api.KeyResultResponse;
 import kr.service.okr.project.api.ProjectInfoResponse;
 import kr.service.okr.project.api.RegisterProjectRequestDto;
 
-public class ProjectMapper {
+public class ProjectDtoMapper {
 
 	static RegisterProjectCommand toCommand(RegisterProjectRequestDto request, Long userSeq) {
 		return new RegisterProjectCommand(
@@ -29,7 +29,7 @@ public class ProjectMapper {
 			projectInfo.startDate(),
 			projectInfo.endDate(),
 			projectInfo.projectType(),
-			projectInfo.keyResultInfos().stream().map(ProjectMapper::of).toList(),
+			projectInfo.keyResultInfos().stream().map(ProjectDtoMapper::of).toList(),
 			projectInfo.teamMembersCount(),
 			projectInfo.roleType()
 		);

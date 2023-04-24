@@ -34,12 +34,15 @@ public class UserApiControllerImpl implements UserApiController {
 			socialTokenVerifyProcessor.verifyIdToken(ProviderType.of(provider).name(), idToken);
 		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(oAuth2UserInfo);
 
-		return Response.successOk(loginInfo.map(Mapper::of)
-			.orElseGet(() -> Mapper.of(userFacade.createGuest(oAuth2UserInfo))));
+		return Response.successOk(loginInfo.map(UserDtoMapper::of)
+			.orElseGet(() -> UserDtoMapper.of(userFacade.createGuest(oAuth2UserInfo))));
 	}
 
 	@Override
+	@PostMapping("/join")
 	public ResponseEntity<LoginResponse> join(final JoinRequest joinRequestDto) {
-		return null;
+		return Response.successCreated(
+			UserDtoMapper.of(userFacade.join(joinRequestDto))
+		);
 	}
 }

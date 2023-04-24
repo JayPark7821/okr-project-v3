@@ -17,6 +17,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.utils.SpringBootTestReady;
@@ -62,7 +63,28 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		assertUserLoginResponse(response.getBody());
 	}
 
-	private static void assertGuestLoginResponse(LoginResponse body) {
+	@Test
+	@DisplayName("게스트 정보가 있을 때 join()을 호출하면 기대하는 응답을 반환한다.")
+	void join_after_guest_login() {
+		JoinRequest joinRequestDto = new JoinRequest("guest-ttdxe", "guest", "guest@email",
+			"WEB_FRONT_END_DEVELOPER");
+
+		ResponseEntity<LoginResponse> response = sut.join(joinRequestDto);
+
+		assertUserJoinResponse(response);
+
+	}
+
+	private void assertUserJoinResponse(final ResponseEntity<LoginResponse> response) {
+		assertThat(response.getBody().guestUserId()).isNull();
+		assertThat(response.getBody().name()).isEqualTo("guest");
+		assertThat(response.getBody().email()).isEqualTo("guest@email");
+		assertThat(response.getBody().providerType()).isEqualTo(ProviderType.GOOGLE);
+		assertThat(response.getBody().accessToken()).isNotNull();
+		assertThat(response.getBody().refreshToken()).isNotNull();
+	}
+
+	private void assertGuestLoginResponse(LoginResponse body) {
 		assertThat(body.guestUserId()).containsPattern(
 			Pattern.compile("guest-[a-zA-Z0-9]{14}")
 		);
@@ -73,7 +95,7 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		assertThat(body.refreshToken()).isNull();
 	}
 
-	private static void assertUserLoginResponse(LoginResponse body) {
+	private void assertUserLoginResponse(LoginResponse body) {
 		assertThat(body.guestUserId()).isNull();
 		assertThat(body.name()).isEqualTo(MemberAppleInfoFixture.NAME);
 		assertThat(body.email()).isEqualTo(MemberAppleInfoFixture.EMAIL);
