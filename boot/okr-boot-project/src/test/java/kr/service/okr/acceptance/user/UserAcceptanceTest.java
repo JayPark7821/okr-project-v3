@@ -3,6 +3,8 @@ package kr.service.okr.acceptance.user;
 import static kr.service.okr.acceptance.user.UserAcceptanceTestAssertions.*;
 import static kr.service.okr.acceptance.user.UserAcceptanceTestSteps.*;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +18,9 @@ import kr.service.okr.utils.SpringBootTestReady;
 public class UserAcceptanceTest extends SpringBootTestReady {
 
 	private static final String 애플 = "APPLE";
-	private static final String 회원가입안된_애플_idToken = "notMemberIdToken";
-
+	private static final String 회원가입안된_애플_idToken = "notMemberAppleIdToken";
+	private static final String 회원가입된_애플_idToken = "memberAppleIdToken";
+	private static final String 회원가입된_구글_idToken = "memberGoogleIdToken";
 	String 사용자1_토큰;
 
 	@Autowired
@@ -26,13 +29,12 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 	@BeforeEach
 	void beforeEach() {
 		super.setUp();
-
+		dataLoader.loadData(List.of("/project-test-data.sql"));
 	}
 
 	@Test
 	@DisplayName("가입한 유저 정보가 없을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(Guest without token)을 반환한다.")
 	void login_With_IdToken_when_before_join() throws Exception {
-
 		//when
 		var 응답 = 소셜_idToken으로_로그인_요청(애플, 회원가입안된_애플_idToken);
 
@@ -40,4 +42,24 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		로그인_응답_검증_게스트(응답);
 	}
 
+	@Test
+	@DisplayName("가입한 유저 정보가 있을 때  idToken을 통해 로그인을 시도하면 기대하는 응답(with token)을 반환한다.")
+	void login_With_IdToken_when_after_join() throws Exception {
+		//when
+		var 응답 = 소셜_idToken으로_로그인_요청(애플, 회원가입된_애플_idToken);
+
+		//then
+		로그인_응답_검증_회원(응답);
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보와 다른 ProviderType으로 로그인을 호출하면 기대하는 예외를 던진다.")
+	void loginWithSocialIdToken_when_after_join_and_with_another_provider() throws Exception {
+		//when
+		var 응답 = 소셜_idToken으로_로그인_요청(애플, 회원가입된_구글_idToken);
+
+		//then
+		로그인_실패_검증_구글_가입(응답);
+
+	}
 }

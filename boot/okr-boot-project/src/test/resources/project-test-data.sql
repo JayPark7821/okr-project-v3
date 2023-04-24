@@ -38,7 +38,11 @@ insert into user_table (user_seq, user_id,username, email, provider_type, job_fi
 ( 9,'testId9', 'testUser9','user7@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
 ( 10,'testId10', 'testUser10','user2222@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
 ( 18,'testId11', 'testUser10','guest@email.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 19,'effefee23', 'Unknown','guest@unknown.com',null,null,null )
+( 19,'effefee23', 'Unknown','guest@unknown.com',null,null,null ),
+( 20,'appleId', 'appleUser','apple@apple.com','APPLE','WEB_SERVER_DEVELOPER','profile_image_url' ),
+( 21,'fakeAppleId', 'fakeAppleName','fakeAppleEmail','APPLE','WEB_SERVER_DEVELOPER','fakeApplePic' ),
+( 22,'fakeGoogleId', 'fakeGoogleName','fakeGoogleIdEmail','GOOGLE','WEB_SERVER_DEVELOPER','fakeGoogleIdPic' )
+
 ;
 
 insert into project

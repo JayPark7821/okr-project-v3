@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
 	INTERNAL_SERVER_ERROR(HttpStatus.BAD_REQUEST, "서버에 오류가 발생했습니다."),
-	MISS_MATCH_PROVIDER(HttpStatus.BAD_REQUEST, "{} (으)로 가입한 계정이 있습니다."),
+	MISS_MATCH_PROVIDER(HttpStatus.BAD_REQUEST, "%s (으)로 가입한 계정이 있습니다."),
 	PROVIDER_TYPE_IS_REQUIRED(HttpStatus.BAD_REQUEST, "소셜플랫폼 타입은 필수 값 입니다."),
 	EMAIL_IS_REQUIRED(HttpStatus.BAD_REQUEST, "이메일이 누락되었습니다."),
 	USERNAME_IS_REQUIRED(HttpStatus.BAD_REQUEST, "사용자명(20자 이하)은 필수 값 입니다."),

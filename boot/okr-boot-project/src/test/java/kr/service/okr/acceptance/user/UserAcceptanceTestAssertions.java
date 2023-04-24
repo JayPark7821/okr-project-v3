@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kr.service.okr.exception.ErrorCode;
 
 public class UserAcceptanceTestAssertions {
 
@@ -24,4 +25,22 @@ public class UserAcceptanceTestAssertions {
 		assertThat(response.getString("jobFieldDetail")).isNull();
 	}
 
+	static void 로그인_응답_검증_회원(ExtractableResponse<Response> 응답) {
+
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+		JsonPath response = 응답.body().jsonPath();
+		assertThat(response.getString("guestUserId")).isNull();
+		assertThat(response.getString("email")).isNotNull();
+		assertThat(response.getString("name")).isNotNull();
+		assertThat(response.getString("providerType")).isNotNull();
+		assertThat(response.getString("accessToken")).isNotNull();
+		assertThat(response.getString("refreshToken")).isNotNull();
+		assertThat(response.getString("jobFieldDetail")).isNotNull();
+	}
+
+	static void 로그인_실패_검증_구글_가입(ExtractableResponse<Response> 응답) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(응답.body().asString()).contains(ErrorCode.MISS_MATCH_PROVIDER.getMessage().formatted("GOOGLE"));
+	}
 }

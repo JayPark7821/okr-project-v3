@@ -57,10 +57,11 @@ public class User {
 		this.jobField = jobField;
 	}
 
-	public void validateProvider(ProviderType providerType) {
+	public boolean validateProvider(ProviderType providerType) {
 		if (this.providerType != providerType) {
 			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, this.providerType.name());
 		}
+		return true;
 	}
 
 }
