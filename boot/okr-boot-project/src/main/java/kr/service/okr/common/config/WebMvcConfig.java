@@ -39,6 +39,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				new AuthenticationInterceptor(queryAuthenticationUseCase, queryUserUseCase)
 			);
 
-		return interceptor.includeNotRequireAuthPath("/api/*/user/login/**", HttpMethod.POST);
+		return interceptor.includeNotRequireAuthPath("/api/*/user/login/**", HttpMethod.POST)
+			.includeNotRequireAuthPath("/api/*/user/join/**", HttpMethod.POST);
 	}
 }

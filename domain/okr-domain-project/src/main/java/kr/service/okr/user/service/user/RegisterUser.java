@@ -28,9 +28,13 @@ public class RegisterUser implements RegisterUserUseCase {
 	public LoginInfo command(final Command command) {
 		return new LoginInfo(
 			userCommand.save(createUser(command)),
-			authenticationRepository.generateAccessToken(command.email()),
+			getAccessToken(command),
 			getRefreshToken(command)
 		);
+	}
+
+	private String getAccessToken(final Command command) {
+		return authenticationRepository.generateAccessToken(command.email());
 	}
 
 	private String getRefreshToken(final Command command) {

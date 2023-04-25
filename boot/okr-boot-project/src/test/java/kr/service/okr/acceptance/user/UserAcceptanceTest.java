@@ -70,7 +70,7 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		//given
 		var 회원가입_정보 =
 			회원가입_정보_생성(
-				"guestId",
+				"guest-ttdxe",
 				"guest@email",
 				"게스트",
 				"WEB_SERVER_DEVELOPER"
