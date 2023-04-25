@@ -35,7 +35,7 @@ public class UserApiControllerImpl implements UserApiController {
 		Optional<LoginInfo> loginInfo = userFacade.getLoginInfoFrom(oAuth2UserInfo);
 
 		return Response.successOk(loginInfo.map(UserDtoMapper::of)
-			.orElseGet(() -> UserDtoMapper.of(userFacade.createGuest(oAuth2UserInfo))));
+			.orElseGet(() -> UserDtoMapper.of(userFacade.registerGuest(oAuth2UserInfo))));
 	}
 
 	@Override
