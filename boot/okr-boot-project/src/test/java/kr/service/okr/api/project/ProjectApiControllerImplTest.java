@@ -44,7 +44,7 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 
 		final ResponseEntity<String> response = sut.registerProject(
 			new RegisterProjectRequestDto("projectObjective", projectSdt, projectEdt, List.of()),
-			getAuthenticationInfo(2L)
+			getAuthenticationInfo(112L)
 		);
 
 		assertThat(response.getBody()).containsPattern(
@@ -59,7 +59,7 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 
 		final ResponseEntity<String> response = sut.registerProject(
 			new RegisterProjectRequestDto("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")),
-			getAuthenticationInfo(2L)
+			getAuthenticationInfo(112L)
 		);
 
 		assertThat(response.getBody()).containsPattern(
