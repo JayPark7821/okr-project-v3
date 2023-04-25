@@ -1,10 +1,10 @@
 package kr.service.okr.user.usecase.guest;
 
-import kr.service.okr.user.domain.Guest;
 import kr.service.okr.user.enums.ProviderType;
+import kr.service.okr.user.usecase.user.LoginInfo;
 
-public interface JoinNewGuestUseCase {
-	Guest command(Command command);
+public interface RegisterGuestUseCase {
+	LoginInfo command(Command command);
 
 	record Command(
 		String id,
