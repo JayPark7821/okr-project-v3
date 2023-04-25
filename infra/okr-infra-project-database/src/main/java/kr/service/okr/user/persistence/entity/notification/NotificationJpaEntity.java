@@ -13,7 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import kr.service.okr.config.BaseEntity;
-import kr.service.okr.user.notification.NotificationType;
+import kr.service.okr.user.enums.NotificationType;
 import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.util.TokenGenerator;
 import lombok.AccessLevel;

@@ -24,32 +24,32 @@ ALTER TABLE GUEST ALTER COLUMN GUEST_SEQ RESTART WITH 1;
 SET REFERENTIAL_INTEGRITY TRUE;
 
 insert into guest(guest_seq, guest_uuid, guest_id, guest_name, email, provider_type, profile_image)
-values (1, 'guest-ttdxe', 'guestId', 'guestName', 'guest@email', 'GOOGLE', 'profileImage');
+values (99, 'guest-ttdxe', 'guestId', 'guestName', 'guest@email', 'GOOGLE', 'profileImage');
 
 
-insert into user_table (user_seq, user_id,username, email, provider_type, job_field, profile_image )values
-( 1,'testId1', 'testUser1','teamMemberTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 2,'testId2', 'testUser2','projectMasterTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-(11,'testId11', 'testUser2','keyResultTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-(12,'testId12', 'testUser2','initiativeTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-(13,'testId13', 'testUser2','projectMasterRetrieveTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-(14,'testId14', 'testUser2','projectCalendarTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-(15,'testId15', 'testUser2','initiativeRetrieveTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-(16,'testId16', 'testUser2','notificationTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-(17,'testId17', 'testUser2','feedbackTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 3,'testId3', 'testUser3','user1@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 4,'testId4', 'testUser4','user2@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 5,'testId5', 'testUser5','user3@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 6,'testId6', 'testUser6','user4@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 7,'testId7', 'testUser7','user5@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 8,'testId8', 'testUser8','user6@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 9,'testId9', 'testUser9','user7@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 10,'testId10', 'testUser10','user2222@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 18,'testId11', 'testUser10','guest@email.com','GOOGLE','PRODUCER_CP','profile_image_url' ),
-( 19,'effefee23', 'Unknown','guest@unknown.com',null,null,null ),
-( 20,'appleId', 'appleUser','apple@apple.com','APPLE','WEB_SERVER_DEVELOPER','profile_image_url' ),
-( 21,'fakeAppleId', 'fakeAppleName','fakeAppleEmail','APPLE','WEB_SERVER_DEVELOPER','fakeApplePic' ),
-( 22,'fakeGoogleId', 'fakeGoogleName','fakeGoogleIdEmail','GOOGLE','WEB_SERVER_DEVELOPER','fakeGoogleIdPic' )
+insert into user_table (user_seq, user_id,username, email, provider_type, job_field, profile_image, deleted )values
+( 111,'testId1', 'testUser1','teamMemberTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 112,'testId2', 'testUser2','projectMasterTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 113,'testId3', 'testUser3','user1@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 114,'testId4', 'testUser4','user2@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 115,'testId5', 'testUser5','user3@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 116,'testId6', 'testUser6','user4@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 117,'testId7', 'testUser7','user5@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 118,'testId8', 'testUser8','user6@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 119,'testId9', 'testUser9','user7@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 10,'testId10', 'testUser10','user2222@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+(11,'testId11', 'testUser2','keyResultTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+(12,'testId12', 'testUser2','initiativeTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+(13,'testId13', 'testUser2','projectMasterRetrieveTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+(14,'testId14', 'testUser2','projectCalendarTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+(15,'testId15', 'testUser2','initiativeRetrieveTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+(16,'testId16', 'testUser2','notificationTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+(17,'testId17', 'testUser2','feedbackTest@naver.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 18,'testId11', 'testUser10','guest@email.com','GOOGLE','PRODUCER_CP','profile_image_url' ,false),
+( 19,'effefee23', 'Unknown','guest@unknown.com',null,null,null ,false),
+( 20,'appleId', 'appleUser','apple@apple.com','APPLE','WEB_SERVER_DEVELOPER','profile_image_url' ,false),
+( 21,'fakeAppleId', 'fakeAppleName','fakeAppleEmail','APPLE','WEB_SERVER_DEVELOPER','fakeApplePic' ,false),
+( 22,'fakeGoogleId', 'fakeGoogleName','fakeGoogleIdEmail','GOOGLE','WEB_SERVER_DEVELOPER','fakeGoogleIdPic',false )
 
 ;
 

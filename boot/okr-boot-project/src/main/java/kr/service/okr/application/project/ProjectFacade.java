@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import kr.service.okr.project.usecase.QueryProjectUseCase;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
-import kr.service.okr.user.user.usecase.QueryUserUseCase;
+import kr.service.okr.user.usecase.user.QueryUserUseCase;
 import lombok.RequiredArgsConstructor;
 
 @Component

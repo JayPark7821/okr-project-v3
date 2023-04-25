@@ -6,51 +6,33 @@ import org.springframework.stereotype.Service;
 
 import kr.service.jwt.JwtTokenRepository;
 import kr.service.oauth.platform.OAuth2UserInfo;
-import kr.service.okr.exception.ErrorCode;
-import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.user.api.JoinRequest;
-import kr.service.okr.user.auth.usecase.GenerateTokenSetUseCase;
 import kr.service.okr.user.enums.ProviderType;
-import kr.service.okr.user.guest.usecase.JoinNewGuestUseCase;
-import kr.service.okr.user.user.domain.User;
-import kr.service.okr.user.user.usecase.QueryUserUseCase;
-import kr.service.okr.user.user.usecase.RegisterUserUseCase;
+import kr.service.okr.user.usecase.guest.RegisterGuestUseCase;
+import kr.service.okr.user.usecase.user.LoginInfo;
+import kr.service.okr.user.usecase.user.ProcessLoginUseCase;
+import kr.service.okr.user.usecase.user.RegisterUserUseCase;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class UserFacade {
 
-	private final QueryUserUseCase queryUserUseCase;
-	private final GenerateTokenSetUseCase GenerateTokenSetUseCase;
+	private final ProcessLoginUseCase processLoginUseCase;
 	private final RegisterUserUseCase registerUserUseCase;
-	private final JoinNewGuestUseCase joinNewGuestUseCase;
+	private final RegisterGuestUseCase registerGuestUseCase;
 	private final JwtTokenRepository jwtService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(final OAuth2UserInfo info) {
-		final Optional<User> selectedUser = queryUserUseCase.query(info.email());
-		return selectedUser.isEmpty() ? Optional.empty() : validateProviderAndGetLoginInfo(info, selectedUser);
+		return processLoginUseCase.command(new ProcessLoginUseCase.Command(info.email(), info.socialPlatform()));
 	}
 
-	public LoginInfo createGuest(final OAuth2UserInfo info) {
-		return new LoginInfo(joinNewGuestUseCase.command(toCommand(info)));
+	public LoginInfo registerGuest(final OAuth2UserInfo info) {
+		return registerGuestUseCase.command(toCommand(info));
 	}
 
-	private Optional<LoginInfo> validateProviderAndGetLoginInfo(
-		final OAuth2UserInfo info,
-		final Optional<User> selectedUser
-	) {
-		return Optional.of(
-			new LoginInfo(
-				selectedUser.filter(user -> user.validateProvider(ProviderType.of(info.socialPlatform())))
-					.orElseThrow(
-						() -> new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, info.socialPlatform())),
-				GenerateTokenSetUseCase.command(info.email())));
-	}
-
-	public LoginInfo join(final JoinRequest joinRequest) {
-		User user = registerUserUseCase.command(toCommand(joinRequest));
-		return new LoginInfo(user, GenerateTokenSetUseCase.command(user.getEmail()));
+	public LoginInfo registerUser(final JoinRequest joinRequest) {
+		return registerUserUseCase.command(toCommand(joinRequest));
 	}
 
 	private RegisterUserUseCase.Command toCommand(final JoinRequest joinRequest) {
@@ -62,8 +44,8 @@ public class UserFacade {
 		);
 	}
 
-	private JoinNewGuestUseCase.Command toCommand(final OAuth2UserInfo info) {
-		return new JoinNewGuestUseCase.Command(
+	private RegisterGuestUseCase.Command toCommand(final OAuth2UserInfo info) {
+		return new RegisterGuestUseCase.Command(
 			info.id(),
 			info.username(),
 			info.email(),

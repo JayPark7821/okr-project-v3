@@ -13,7 +13,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import kr.service.okr.user.auth.repository.AuthenticationRepository;
+import kr.service.okr.user.repository.token.AuthenticationRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service

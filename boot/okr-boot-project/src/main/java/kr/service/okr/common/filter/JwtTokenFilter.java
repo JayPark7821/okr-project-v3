@@ -16,9 +16,9 @@
 // import jakarta.servlet.ServletException;
 // import jakarta.servlet.http.HttpServletRequest;
 // import jakarta.servlet.http.HttpServletResponse;
-// import kr.service.okr.user.auth.usecase.QueryAuthenticationUseCase;
-// import kr.service.okr.user.user.domain.User;
-// import kr.service.okr.user.user.usecase.QueryUserUseCase;
+// import kr.service.okr.user.usecase.token.QueryAuthenticationUseCase;
+// import kr.service.okr.user.domain.User;
+// import kr.service.okr.user.usecase.user.QueryUserUseCase;
 // import kr.service.okr.util.HeaderUtil;
 // import lombok.RequiredArgsConstructor;
 // import lombok.extern.slf4j.Slf4j;

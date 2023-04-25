@@ -6,10 +6,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.service.okr.user.domain.User;
 import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.user.persistence.repository.user.UserJpaRepository;
-import kr.service.okr.user.user.domain.User;
-import kr.service.okr.user.user.repository.UserQuery;
+import kr.service.okr.user.repository.user.UserQuery;
 import lombok.RequiredArgsConstructor;
 
 @Service
