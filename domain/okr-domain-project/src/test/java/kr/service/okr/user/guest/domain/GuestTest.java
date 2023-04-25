@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.domain.Guest;
 import kr.service.okr.user.enums.ProviderType;
 
 class GuestTest {

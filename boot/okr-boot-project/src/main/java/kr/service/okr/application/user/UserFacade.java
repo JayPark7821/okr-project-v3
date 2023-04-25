@@ -9,12 +9,12 @@ import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.user.api.JoinRequest;
-import kr.service.okr.user.auth.usecase.GenerateTokenSetUseCase;
+import kr.service.okr.user.domain.User;
 import kr.service.okr.user.enums.ProviderType;
-import kr.service.okr.user.guest.usecase.JoinNewGuestUseCase;
-import kr.service.okr.user.user.domain.User;
-import kr.service.okr.user.user.usecase.QueryUserUseCase;
-import kr.service.okr.user.user.usecase.RegisterUserUseCase;
+import kr.service.okr.user.usecase.guest.JoinNewGuestUseCase;
+import kr.service.okr.user.usecase.token.GenerateTokenSetUseCase;
+import kr.service.okr.user.usecase.user.QueryUserUseCase;
+import kr.service.okr.user.usecase.user.RegisterUserUseCase;
 import lombok.RequiredArgsConstructor;
 
 @Service

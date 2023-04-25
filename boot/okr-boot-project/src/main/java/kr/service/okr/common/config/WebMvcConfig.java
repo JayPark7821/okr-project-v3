@@ -12,8 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import kr.service.okr.common.security.AuthenticationArgumentResolver;
 import kr.service.okr.common.security.AuthenticationInterceptor;
 import kr.service.okr.common.security.RequestMatcherInterceptor;
-import kr.service.okr.user.auth.usecase.QueryAuthenticationUseCase;
-import kr.service.okr.user.user.usecase.QueryUserUseCase;
+import kr.service.okr.user.usecase.token.QueryAuthenticationUseCase;
+import kr.service.okr.user.usecase.user.QueryUserUseCase;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

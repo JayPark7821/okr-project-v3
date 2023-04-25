@@ -4,8 +4,8 @@ import java.util.Objects;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.enums.JobField;
 import kr.service.okr.user.enums.ProviderType;
-import kr.service.okr.user.user.domain.JobField;
 
 public class Validator {
 
