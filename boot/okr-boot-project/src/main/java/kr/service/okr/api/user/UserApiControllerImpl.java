@@ -42,7 +42,7 @@ public class UserApiControllerImpl implements UserApiController {
 	@PostMapping("/join")
 	public ResponseEntity<LoginResponse> join(final JoinRequest joinRequestDto) {
 		return Response.successCreated(
-			UserDtoMapper.of(userFacade.join(joinRequestDto))
+			UserDtoMapper.of(userFacade.registerUser(joinRequestDto))
 		);
 	}
 }

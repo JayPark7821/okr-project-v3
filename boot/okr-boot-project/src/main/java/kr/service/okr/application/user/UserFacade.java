@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import kr.service.jwt.JwtTokenRepository;
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.okr.user.api.JoinRequest;
-import kr.service.okr.user.domain.User;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.usecase.guest.RegisterGuestUseCase;
 import kr.service.okr.user.usecase.user.LoginInfo;
@@ -32,9 +31,8 @@ public class UserFacade {
 		return registerGuestUseCase.command(toCommand(info));
 	}
 
-	public LoginInfo join(final JoinRequest joinRequest) {
-		User user = registerUserUseCase.command(toCommand(joinRequest));
-		return new LoginInfo(user, "GenerateTokenSetUseCase.command(user.getEmail())", "");
+	public LoginInfo registerUser(final JoinRequest joinRequest) {
+		return registerUserUseCase.command(toCommand(joinRequest));
 	}
 
 	private RegisterUserUseCase.Command toCommand(final JoinRequest joinRequest) {

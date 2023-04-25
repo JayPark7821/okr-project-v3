@@ -59,7 +59,7 @@ public class User {
 		this.jobField = jobField;
 	}
 
-	public static User joinNewUser(Guest guest, String username, String email, String jobField) {
+	public static User registerUserFrom(Guest guest, String username, String email, String jobField) {
 		if (!guest.getEmail().equals(email)) {
 			throw new OkrApplicationException(ErrorCode.INVALID_JOIN_INFO);
 		}
