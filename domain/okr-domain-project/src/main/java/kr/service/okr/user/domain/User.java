@@ -11,6 +11,7 @@ import lombok.Getter;
 
 @Getter
 public class User {
+
 	private Long userSeq;
 	private String userId;
 	private String username;
@@ -72,11 +73,10 @@ public class User {
 		);
 	}
 
-	public boolean validateProvider(ProviderType providerType) {
+	public void validateProvider(ProviderType providerType) {
 		if (this.providerType != providerType) {
 			throw new OkrApplicationException(ErrorCode.MISS_MATCH_PROVIDER, this.providerType.name());
 		}
-		return true;
 	}
 
 }

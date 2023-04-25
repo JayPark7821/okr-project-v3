@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.oauth.processor.SocialTokenVerifyProcessor;
 import kr.service.okr.api.Response;
-import kr.service.okr.application.user.LoginInfo;
 import kr.service.okr.application.user.UserFacade;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.api.UserApiController;
 import kr.service.okr.user.enums.ProviderType;
+import kr.service.okr.user.usecase.user.LoginInfo;
 import lombok.RequiredArgsConstructor;
 
 @RestController

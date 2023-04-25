@@ -1,7 +1,7 @@
 package kr.service.okr.api.user;
 
-import kr.service.okr.application.user.LoginInfo;
 import kr.service.okr.user.api.LoginResponse;
+import kr.service.okr.user.usecase.user.LoginInfo;
 
 public class UserDtoMapper {
 
