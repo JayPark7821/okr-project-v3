@@ -57,4 +57,15 @@ public class UserAcceptanceTestAssertions {
 		assertThat(response.getString("refreshToken")).isNotNull();
 		assertThat(response.getString("jobFieldDetail")).isNotNull();
 	}
+
+	static void 게스트_정보_없을_때_회원가입_요청_실패_검증(ExtractableResponse<Response> 응답) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(응답.body().asString()).contains(ErrorCode.INVALID_JOIN_INFO.getMessage());
+	}
+
+	static void 이미_가입한_유저_회원가입_요청_실패_검증(ExtractableResponse<Response> 응답) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(응답.body().asString()).contains(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
 }

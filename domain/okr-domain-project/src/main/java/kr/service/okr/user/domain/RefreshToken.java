@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class RefreshToken {
 	private Long refreshTokenSeq;
-	private String userEmail;
+	private final String userEmail;
 	private String refreshToken;
 
 	@Builder
