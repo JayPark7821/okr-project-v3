@@ -1,16 +1,22 @@
 package kr.service.okr.api.user;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.oauth.processor.SocialTokenVerifyProcessor;
 import kr.service.okr.api.Response;
 import kr.service.okr.application.user.UserFacade;
+import kr.service.okr.user.api.JobResponse;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.api.UserApiController;
@@ -28,7 +34,9 @@ public class UserApiControllerImpl implements UserApiController {
 
 	@Override
 	@PostMapping("/login/{provider}/{idToken}")
-	public ResponseEntity<LoginResponse> loginWithIdToken(final String provider, final String idToken) {
+	public ResponseEntity<LoginResponse> loginWithIdToken(
+		@PathVariable("provider") final String provider,
+		@PathVariable("idToken") final String idToken) {
 
 		OAuth2UserInfo oAuth2UserInfo =
 			socialTokenVerifyProcessor.verifyIdToken(ProviderType.of(provider).name(), idToken);
@@ -40,9 +48,25 @@ public class UserApiControllerImpl implements UserApiController {
 
 	@Override
 	@PostMapping("/join")
-	public ResponseEntity<LoginResponse> join(final JoinRequest joinRequestDto) {
+	public ResponseEntity<LoginResponse> join(
+		@RequestBody @Valid final JoinRequest joinRequestDto
+	) {
 		return Response.successCreated(
 			UserDtoMapper.of(userFacade.registerUser(joinRequestDto))
 		);
+	}
+
+	@Override
+	@GetMapping("/job/category")
+	public ResponseEntity<List<JobResponse>> getJobCategory() {
+		return null;
+	}
+
+	@Override
+	@GetMapping("/job/{category}/fields")
+	public ResponseEntity<List<JobResponse>> getJobField(
+		@PathVariable("category") final String category
+	) {
+		return null;
 	}
 }

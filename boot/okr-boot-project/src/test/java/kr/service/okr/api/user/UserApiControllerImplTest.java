@@ -17,6 +17,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.api.JobResponse;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.enums.ProviderType;
@@ -96,6 +97,19 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		assertThatThrownBy(() -> sut.join(joinRequestDto))
 			.isExactlyInstanceOf(OkrApplicationException.class)
 			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+		ResponseEntity<List<JobResponse>> response = sut.getJobCategory();
+		assertThat(response.getBody().size()).isEqualTo(6);
+	}
+
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+		String category = "BACK_END";
+		ResponseEntity<List<JobResponse>> response = sut.getJobField(category);
+		assertThat(response.getBody().size()).isEqualTo(4);
 	}
 
 	private void assertUserJoinResponse(final ResponseEntity<LoginResponse> response) {
