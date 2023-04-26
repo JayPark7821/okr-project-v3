@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.service.okr.user.api.JoinRequest;
+import kr.service.okr.user.enums.JobCategory;
 
 public class UserAcceptanceTestSteps {
 
@@ -39,4 +40,31 @@ public class UserAcceptanceTestSteps {
 			.extract();
 	}
 
+	public static ExtractableResponse<Response> 직업_카테고리_조회_요청() throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/category").
+
+			then()
+			.log().all()
+			.extract();
+	}
+
+	public static ExtractableResponse<Response> 직업_조회_요청(JobCategory 직업_카테고리) throws Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON).
+
+			when()
+			.get(baseUrl + "/job/" + 직업_카테고리.name() + "/fields").
+
+			then()
+			.log().all()
+			.extract();
+	}
 }

@@ -2,12 +2,16 @@ package kr.service.okr.acceptance.user;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import java.util.Arrays;
+
 import org.springframework.http.HttpStatus;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.service.okr.exception.ErrorCode;
+import kr.service.okr.user.api.JobResponse;
+import kr.service.okr.user.enums.JobCategory;
 
 public class UserAcceptanceTestAssertions {
 
@@ -68,4 +72,16 @@ public class UserAcceptanceTestAssertions {
 		assertThat(응답.body().asString()).contains(ErrorCode.ALREADY_JOINED_USER.getMessage());
 	}
 
+	static void 직업_목록_응답_검증(ExtractableResponse<Response> 직업_목록, JobCategory 카테고리) {
+		assertThat(직업_목록.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(직업_목록.body().jsonPath().getList("", JobResponse.class))
+			.isEqualTo(카테고리.getDetailList().stream().map(j -> new JobResponse(j.name(), j.getTitle())).toList());
+	}
+
+	static void 직업_카테고리_목록_응답_검증(ExtractableResponse<Response> 직업_카테고리_목록) {
+		assertThat(직업_카테고리_목록.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(직업_카테고리_목록.body().jsonPath().getList("", JobResponse.class))
+			.isEqualTo(
+				Arrays.stream(JobCategory.values()).map(j -> new JobResponse(j.name(), j.getTitle())).toList());
+	}
 }

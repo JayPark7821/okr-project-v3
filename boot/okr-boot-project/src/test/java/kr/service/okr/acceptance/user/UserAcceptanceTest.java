@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kr.service.okr.user.api.JoinRequest;
+import kr.service.okr.user.enums.JobCategory;
 import kr.service.okr.utils.SpringBootTestReady;
 
 @DisplayName("User 도메인 인수 테스트")
@@ -120,6 +121,29 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 
 		//then
 		이미_가입한_유저_회원가입_요청_실패_검증(응답);
+	}
+
+	@Test
+	@DisplayName("회원 가입시 직업 카테고리 리스트를 조회 한다.")
+	void get_jobCategory_list() throws Exception {
+		//when
+		var 응답 = 직업_카테고리_조회_요청();
+
+		//then
+		직업_카테고리_목록_응답_검증(응답);
+	}
+
+	@Test
+	@DisplayName("회원 가입시 직업 카테고리로 직업 리스트를 조회 한다.")
+	void get_jobField_list_by_jobCategory() throws Exception {
+		//given
+		var 백엔드_카테고리 = JobCategory.BACK_END;
+
+		//when
+		var 응답 = 직업_조회_요청(백엔드_카테고리);
+
+		//then
+		직업_목록_응답_검증(응답, 백엔드_카테고리);
 	}
 
 	private JoinRequest 회원가입_정보_생성(String 게스트_id, String 게스트_email, String 사용자명, String 직무_포지션) {

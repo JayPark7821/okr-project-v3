@@ -75,6 +75,29 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 
 	}
 
+	@Test
+	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_before_guest_login() {
+		JoinRequest joinRequestDto = new JoinRequest("not-registered-guest-id", "guest", "notMember@email.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_again_when_after_join() {
+
+		JoinRequest joinRequestDto = new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "teamMemberTest@naver.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
 	private void assertUserJoinResponse(final ResponseEntity<LoginResponse> response) {
 		assertThat(response.getBody().guestUserId()).isNull();
 		assertThat(response.getBody().name()).isEqualTo("guest");
