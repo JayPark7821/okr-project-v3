@@ -11,6 +11,7 @@ import kr.service.okr.user.repository.guest.GuestQuery;
 import kr.service.okr.user.repository.token.AuthenticationRepository;
 import kr.service.okr.user.repository.token.RefreshTokenCommand;
 import kr.service.okr.user.repository.user.UserCommand;
+import kr.service.okr.user.repository.user.UserQuery;
 import kr.service.okr.user.usecase.user.LoginInfo;
 import kr.service.okr.user.usecase.user.RegisterUserUseCase;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class RegisterUser implements RegisterUserUseCase {
 
 	private final GuestQuery guestQuery;
+	private final UserQuery userQuery;
 	private final UserCommand userCommand;
 	private final RefreshTokenCommand refreshTokenCommand;
 	private final AuthenticationRepository authenticationRepository;
@@ -47,12 +49,19 @@ public class RegisterUser implements RegisterUserUseCase {
 	}
 
 	private User createUser(final Command command) {
+		validateWhetherUseAlreadyJoinedOrNot(command);
 		return User.registerUserFrom(
 			queryGuestInfoFrom(command),
 			command.username(),
 			command.email(),
 			command.jobField()
 		);
+	}
+
+	private void validateWhetherUseAlreadyJoinedOrNot(final Command command) {
+		userQuery.findByEmail(command.email()).ifPresent(user -> {
+			throw new OkrApplicationException(ErrorCode.ALREADY_JOINED_USER);
+		});
 	}
 
 	private Guest queryGuestInfoFrom(final Command command) {
