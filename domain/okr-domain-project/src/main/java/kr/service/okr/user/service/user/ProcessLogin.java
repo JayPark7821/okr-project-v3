@@ -28,7 +28,6 @@ public class ProcessLogin implements ProcessLoginUseCase {
 	public Optional<LoginInfo> command(final Command command) {
 		return userQuery.findByEmail(command.email())
 			.flatMap(value -> processLogin(command.providerType(), value));
-
 	}
 
 	private Optional<LoginInfo> processLogin(

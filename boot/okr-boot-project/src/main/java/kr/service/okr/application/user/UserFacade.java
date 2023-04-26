@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import kr.service.jwt.JwtTokenRepository;
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.enums.ProviderType;
@@ -21,7 +20,6 @@ public class UserFacade {
 	private final ProcessLoginUseCase processLoginUseCase;
 	private final RegisterUserUseCase registerUserUseCase;
 	private final RegisterGuestUseCase registerGuestUseCase;
-	private final JwtTokenRepository jwtService;
 
 	public Optional<LoginInfo> getLoginInfoFrom(final OAuth2UserInfo info) {
 		return processLoginUseCase.command(new ProcessLoginUseCase.Command(info.email(), info.socialPlatform()));

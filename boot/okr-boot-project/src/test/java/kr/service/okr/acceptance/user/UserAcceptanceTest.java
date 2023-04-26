@@ -83,6 +83,45 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 		회원가입_요청_성공_검증(응답);
 	}
 
+	@Test
+	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_before_guest_login() {
+		//given
+		var 회원가입_정보 =
+			회원가입_정보_생성(
+				"존재하지 않는 게스트_id",
+				"존재하지않는게스트email@email.com",
+				"없는 게스트",
+				"WEB_SERVER_DEVELOPER"
+			);
+
+		//when
+		var 응답 = 회원가입_요청(회원가입_정보);
+
+		//then
+		게스트_정보_없을_때_회원가입_요청_실패_검증(응답);
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보가 있을 때 가입한 유저 정보로 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_again_when_after_join() throws Exception {
+		//given
+
+		var 회원가입_정보 =
+			회원가입_정보_생성(
+				"testId1",
+				"teamMemberTest@naver.com",
+				"testUser1",
+				"PRODUCER_CP"
+			);
+
+		//when
+		var 응답 = 회원가입_요청(회원가입_정보);
+
+		//then
+		이미_가입한_유저_회원가입_요청_실패_검증(응답);
+	}
+
 	private JoinRequest 회원가입_정보_생성(String 게스트_id, String 게스트_email, String 사용자명, String 직무_포지션) {
 		return new JoinRequest(게스트_id, 사용자명, 게스트_email, 직무_포지션);
 	}
