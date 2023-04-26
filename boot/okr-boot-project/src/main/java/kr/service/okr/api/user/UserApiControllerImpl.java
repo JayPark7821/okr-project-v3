@@ -59,7 +59,10 @@ public class UserApiControllerImpl implements UserApiController {
 	@Override
 	@GetMapping("/job/category")
 	public ResponseEntity<List<JobResponse>> getJobCategory() {
-		return null;
+		return Response.successOk(
+			userFacade.getJobCategory().stream()
+				.map(UserDtoMapper::of).toList()
+		);
 	}
 
 	@Override
