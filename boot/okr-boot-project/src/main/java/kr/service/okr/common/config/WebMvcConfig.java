@@ -40,6 +40,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 			);
 
 		return interceptor.includeNotRequireAuthPath("/api/*/user/login/**", HttpMethod.POST)
-			.includeNotRequireAuthPath("/api/*/user/join/**", HttpMethod.POST);
+			.includeNotRequireAuthPath("/api/*/user/join/**", HttpMethod.POST)
+			.includeNotRequireAuthPath("/api/*/user/job/**", HttpMethod.GET);
+
 	}
 }
