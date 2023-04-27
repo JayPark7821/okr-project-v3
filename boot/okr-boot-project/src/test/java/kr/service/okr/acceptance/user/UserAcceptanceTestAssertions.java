@@ -11,6 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.user.api.JobResponse;
+import kr.service.okr.user.api.TokenResponse;
 import kr.service.okr.user.enums.JobCategory;
 
 public class UserAcceptanceTestAssertions {
@@ -83,5 +84,21 @@ public class UserAcceptanceTestAssertions {
 		assertThat(직업_카테고리_목록.body().jsonPath().getList("", JobResponse.class))
 			.isEqualTo(
 				Arrays.stream(JobCategory.values()).map(j -> new JobResponse(j.name(), j.getTitle())).toList());
+	}
+
+	static void 토큰_응답_검증(ExtractableResponse<Response> 응답, String refreshToken) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		TokenResponse response = 응답.body().jsonPath().getObject("", TokenResponse.class);
+		assertThat(response.refreshToken()).isEqualTo(refreshToken);
+		assertThat(response.accessToken()).isNotNull();
+
+	}
+
+	static void 토큰_응답_검증_새로운_refreshToken(ExtractableResponse<Response> 응답, String refreshToken) {
+		assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+		TokenResponse response = 응답.body().jsonPath().getObject("", TokenResponse.class);
+		assertThat(response.refreshToken()).isNotEqualTo(refreshToken);
+		assertThat(response.accessToken()).isNotNull();
+
 	}
 }

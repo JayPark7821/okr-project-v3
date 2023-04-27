@@ -3,6 +3,8 @@ package kr.service.okr.acceptance.user;
 import static kr.service.okr.acceptance.user.UserAcceptanceTestAssertions.*;
 import static kr.service.okr.acceptance.user.UserAcceptanceTestSteps.*;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import kr.service.okr.user.api.JoinRequest;
+import kr.service.okr.user.domain.AuthenticationProvider;
+import kr.service.okr.user.domain.RefreshToken;
 import kr.service.okr.user.enums.JobCategory;
 import kr.service.okr.utils.SpringBootTestReady;
 
@@ -23,7 +27,8 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 	private static final String 회원가입안된_애플_idToken = "notMemberAppleIdToken";
 	private static final String 회원가입된_애플_idToken = "memberAppleIdToken";
 	private static final String 회원가입된_구글_idToken = "memberGoogleIdToken";
-	String 사용자1_토큰;
+	private String 유효기간이_임계값_이상_남은_토큰;
+	private String 유효기간이_임계값_미만으로_남은_토큰;
 
 	@Autowired
 	DataSource dataSource;
@@ -32,6 +37,27 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 	void beforeEach() {
 		super.setUp();
 		dataLoader.loadData(List.of("/project-test-data.sql"));
+		final var 유효기간_임계값_이상_토큰_유저 = "teamMemberTest@naver.com";
+		final var 유효기간_임계값_이하_토큰_유저 = "projectMasterTest@naver.com";
+
+		유효기간이_임계값_이상_남은_토큰 = RefreshToken.generateNewRefreshToken(유효기간_임계값_이상_토큰_유저).getRefreshToken();
+		유효기간이_임계값_미만으로_남은_토큰 = AuthenticationProvider.generateAccessToken(유효기간_임계값_이하_토큰_유저);
+
+		try (Connection conn = dataSource.getConnection()) {
+			String sql = "insert into refresh_token (user_email, refresh_token) "
+				+ "values (?, ?) ,"
+				+ "(?, ? )";
+
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, 유효기간_임계값_이상_토큰_유저);
+			statement.setString(2, 유효기간이_임계값_이상_남은_토큰);
+			statement.setString(3, 유효기간_임계값_이하_토큰_유저);
+			statement.setString(4, 유효기간이_임계값_미만으로_남은_토큰);
+			statement.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Test
@@ -144,6 +170,24 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 
 		//then
 		직업_목록_응답_검증(응답, 백엔드_카테고리);
+	}
+
+	@Test
+	@DisplayName("AccessToken 만료시 RefreshToken으로 새로운 AccessToken을 요청하면 기대하는 응답을 반환한다.")
+	void request_new_accecssToken_with_refreshToken() throws Exception {
+		//when
+		var 응답 = 새로운_인증_토큰_발급_요청(유효기간이_임계값_이상_남은_토큰);
+		//then
+		토큰_응답_검증(응답, 유효기간이_임계값_이상_남은_토큰);
+	}
+
+	@Test
+	@DisplayName("토큰이 만료되면 refhreshToken으로 새로운 토큰을 요청하면 기대하는 응답을 반환한다. 리프래쉬 토큰 임계값 이하")
+	void request_new_accecssToken_with_nearly_expired_refreshToken() throws Exception {
+		//when
+		var 응답 = 새로운_인증_토큰_발급_요청(유효기간이_임계값_미만으로_남은_토큰);
+		//then
+		토큰_응답_검증_새로운_refreshToken(응답, 유효기간이_임계값_미만으로_남은_토큰);
 	}
 
 	private JoinRequest 회원가입_정보_생성(String 게스트_id, String 게스트_email, String 사용자명, String 직무_포지션) {

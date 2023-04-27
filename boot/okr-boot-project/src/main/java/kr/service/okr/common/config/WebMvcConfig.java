@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import kr.service.okr.common.security.AuthenticationArgumentResolver;
 import kr.service.okr.common.security.AuthenticationInterceptor;
 import kr.service.okr.common.security.RequestMatcherInterceptor;
-import kr.service.okr.user.usecase.token.QueryAuthenticationUseCase;
 import kr.service.okr.user.usecase.user.QueryUserUseCase;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-	private final QueryAuthenticationUseCase queryAuthenticationUseCase;
 	private final QueryUserUseCase queryUserUseCase;
 
 	@Override
@@ -36,7 +34,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	private HandlerInterceptor authenticationInterceptor() {
 		final RequestMatcherInterceptor interceptor =
 			new RequestMatcherInterceptor(
-				new AuthenticationInterceptor(queryAuthenticationUseCase, queryUserUseCase)
+				new AuthenticationInterceptor(queryUserUseCase)
 			);
 
 		return interceptor.includeNotRequireAuthPath("/api/*/user/login/**", HttpMethod.POST)

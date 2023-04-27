@@ -12,7 +12,6 @@ import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolde
 import kr.service.okr.common.security.core.context.AuthenticationInfo;
 import kr.service.okr.user.domain.AuthenticationProvider;
 import kr.service.okr.user.domain.User;
-import kr.service.okr.user.usecase.token.QueryAuthenticationUseCase;
 import kr.service.okr.user.usecase.user.QueryUserUseCase;
 import kr.service.okr.util.HeaderUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +22,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 	private AuthenticatedUserContextHolderStrategy securityContextHolderStrategy =
 		AuthenticatedUserContextHolder.getContextHolderStrategy();
 
-	private final QueryAuthenticationUseCase queryAuthenticationUseCase;
 	private final QueryUserUseCase queryUserUseCase;
 
 	public AuthenticationInterceptor(
-		final QueryAuthenticationUseCase queryAuthenticationUseCase,
 		final QueryUserUseCase queryUserUseCase
 	) {
-		this.queryAuthenticationUseCase = queryAuthenticationUseCase;
 		this.queryUserUseCase = queryUserUseCase;
 	}
 
