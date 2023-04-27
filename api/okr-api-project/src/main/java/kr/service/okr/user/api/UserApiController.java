@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import jakarta.validation.Valid;
+import kr.service.okr.AuthenticationInfo;
 
 public interface UserApiController {
 
@@ -23,11 +24,16 @@ public interface UserApiController {
 		@RequestBody @Valid JoinRequest joinRequestDto
 	);
 
-	@GetMapping("/job/category")
+	@GetMapping("/api/v1/user/job/category")
 	ResponseEntity<List<JobResponse>> getJobCategory();
 
-	@GetMapping("/job/{category}/fields")
+	@GetMapping("/api/v1/user/job/{category}/fields")
 	ResponseEntity<List<JobResponse>> getJobField(
 		@PathVariable("category") String category
+	);
+
+	@GetMapping("/api/v1/user/refresh")
+	ResponseEntity<TokenResponse> getNewAccessToken(
+		AuthenticationInfo authenticationInfo
 	);
 }

@@ -10,10 +10,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.common.security.core.context.AuthenticatedUser;
 import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolder;
 import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolderStrategy;
-import kr.service.okr.common.security.core.context.AuthenticationInfo;
 
 public class AuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
 

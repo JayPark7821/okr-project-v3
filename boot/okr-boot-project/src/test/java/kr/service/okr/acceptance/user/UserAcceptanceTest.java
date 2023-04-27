@@ -182,7 +182,7 @@ public class UserAcceptanceTest extends SpringBootTestReady {
 	}
 
 	@Test
-	@DisplayName("토큰이 만료되면 refhreshToken으로 새로운 토큰을 요청하면 기대하는 응답을 반환한다. 리프래쉬 토큰 임계값 이하")
+	@DisplayName("AccessToken 만료시 RefreshToken으로 새로운 토큰을 요청하면 기대하는 응답을 반환한다. 리프래쉬 토큰 임계값 미만")
 	void request_new_accecssToken_with_nearly_expired_refreshToken() throws Exception {
 		//when
 		var 응답 = 새로운_인증_토큰_발급_요청(유효기간이_임계값_미만으로_남은_토큰);

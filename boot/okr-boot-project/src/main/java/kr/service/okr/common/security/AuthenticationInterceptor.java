@@ -7,9 +7,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolder;
 import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolderStrategy;
-import kr.service.okr.common.security.core.context.AuthenticationInfo;
 import kr.service.okr.user.domain.AuthenticationProvider;
 import kr.service.okr.user.domain.User;
 import kr.service.okr.user.usecase.user.QueryUserUseCase;
@@ -51,7 +51,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 				return new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 			});
 
-		this.securityContextHolderStrategy.getContext().setAuthenticationInfo(new AuthenticationInfo(user));
+		this.securityContextHolderStrategy.getContext()
+			.setAuthenticationInfo(new AuthenticationInfo(user.getUserSeq(), user.getEmail(), user.getUsername()));
 		return true;
 	}
 
