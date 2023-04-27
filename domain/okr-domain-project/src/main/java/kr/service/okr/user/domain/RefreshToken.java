@@ -1,5 +1,6 @@
 package kr.service.okr.user.domain;
 
+import static kr.service.okr.user.domain.AuthenticationProvider.*;
 import static kr.service.okr.user.validator.Validator.*;
 
 import kr.service.okr.exception.ErrorCode;
@@ -22,15 +23,21 @@ public class RefreshToken {
 		this.refreshToken = refreshToken;
 	}
 
-	public RefreshToken(final String userEmail, final String refreshToken) {
+	private RefreshToken(final String userEmail, final String refreshToken) {
 		validateEmail(userEmail);
 		validateRefreshToken(refreshToken);
 		this.userEmail = userEmail;
 		this.refreshToken = refreshToken;
 	}
 
-	public void updateRefreshToken(final String refreshToken) {
-		validateRefreshToken(refreshToken);
-		this.refreshToken = refreshToken;
+	public static RefreshToken generateNewRefreshToken(final String userEmail) {
+		return new RefreshToken(userEmail, generateRefreshToken(userEmail));
+	}
+
+	public RefreshToken checkAndRenewToken() {
+		if (isTokenAboutToExpired(this.refreshToken)) {
+			this.refreshToken = generateRefreshToken(this.userEmail);
+		}
+		return this;
 	}
 }

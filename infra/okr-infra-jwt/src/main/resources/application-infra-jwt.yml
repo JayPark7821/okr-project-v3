@@ -1,7 +1,0 @@
-app:
-  auth:
-    tokenSecret: secretKey-test-okr-project-jwt-token
-    tokenExpiry: 1800000
-    refreshTokenExpiry: 604800000
-    refreshTokenRegenerationThreshold: 259200000
-

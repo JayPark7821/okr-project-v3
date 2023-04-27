@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolder;
 import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolderStrategy;
 import kr.service.okr.common.security.core.context.AuthenticationInfo;
+import kr.service.okr.user.domain.AuthenticationProvider;
 import kr.service.okr.user.domain.User;
 import kr.service.okr.user.usecase.token.QueryAuthenticationUseCase;
 import kr.service.okr.user.usecase.user.QueryUserUseCase;
@@ -42,7 +43,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
 		String token = HeaderUtil.getTokenFrom(request.getHeader(HttpHeaders.AUTHORIZATION));
 
-		String email = queryAuthenticationUseCase.queryEmailBy(token)
+		String email = AuthenticationProvider.findEmailByToken(token)
 			.orElseThrow(() -> {
 				log.error("token is invalid");
 				return new ResponseStatusException(HttpStatus.UNAUTHORIZED);

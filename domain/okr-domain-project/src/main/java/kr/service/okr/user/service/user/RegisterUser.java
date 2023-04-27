@@ -41,10 +41,7 @@ public class RegisterUser implements RegisterUserUseCase {
 
 	private String getRefreshToken(final Command command) {
 		return refreshTokenCommand.save(
-			new RefreshToken(
-				command.email(),
-				authenticationRepository.generateRefreshToken(command.email())
-			)
+			RefreshToken.generateNewRefreshToken(command.email())
 		).getRefreshToken();
 	}
 

@@ -20,7 +20,6 @@ dependencies {
     implementation project(':api:okr-api-project')
     implementation project(':domain:okr-domain-project')
     implementation project(':infra:okr-infra-project-database')
-    implementation project(':infra:okr-infra-jwt')
     implementation project(':infra:okr-infra-oauth')
 
     implementation project(':common:okr-common-util')
