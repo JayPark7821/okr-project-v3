@@ -17,6 +17,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.api.JobResponse;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.enums.ProviderType;
@@ -73,6 +74,42 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 
 		assertUserJoinResponse(response);
 
+	}
+
+	@Test
+	@DisplayName("게스트 정보가 없을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_before_guest_login() {
+		JoinRequest joinRequestDto = new JoinRequest("not-registered-guest-id", "guest", "notMember@email.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.INVALID_JOIN_INFO.getMessage());
+	}
+
+	@Test
+	@DisplayName("가입한 유저 정보가 있을 때 join()을 호출하면 기대하는 예외를 던진다.")
+	void join_again_when_after_join() {
+
+		JoinRequest joinRequestDto = new JoinRequest("guest-rkmZUIUNWkSMX3", "guest", "teamMemberTest@naver.com",
+			"Developer");
+
+		assertThatThrownBy(() -> sut.join(joinRequestDto))
+			.isExactlyInstanceOf(OkrApplicationException.class)
+			.hasMessage(ErrorCode.ALREADY_JOINED_USER.getMessage());
+	}
+
+	@Test
+	void getJobCategory를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+		ResponseEntity<List<JobResponse>> response = sut.getJobCategory();
+		assertThat(response.getBody().size()).isEqualTo(6);
+	}
+
+	@Test
+	void getJobField를_호출하면_기대하는_응답_JobResponse를_반환한다() throws Exception {
+		String category = "BACK_END";
+		ResponseEntity<List<JobResponse>> response = sut.getJobField(category);
+		assertThat(response.getBody().size()).isEqualTo(4);
 	}
 
 	private void assertUserJoinResponse(final ResponseEntity<LoginResponse> response) {
