@@ -3,6 +3,9 @@ package kr.service.okr.user.enums;
 import java.util.Arrays;
 import java.util.List;
 
+import kr.service.okr.exception.ErrorCode;
+import kr.service.okr.util.EnumLookUpUtil;
+
 public enum JobCategory {
 	PLAN("기획", Arrays.asList(
 		JobField.UI_UX_PLANNER,
@@ -70,4 +73,7 @@ public enum JobCategory {
 		this.detailList = detailList;
 	}
 
+	public static JobCategory of(final String name) {
+		return EnumLookUpUtil.lookup(JobCategory.class, name, ErrorCode.INVALID_JOB_CATEGORY.getMessage());
+	}
 }

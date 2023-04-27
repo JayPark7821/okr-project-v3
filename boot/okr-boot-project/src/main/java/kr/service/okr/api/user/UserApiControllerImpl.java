@@ -20,6 +20,7 @@ import kr.service.okr.user.api.JobResponse;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.api.UserApiController;
+import kr.service.okr.user.enums.JobCategory;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.usecase.user.LoginInfo;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +71,11 @@ public class UserApiControllerImpl implements UserApiController {
 	public ResponseEntity<List<JobResponse>> getJobField(
 		@PathVariable("category") final String category
 	) {
-		return null;
+
+		JobCategory jobCategory = JobCategory.of(category);
+		return Response.successOk(
+			userFacade.getJobField(jobCategory).stream()
+				.map(UserDtoMapper::of).toList()
+		);
 	}
 }
