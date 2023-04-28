@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.user.api.JobResponse;
@@ -26,7 +23,6 @@ import kr.service.okr.user.api.TokenResponse;
 import kr.service.okr.user.domain.RefreshToken;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.persistence.entity.token.RefreshTokenJpaEntity;
-import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.utils.SpringBootTestReady;
 
 @Transactional
@@ -40,9 +36,6 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		super.setUp();
 		dataLoader.loadData(List.of("/project-test-data.sql"));
 	}
-
-	@PersistenceContext
-	EntityManager em;
 
 	@Test
 	@DisplayName("가입한 유저 정보가 없을 때 idToken을 통해 로그인을 시도하면 기대하는 응답(Guest)을 반환한다.")
@@ -160,13 +153,4 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		assertThat(body.accessToken()).isNotNull();
 		assertThat(body.refreshToken()).isNotNull();
 	}
-
-	private AuthenticationInfo getAuthenticationInfo(Long userSeq) {
-		final UserJpaEntity user = em.createQuery("select u from UserJpaEntity u where u.userSeq = :userSeq",
-				UserJpaEntity.class)
-			.setParameter("userSeq", userSeq)
-			.getSingleResult();
-		return new AuthenticationInfo(user.getUserSeq(), user.getEmail(), user.getUsername());
-	}
-
 }

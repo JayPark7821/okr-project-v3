@@ -13,14 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.project.api.ProjectInfoResponse;
 import kr.service.okr.project.api.RegisterProjectRequest;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
 import kr.service.okr.project.persistence.entity.project.team.TeamMemberJpaEntity;
-import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.utils.SpringBootTestReady;
 
 class ProjectApiControllerImplTest extends SpringBootTestReady {
@@ -33,9 +29,6 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 		super.setUp();
 		dataLoader.loadData(List.of("/project-test-data.sql"));
 	}
-
-	@PersistenceContext
-	EntityManager em;
 
 	@Test
 	@DisplayName("팀원 없이 프로젝트를 생성하면 기대하는 응답(projectToken)을 반환한다.")
@@ -95,13 +88,4 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 		assertThat(response.getBody().roleType()).isEqualTo(ProjectRoleType.LEADER.name());
 		assertThat(response.getBody().keyResults().size()).isEqualTo(3);
 	}
-
-	private AuthenticationInfo getAuthenticationInfo(Long userSeq) {
-		final UserJpaEntity user = em.createQuery("select u from UserJpaEntity u where u.userSeq = :userSeq",
-				UserJpaEntity.class)
-			.setParameter("userSeq", userSeq)
-			.getSingleResult();
-		return new AuthenticationInfo(user.getUserSeq(), user.getEmail(), user.getUsername());
-	}
-
 }
