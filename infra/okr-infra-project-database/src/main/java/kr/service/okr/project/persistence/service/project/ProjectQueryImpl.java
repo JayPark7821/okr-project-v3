@@ -27,7 +27,10 @@ public class ProjectQueryImpl implements ProjectQuery {
 
 	@Override
 	public Optional<Project> findByProjectTokenAndUser(final String projectToken, final Long userSeq) {
-		return projectJpaRepository.findByProjectTokenAndUser(projectToken, userSeq).map(ProjectJpaEntity::toDomain);
+		final Optional<ProjectJpaEntity> project = projectJpaRepository.findByProjectTokenAndUser(
+			projectToken, userSeq);
+		return project.map(ProjectJpaEntity::toDomain);
+
 	}
 
 	@Override

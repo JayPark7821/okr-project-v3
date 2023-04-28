@@ -117,7 +117,8 @@ public class ProjectJpaEntity extends BaseEntity {
 	}
 
 	public Project toDomain() {
-		final Project project = Project.builder()
+
+		return Project.builder()
 			.id(this.id)
 			.projectToken(this.projectToken)
 			.teamMember(this.teamMember.stream().map(TeamMemberJpaEntity::toDomain).toList())
@@ -129,8 +130,6 @@ public class ProjectJpaEntity extends BaseEntity {
 			.progress(this.progress)
 			.completed(this.completed)
 			.build();
-
-		return project;
 
 	}
 

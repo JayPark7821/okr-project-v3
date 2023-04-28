@@ -3,6 +3,7 @@ package kr.service.okr.project.persistence.entity.project.keyresult;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -79,7 +80,8 @@ public class KeyResultJpaEntity extends BaseEntity {
 			.keyResultToken(this.keyResultToken)
 			.projectId(this.project.getId())
 			.name(this.name)
-			.initiative(this.initiative.stream().map(InitiativeJpaEntity::toDomain).toList())
+			.initiative(Hibernate.isInitialized(this.initiative) ?
+				this.initiative.stream().map(InitiativeJpaEntity::toDomain).toList() : null)
 			.keyResultIndex(this.keyResultIndex)
 			.build();
 	}
