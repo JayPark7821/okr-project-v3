@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kr.service.okr.validator.DateValid;
 
-public record RegisterProjectRequestDto(
+public record RegisterProjectRequest(
 	@NotNull(message = "목표를 작성해 주세요.")
 	@Size(max = 20, message = "목표는 20자까지 작성할 수 있습니다.")
 	String objective,

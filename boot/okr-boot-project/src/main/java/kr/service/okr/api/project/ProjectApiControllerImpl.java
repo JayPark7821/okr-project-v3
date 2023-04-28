@@ -15,7 +15,7 @@ import kr.service.okr.application.project.ProjectFacade;
 import kr.service.okr.common.security.core.context.AuthenticatedUser;
 import kr.service.okr.project.api.ProjectApiController;
 import kr.service.okr.project.api.ProjectInfoResponse;
-import kr.service.okr.project.api.RegisterProjectRequestDto;
+import kr.service.okr.project.api.RegisterProjectRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -28,7 +28,7 @@ public class ProjectApiControllerImpl implements ProjectApiController {
 	@Override
 	@PostMapping
 	public ResponseEntity<String> registerProject(
-		final @RequestBody @Valid RegisterProjectRequestDto request,
+		final @RequestBody @Valid RegisterProjectRequest request,
 		final @AuthenticatedUser AuthenticationInfo authenticationInfo
 	) {
 		return Response.successCreated(

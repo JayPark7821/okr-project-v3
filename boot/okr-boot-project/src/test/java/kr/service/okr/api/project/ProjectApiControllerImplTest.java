@@ -17,7 +17,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.project.api.ProjectInfoResponse;
-import kr.service.okr.project.api.RegisterProjectRequestDto;
+import kr.service.okr.project.api.RegisterProjectRequest;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
 import kr.service.okr.project.persistence.entity.project.team.TeamMemberJpaEntity;
 import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
@@ -45,7 +45,7 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new RegisterProjectRequestDto("projectObjective", projectSdt, projectEdt, List.of()),
+			new RegisterProjectRequest("projectObjective", projectSdt, projectEdt, List.of()),
 			getAuthenticationInfo(112L)
 		);
 
@@ -60,7 +60,7 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
 		final ResponseEntity<String> response = sut.registerProject(
-			new RegisterProjectRequestDto("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")),
+			new RegisterProjectRequest("projectObjective", projectSdt, projectEdt, List.of("guest@email.com")),
 			getAuthenticationInfo(112L)
 		);
 
