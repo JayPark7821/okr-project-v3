@@ -20,7 +20,7 @@ public class RegisterProject implements RegisterProjectUseCase {
 	private final UserQuery userQuery;
 
 	@Override
-	public String registerProject(Command command) {
+	public String command(Command command) {
 
 		final Project project = createProject(command);
 

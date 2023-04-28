@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface RegisterProjectUseCase {
 
-	String registerProject(Command command);
+	String command(Command command);
 
 	record Command(
 		String objective,
