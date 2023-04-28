@@ -12,7 +12,7 @@ public interface RegisterProjectUseCase {
 		LocalDate startDate,
 		LocalDate endDate,
 		Long userSeq,
-		List<Long> teamMemberUserSeqs
+		List<String> teamMemberUsers
 	) {
 	}
 }
