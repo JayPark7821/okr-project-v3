@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -24,9 +25,11 @@ import kr.service.okr.user.api.LoginResponse;
 import kr.service.okr.user.api.TokenResponse;
 import kr.service.okr.user.domain.RefreshToken;
 import kr.service.okr.user.enums.ProviderType;
+import kr.service.okr.user.persistence.entity.token.RefreshTokenJpaEntity;
 import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.utils.SpringBootTestReady;
 
+@Transactional
 public class UserApiControllerImplTest extends SpringBootTestReady {
 
 	@Autowired
@@ -121,7 +124,7 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 	void request_new_accecssToken_with_refreshToken() throws Exception {
 
 		final RefreshToken refreshToken = RefreshToken.generateNewRefreshToken("teamMemberTest@naver.com");
-		em.persist(refreshToken);
+		em.persist(new RefreshTokenJpaEntity((refreshToken)));
 
 		ResponseEntity<TokenResponse> response = sut.getNewAccessToken(getAuthenticationInfo(111L));
 

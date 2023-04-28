@@ -10,6 +10,8 @@ import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.enums.JobCategory;
 import kr.service.okr.user.enums.ProviderType;
 import kr.service.okr.user.usecase.guest.RegisterGuestUseCase;
+import kr.service.okr.user.usecase.token.GetNewAccessTokenUseCase;
+import kr.service.okr.user.usecase.token.TokenInfo;
 import kr.service.okr.user.usecase.user.JobInfo;
 import kr.service.okr.user.usecase.user.LoginInfo;
 import kr.service.okr.user.usecase.user.ProcessLoginUseCase;
@@ -27,6 +29,7 @@ public class UserFacade {
 	private final RegisterGuestUseCase registerGuestUseCase;
 	private final QueryJobCategoryUseCase queryJobCategoryUseCase;
 	private final QueryJobFieldsUseCase queryJobFieldsUseCase;
+	private final GetNewAccessTokenUseCase getNewAccessTokenUseCase;
 
 	public Optional<LoginInfo> getLoginInfoFrom(final OAuth2UserInfo info) {
 		return processLoginUseCase.command(new ProcessLoginUseCase.Command(info.email(), info.socialPlatform()));
@@ -67,4 +70,7 @@ public class UserFacade {
 		return queryJobFieldsUseCase.query(jobCategory);
 	}
 
+	public TokenInfo getNewAccessTokenFrom(final String email) {
+		return getNewAccessTokenUseCase.command(email);
+	}
 }

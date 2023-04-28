@@ -21,7 +21,7 @@ public interface UserApiController {
 
 	@PostMapping("/api/v1/user/join")
 	ResponseEntity<LoginResponse> join(
-		@RequestBody @Valid JoinRequest joinRequestDto
+		final @RequestBody @Valid JoinRequest joinRequestDto
 	);
 
 	@GetMapping("/api/v1/user/job/category")
@@ -29,11 +29,11 @@ public interface UserApiController {
 
 	@GetMapping("/api/v1/user/job/{category}/fields")
 	ResponseEntity<List<JobResponse>> getJobField(
-		@PathVariable("category") String category
+		final @PathVariable("category") String category
 	);
 
 	@GetMapping("/api/v1/user/refresh")
 	ResponseEntity<TokenResponse> getNewAccessToken(
-		AuthenticationInfo authenticationInfo
+		final AuthenticationInfo authenticationInfo
 	);
 }

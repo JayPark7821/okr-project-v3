@@ -85,8 +85,10 @@ public class UserApiControllerImpl implements UserApiController {
 	@Override
 	@GetMapping("/refresh")
 	public ResponseEntity<TokenResponse> getNewAccessToken(
-		@AuthenticatedUser final AuthenticationInfo authenticationInfo
+		final @AuthenticatedUser AuthenticationInfo authenticationInfo
 	) {
-		return null;
+		return Response.successOk(
+			UserDtoMapper.of(userFacade.getNewAccessTokenFrom(authenticationInfo.userEmail()))
+		);
 	}
 }
