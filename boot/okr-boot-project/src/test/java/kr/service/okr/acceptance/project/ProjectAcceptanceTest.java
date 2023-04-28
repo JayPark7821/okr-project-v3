@@ -55,7 +55,7 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	}
 
 	@Test
-	@DisplayName("프로젝트를 조회하면 기대하는 응답(ProjectInfoResponse)을 반환한다.")
+	@DisplayName("프로젝트 토큰으로 프로젝트를 조회하면 기대하는 응답(ProjectInfoResponse)을 반환한다.")
 	void query_project() throws Exception {
 		//given
 		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
