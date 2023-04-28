@@ -15,6 +15,8 @@ public interface ProjectQuery {
 
 	Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(String projectToken, Long inviterSeq);
 
+	Optional<Project> findProjectForRegisterKeyResult(String projectToken, Long userSeq);
+
 	Page<Project> getDetailProjectList(
 		SortType sortType,
 		ProjectType projectType,
@@ -24,8 +26,6 @@ public interface ProjectQuery {
 	);
 
 	Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(String projectToken, Long userSeq);
-
-	Optional<Project> findProjectKeyResultByProjectTokenAndUser(String projectToken, Long userSeq);
 
 	Optional<Project> findByKeyResultTokenAndUser(String keyResultToken, Long userSeq);
 

@@ -1,6 +1,7 @@
 package kr.service.okr.api.project;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ public class KeyResultApiControllerImpl implements KeyResultApiController {
 	private final KeyResultFacade keyResultFacade;
 
 	@Override
+	@PostMapping
 	public ResponseEntity<String> registerKeyResult(final RegisterKeyResultRequest request,
 		final AuthenticationInfo authenticationInfo) {
 		return Response.successCreated(

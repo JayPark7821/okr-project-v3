@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class KeyResult {
 
-	private static final String KEYRESULT_TOKEN_PREFIX = "keyresult-";
+	private static final String KEYRESULT_TOKEN_PREFIX = "keyResult-";
 	private Long id;
 	private String keyResultToken;
 	private Long projectId;

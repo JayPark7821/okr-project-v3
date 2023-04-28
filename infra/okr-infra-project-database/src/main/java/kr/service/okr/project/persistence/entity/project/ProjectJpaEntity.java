@@ -3,6 +3,7 @@ package kr.service.okr.project.persistence.entity.project;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -121,8 +122,8 @@ public class ProjectJpaEntity extends BaseEntity {
 		return Project.builder()
 			.id(this.id)
 			.projectToken(this.projectToken)
-			.teamMember(this.teamMember.stream().map(TeamMemberJpaEntity::toDomain).toList())
-			.keyResults(this.keyResults.stream().map(KeyResultJpaEntity::toDomain).toList())
+			.teamMember(this.teamMember.stream().map(TeamMemberJpaEntity::toDomain).collect(Collectors.toList()))
+			.keyResults(this.keyResults.stream().map(KeyResultJpaEntity::toDomain).collect(Collectors.toList()))
 			.startDate(this.startDate)
 			.endDate(this.endDate)
 			.type(this.type)

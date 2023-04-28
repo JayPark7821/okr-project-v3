@@ -34,6 +34,12 @@ public class ProjectQueryImpl implements ProjectQuery {
 	}
 
 	@Override
+	public Optional<Project> findProjectForRegisterKeyResult(final String projectToken, final Long userSeq) {
+		return projectJpaRepository.findProjectForRegisterKeyResultByProjectTokenAndUser(projectToken, userSeq)
+			.map(ProjectJpaEntity::toDomain);
+	}
+
+	@Override
 	public Optional<Project> findFetchedTeamMemberByProjectTokenAndUser(final String projectToken,
 		final Long inviterSeq) {
 		return Optional.empty();
@@ -48,11 +54,6 @@ public class ProjectQueryImpl implements ProjectQuery {
 	@Override
 	public Optional<Project> findProgressAndTeamMembersByProjectTokenAndUser(final String projectToken,
 		final Long userSeq) {
-		return Optional.empty();
-	}
-
-	@Override
-	public Optional<Project> findProjectKeyResultByProjectTokenAndUser(final String projectToken, final Long userSeq) {
 		return Optional.empty();
 	}
 

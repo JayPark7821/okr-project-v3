@@ -67,7 +67,7 @@ public class Project {
 		this.id = id;
 		this.projectToken = projectToken;
 		this.teamMember = teamMember == null ? new ArrayList<>() : teamMember;
-		this.keyResults = keyResults;
+		this.keyResults = keyResults == null ? new ArrayList<>() : keyResults;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.type = type;
@@ -90,14 +90,14 @@ public class Project {
 		);
 	}
 
-	public String addKeyResult(final String keyResultName, final Long leader) {
+	public KeyResult addKeyResult(final String keyResultName, final Long leader) {
 		validateAddingNewKeyResult(keyResultName, leader);
 
 		final KeyResult keyResult =
 			new KeyResult(keyResultName, this.id, this.keyResults.size() + 1, new ArrayList<>());
 		this.keyResults.add(keyResult);
 
-		return keyResult.getKeyResultToken();
+		return keyResult;
 	}
 
 	public void makeProjectFinished() {

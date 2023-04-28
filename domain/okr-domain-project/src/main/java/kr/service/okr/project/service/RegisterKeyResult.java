@@ -5,8 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.project.domain.KeyResult;
 import kr.service.okr.project.domain.Project;
-import kr.service.okr.project.repository.ProjectCommand;
+import kr.service.okr.project.repository.KeyResultCommand;
 import kr.service.okr.project.repository.ProjectQuery;
 import kr.service.okr.project.usecase.RegisterKeyResultUseCase;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +18,16 @@ import lombok.RequiredArgsConstructor;
 public class RegisterKeyResult implements RegisterKeyResultUseCase {
 
 	private final ProjectQuery projectQuery;
-	private final ProjectCommand projectCommand;
+	private final KeyResultCommand keyResultCommand;
 
 	@Override
 	public String command(final Command command) {
 		Project project =
-			projectQuery.findProjectKeyResultByProjectTokenAndUser(command.projectToken(), command.requesterSeq())
+			projectQuery.findProjectForRegisterKeyResult(command.projectToken(), command.requesterSeq())
 				.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
 
-		project.addKeyResult(command.keyResultName(), command.requesterSeq());
+		final KeyResult keyResult = project.addKeyResult(command.keyResultName(), command.requesterSeq());
 
-		return projectCommand.save(project).getProjectToken();
+		return keyResultCommand.save(keyResult).getKeyResultToken();
 	}
 }
