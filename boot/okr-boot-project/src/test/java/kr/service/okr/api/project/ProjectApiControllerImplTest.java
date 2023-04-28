@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import kr.service.okr.common.security.core.context.AuthenticationInfo;
+import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.project.api.RegisterProjectRequestDto;
 import kr.service.okr.project.persistence.entity.project.team.TeamMemberJpaEntity;
 import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
@@ -75,11 +75,11 @@ class ProjectApiControllerImplTest extends SpringBootTestReady {
 	}
 
 	private AuthenticationInfo getAuthenticationInfo(Long userSeq) {
-		return new AuthenticationInfo(em.createQuery("select u from UserJpaEntity u where u.userSeq = :userSeq",
+		final UserJpaEntity user = em.createQuery("select u from UserJpaEntity u where u.userSeq = :userSeq",
 				UserJpaEntity.class)
 			.setParameter("userSeq", userSeq)
-			.getSingleResult()
-			.toDomain());
+			.getSingleResult();
+		return new AuthenticationInfo(user.getUserSeq(), user.getEmail(), user.getUsername());
 	}
 
 }

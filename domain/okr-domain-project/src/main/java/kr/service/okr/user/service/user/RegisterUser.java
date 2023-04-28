@@ -4,11 +4,11 @@ import org.springframework.stereotype.Service;
 
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
+import kr.service.okr.user.domain.AuthenticationProvider;
 import kr.service.okr.user.domain.Guest;
 import kr.service.okr.user.domain.RefreshToken;
 import kr.service.okr.user.domain.User;
 import kr.service.okr.user.repository.guest.GuestQuery;
-import kr.service.okr.user.repository.token.AuthenticationRepository;
 import kr.service.okr.user.repository.token.RefreshTokenCommand;
 import kr.service.okr.user.repository.user.UserCommand;
 import kr.service.okr.user.repository.user.UserQuery;
@@ -24,7 +24,6 @@ public class RegisterUser implements RegisterUserUseCase {
 	private final UserQuery userQuery;
 	private final UserCommand userCommand;
 	private final RefreshTokenCommand refreshTokenCommand;
-	private final AuthenticationRepository authenticationRepository;
 
 	@Override
 	public LoginInfo command(final Command command) {
@@ -36,15 +35,12 @@ public class RegisterUser implements RegisterUserUseCase {
 	}
 
 	private String getAccessToken(final Command command) {
-		return authenticationRepository.generateAccessToken(command.email());
+		return AuthenticationProvider.generateAccessToken(command.email());
 	}
 
 	private String getRefreshToken(final Command command) {
 		return refreshTokenCommand.save(
-			new RefreshToken(
-				command.email(),
-				authenticationRepository.generateRefreshToken(command.email())
-			)
+			RefreshToken.generateNewRefreshToken(command.email())
 		).getRefreshToken();
 	}
 

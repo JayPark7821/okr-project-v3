@@ -6,8 +6,8 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
+import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.common.security.core.context.AuthenticatedUserContextHolder;
-import kr.service.okr.common.security.core.context.AuthenticationInfo;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -20,7 +20,6 @@ public class AuditorProvider implements AuditorAware<String> {
 		if (ObjectUtils.isEmpty(authenticationInfo)) {
 			return Optional.empty();
 		}
-
-		return Optional.of(authenticationInfo.user().getUserId());
+		return Optional.of(authenticationInfo.userEmail());
 	}
 }

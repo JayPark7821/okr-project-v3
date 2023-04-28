@@ -12,17 +12,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.exception.ErrorCode;
 import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.user.api.JobResponse;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
+import kr.service.okr.user.api.TokenResponse;
+import kr.service.okr.user.domain.RefreshToken;
 import kr.service.okr.user.enums.ProviderType;
+import kr.service.okr.user.persistence.entity.token.RefreshTokenJpaEntity;
+import kr.service.okr.user.persistence.entity.user.UserJpaEntity;
 import kr.service.okr.utils.SpringBootTestReady;
 
+@Transactional
 public class UserApiControllerImplTest extends SpringBootTestReady {
 
 	@Autowired
@@ -112,6 +119,19 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		assertThat(response.getBody().size()).isEqualTo(4);
 	}
 
+	@Test
+	@DisplayName("AccessToken 만료시 RefreshToken으로 새로운 AccessToken을 요청하면 기대하는 응답을 반환한다.")
+	void request_new_accecssToken_with_refreshToken() throws Exception {
+
+		final RefreshToken refreshToken = RefreshToken.generateNewRefreshToken("teamMemberTest@naver.com");
+		em.persist(new RefreshTokenJpaEntity((refreshToken)));
+
+		ResponseEntity<TokenResponse> response = sut.getNewAccessToken(getAuthenticationInfo(111L));
+
+		assertThat(response.getBody().accessToken()).isNotNull();
+		assertThat(response.getBody().refreshToken()).isEqualTo(refreshToken.getRefreshToken());
+	}
+
 	private void assertUserJoinResponse(final ResponseEntity<LoginResponse> response) {
 		assertThat(response.getBody().guestUserId()).isNull();
 		assertThat(response.getBody().name()).isEqualTo("guest");
@@ -140,4 +160,13 @@ public class UserApiControllerImplTest extends SpringBootTestReady {
 		assertThat(body.accessToken()).isNotNull();
 		assertThat(body.refreshToken()).isNotNull();
 	}
+
+	private AuthenticationInfo getAuthenticationInfo(Long userSeq) {
+		final UserJpaEntity user = em.createQuery("select u from UserJpaEntity u where u.userSeq = :userSeq",
+				UserJpaEntity.class)
+			.setParameter("userSeq", userSeq)
+			.getSingleResult();
+		return new AuthenticationInfo(user.getUserSeq(), user.getEmail(), user.getUsername());
+	}
+
 }

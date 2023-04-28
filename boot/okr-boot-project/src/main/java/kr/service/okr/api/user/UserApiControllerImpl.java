@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import kr.service.oauth.platform.OAuth2UserInfo;
 import kr.service.oauth.processor.SocialTokenVerifyProcessor;
+import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.api.Response;
 import kr.service.okr.application.user.UserFacade;
+import kr.service.okr.common.security.core.context.AuthenticatedUser;
 import kr.service.okr.user.api.JobResponse;
 import kr.service.okr.user.api.JoinRequest;
 import kr.service.okr.user.api.LoginResponse;
+import kr.service.okr.user.api.TokenResponse;
 import kr.service.okr.user.api.UserApiController;
 import kr.service.okr.user.enums.JobCategory;
 import kr.service.okr.user.enums.ProviderType;
@@ -76,6 +79,16 @@ public class UserApiControllerImpl implements UserApiController {
 		return Response.successOk(
 			userFacade.getJobField(jobCategory).stream()
 				.map(UserDtoMapper::of).toList()
+		);
+	}
+
+	@Override
+	@GetMapping("/refresh")
+	public ResponseEntity<TokenResponse> getNewAccessToken(
+		final @AuthenticatedUser AuthenticationInfo authenticationInfo
+	) {
+		return Response.successOk(
+			UserDtoMapper.of(userFacade.getNewAccessTokenFrom(authenticationInfo.userEmail()))
 		);
 	}
 }

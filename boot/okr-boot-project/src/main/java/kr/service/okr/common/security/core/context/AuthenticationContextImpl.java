@@ -1,5 +1,7 @@
 package kr.service.okr.common.security.core.context;
 
+import kr.service.okr.AuthenticationInfo;
+
 public class AuthenticationContextImpl implements AuthenticationContext {
 
 	private AuthenticationInfo authenticationInfo;

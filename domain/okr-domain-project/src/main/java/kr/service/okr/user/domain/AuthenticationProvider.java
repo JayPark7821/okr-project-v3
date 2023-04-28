@@ -1,36 +1,24 @@
-package kr.service.jwt;
+package kr.service.okr.user.domain;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import kr.service.okr.user.repository.token.AuthenticationRepository;
-import lombok.RequiredArgsConstructor;
 
-@Service
-@RequiredArgsConstructor
-public class JwtTokenRepository implements AuthenticationRepository {
+public final class AuthenticationProvider {
 
-	@Value("${app.auth.tokenSecret}")
-	private String secretKey;
-	@Value("${app.auth.refreshTokenExpiry}")
-	private Long refreshExpiredTimeMs;
-	@Value("${app.auth.tokenExpiry}")
-	private Long accessExpiredTimeMs;
-	@Value("${app.auth.refreshTokenRegenerationThreshold}")
-	private Long refreshTokenRegenerationThreshold;
+	private static final String secretKey = "secretKey-test-okr-project-jwt-token";
+	private static final long refreshExpiredTimeMs = 604800000L;
+	private static final long accessExpiredTimeMs = 1800000L;
+	private static final long refreshTokenRegenerationThreshold = 259200000L;
 
-	@Override
-	public Optional<String> findEmailByToken(final String token) {
+	public static Optional<String> findEmailByToken(final String token) {
 		try {
 			return Optional.of(getEmail(token, secretKey));
 		} catch (Exception e) {
@@ -38,8 +26,11 @@ public class JwtTokenRepository implements AuthenticationRepository {
 		}
 	}
 
-	@Override
-	public boolean isTokenExpired(final String token) {
+	public static String generateAccessToken(final String email) {
+		return generateJwtToken(email, false);
+	}
+	
+	static boolean isTokenAboutToExpired(final String token) {
 		try {
 			final long remainingTimeOf =
 				extractClaims(token, secretKey).getExpiration().getTime() - new Date().getTime();
@@ -49,17 +40,11 @@ public class JwtTokenRepository implements AuthenticationRepository {
 		}
 	}
 
-	@Override
-	public String generateRefreshToken(final String email) {
+	static String generateRefreshToken(final String email) {
 		return generateJwtToken(email, true);
 	}
 
-	@Override
-	public String generateAccessToken(final String email) {
-		return generateJwtToken(email, false);
-	}
-
-	private String generateJwtToken(final String userEmail, boolean isRefreshToken) {
+	private static String generateJwtToken(final String userEmail, boolean isRefreshToken) {
 		Claims claims = Jwts.claims();
 		claims.put("email", userEmail);
 
@@ -72,16 +57,16 @@ public class JwtTokenRepository implements AuthenticationRepository {
 			.compact();
 	}
 
-	public String getEmail(String token, String key) {
+	private static String getEmail(String token, String key) {
 		return extractClaims(token, key).get("email", String.class);
 	}
 
-	Key getKey(String key) {
+	private static Key getKey(String key) {
 		byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	Claims extractClaims(String token, String key) {
+	private static Claims extractClaims(String token, String key) {
 		return Jwts.parserBuilder().setSigningKey(getKey(key))
 			.build().parseClaimsJws(token).getBody();
 	}

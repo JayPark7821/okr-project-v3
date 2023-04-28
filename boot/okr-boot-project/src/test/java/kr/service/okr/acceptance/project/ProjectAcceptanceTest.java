@@ -11,17 +11,13 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import kr.service.jwt.JwtTokenRepository;
 import kr.service.okr.project.api.RegisterProjectRequestDto;
+import kr.service.okr.user.domain.AuthenticationProvider;
 import kr.service.okr.utils.SpringBootTestReady;
 
 @DisplayName("Project 도메인 인수 테스트")
 public class ProjectAcceptanceTest extends SpringBootTestReady {
-
-	@Autowired
-	private JwtTokenRepository jwtService;
 
 	String 사용자_토큰;
 
@@ -29,7 +25,7 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	void beforeEach() throws IOException {
 		super.setUp();
 		dataLoader.loadData(List.of("/project-test-data.sql"));
-		사용자_토큰 = jwtService.generateAccessToken("projectMasterTest@naver.com");
+		사용자_토큰 = AuthenticationProvider.generateAccessToken("projectMasterTest@naver.com");
 	}
 
 	@Test

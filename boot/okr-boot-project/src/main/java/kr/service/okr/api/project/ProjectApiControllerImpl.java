@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import kr.service.okr.AuthenticationInfo;
 import kr.service.okr.api.Response;
 import kr.service.okr.application.project.ProjectFacade;
 import kr.service.okr.common.security.core.context.AuthenticatedUser;
-import kr.service.okr.common.security.core.context.AuthenticationInfo;
 import kr.service.okr.project.api.ProjectApiController;
 import kr.service.okr.project.api.ProjectInfoResponse;
 import kr.service.okr.project.api.RegisterProjectRequestDto;
@@ -25,24 +25,25 @@ public class ProjectApiControllerImpl implements ProjectApiController {
 
 	private final ProjectFacade projectFacade;
 
-	// @Override
+	@Override
 	@PostMapping
 	public ResponseEntity<String> registerProject(
 		final @RequestBody @Valid RegisterProjectRequestDto request,
 		final @AuthenticatedUser AuthenticationInfo authenticationInfo
 	) {
 		return Response.successCreated(
-			projectFacade.registerProject(ProjectDtoMapper.toCommand(request, authenticationInfo.user().getUserSeq()))
+			projectFacade.registerProject(ProjectDtoMapper.toCommand(request, authenticationInfo.userSeq()))
 		);
 	}
 
+	@Override
 	@GetMapping("/{projectToken}")
 	public ResponseEntity<ProjectInfoResponse> getProjectInfoBy(
 		final @PathVariable("projectToken") String projectToken,
 		final @AuthenticatedUser AuthenticationInfo authenticationInfo
 	) {
 		return Response.successOk(
-			ProjectDtoMapper.of(projectFacade.getProjectInfoBy(projectToken, authenticationInfo.user().getUserSeq()))
+			ProjectDtoMapper.of(projectFacade.getProjectInfoBy(projectToken, authenticationInfo.userSeq()))
 		);
 	}
 }
