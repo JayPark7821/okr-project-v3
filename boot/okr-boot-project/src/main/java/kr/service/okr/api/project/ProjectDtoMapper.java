@@ -3,16 +3,16 @@ package kr.service.okr.api.project;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import kr.service.okr.application.project.KeyResultInfo;
-import kr.service.okr.application.project.ProjectInfo;
 import kr.service.okr.application.project.RegisterProjectCommand;
 import kr.service.okr.project.api.KeyResultResponse;
 import kr.service.okr.project.api.ProjectInfoResponse;
-import kr.service.okr.project.api.RegisterProjectRequestDto;
+import kr.service.okr.project.api.RegisterProjectRequest;
+import kr.service.okr.project.usecase.KeyResultInfo;
+import kr.service.okr.project.usecase.ProjectInfo;
 
 public class ProjectDtoMapper {
 
-	static RegisterProjectCommand toCommand(RegisterProjectRequestDto request, Long userSeq) {
+	static RegisterProjectCommand toCommand(RegisterProjectRequest request, Long userSeq) {
 		return new RegisterProjectCommand(
 			request.objective(),
 			LocalDate.parse(request.startDate(), DateTimeFormatter.ISO_DATE),

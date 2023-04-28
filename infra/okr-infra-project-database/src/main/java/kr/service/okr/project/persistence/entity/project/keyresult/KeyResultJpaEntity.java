@@ -2,7 +2,9 @@ package kr.service.okr.project.persistence.entity.project.keyresult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -33,7 +35,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "key_result")
 public class KeyResultJpaEntity extends BaseEntity {
 
-	private static final String PROJECT_KEYRESULT_PREFIX = "keyResult-";
 	@Id
 	@Column(name = "key_result_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,6 +59,14 @@ public class KeyResultJpaEntity extends BaseEntity {
 	@Column(nullable = false)
 	private boolean deleted = Boolean.FALSE;
 
+	public KeyResultJpaEntity(final String keyResultToken, final Long projectId, final String name,
+		final Integer keyResultIndex) {
+		this.keyResultToken = keyResultToken;
+		this.projectId = projectId;
+		this.name = name;
+		this.keyResultIndex = keyResultIndex;
+	}
+
 	public KeyResultJpaEntity(KeyResult keyResult) {
 		this.id = keyResult.getId();
 		this.keyResultToken = keyResult.getKeyResultToken();
@@ -65,6 +74,15 @@ public class KeyResultJpaEntity extends BaseEntity {
 		this.name = keyResult.getName();
 		this.keyResultIndex = keyResult.getKeyResultIndex();
 		this.initiative = keyResult.getInitiative().stream().map(InitiativeJpaEntity::new).toList();
+	}
+
+	public static KeyResultJpaEntity createFrom(KeyResult keyResult) {
+		return new KeyResultJpaEntity(
+			keyResult.getKeyResultToken(),
+			keyResult.getProjectId(),
+			keyResult.getName(),
+			keyResult.getKeyResultIndex()
+		);
 	}
 
 	public String addInitiative(InitiativeJpaEntity initiative) {
@@ -77,9 +95,10 @@ public class KeyResultJpaEntity extends BaseEntity {
 		return KeyResult.builder()
 			.id(this.id)
 			.keyResultToken(this.keyResultToken)
-			.projectId(this.project.getId())
+			.projectId(this.projectId)
 			.name(this.name)
-			.initiative(this.initiative.stream().map(InitiativeJpaEntity::toDomain).toList())
+			.initiative(Hibernate.isInitialized(this.initiative) ?
+				this.initiative.stream().map(InitiativeJpaEntity::toDomain).collect(Collectors.toList()) : null)
 			.keyResultIndex(this.keyResultIndex)
 			.build();
 	}

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kr.service.okr.project.api.RegisterProjectRequestDto;
+import kr.service.okr.project.api.RegisterProjectRequest;
 import kr.service.okr.user.domain.AuthenticationProvider;
 import kr.service.okr.utils.SpringBootTestReady;
 
@@ -55,7 +55,7 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 	}
 
 	@Test
-	@DisplayName("프로젝트를 조회하면 기대하는 응답(ProjectInfoResponse)을 반환한다.")
+	@DisplayName("프로젝트 토큰으로 프로젝트를 조회하면 기대하는 응답(ProjectInfoResponse)을 반환한다.")
 	void query_project() throws Exception {
 		//given
 		var 프로젝트_토큰 = "mst_Kiwqnp1Nq6lbTNn0";
@@ -67,12 +67,12 @@ public class ProjectAcceptanceTest extends SpringBootTestReady {
 		프로젝트_조회_요청_응답_검증(응답);
 	}
 
-	private RegisterProjectRequestDto 프로젝트_생성_요청_데이터_생성(String 목표, List<String> 팀원) {
+	private RegisterProjectRequest 프로젝트_생성_요청_데이터_생성(String 목표, List<String> 팀원) {
 
 		String projectSdt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		String projectEdt = LocalDateTime.now().plusDays(10).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-		return new RegisterProjectRequestDto(목표, projectSdt, projectEdt, 팀원);
+		return new RegisterProjectRequest(목표, projectSdt, projectEdt, 팀원);
 	}
 
 }

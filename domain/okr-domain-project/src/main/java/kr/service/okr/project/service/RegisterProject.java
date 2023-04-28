@@ -1,11 +1,14 @@
 package kr.service.okr.project.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.service.okr.project.domain.Project;
 import kr.service.okr.project.repository.ProjectCommand;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
+import kr.service.okr.user.repository.user.UserQuery;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -14,21 +17,27 @@ import lombok.RequiredArgsConstructor;
 public class RegisterProject implements RegisterProjectUseCase {
 
 	private final ProjectCommand projectCommand;
+	private final UserQuery userQuery;
 
 	@Override
-	public String registerProject(Command command) {
+	public String command(Command command) {
 
 		final Project project = createProject(command);
 
-		if (command.teamMemberUserSeqs() != null)
+		if (command.teamMemberUsers() != null)
 			addTeamMember(command, project);
 
 		return projectCommand.save(project).getProjectToken();
 	}
 
 	private void addTeamMember(final Command command, final Project project) {
-		command.teamMemberUserSeqs()
-			.forEach(teamMemberSeq -> project.createAndAddMemberOf(teamMemberSeq, command.userSeq()));
+		command.teamMemberUsers()
+			.stream()
+			.map(userQuery::findByEmail)
+			.filter(Optional::isPresent)
+			.map(user -> user.get().getUserSeq())
+			.forEach(seq -> project.createAndAddMemberOf(seq, command.userSeq()));
+
 	}
 
 	private Project createProject(final Command command) {

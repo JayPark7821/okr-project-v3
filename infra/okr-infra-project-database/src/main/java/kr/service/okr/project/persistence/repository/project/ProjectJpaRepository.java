@@ -17,8 +17,21 @@ public interface ProjectJpaRepository extends JpaRepository<ProjectJpaEntity, Lo
 		+ "join p.teamMember t "
 		+ "where t.userSeq = :userSeq "
 		+ "and p.projectToken =:projectToken ")
-	Optional<ProjectJpaEntity> findByProjectTokenAndUser(@Param("projectToken") String projectToken,
-		@Param("userSeq") Long userSeq);
+	Optional<ProjectJpaEntity> findByProjectTokenAndUser(
+		@Param("projectToken") String projectToken,
+		@Param("userSeq") Long userSeq
+	);
+
+	@Query("select p "
+		+ "from ProjectJpaEntity p "
+		+ "join fetch p.teamMember pt "
+		+ "where p.projectToken =:projectToken "
+		+ "and pt.userSeq =:userSeq"
+	)
+	Optional<ProjectJpaEntity> findProjectForRegisterKeyResultByProjectTokenAndUser(
+		@Param("projectToken") String projectToken,
+		@Param("userSeq") Long userSeq
+	);
 
 	@Query("select p "
 		+ "from ProjectJpaEntity p "
@@ -73,4 +86,5 @@ public interface ProjectJpaRepository extends JpaRepository<ProjectJpaEntity, Lo
 		+ "join fetch p.teamMember t "
 		+ "where t.userSeq = :userSeq")
 	List<ProjectJpaEntity> findParticipateProjectByUserSeq(@Param("userSeq") Long userSeq);
+
 }

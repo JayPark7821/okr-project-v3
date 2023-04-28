@@ -12,7 +12,7 @@ public interface ProjectApiController {
 
 	@PostMapping("/api/v1/project")
 	ResponseEntity<String> registerProject(
-		final @RequestBody RegisterProjectRequestDto request,
+		final @RequestBody RegisterProjectRequest request,
 		final AuthenticationInfo authenticationInfo
 	);
 

@@ -1,4 +1,4 @@
-package kr.service.okr.application.project;
+package kr.service.okr.project.usecase;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;

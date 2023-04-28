@@ -2,9 +2,9 @@ package kr.service.okr.application.project;
 
 import org.springframework.stereotype.Component;
 
-import kr.service.okr.project.usecase.QueryProjectUseCase;
+import kr.service.okr.project.usecase.ProjectInfo;
+import kr.service.okr.project.usecase.QueryProjectInfoUseCase;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
-import kr.service.okr.user.usecase.user.QueryUserUseCase;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -12,27 +12,23 @@ import lombok.RequiredArgsConstructor;
 public class ProjectFacade {
 
 	private final RegisterProjectUseCase registerProjectUseCase;
-	private final QueryProjectUseCase queryProjectUseCase;
-	private final QueryUserUseCase queryUserUseCase;
+	private final QueryProjectInfoUseCase queryProjectInfoUseCase;
 
 	public String registerProject(RegisterProjectCommand requestCommand) {
-		return registerProjectUseCase.registerProject(
-			new RegisterProjectUseCase.Command(
-				requestCommand.objective(),
-				requestCommand.startDate(),
-				requestCommand.endDate(),
-				requestCommand.userSeq(),
-				queryUserUseCase.query(requestCommand.teamMembers())
-			)
-		);
+		return registerProjectUseCase.command(toCommand(requestCommand));
 	}
 
 	public ProjectInfo getProjectInfoBy(final String projectToken, final Long userSeq) {
-
-		return new ProjectInfo(
-			queryProjectUseCase.queryProjectBy(new QueryProjectUseCase.Query(projectToken, userSeq)),
-			null
-		);
+		return queryProjectInfoUseCase.query(new QueryProjectInfoUseCase.Query(projectToken, userSeq));
 	}
 
+	private RegisterProjectUseCase.Command toCommand(final RegisterProjectCommand requestCommand) {
+		return new RegisterProjectUseCase.Command(
+			requestCommand.objective(),
+			requestCommand.startDate(),
+			requestCommand.endDate(),
+			requestCommand.userSeq(),
+			requestCommand.teamMembers()
+		);
+	}
 }

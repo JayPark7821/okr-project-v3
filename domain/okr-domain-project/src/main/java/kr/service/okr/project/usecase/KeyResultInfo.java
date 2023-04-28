@@ -1,4 +1,4 @@
-package kr.service.okr.application.project;
+package kr.service.okr.project.usecase;
 
 import kr.service.okr.project.domain.KeyResult;
 

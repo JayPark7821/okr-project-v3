@@ -97,9 +97,9 @@ class ProjectTest {
 		final Project project = generateProject(NORMAL, 0, 0);
 		final String keyResultName = "new keyResultName";
 
-		final String keyResultToken = project.addKeyResult(keyResultName, LEADER);
+		final KeyResult keyResult = project.addKeyResult(keyResultName, LEADER);
 
-		assertThat(keyResultToken).containsPattern(Pattern.compile("keyresult-[a-zA-Z0-9]{10}"));
+		assertThat(keyResult.getKeyResultToken()).containsPattern(Pattern.compile("keyresult-[a-zA-Z0-9]{10}"));
 	}
 
 	@ParameterizedTest

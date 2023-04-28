@@ -6,13 +6,13 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.service.okr.project.api.RegisterProjectRequestDto;
+import kr.service.okr.project.api.RegisterProjectRequest;
 
 public class ProjectAcceptanceTestSteps {
 
 	private static final String baseUrl = "/api/v1/project";
 
-	static ExtractableResponse<Response> 프로젝트_생성_요청(RegisterProjectRequestDto 프로젝트_생성_데이터, String 로그인_유저_인증_토큰) throws
+	static ExtractableResponse<Response> 프로젝트_생성_요청(RegisterProjectRequest 프로젝트_생성_데이터, String 로그인_유저_인증_토큰) throws
 		Exception {
 		return RestAssured.
 

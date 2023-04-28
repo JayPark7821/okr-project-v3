@@ -90,23 +90,23 @@ insert into project
 
 insert into team_member
 (created_date, last_modified_date, created_by, last_modified_by, is_new, project_role_type, project_id, user_seq, deleted) values
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99998, 2, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 77778, 2, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99998, 3, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99998, 4, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99997, 3, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99998, 112, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 77778, 112, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99998, 113, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99998, 114, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99997, 113, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99997, 11, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99996, 12, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99996, 3, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99996, 113, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99996, 17, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'MEMBER', 99995, 13, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'MEMBER', 99994, 13, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99994, 2, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99994, 3, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99994, 112, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99994, 113, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99993, 13, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'MEMBER', 99992, 13, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99992, 9, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99992, 8, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99992, 119, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99992, 118, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', false, 'MEMBER', 99991, 13, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99990, 14, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99989, 14, false),
@@ -114,20 +114,20 @@ insert into team_member
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99987, 14, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 99986, 14, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 15, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 9, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 119, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 16, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88887, 15, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88886, 15, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88885, 15, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88885, 2, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88885, 112, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88884, 15, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88884, 7, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88884, 117, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88888, 17, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 88883, 3, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 88883, 113, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'MEMBER', 88882, 17, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 88882, 3, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99999, 3, false),
-('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 77777, 3, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 88882, 113, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 99999, 113, false),
+('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 77777, 113, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, null, 77777, 19, false),
 ('2022-12-12', '2022-12-12', 'testUser1', 'testUser1', true, 'LEADER', 77776, 12, false)
 ;
@@ -135,18 +135,18 @@ insert into team_member
 
 
 insert into key_result
-(key_result_id, created_date, last_modified_date, created_by, last_modified_by, key_result_token, name, project_id, deleted) values
-(99999, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6MX15WQ3DTzQMs', 'testKeyResult 1', 99998, false),
-(99998, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6f45vWQ3DTzQMs', 'testKeyResult 2', 99998, false),
-(99997, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6f45vWQ3DTzQaa', 'testKeyResult 3', 99998, false),
-(99996, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6f45vWQaaazQaa', 'testKeyResult 3', 99997, false),
-(99995, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaaDTzQaa', 'testKeyResult 3', 99988, false),
-(99994, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaaDTzQ22', 'testKeyResult 3', 88884, false),
-(99993, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaafw4ef3', 'testKeyResult 3', 88883, false),
-(99992, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6eeeeeeaafw4ef3', 'testKeyResult 3', 88885, false),
-(77777, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_w11113ㄹeaafw4ef3', 'testKeyResult 3', 77777, false),
-(77778, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wfefeefefeafw4ef3', 'testKeyResult 3', 77778, false),
-(77776, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wfefe3sdfafw4ef3', 'testKeyResult 3', 77776, false)
+(key_result_id, created_date, last_modified_date, created_by, last_modified_by, key_result_token, name, project_id, deleted, key_result_index) values
+(99999, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6MX15WQ3DTzQMs', 'testKeyResult 1', 99998, false, 1),
+(99998, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6f45vWQ3DTzQMs', 'testKeyResult 2', 99998, false, 2),
+(99997, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6f45vWQ3DTzQaa', 'testKeyResult 3', 99998, false, 3),
+(99996, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6f45vWQaaazQaa', 'testKeyResult 3', 99997, false, 1),
+(99995, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaaDTzQaa', 'testKeyResult 3', 99988, false, 1),
+(99994, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaaDTzQ22', 'testKeyResult 3', 88884, false, 1),
+(99993, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6faaaaaafw4ef3', 'testKeyResult 3', 88883, false, 1),
+(99992, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wV6eeeeeeaafw4ef3', 'testKeyResult 3', 88885, false, 1),
+(77777, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_w11113ㄹeaafw4ef3', 'testKeyResult 3', 77777, false, 1),
+(77778, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wfefeefefeafw4ef3', 'testKeyResult 3', 77778, false, 1),
+(77776, '2022-12-12', '2022-12-12', 'testUser1', 'testUser1', 'key_wfefe3sdfafw4ef3', 'testKeyResult 3', 77776, false, 1)
 ;
 
 
