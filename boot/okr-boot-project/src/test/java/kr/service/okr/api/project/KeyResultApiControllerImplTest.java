@@ -26,7 +26,7 @@ public class KeyResultApiControllerImplTest extends SpringBootTestReady {
 
 	@Test
 	void 프로젝트_핵심결과_추가시_기대하는_응답을_리턴한다_keyResultToken() throws Exception {
-		String projectToken = "mst_as3fg34tgg6421";
+		String projectToken = "mst_qfeeffea223fef";
 		String keyResultName = "keyResult";
 
 		ResponseEntity<String> response = sut.registerKeyResult(

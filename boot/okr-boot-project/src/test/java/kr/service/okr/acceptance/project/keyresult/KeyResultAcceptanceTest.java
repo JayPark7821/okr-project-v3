@@ -29,7 +29,7 @@ public class KeyResultAcceptanceTest extends SpringBootTestReady {
 	@DisplayName("핵심결과 추가 요청시 기대하는 응답(핵심결과 토큰)을 반환한다.")
 	void add_keyResult_to_project() throws Exception {
 		//given
-		var 프로젝트_토큰 = "mst_as3fg34tgg6421";
+		var 프로젝트_토큰 = "mst_qfeeffea223fef";
 
 		//when
 		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
@@ -55,7 +55,7 @@ public class KeyResultAcceptanceTest extends SpringBootTestReady {
 	@DisplayName("프로젝트 리더가 아닌 팀원이 핵심결과 추가 요청시 기대하는 응답(exception)을 반환한다.")
 	void member_add_keyResult_to_project() throws Exception {
 		//given
-		var 프로젝트_토큰 = "mst_qq2f4gbfffffe421";
+		var 프로젝트_토큰 = "mst_as3fg34tgg6421";
 
 		//when
 		var 응답 = 핵심결과_추가_요청(프로젝트_토큰, "핵심결과1", 사용자_토큰);
