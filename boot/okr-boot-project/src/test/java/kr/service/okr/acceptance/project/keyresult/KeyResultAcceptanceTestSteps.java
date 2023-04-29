@@ -27,4 +27,21 @@ public class KeyResultAcceptanceTestSteps {
 			.extract();
 	}
 
+	static ExtractableResponse<Response> 핵심결과_수정_요청(String 프로젝트_토큰, String 핵심결과, String 로그인_유저_인증_토큰) throws
+		Exception {
+		return RestAssured.
+
+			given().log().all()
+			.contentType(ContentType.JSON)
+			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰)
+			.body(new RegisterKeyResultRequest(프로젝트_토큰, 핵심결과)).
+
+			when()
+			.put(baseUrl).
+
+			then()
+			.log().all()
+			.extract();
+	}
+
 }

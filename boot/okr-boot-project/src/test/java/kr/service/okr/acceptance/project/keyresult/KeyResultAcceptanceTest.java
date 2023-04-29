@@ -76,4 +76,18 @@ public class KeyResultAcceptanceTest extends SpringBootTestReady {
 		//then
 		핵심결과_추가_요청_응답_검증_실패_종료된_프로젝트(응답);
 	}
+
+	@Test
+	@DisplayName("행동전략 수정을 요청 하면 기대하는 응답을 반환한다.")
+	void delete_keyResult() throws Exception {
+		//given
+		var 핵심결과_토큰 = "key_wV6f45vWQ3DTzQMs";
+		var 핵심결과_수정_명 = "핵심결과 수정";
+
+		//when
+		var 응답 = 핵심결과_수정_요청(핵심결과_토큰, 핵심결과_수정_명, 사용자_토큰);
+
+		//then
+		핵심결과_수정_요청_응답_검증(응답);
+	}
 }

@@ -35,4 +35,8 @@ public class KeyResultAcceptanceTestAssertions {
 			.isEqualTo(ErrorCode.NOT_UNDER_PROJECT_DURATION.getMessage());
 	}
 
+	static void 핵심결과_수정_요청_응답_검증(ExtractableResponse<Response> 응답) {
+		AssertionsForClassTypes.assertThat(응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
 }
