@@ -34,6 +34,13 @@ public class ProjectQueryImpl implements ProjectQuery {
 	}
 
 	@Override
+	public Optional<Project> findProjectForUpdateKeyResult(final String keyResultToken, final Long requesterSeq) {
+		final Optional<ProjectJpaEntity> keyResult =
+			projectJpaRepository.findByKeyResultTokenAndUser(keyResultToken, requesterSeq);
+		return keyResult.map(ProjectJpaEntity::toDomain);
+	}
+
+	@Override
 	public Optional<Project> findProjectForRegisterKeyResult(final String projectToken, final Long userSeq) {
 		return projectJpaRepository.findProjectForRegisterKeyResultByProjectTokenAndUser(projectToken, userSeq)
 			.map(ProjectJpaEntity::toDomain);

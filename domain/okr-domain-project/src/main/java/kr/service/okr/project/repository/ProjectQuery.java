@@ -17,6 +17,8 @@ public interface ProjectQuery {
 
 	Optional<Project> findProjectForRegisterKeyResult(String projectToken, Long userSeq);
 
+	Optional<Project> findProjectForUpdateKeyResult(String keyResultToken, Long requesterSeq);
+
 	Page<Project> getDetailProjectList(
 		SortType sortType,
 		ProjectType projectType,

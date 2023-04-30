@@ -67,4 +67,8 @@ public class KeyResult {
 	public void addInitiative(final Initiative initiative) {
 		this.initiative.add(initiative);
 	}
+
+	public void updateKeyResult(final String keyResultName) {
+		this.name = keyResultName;
+	}
 }
