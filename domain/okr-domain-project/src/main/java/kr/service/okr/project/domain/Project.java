@@ -132,6 +132,22 @@ public class Project {
 
 	}
 
+	public KeyResult updateKeyResult(
+		final String keyResultToken,
+		final String keyResultName,
+		final Long leaderSeq
+	) {
+		validateProjectLeader(this, leaderSeq);
+		validateFinishedProject(this);
+		validateAndUpdateDates(this, startDate, endDate);
+		validateMaxKeyResultLength(keyResultName);
+
+		final KeyResult keyResult = getKeyResult(keyResultToken);
+		keyResult.updateKeyResult(keyResultName);
+
+		return keyResult;
+	}
+
 	private TeamMember getMemberBy(final Long memberSeq) {
 		return this.teamMember.stream()
 			.filter(teamMember -> teamMember.getUserSeq().equals(memberSeq))

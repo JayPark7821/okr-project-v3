@@ -78,7 +78,7 @@ public class KeyResultAcceptanceTest extends SpringBootTestReady {
 	}
 
 	@Test
-	@DisplayName("행동전략 수정을 요청 하면 기대하는 응답을 반환한다.")
+	@DisplayName("핵심결과 수정을 요청 하면 기대하는 응답을 반환한다.")
 	void delete_keyResult() throws Exception {
 		//given
 		var 핵심결과_토큰 = "key_wV6f45vWQ3DTzQMs";

@@ -1,5 +1,6 @@
 package kr.service.okr.api.project;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,6 +41,7 @@ public class KeyResultApiControllerImpl implements KeyResultApiController {
 		final @RequestBody UpdateKeyResultRequest request,
 		final @AuthenticatedUser AuthenticationInfo authenticationInfo
 	) {
-		return null;
+		keyResultFacade.updateKeyResult(KeyResultDtoMapper.toCommand(request), authenticationInfo.userSeq());
+		return Response.success(HttpStatus.OK);
 	}
 }

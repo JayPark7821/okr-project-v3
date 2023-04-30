@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kr.service.okr.project.api.RegisterKeyResultRequest;
+import kr.service.okr.project.api.UpdateKeyResultRequest;
 
 public class KeyResultAcceptanceTestSteps {
 
@@ -34,7 +35,7 @@ public class KeyResultAcceptanceTestSteps {
 			given().log().all()
 			.contentType(ContentType.JSON)
 			.header("Authorization", "Bearer " + 로그인_유저_인증_토큰)
-			.body(new RegisterKeyResultRequest(프로젝트_토큰, 핵심결과)).
+			.body(new UpdateKeyResultRequest(프로젝트_토큰, 핵심결과)).
 
 			when()
 			.put(baseUrl).
