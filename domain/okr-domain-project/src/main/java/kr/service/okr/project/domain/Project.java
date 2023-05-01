@@ -104,13 +104,13 @@ public class Project {
 		this.completed = true;
 	}
 
-	public String addInitiative(
+	public Initiative addInitiative(
 		final String keyResultToken,
 		final String initiativeName,
-		final Long memberSeq,
 		final String initiativeDetail,
 		final LocalDate startDate,
-		final LocalDate endDate
+		final LocalDate endDate,
+		final Long memberSeq
 	) {
 		validateAddingNewInitiative(initiativeName, initiativeDetail, startDate, endDate);
 

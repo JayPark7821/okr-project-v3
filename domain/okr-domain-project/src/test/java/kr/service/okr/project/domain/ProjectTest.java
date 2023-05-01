@@ -115,8 +115,8 @@ class ProjectTest {
 		final String initiativeName = "new initiativeName";
 		final String initiativeDetail = "initiative Details";
 		assertThatThrownBy(
-			() -> project.addInitiative(keyResultToken, initiativeName, userSeq, initiativeDetail, startDate,
-				endDate))
+			() -> project.addInitiative(keyResultToken, initiativeName, initiativeDetail, startDate, endDate, userSeq
+			))
 			.isInstanceOf(OkrApplicationException.class)
 			.hasMessage(errorMsg);
 	}
@@ -129,7 +129,8 @@ class ProjectTest {
 		final String initiativeDetail = "initiative Details";
 
 		assertThat(
-			project.addInitiative(keyResultToken, initiativeName, FIRST_MEMBER, initiativeDetail, now(), now()))
+			project.addInitiative(keyResultToken, initiativeName, initiativeDetail, now(), now(), FIRST_MEMBER)
+				.getInitiativeToken())
 			.containsPattern(Pattern.compile("initiative-[a-zA-Z0-9]{9}"));
 
 		assertThat(project.getKeyResults()
@@ -143,7 +144,7 @@ class ProjectTest {
 	void 프로젝트_업데이터_성공_테스트_케이스() throws Exception {
 		final Project project = generateProject(NORMAL, 1, 1);
 		final String keyResultToken = project.getKeyResults().get(0).getKeyResultToken();
-		project.addInitiative(keyResultToken, "new initiativeName", FIRST_MEMBER, "initiative Details", now(), now());
+		project.addInitiative(keyResultToken, "new initiativeName", "initiative Details", now(), now(), FIRST_MEMBER);
 
 		final String updatedObject = "updated Object";
 		project.updateProject(updatedObject, generateDate(0), generateDate(10), LEADER);
@@ -250,8 +251,9 @@ class ProjectTest {
 			.collect(Collectors.joining());
 		final Project projectWithInitiative = generateProject(NORMAL, 1, 1);
 		final String keyResultToken = projectWithInitiative.getKeyResults().get(0).getKeyResultToken();
-		projectWithInitiative.addInitiative(keyResultToken, "new initiativeName", FIRST_MEMBER, "initiative Details",
-			generateDate(-10), generateDate(10));
+		projectWithInitiative.addInitiative(keyResultToken, "new initiativeName", "initiative Details",
+			generateDate(-10), generateDate(10), FIRST_MEMBER
+		);
 
 		return Stream.of(
 			Arguments.of(finishedProject, LEADER, generateDate(0), generateDate(10), "new objective",

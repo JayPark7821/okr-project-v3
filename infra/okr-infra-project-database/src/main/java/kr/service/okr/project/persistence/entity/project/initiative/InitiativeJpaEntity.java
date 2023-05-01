@@ -82,7 +82,7 @@ public class InitiativeJpaEntity extends BaseEntity {
 
 	@Column(name = "initiative_done")
 	@NotNull
-	private boolean done;
+	private boolean done = Boolean.FALSE;
 
 	@OneToMany(mappedBy = "initiative")
 	private List<FeedbackJpaEntity> feedback = new ArrayList<>();
@@ -101,6 +101,36 @@ public class InitiativeJpaEntity extends BaseEntity {
 		this.detail = initiative.getDetail();
 		this.done = initiative.isDone();
 		this.feedback = initiative.getFeedback().stream().map(FeedbackJpaEntity::new).toList();
+	}
+
+	public InitiativeJpaEntity(
+		final String initiativeToken,
+		final Long keyResultId,
+		final TeamMemberJpaEntity teamMember,
+		final String name,
+		final String detail,
+		final LocalDate endDate,
+		final LocalDate startDate
+	) {
+		this.initiativeToken = initiativeToken;
+		this.keyResultId = keyResultId;
+		this.teamMember = teamMember;
+		this.name = name;
+		this.endDate = endDate;
+		this.startDate = startDate;
+		this.detail = detail;
+	}
+
+	public static InitiativeJpaEntity register(Initiative initiative) {
+		return new InitiativeJpaEntity(
+			initiative.getInitiativeToken(),
+			initiative.getKeyResultId(),
+			new TeamMemberJpaEntity(initiative.getTeamMember()),
+			initiative.getName(),
+			initiative.getDetail(),
+			initiative.getEndDate(),
+			initiative.getStartDate()
+		);
 	}
 
 	public void setKeyResult(KeyResultJpaEntity keyResult) {
