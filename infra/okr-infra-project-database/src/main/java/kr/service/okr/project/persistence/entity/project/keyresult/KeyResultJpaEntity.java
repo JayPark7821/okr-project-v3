@@ -76,7 +76,7 @@ public class KeyResultJpaEntity extends BaseEntity {
 		this.initiative = keyResult.getInitiative().stream().map(InitiativeJpaEntity::new).toList();
 	}
 
-	public static KeyResultJpaEntity createFrom(KeyResult keyResult) {
+	public static KeyResultJpaEntity register(KeyResult keyResult) {
 		return new KeyResultJpaEntity(
 			keyResult.getKeyResultToken(),
 			keyResult.getProjectId(),

@@ -31,7 +31,7 @@ public class Project {
 	private static final String PROJECT_TOKEN_PREFIX = "project-";
 
 	private Long id;
-	private String projectToken;
+	private final String projectToken;
 	private List<TeamMember> teamMember = new ArrayList<>();
 	private List<KeyResult> keyResults = new ArrayList<>();
 	private LocalDate startDate;
@@ -104,13 +104,13 @@ public class Project {
 		this.completed = true;
 	}
 
-	public String addInitiative(
+	public Initiative addInitiative(
 		final String keyResultToken,
 		final String initiativeName,
-		final Long memberSeq,
 		final String initiativeDetail,
 		final LocalDate startDate,
-		final LocalDate endDate
+		final LocalDate endDate,
+		final Long memberSeq
 	) {
 		validateAddingNewInitiative(initiativeName, initiativeDetail, startDate, endDate);
 

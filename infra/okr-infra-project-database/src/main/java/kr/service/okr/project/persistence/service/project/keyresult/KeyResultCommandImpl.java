@@ -18,7 +18,7 @@ public class KeyResultCommandImpl implements KeyResultCommand {
 
 	@Override
 	public KeyResult save(final KeyResult keyResult) {
-		return keyResultJpaRepository.save(KeyResultJpaEntity.createFrom(keyResult)).toDomain();
+		return keyResultJpaRepository.save(KeyResultJpaEntity.register(keyResult)).toDomain();
 	}
 
 }

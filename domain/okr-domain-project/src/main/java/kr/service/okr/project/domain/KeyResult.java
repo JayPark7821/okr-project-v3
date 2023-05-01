@@ -49,7 +49,7 @@ public class KeyResult {
 		this.initiative = initiative == null ? new ArrayList<>() : initiative;
 	}
 
-	protected String addInitiative(
+	protected Initiative addInitiative(
 		final String initiativeName,
 		final TeamMember member,
 		final String initiativeDetail,
@@ -61,7 +61,7 @@ public class KeyResult {
 			new Initiative(this.id, member, initiativeName, startDate, endDate, initiativeDetail);
 		this.initiative.add(initiative);
 
-		return initiative.getInitiativeToken();
+		return initiative;
 	}
 
 	public void addInitiative(final Initiative initiative) {
