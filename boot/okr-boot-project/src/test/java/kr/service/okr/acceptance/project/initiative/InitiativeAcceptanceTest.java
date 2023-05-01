@@ -4,8 +4,6 @@ import static kr.service.okr.acceptance.project.initiative.InitiativeAcceptanceT
 import static kr.service.okr.acceptance.project.initiative.InitiativeAcceptanceTestSteps.*;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import kr.service.okr.project.api.RegisterInitiativeRequest;
 import kr.service.okr.user.domain.AuthenticationProvider;
 import kr.service.okr.utils.SpringBootTestReady;
+import kr.service.okr.utils.TestHelpUtils;
 
 @DisplayName("Initiative 도메인 인수 테스트")
 public class InitiativeAcceptanceTest extends SpringBootTestReady {
@@ -45,17 +44,9 @@ public class InitiativeAcceptanceTest extends SpringBootTestReady {
 		return new RegisterInitiativeRequest(
 			핵심결과_토큰,
 			행동전략명,
-			getDateString(10, "yyyy-MM-dd"),
-			getDateString(-10, "yyyy-MM-dd"),
+			TestHelpUtils.getDateString(10, "yyyy-MM-dd"),
+			TestHelpUtils.getDateString(-10, "yyyy-MM-dd"),
 			행동전략_상세_내용
 		);
-	}
-
-	private static String getDateString(int calcDays, String pattern) {
-		if (calcDays < 0) {
-			return LocalDate.now().minusDays(calcDays * -1).format(DateTimeFormatter.ofPattern(pattern));
-		} else {
-			return LocalDate.now().plusDays(calcDays).format(DateTimeFormatter.ofPattern(pattern));
-		}
 	}
 }

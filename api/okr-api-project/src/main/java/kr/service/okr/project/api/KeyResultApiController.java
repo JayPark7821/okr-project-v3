@@ -9,13 +9,13 @@ import kr.service.okr.AuthenticationInfo;
 
 public interface KeyResultApiController {
 
-	@PostMapping("/api/v1/project/keyresult")
+	@PostMapping("/api/v1/keyresult")
 	ResponseEntity<String> registerKeyResult(
 		final @RequestBody RegisterKeyResultRequest request,
 		final AuthenticationInfo authenticationInfo
 	);
 
-	@PutMapping("/api/v1/project/keyresult")
+	@PutMapping("/api/v1/keyresult")
 	ResponseEntity<String> updateKeyResult(
 		final @RequestBody UpdateKeyResultRequest request,
 		final AuthenticationInfo authenticationInfo
