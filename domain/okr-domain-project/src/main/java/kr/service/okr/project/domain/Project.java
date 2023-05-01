@@ -31,7 +31,7 @@ public class Project {
 	private static final String PROJECT_TOKEN_PREFIX = "project-";
 
 	private Long id;
-	private String projectToken;
+	private final String projectToken;
 	private List<TeamMember> teamMember = new ArrayList<>();
 	private List<KeyResult> keyResults = new ArrayList<>();
 	private LocalDate startDate;
