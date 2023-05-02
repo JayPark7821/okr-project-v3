@@ -1,9 +1,12 @@
 package kr.service.okr.project.domain;
 
+import static kr.service.okr.exception.ErrorCode.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,7 +26,7 @@ public class Initiative {
 	private boolean done = Boolean.FALSE;
 	private List<Feedback> feedback = new ArrayList<>();
 
-	protected Initiative(
+	Initiative(
 		final Long keyResultId,
 		final TeamMember teamMember,
 		final String name,
@@ -53,6 +56,9 @@ public class Initiative {
 		final boolean done,
 		final List<Feedback> feedback
 	) {
+		if (id == null) {
+			throw new OkrApplicationException(ID_IS_REQUIRED);
+		}
 		this.id = id;
 		this.initiativeToken = initiativeToken;
 		this.keyResultId = keyResultId;

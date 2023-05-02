@@ -1,9 +1,12 @@
 package kr.service.okr.project.domain;
 
+import static kr.service.okr.exception.ErrorCode.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.util.TokenGenerator;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +22,7 @@ public class KeyResult {
 	private Integer keyResultIndex;
 	private List<Initiative> initiative = new ArrayList<>();
 
-	protected KeyResult(
+	KeyResult(
 		final String name,
 		final Long projectId,
 		final Integer keyResultIndex,
@@ -41,6 +44,9 @@ public class KeyResult {
 		final Integer keyResultIndex,
 		final List<Initiative> initiative
 	) {
+		if (id == null) {
+			throw new OkrApplicationException(ID_IS_REQUIRED);
+		}
 		this.id = id;
 		this.keyResultToken = keyResultToken;
 		this.projectId = projectId;
@@ -49,7 +55,7 @@ public class KeyResult {
 		this.initiative = initiative == null ? new ArrayList<>() : initiative;
 	}
 
-	protected Initiative addInitiative(
+	Initiative addInitiative(
 		final String initiativeName,
 		final TeamMember member,
 		final String initiativeDetail,
@@ -64,11 +70,7 @@ public class KeyResult {
 		return initiative;
 	}
 
-	public void addInitiative(final Initiative initiative) {
-		this.initiative.add(initiative);
-	}
-
-	public void updateKeyResult(final String keyResultName) {
+	void updateKeyResult(final String keyResultName) {
 		this.name = keyResultName;
 	}
 }

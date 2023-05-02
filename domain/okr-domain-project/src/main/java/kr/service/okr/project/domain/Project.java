@@ -63,7 +63,9 @@ public class Project {
 		final double progress,
 		final boolean completed
 	) {
-
+		if (id == null) {
+			throw new OkrApplicationException(ID_IS_REQUIRED);
+		}
 		this.id = id;
 		this.projectToken = projectToken;
 		this.teamMember = teamMember == null ? new ArrayList<>() : teamMember;
