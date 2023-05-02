@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public interface RegisterInitiativeUseCase {
 
-	String command(Command command);
+	RegisterInitiativeInfo command(Command command);
 
 	record Command(
 		String keyResultToken,

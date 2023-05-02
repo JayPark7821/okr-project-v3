@@ -9,6 +9,7 @@ import kr.service.okr.project.domain.Initiative;
 import kr.service.okr.project.domain.Project;
 import kr.service.okr.project.repository.InitiativeCommand;
 import kr.service.okr.project.repository.ProjectQuery;
+import kr.service.okr.project.usecase.RegisterInitiativeInfo;
 import kr.service.okr.project.usecase.RegisterInitiativeUseCase;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +22,7 @@ public class RegisterInitiative implements RegisterInitiativeUseCase {
 	private final InitiativeCommand initiativeCommand;
 
 	@Override
-	public String command(final Command command) {
+	public RegisterInitiativeInfo command(final Command command) {
 		final Project project = projectQuery.findProjectForRegisterInitiative(
 				command.keyResultToken(), command.requesterSeq())
 			.orElseThrow(() -> new OkrApplicationException(ErrorCode.INVALID_PROJECT_TOKEN));
@@ -29,6 +30,7 @@ public class RegisterInitiative implements RegisterInitiativeUseCase {
 		final Initiative initiative = project.addInitiative(command.keyResultToken(), command.name(), command.detail(),
 			command.startDate(), command.endDate(), command.requesterSeq());
 
-		return initiativeCommand.save(initiative).getInitiativeToken();
+		return new RegisterInitiativeInfo(initiativeCommand.save(initiative).getInitiativeToken(), project.getId());
 	}
+	
 }

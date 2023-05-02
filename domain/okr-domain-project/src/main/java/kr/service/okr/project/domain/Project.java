@@ -164,6 +164,10 @@ public class Project {
 			.orElseThrow(() -> new OkrApplicationException(INVALID_KEYRESULT_TOKEN));
 	}
 
+	public void updateProgress(final double projectProgress) {
+		this.progress = projectProgress;
+	}
+
 	//====================================  validate  =================================================
 	private void validateAddingNewInitiative(
 		final String initiativeName,

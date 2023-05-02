@@ -40,6 +40,16 @@ public class ProjectQueryImpl implements ProjectQuery {
 	}
 
 	@Override
+	public double getProjectProgress(final Long projectId) {
+		return projectQueryDslRepository.getProjectProgress(projectId);
+	}
+
+	@Override
+	public Optional<Project> findProjectById(final Long projectId) {
+		return projectJpaRepository.findById(projectId).map(ProjectJpaEntity::toDomain);
+	}
+
+	@Override
 	public Optional<Project> findProjectForRegisterKeyResult(final String projectToken, final Long userSeq) {
 		return projectJpaRepository.findProjectForRegisterKeyResultByProjectTokenAndUser(projectToken, userSeq)
 			.map(ProjectJpaEntity::toDomain);
