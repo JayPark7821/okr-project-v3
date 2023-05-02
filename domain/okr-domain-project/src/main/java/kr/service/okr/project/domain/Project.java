@@ -138,8 +138,8 @@ public class Project {
 		final Long leaderSeq
 	) {
 		validateProjectLeader(this, leaderSeq);
+		validateProjectInProgress(this);
 		validateFinishedProject(this);
-		validateAndUpdateDates(this, startDate, endDate);
 		validateMaxKeyResultLength(keyResultName);
 
 		final KeyResult keyResult = getKeyResult(keyResultToken);
