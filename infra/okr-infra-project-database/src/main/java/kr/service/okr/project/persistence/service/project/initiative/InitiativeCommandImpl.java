@@ -18,6 +18,7 @@ public class InitiativeCommandImpl implements InitiativeCommand {
 
 	@Override
 	public Initiative save(final Initiative initiative) {
-		return initiativeJpaRepository.save(InitiativeJpaEntity.register(initiative)).toDomain();
+		return initiativeJpaRepository.save(InitiativeJpaEntity.register(initiative))
+			.toDomain(initiative.getTeamMember());
 	}
 }
