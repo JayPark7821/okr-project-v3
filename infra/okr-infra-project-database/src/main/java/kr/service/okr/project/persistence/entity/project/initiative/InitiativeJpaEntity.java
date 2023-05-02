@@ -24,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kr.service.okr.config.BaseEntity;
 import kr.service.okr.project.domain.Initiative;
+import kr.service.okr.project.domain.TeamMember;
 import kr.service.okr.project.persistence.entity.project.feedback.FeedbackJpaEntity;
 import kr.service.okr.project.persistence.entity.project.keyresult.KeyResultJpaEntity;
 import kr.service.okr.project.persistence.entity.project.team.TeamMemberJpaEntity;
@@ -61,6 +62,12 @@ public class InitiativeJpaEntity extends BaseEntity {
 		@JoinColumn(name = "project_id", referencedColumnName = "project_id", updatable = false)
 	}, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private TeamMemberJpaEntity teamMember;
+
+	@Column(name = "project_id", insertable = false, updatable = false)
+	private Long projectId;
+
+	@Column(name = "user_seq", insertable = false, updatable = false)
+	private Long userSeq;
 
 	@Column(name = "initiative_name")
 	@NotNull
@@ -106,7 +113,8 @@ public class InitiativeJpaEntity extends BaseEntity {
 	public InitiativeJpaEntity(
 		final String initiativeToken,
 		final Long keyResultId,
-		final TeamMemberJpaEntity teamMember,
+		final Long projectId,
+		final Long userSeq,
 		final String name,
 		final String detail,
 		final LocalDate endDate,
@@ -114,7 +122,8 @@ public class InitiativeJpaEntity extends BaseEntity {
 	) {
 		this.initiativeToken = initiativeToken;
 		this.keyResultId = keyResultId;
-		this.teamMember = teamMember;
+		this.projectId = projectId;
+		this.userSeq = userSeq;
 		this.name = name;
 		this.endDate = endDate;
 		this.startDate = startDate;
@@ -125,20 +134,13 @@ public class InitiativeJpaEntity extends BaseEntity {
 		return new InitiativeJpaEntity(
 			initiative.getInitiativeToken(),
 			initiative.getKeyResultId(),
-			new TeamMemberJpaEntity(initiative.getTeamMember()),
+			initiative.getTeamMember().getProjectId(),
+			initiative.getTeamMember().getUserSeq(),
 			initiative.getName(),
 			initiative.getDetail(),
 			initiative.getEndDate(),
 			initiative.getStartDate()
 		);
-	}
-
-	public void setKeyResult(KeyResultJpaEntity keyResult) {
-		this.keyResult = keyResult;
-	}
-
-	public void done() {
-		this.done = true;
 	}
 
 	public Initiative toDomain() {
@@ -148,6 +150,22 @@ public class InitiativeJpaEntity extends BaseEntity {
 			.initiativeToken(this.initiativeToken)
 			.keyResultId(keyResultId)
 			.teamMember(this.teamMember.toDomain())
+			.name(this.name)
+			.startDate(this.startDate)
+			.endDate(this.endDate)
+			.detail(this.detail)
+			.done(this.done)
+			.feedback(this.feedback.stream().map(FeedbackJpaEntity::toDomain).toList())
+			.build();
+	}
+
+	public Initiative toDomain(final TeamMember teamMember) {
+
+		return Initiative.builder()
+			.id(this.id)
+			.initiativeToken(this.initiativeToken)
+			.keyResultId(keyResultId)
+			.teamMember(teamMember)
 			.name(this.name)
 			.startDate(this.startDate)
 			.endDate(this.endDate)

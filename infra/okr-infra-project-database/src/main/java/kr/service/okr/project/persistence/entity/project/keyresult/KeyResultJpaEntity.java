@@ -85,12 +85,6 @@ public class KeyResultJpaEntity extends BaseEntity {
 		);
 	}
 
-	public String addInitiative(InitiativeJpaEntity initiative) {
-		this.initiative.add(initiative);
-		initiative.setKeyResult(this);
-		return initiative.getInitiativeToken();
-	}
-
 	public KeyResult toDomain() {
 		return KeyResult.builder()
 			.id(this.id)

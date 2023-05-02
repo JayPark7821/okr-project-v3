@@ -1,5 +1,8 @@
 package kr.service.okr.project.domain;
 
+import static kr.service.okr.exception.ErrorCode.*;
+
+import kr.service.okr.exception.OkrApplicationException;
 import kr.service.okr.project.domain.enums.ProjectRoleType;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,19 +25,26 @@ public class TeamMember {
 	}
 
 	@Builder
-	private TeamMember(final long userSeq, final Long projectId, final ProjectRoleType projectRoleType,
-		final boolean isNew) {
+	private TeamMember(
+		final Long userSeq,
+		final Long projectId,
+		final ProjectRoleType projectRoleType,
+		final boolean isNew
+	) {
+		if (userSeq == null || projectId == null) {
+			throw new OkrApplicationException(ID_IS_REQUIRED);
+		}
 		this.userSeq = userSeq;
 		this.projectId = projectId;
 		this.projectRoleType = projectRoleType;
 		this.isNew = isNew;
 	}
 
-	public static TeamMember createLeader(Long userSeq, Long projectId) {
+	static TeamMember createLeader(Long userSeq, Long projectId) {
 		return new TeamMember(userSeq, ProjectRoleType.LEADER, projectId);
 	}
 
-	public static TeamMember createMember(Long userSeq, Long projectId) {
+	static TeamMember createMember(Long userSeq, Long projectId) {
 		return new TeamMember(userSeq, ProjectRoleType.MEMBER, projectId);
 	}
 

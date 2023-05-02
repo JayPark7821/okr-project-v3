@@ -63,7 +63,9 @@ public class Project {
 		final double progress,
 		final boolean completed
 	) {
-
+		if (id == null) {
+			throw new OkrApplicationException(ID_IS_REQUIRED);
+		}
 		this.id = id;
 		this.projectToken = projectToken;
 		this.teamMember = teamMember == null ? new ArrayList<>() : teamMember;
@@ -138,8 +140,8 @@ public class Project {
 		final Long leaderSeq
 	) {
 		validateProjectLeader(this, leaderSeq);
+		validateProjectInProgress(this);
 		validateFinishedProject(this);
-		validateAndUpdateDates(this, startDate, endDate);
 		validateMaxKeyResultLength(keyResultName);
 
 		final KeyResult keyResult = getKeyResult(keyResultToken);
