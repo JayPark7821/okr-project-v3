@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.service.okr.project.domain.Project;
 import kr.service.okr.project.repository.ProjectCommand;
+import kr.service.okr.project.repository.TeamMemberCommand;
 import kr.service.okr.project.usecase.RegisterProjectUseCase;
 import kr.service.okr.user.repository.user.UserQuery;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class RegisterProject implements RegisterProjectUseCase {
 
 	private final ProjectCommand projectCommand;
+	private final TeamMemberCommand teamMemberCommand;
 	private final UserQuery userQuery;
 
 	@Override
@@ -26,8 +28,10 @@ public class RegisterProject implements RegisterProjectUseCase {
 
 		if (command.teamMemberUsers() != null)
 			addTeamMember(command, project);
+		final Project savedProject = projectCommand.save(project);
 
-		return projectCommand.save(project).getProjectToken();
+		teamMemberCommand.saveAll(savedProject.getTeamMember());
+		return savedProject.getProjectToken();
 	}
 
 	private void addTeamMember(final Command command, final Project project) {

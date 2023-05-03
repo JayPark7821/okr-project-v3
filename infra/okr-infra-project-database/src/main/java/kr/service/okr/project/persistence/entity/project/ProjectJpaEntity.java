@@ -46,10 +46,10 @@ public class ProjectJpaEntity extends BaseEntity {
 
 	private String projectToken;
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<TeamMemberJpaEntity> teamMember = new ArrayList<>();
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<KeyResultJpaEntity> keyResults = new ArrayList<>();
 
 	@Column(name = "project_sdt")

@@ -14,4 +14,8 @@ public interface ProjectQuery {
 	Optional<Project> findProjectForUpdateKeyResult(String keyResultToken, Long requesterSeq);
 
 	Optional<Project> findProjectForRegisterInitiative(String keyResultToken, Long requesterSeq);
+
+	double getProjectProgress(Long projectId);
+
+	Optional<Project> findProjectById(Long projectId);
 }
