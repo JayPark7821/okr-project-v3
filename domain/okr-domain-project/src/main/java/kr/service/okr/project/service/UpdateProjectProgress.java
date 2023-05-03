@@ -1,5 +1,6 @@
 package kr.service.okr.project.service;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class UpdateProjectProgress implements UpdateProjectProgressUseCase {
 	private final ProjectQuery projectQuery;
 	private final ProjectCommand projectCommand;
 
+	@Async("asyncTaskExecutor")
 	@Override
 	public void command(final Long projectId) {
 		final Project project = projectQuery.findProjectById(projectId)

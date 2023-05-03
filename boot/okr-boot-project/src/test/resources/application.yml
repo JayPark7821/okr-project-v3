@@ -11,7 +11,7 @@ spring:
       - infra-jwt
       - api-project
       - infra-oauth
- 
+
 eureka:
   client:
     enabled: false
@@ -19,3 +19,9 @@ eureka:
 okr:
   user-auth-service:
     url: http://localhost:8080
+
+
+task-executor:
+  core-pool-size: 20
+  max-pool-size: 20
+  queue-capacity: 20
