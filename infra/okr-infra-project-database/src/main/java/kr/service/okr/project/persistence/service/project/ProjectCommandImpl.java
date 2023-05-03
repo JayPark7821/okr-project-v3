@@ -22,7 +22,7 @@ public class ProjectCommandImpl implements ProjectCommand {
 	public Project save(final Project project) {
 		if (project.getId() == null) {
 			final ProjectJpaEntity savedProject = projectJpaRepository.save(ProjectJpaEntity.createFrom(project));
-			project.getTeamMember().forEach(savedProject::addTeamMember);
+
 			return savedProject.toDomain();
 		} else {
 			return projectJpaRepository.save(new ProjectJpaEntity(project)).toDomain();

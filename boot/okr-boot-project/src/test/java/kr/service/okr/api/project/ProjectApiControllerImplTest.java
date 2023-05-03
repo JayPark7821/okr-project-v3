@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.service.okr.project.api.ProjectInfoResponse;
 import kr.service.okr.project.api.RegisterProjectRequest;
@@ -19,6 +20,7 @@ import kr.service.okr.project.domain.enums.ProjectRoleType;
 import kr.service.okr.project.persistence.entity.project.team.TeamMemberJpaEntity;
 import kr.service.okr.utils.SpringBootTestReady;
 
+@Transactional
 class ProjectApiControllerImplTest extends SpringBootTestReady {
 
 	@Autowired
