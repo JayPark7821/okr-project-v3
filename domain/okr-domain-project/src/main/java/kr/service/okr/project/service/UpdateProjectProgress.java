@@ -13,13 +13,13 @@ import kr.service.okr.project.usecase.UpdateProjectProgressUseCase;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UpdateProjectProgress implements UpdateProjectProgressUseCase {
 
 	private final ProjectQuery projectQuery;
 	private final ProjectCommand projectCommand;
 
+	@Transactional
 	@Async("asyncTaskExecutor")
 	@Override
 	public void command(final Long projectId) {
