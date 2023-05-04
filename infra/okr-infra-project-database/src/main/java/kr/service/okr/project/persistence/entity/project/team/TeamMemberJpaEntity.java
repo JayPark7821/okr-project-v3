@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import kr.service.okr.config.BaseEntity;
 import kr.service.okr.project.domain.TeamMember;
@@ -29,18 +30,19 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted = false")
 @Table(name = "team_member")
 public class TeamMemberJpaEntity extends BaseEntity {
-	
+
 	@Id
 	@Column(name = "user_seq")
 	private Long userSeq;
 
 	@Id
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "project_id")
-	private ProjectJpaEntity project;
-
 	@Column(name = "project_id", insertable = false, updatable = false)
 	private Long projectId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "project_id", updatable = false, insertable = false)
+	@MapsId("projectId")
+	private ProjectJpaEntity project;
 
 	@Column(name = "project_role_type")
 	@Enumerated(EnumType.STRING)
@@ -60,14 +62,6 @@ public class TeamMemberJpaEntity extends BaseEntity {
 		this.userSeq = userSeq;
 		this.project = project;
 		this.projectRoleType = projectRoleType;
-	}
-
-	public static TeamMemberJpaEntity createFrom(final TeamMember teamMember, final ProjectJpaEntity project) {
-		return new TeamMemberJpaEntity(
-			teamMember.getUserSeq(),
-			project,
-			teamMember.getProjectRoleType()
-		);
 	}
 
 	public TeamMemberJpaEntity(final TeamMember teamMember) {

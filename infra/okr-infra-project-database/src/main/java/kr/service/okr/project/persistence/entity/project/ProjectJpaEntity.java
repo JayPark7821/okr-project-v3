@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -23,7 +24,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import kr.service.okr.config.BaseEntity;
 import kr.service.okr.project.domain.Project;
-import kr.service.okr.project.domain.TeamMember;
 import kr.service.okr.project.domain.enums.ProjectType;
 import kr.service.okr.project.persistence.entity.project.keyresult.KeyResultJpaEntity;
 import kr.service.okr.project.persistence.entity.project.team.TeamMemberJpaEntity;
@@ -91,10 +91,6 @@ public class ProjectJpaEntity extends BaseEntity {
 			project.getObjective());
 	}
 
-	public void addTeamMember(TeamMember teamMember) {
-		this.teamMember.add(TeamMemberJpaEntity.createFrom(teamMember, this));
-	}
-
 	public ProjectJpaEntity(Project project) {
 
 		this.id = project.getId();
@@ -122,8 +118,10 @@ public class ProjectJpaEntity extends BaseEntity {
 		return Project.builder()
 			.id(this.id)
 			.projectToken(this.projectToken)
-			.teamMember(this.teamMember.stream().map(TeamMemberJpaEntity::toDomain).collect(Collectors.toList()))
-			.keyResults(this.keyResults.stream().map(KeyResultJpaEntity::toDomain).collect(Collectors.toList()))
+			.teamMember(Hibernate.isInitialized(this.teamMember) ?
+				this.teamMember.stream().map(TeamMemberJpaEntity::toDomain).collect(Collectors.toList()) : null)
+			.keyResults(Hibernate.isInitialized(this.teamMember) ?
+				this.keyResults.stream().map(KeyResultJpaEntity::toDomain).collect(Collectors.toList()) : null)
 			.startDate(this.startDate)
 			.endDate(this.endDate)
 			.type(this.type)

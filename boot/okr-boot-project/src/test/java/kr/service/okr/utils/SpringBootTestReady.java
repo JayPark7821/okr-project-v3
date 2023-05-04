@@ -23,8 +23,6 @@ public class SpringBootTestReady {
 	@LocalServerPort
 	int port;
 
-	public static final int PORT = 8080;
-
 	@Autowired
 	public DataLoader dataLoader;
 

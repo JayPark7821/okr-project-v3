@@ -6,9 +6,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan({
-	"kr.service.jwt",
 	"kr.service.okr",
-	"kr.service.oauth",
+	"kr.service.oauth"
 })
 @EnableDiscoveryClient
 @SpringBootApplication

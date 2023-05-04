@@ -17,6 +17,6 @@ public class TeamMemberId implements Serializable {
 	@EqualsAndHashCode.Include
 	private Long userSeq;
 	@EqualsAndHashCode.Include
-	private Long project;
+	private Long projectId;
 
 }

@@ -1,6 +1,6 @@
 package kr.service.okr.api.project;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.regex.Pattern;
